@@ -8,8 +8,16 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://blackonn.com/profile.html">
     <style>
-        html { background: #eef3f8; }
-        body { background: #eef3f8; padding: 0 !important; }
+        html { 
+            background: #eef3f8;
+            height: 100%;
+        }
+        body { 
+            background: #eef3f8; 
+            padding: 0 !important;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
         .nav {
             background: #eef3f8 !important;
         }
@@ -893,7 +901,32 @@
             cursor: pointer;
             transition: all 0.3s ease;
             width: fit-content;
-            margin: 10px 0 80px 0; /* Significantly increased bottom margin */
+            margin: 10px 0 100px 0; /* Large bottom margin to clear bottom nav */
+        }
+
+        /* Ensure all action buttons have bottom spacing on mobile */
+        @media (max-width: 768px) {
+            .btn-save,
+            .btn-track,
+            .btn-reorder,
+            .btn-return,
+            .btn-invoice,
+            .btn-add-address,
+            .btn-submit,
+            .order-actions,
+            .address-actions,
+            .wishlist-item-actions,
+            .tracking-search button {
+                margin-bottom: 20px;
+            }
+            
+            .profile-section {
+                padding-bottom: 100px; /* Add padding to each section */
+            }
+            
+            .profile-main {
+                padding-bottom: 120px; /* Extra padding for main content area */
+            }
         }
 
         .btn-save:hover {
@@ -2216,28 +2249,30 @@
 
             /* Mobile Bottom Navigation - App Style Fixed Bar */
             .mobile-bottom-nav {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.98);
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                top: auto !important; /* Prevent any top positioning */
+                background: #ffffff; /* Solid background instead of transparent */
                 border-top: 1px solid #e5e7eb;
-                box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
-                z-index: 2147483647; /* Maximum z-index to ensure it's always on top */
+                box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);
+                z-index: 2147483647 !important; /* Maximum z-index */
                 display: flex !important;
                 justify-content: space-evenly;
-                padding: 8px 4px;
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                padding-bottom: calc(8px + env(safe-area-inset-bottom));
-                transition: transform 0.3s ease;
-                transform: translate3d(0, 0, 0); /* Force hardware acceleration */
-                will-change: transform; /* Hint to browser to optimize rendering */
+                padding: 10px 4px;
+                padding-bottom: calc(10px + env(safe-area-inset-bottom));
+                transform: translateZ(0); /* GPU acceleration */
+                -webkit-transform: translateZ(0);
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                height: auto;
+                min-height: 60px;
             }
             
             /* Hide bottom nav when keyboard is open */
             body.keyboard-open .mobile-bottom-nav {
-                transform: translateY(100%);
+                display: none !important;
             }
 
             .mobile-bottom-nav .nav-item {
@@ -2872,7 +2907,7 @@
         /* Extra Small Screens */
         @media (max-width: 480px) {
             .profile-container {
-                padding: 70px 10px 20px;
+                padding: 70px 10px 200px !important; /* Must match 768px padding */
             }
 
             .profile-header {
