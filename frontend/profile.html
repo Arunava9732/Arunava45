@@ -9,7 +9,7 @@
     <link rel="canonical" href="https://blackonn.com/profile.html">
     <style>
         html { background: #eef3f8; }
-        body { background: #eef3f8; }
+        body { background: #eef3f8; padding: 0 !important; }
         .nav {
             background: #eef3f8 !important;
         }
@@ -1822,10 +1822,13 @@
             }
 
             .profile-sidebar {
-                position: static;
-                background: transparent;
-                padding: 0;
-                box-shadow: none;
+                position: sticky;
+                top: 80px;
+                z-index: 99;
+                background: #eef3f8;
+                padding: 10px 0;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                margin-bottom: 16px;
             }
 
             .sidebar-menu {
