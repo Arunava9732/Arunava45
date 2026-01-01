@@ -893,7 +893,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             width: fit-content;
-            margin-top: 10px;
+            margin: 10px 0 30px 0; /* Added bottom margin */
         }
 
         .btn-save:hover {
@@ -2186,13 +2186,17 @@
 
         @media (max-width: 768px) {
             .profile-container {
-                padding: 80px 15px 100px; /* Added bottom padding for nav bar */
+                padding: 80px 15px 140px; /* Increased bottom padding to prevent button overlap */
                 min-height: calc(100vh - 60px);
             }
 
-            /* Hide sidebar on mobile, show bottom nav instead */
+            /* Show sidebar on mobile as horizontal bar */
             .profile-sidebar {
-                display: none !important;
+                display: block !important;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                z-index: 98; /* Slightly lower than sticky header but high enough */
             }
 
             /* Mobile Bottom Navigation - App Style Fixed Bar */
