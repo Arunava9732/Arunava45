@@ -1,0 +1,23 @@
+#===============================================================================
+# BLACKONN - Watchdog Systemd Service (runs every minute)
+# 
+# INSTALLATION (run as root on VPS):
+#   cp /var/www/blackonn/deploy/blackonn-watchdog.service /etc/systemd/system/
+#   cp /var/www/blackonn/deploy/blackonn-watchdog.timer /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable blackonn-watchdog.timer
+#   systemctl start blackonn-watchdog.timer
+#===============================================================================
+
+[Unit]
+Description=Blackonn Server Watchdog - Ensures Server is Always Live
+After=blackonn.service
+
+[Service]
+Type=oneshot
+ExecStart=/var/www/blackonn/deploy/auto-restart-watchdog.sh
+WorkingDirectory=/var/www/blackonn
+User=root
+
+[Install]
+WantedBy=multi-user.target

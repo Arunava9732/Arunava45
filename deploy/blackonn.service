@@ -1,0 +1,52 @@
+#===============================================================================
+# BLACKONN - Systemd Service for Auto-Start on VPS Boot/Shutdown Recovery
+# 
+# INSTALLATION (run as root on VPS):
+#   cp /var/www/blackonn/deploy/blackonn.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable blackonn
+#   systemctl start blackonn
+#
+# This ensures the app restarts automatically after:
+#   - VPS reboot/shutdown
+#   - Server crash
+#   - Power outage
+#===============================================================================
+
+[Unit]
+Description=Blackonn E-commerce Server (PM2 Managed)
+Documentation=https://blackonn.com
+After=network.target network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/var/www/blackonn
+Environment=NODE_ENV=production
+Environment=PM2_HOME=/root/.pm2
+
+# Start PM2 with ecosystem config
+ExecStart=/usr/bin/pm2 start /var/www/blackonn/ecosystem.config.js --env production
+ExecReload=/usr/bin/pm2 reload blackonn
+ExecStop=/usr/bin/pm2 stop blackonn
+
+# Restart policy - always restart on failure within 5 seconds
+Restart=always
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=5
+
+# Resource limits
+LimitNOFILE=65535
+LimitNPROC=65535
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=blackonn
+
+[Install]
+WantedBy=multi-user.target

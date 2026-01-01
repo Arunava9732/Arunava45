@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | BLACKONN</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .error-container {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            color: #000;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .back-home {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .back-home:hover {
+            background: #333;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-message">Oops! The page you're looking for doesn't exist.</h1>
+        <p style="margin-bottom: 40px; color: #888;">It might have been moved or deleted.</p>
+        <a href="index.html" class="back-home">
+            <i class="ri-home-4-line"></i> Back to Home
+        </a>
+    </div>
+</body>
+</html>
