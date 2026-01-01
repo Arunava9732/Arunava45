@@ -2186,7 +2186,7 @@
 
         @media (max-width: 768px) {
             .profile-container {
-                padding: 80px 15px 140px; /* Increased bottom padding to prevent button overlap */
+                padding: 80px 15px 160px; /* Increased bottom padding for better spacing */
                 min-height: calc(100vh - 60px);
             }
 
@@ -2196,7 +2196,22 @@
                 width: 100%;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                z-index: 98; /* Slightly lower than sticky header but high enough */
+                z-index: 98;
+                position: sticky;
+                top: 80px;
+                background: #eef3f8;
+                padding: 10px 0;
+                margin-bottom: 20px;
+                white-space: nowrap;
+            }
+            
+            /* Hide scrollbar for sidebar */
+            .profile-sidebar::-webkit-scrollbar {
+                display: none;
+            }
+            .profile-sidebar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
             }
 
             /* Mobile Bottom Navigation - App Style Fixed Bar */
@@ -2211,10 +2226,16 @@
                 z-index: 1000;
                 display: flex !important;
                 justify-content: space-evenly;
-                padding: 6px 4px;
+                padding: 8px 4px;
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
-                padding-bottom: calc(6px + env(safe-area-inset-bottom)); /* iOS safe area */
+                padding-bottom: calc(8px + env(safe-area-inset-bottom));
+                transition: transform 0.3s ease;
+            }
+            
+            /* Hide bottom nav when keyboard is open */
+            body.keyboard-open .mobile-bottom-nav {
+                transform: translateY(100%);
             }
 
             .mobile-bottom-nav .nav-item {
@@ -3593,13 +3614,13 @@
         // Function to open More menu
         function openMoreMenu() {
             moreMenuOverlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            // document.body.style.overflow = 'hidden'; // Removed to prevent scroll jump
         }
         
         // Function to close More menu
         function closeMoreMenu() {
             moreMenuOverlay.classList.remove('show');
-            document.body.style.overflow = '';
+            // document.body.style.overflow = ''; // Removed
         }
         
         // Handle sidebar clicks
@@ -5735,7 +5756,7 @@
             window.addEventListener('resize', checkScreenSize);
         }
 
-        // Initialize mobile bottom nav visibility
+        // Initialize mobile bottom nav visibility and keyboard handling
         function initMobileNav() {
             const mobileNav = document.getElementById('mobileBottomNav');
             if (!mobileNav) return;
@@ -5751,6 +5772,48 @@
             // Check on load and resize
             checkScreenSize();
             window.addEventListener('resize', checkScreenSize);
+
+            // Handle keyboard open/close (hide bottom nav)
+            const inputs = document.querySelectorAll('input, textarea, select');
+            
+            function handleFocus() {
+                if (window.innerWidth <= 768) {
+                    document.body.classList.add('keyboard-open');
+                }
+            }
+            
+            function handleBlur() {
+                document.body.classList.remove('keyboard-open');
+            }
+            
+            // Attach to existing inputs
+            inputs.forEach(input => {
+                input.addEventListener('focus', handleFocus);
+                input.addEventListener('blur', handleBlur);
+            });
+            
+            // Observe DOM for new inputs (dynamic content)
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length) {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === 1) { // Element node
+                                const newInputs = node.querySelectorAll ? node.querySelectorAll('input, textarea, select') : [];
+                                if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA' || node.tagName === 'SELECT') {
+                                    node.addEventListener('focus', handleFocus);
+                                    node.addEventListener('blur', handleBlur);
+                                }
+                                newInputs.forEach(input => {
+                                    input.addEventListener('focus', handleFocus);
+                                    input.addEventListener('blur', handleBlur);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            
+            observer.observe(document.body, { childList: true, subtree: true });
         }
 
         // Initialize mobile nav when DOM is loaded
