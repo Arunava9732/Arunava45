@@ -43,15 +43,31 @@ const MAX_FILE_SIZE = MAX_VIDEO_SIZE;
 
 // Helper to optimize and save image
 async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}) {
-  const { width = 1200, quality = 80, format = 'webp' } = options;
-  const outputFilename = filename.replace(/\.[^/.]+$/, "") + '.' + format;
-  const outputPath = path.join(outputDir, outputFilename);
+  const { width = 1200, quality = 80 } = options;
+  
+  // Get original extension
+  const ext = path.extname(inputPath).toLowerCase();
+  const baseName = path.basename(filename, path.extname(filename));
+  const finalFilename = `${baseName}${ext}`;
+  const outputPath = path.join(outputDir, finalFilename);
 
   try {
-    await sharp(inputPath)
-      .resize({ width, withoutEnlargement: true })
-      .toFormat(format, { quality })
-      .toFile(outputPath);
+    let pipeline = sharp(inputPath);
+    
+    if (width) {
+      pipeline = pipeline.resize({ width, withoutEnlargement: true });
+    }
+
+    // Keep original format but allow quality adjustment for JPEG/WebP/PNG if they were original
+    if (ext === '.jpg' || ext === '.jpeg') {
+      pipeline = pipeline.jpeg({ quality });
+    } else if (ext === '.webp') {
+      pipeline = pipeline.webp({ quality });
+    } else if (ext === '.png') {
+      pipeline = pipeline.png({ quality });
+    }
+
+    await pipeline.toFile(outputPath);
 
     // Ensure file is readable by Nginx (0644 = rw-r--r--)
     try {
@@ -60,16 +76,14 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
       console.warn('Warning: Could not set file permissions on optimized image:', err.message);
     }
 
-    // If it was a temporary file (in a 'temp' directory or starts with temp_), delete it
-    const isTempFile = inputPath.includes(path.sep + 'temp' + path.sep) || 
-                       inputPath.includes('multer_temp') || 
-                       path.basename(inputPath).startsWith('temp_');
+    // If it was a temporary file (starts with temp_), delete it
+    const isTempFile = path.basename(inputPath).startsWith('temp_');
     
-    if (isTempFile) {
+    if (isTempFile && inputPath !== outputPath) {
       try { await fs.promises.unlink(inputPath); } catch (e) {}
     }
 
-    return outputFilename;
+    return finalFilename;
   } catch (error) {
     console.error('Image optimization failed:', error);
     throw error;
@@ -80,9 +94,7 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
 function multerFor(type, fieldName, maxCount = 1, allowedTypesOverride, maxSize) {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      // Use a temp directory for processing if it's an image
-      const isImage = file.mimetype && file.mimetype.startsWith('image');
-      const dest = isImage ? path.join(UPLOAD_DIRS[type], 'temp') : UPLOAD_DIRS[type];
+      const dest = UPLOAD_DIRS[type];
       if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
       cb(null, dest);
     },
@@ -123,6 +135,17 @@ function validateFileType(base64Data, allowedTypes) {
     return allowedTypes.includes(matches[1]);
   }
   return false;
+}
+
+// Get extension from base64
+function getExtensionFromBase64(base64Data) {
+  const matches = base64Data.match(/^data:image\/([A-Za-z-+]+);base64,/);
+  if (matches && matches.length > 1) {
+    const type = matches[1].toLowerCase();
+    if (type === 'jpeg') return '.jpg';
+    return `.${type}`;
+  }
+  return '.jpg'; // Default
 }
 
 // Helper function to save base64 file
@@ -189,12 +212,13 @@ router.post('/product-image', uploadLimiter, authenticate, isAdmin, multerFor('p
     }
     
     const prefix = type === 'main' ? 'main_' : 'thumb_';
-    const tempFilename = `temp_${Date.now()}.jpg`;
+    const ext = getExtensionFromBase64(image);
+    const tempFilename = `temp_${Date.now()}${ext}`;
     const tempPath = path.join(UPLOAD_DIRS.products, tempFilename);
     
     await fs.promises.writeFile(tempPath, buffer);
     
-    const finalFilename = generateFilename('image.webp', `${productId || 'prod'}_${prefix}`);
+    const finalFilename = generateFilename(`image${ext}`, `${productId || 'prod'}_${prefix}`);
     const optimizedName = await optimizeAndSaveImage(tempPath, UPLOAD_DIRS.products, finalFilename);
     
     res.json({ 
@@ -240,7 +264,8 @@ router.post('/product-thumbnails', uploadLimiter, authenticate, isAdmin, multerF
         return res.status(400).json({ success: false, error: `Invalid image type for thumbnail ${index + 1}` });
       }
       
-      const filename = generateFilename('thumb.jpg', `${productId || 'prod'}_thumb${index}_`);
+      const ext = getExtensionFromBase64(image);
+      const filename = generateFilename(`thumb${ext}`, `${productId || 'prod'}_thumb${index}_`);
       await saveBase64File(image, UPLOAD_DIRS.products, filename);
       urls.push(`/uploads/products/${filename}`);
     }
@@ -286,7 +311,10 @@ router.post('/slide-media', uploadLimiter, authenticate, isAdmin, multerFor('sli
       return res.status(400).json({ success: false, error: `File too large. Maximum size: 100MB` });
     }
     
-    const ext = type === 'video' ? '.mp4' : '.jpg';
+    let ext = type === 'video' ? '.mp4' : '.jpg';
+    if (type === 'image') {
+      ext = getExtensionFromBase64(media);
+    }
     const filename = generateFilename(`slide${ext}`, `${slideId || 'slide'}_`);
     
     await saveBase64File(media, UPLOAD_DIRS.slides, filename);
@@ -333,7 +361,8 @@ router.post('/user-avatar', uploadLimiter, authenticate, multerFor('users', 'ava
       return res.status(400).json({ success: false, error: 'Avatar too large. Maximum size: 5MB' });
     }
     
-    const filename = generateFilename('avatar.jpg', `user_${req.user.id}_`);
+    const ext = getExtensionFromBase64(image);
+    const filename = generateFilename(`avatar${ext}`, `user_${req.user.id}_`);
     await saveBase64File(image, UPLOAD_DIRS.users, filename);
     
     const fileUrl = `/uploads/users/${filename}`;
