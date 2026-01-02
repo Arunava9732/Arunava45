@@ -25,6 +25,12 @@ const UPLOAD_DIRS = {
 Object.values(UPLOAD_DIRS).forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+    // Ensure directory is accessible by Nginx
+    try {
+      fs.chmodSync(dir, 0o755);
+    } catch (e) {
+      console.warn(`Warning: Could not set permissions on directory ${dir}:`, e.message);
+    }
   }
 });
 
@@ -41,17 +47,33 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
   const outputFilename = filename.replace(/\.[^/.]+$/, "") + '.' + format;
   const outputPath = path.join(outputDir, outputFilename);
 
-  await sharp(inputPath)
-    .resize({ width, withoutEnlargement: true })
-    .toFormat(format, { quality })
-    .toFile(outputPath);
+  try {
+    await sharp(inputPath)
+      .resize({ width, withoutEnlargement: true })
+      .toFormat(format, { quality })
+      .toFile(outputPath);
 
-  // If it was a temporary file from multer, delete it
-  if (inputPath.includes('multer_temp')) {
-    try { await fs.promises.unlink(inputPath); } catch (e) {}
+    // Ensure file is readable by Nginx (0644 = rw-r--r--)
+    try {
+      await fs.promises.chmod(outputPath, 0o644);
+    } catch (err) {
+      console.warn('Warning: Could not set file permissions on optimized image:', err.message);
+    }
+
+    // If it was a temporary file (in a 'temp' directory or starts with temp_), delete it
+    const isTempFile = inputPath.includes(path.sep + 'temp' + path.sep) || 
+                       inputPath.includes('multer_temp') || 
+                       path.basename(inputPath).startsWith('temp_');
+    
+    if (isTempFile) {
+      try { await fs.promises.unlink(inputPath); } catch (e) {}
+    }
+
+    return outputFilename;
+  } catch (error) {
+    console.error('Image optimization failed:', error);
+    throw error;
   }
-
-  return outputFilename;
 }
 
 // Multer helper for streaming multipart uploads
