@@ -51,6 +51,10 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
   const finalFilename = `${baseName}${ext}`;
   const outputPath = path.join(outputDir, finalFilename);
 
+  // If input and output are the same, we need to use a temporary file for sharp
+  const isSameFile = inputPath === outputPath;
+  const processingPath = isSameFile ? `${outputPath}.tmp` : outputPath;
+
   try {
     let pipeline = sharp(inputPath);
     
@@ -67,7 +71,11 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
       pipeline = pipeline.png({ quality });
     }
 
-    await pipeline.toFile(outputPath);
+    await pipeline.toFile(processingPath);
+
+    if (isSameFile) {
+      await fs.promises.rename(processingPath, outputPath);
+    }
 
     // Ensure file is readable by Nginx (0644 = rw-r--r--)
     try {
@@ -86,6 +94,10 @@ async function optimizeAndSaveImage(inputPath, outputDir, filename, options = {}
     return finalFilename;
   } catch (error) {
     console.error('Image optimization failed:', error);
+    // Clean up temp file if it exists
+    if (isSameFile && fs.existsSync(processingPath)) {
+      try { fs.unlinkSync(processingPath); } catch (e) {}
+    }
     throw error;
   }
 }
@@ -178,18 +190,9 @@ router.post('/product-image', uploadLimiter, authenticate, isAdmin, multerFor('p
   try {
     // If multipart upload used, multer will populate req.file
     if (req.file) {
-      const isImage = req.file.mimetype.startsWith('image');
-      let filename = path.basename(req.file.path);
-      
-      if (isImage) {
-        // Optimize image and convert to WebP
-        const optimizedName = await optimizeAndSaveImage(req.file.path, UPLOAD_DIRS.products, filename);
-        filename = optimizedName;
-      } else {
-        // Ensure permissions for non-images
-        try { await fs.promises.chmod(req.file.path, 0o644); } catch (e) {}
-      }
-      
+      // Ensure permissions for Nginx
+      try { await fs.promises.chmod(req.file.path, 0o644); } catch (e) {}
+      const filename = path.basename(req.file.path);
       return res.json({ success: true, url: `/uploads/products/${filename}`, filename });
     }
 
@@ -213,18 +216,14 @@ router.post('/product-image', uploadLimiter, authenticate, isAdmin, multerFor('p
     
     const prefix = type === 'main' ? 'main_' : 'thumb_';
     const ext = getExtensionFromBase64(image);
-    const tempFilename = `temp_${Date.now()}${ext}`;
-    const tempPath = path.join(UPLOAD_DIRS.products, tempFilename);
-    
-    await fs.promises.writeFile(tempPath, buffer);
-    
     const finalFilename = generateFilename(`image${ext}`, `${productId || 'prod'}_${prefix}`);
-    const optimizedName = await optimizeAndSaveImage(tempPath, UPLOAD_DIRS.products, finalFilename);
+    
+    await saveBase64File(image, UPLOAD_DIRS.products, finalFilename);
     
     res.json({ 
       success: true, 
-      url: `/uploads/products/${optimizedName}`,
-      filename: optimizedName
+      url: `/uploads/products/${finalFilename}`,
+      filename: finalFilename
     });
   } catch (error) {
     console.error('Upload product image error:', error);
@@ -708,7 +707,8 @@ router.post('/contact-attachments', uploadLimiter, multerFor('contact', 'images'
         return res.status(400).json({ success: false, error: 'Each image must be less than 5MB' });
       }
 
-      const filename = generateFilename('attachment.jpg', 'contact_');
+      const ext = getExtensionFromBase64(image);
+      const filename = generateFilename(`attachment${ext}`, 'contact_');
       await saveBase64File(image, UPLOAD_DIRS.contact, filename);
       
       attachments.push({
