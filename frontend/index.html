@@ -895,7 +895,8 @@
           const html = products.map((product, index) => {
             const isReverse = index % 2 === 1;
             const delay = (index * 0.06).toFixed(2);
-            const imgSrc = normalizeProductUrl(product.thumbImage || product.image);
+            // Use main image as primary, fall back to first thumbnail only if main image is missing
+            const imgSrc = normalizeProductUrl(product.image || product.thumbImage);
             
             return `
               <div class="section${isReverse ? ' reverse' : ''} animate-fade-up" data-index="${index}" style="transition-delay:${delay}s">
