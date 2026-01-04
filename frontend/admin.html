@@ -7105,15 +7105,34 @@
         return response.json();
       }
 
-      const statsGrid = document.getElementById('statsGrid');
-      const ordersBody = document.getElementById('ordersBody');
-      const productBody = document.getElementById('productBody');
-      const usersBody = document.getElementById('usersBody');
-      const returnsBody = document.getElementById('returnsBody');
-      const exchangesBody = document.getElementById('exchangesBody');
-      const cancellationsBody = document.getElementById('cancellationsBody');
-      const userCountLabel = document.getElementById('userCount');
-      const statsUpdatedEl = document.getElementById('statsUpdated');
+      // DOM element references (initialized when ready)
+      let statsGrid = null;
+      let ordersBody = null;
+      let productBody = null;
+      let usersBody = null;
+      let returnsBody = null;
+      let exchangesBody = null;
+      let cancellationsBody = null;
+      let userCountLabel = null;
+      let statsUpdatedEl = null;
+      
+      // Initialize DOM element references
+      function initDOMElements() {
+        statsGrid = document.getElementById('statsGrid');
+        ordersBody = document.getElementById('ordersBody');
+        productBody = document.getElementById('productBody');
+        usersBody = document.getElementById('usersBody');
+        returnsBody = document.getElementById('returnsBody');
+        exchangesBody = document.getElementById('exchangesBody');
+        cancellationsBody = document.getElementById('cancellationsBody');
+        userCountLabel = document.getElementById('userCount');
+        statsUpdatedEl = document.getElementById('statsUpdated');
+      }
+      
+      // Ensure DOM elements are initialized
+      function ensureDOMElements() {
+        if (!statsGrid) initDOMElements();
+      }
 
       let products = [];
       let orders = [];
@@ -7220,9 +7239,27 @@
       }
 
       async function renderStats() {
+        // Ensure DOM elements are initialized
+        if (!statsGrid) {
+          statsGrid = document.getElementById('statsGrid');
+        }
+        if (!statsUpdatedEl) {
+          statsUpdatedEl = document.getElementById('statsUpdated');
+        }
+        
+        if (!statsGrid) {
+          console.error('[Admin] statsGrid element not found in renderStats');
+          return;
+        }
+        
         const stats = await fetchStats();
         
-        // Color classes for stat cards
+        if (!stats || stats.length === 0) {
+          console.warn('[Admin] No stats data in renderStats');
+          return;
+        }
+        
+        // Color classes for stat cards - maps color name to CSS class
         const colorClasses = {
           'success': 'stat-success',
           'warning': 'stat-warning',
@@ -7233,17 +7270,22 @@
         };
         
         statsGrid.innerHTML = stats
-          .map(stat => `
-            <article class="stat-card ${colorClasses[stat.color] || ''} ${stat.highlight ? 'stat-highlight' : ''}">
-              <div class="stat-icon-wrapper ${stat.color || 'primary'}">
-                <i class="${stat.icon || 'ri-bar-chart-line'}"></i>
-              </div>
-              <div class="stat-content">
-                <small>${stat.label}</small>
-                <strong>${stat.value}</strong>
-              </div>
-            </article>
-          `)
+          .map(stat => {
+            const colorClass = stat.color ? (colorClasses[stat.color] || '') : '';
+            const highlightClass = stat.highlight ? 'stat-highlight' : '';
+            const iconColor = stat.color || 'primary';
+            return `
+              <article class="stat-card ${colorClass} ${highlightClass}">
+                <div class="stat-icon-wrapper ${iconColor}">
+                  <i class="${stat.icon || 'ri-bar-chart-line'}"></i>
+                </div>
+                <div class="stat-content">
+                  <small>${stat.label}</small>
+                  <strong>${stat.value}</strong>
+                </div>
+              </article>
+            `;
+          })
           .join('');
         if (statsUpdatedEl) statsUpdatedEl.textContent = `Updated ${new Date().toLocaleTimeString()}`;
       }
@@ -8511,6 +8553,19 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           if (editingProductId) {
             // Update product via API
             try {
+              // Auto-generate SKU and barcode if not set during edit
+              if (!productData.sku) {
+                const timestamp = Date.now();
+                const namePrefix = name.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'X');
+                productData.sku = `SKU-${namePrefix}-${timestamp.toString(36).toUpperCase()}`;
+                productData.skuCreatedAt = new Date().toISOString();
+              }
+              if (!productData.barcode) {
+                const timestamp = Date.now();
+                productData.barcode = `${timestamp}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                productData.barcodeCreatedAt = new Date().toISOString();
+              }
+              
               await apiRequest(`/products/${editingProductId}`, {
                 method: 'PUT',
                 body: JSON.stringify(productData)
@@ -8523,6 +8578,15 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
               form.reset();
               await fetchProducts();
               await renderStats();
+              
+              // Refresh SKU and Inventory sections if they exist
+              if (typeof loadSkuData === 'function') {
+                try { await loadSkuData(); } catch(e) { console.log('SKU section will refresh on visit'); }
+              }
+              if (typeof loadInventoryData === 'function') {
+                try { await loadInventoryData(); } catch(e) { console.log('Inventory section will refresh on visit'); }
+              }
+              
               setTimeout(() => (message.textContent = ''), 5000);
             } catch (e) {
               console.error('Failed to update product:', e);
@@ -8534,15 +8598,36 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           } else {
             // Add new product via API
             try {
+              // Auto-generate SKU and barcode for new products
+              const timestamp = Date.now();
+              const namePrefix = name.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'X');
+              const autoSku = productData.sku || `SKU-${namePrefix}-${timestamp.toString(36).toUpperCase()}`;
+              const autoBarcode = productData.barcode || `${timestamp}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+              
+              // Add auto-generated SKU and barcode to product data
+              productData.sku = autoSku;
+              productData.barcode = autoBarcode;
+              productData.skuCreatedAt = new Date().toISOString();
+              productData.barcodeCreatedAt = new Date().toISOString();
+              
               await apiRequest('/products', {
                 method: 'POST',
                 body: JSON.stringify(productData)
               });
-              message.textContent = `${name} added successfully!`;
+              message.textContent = `${name} added successfully! SKU: ${autoSku}`;
               message.style.color = '#10b981';
               form.reset();
               await fetchProducts();
               await renderStats();
+              
+              // Refresh SKU and Inventory sections if they exist
+              if (typeof loadSkuData === 'function') {
+                try { await loadSkuData(); } catch(e) { console.log('SKU section will refresh on visit'); }
+              }
+              if (typeof loadInventoryData === 'function') {
+                try { await loadInventoryData(); } catch(e) { console.log('Inventory section will refresh on visit'); }
+              }
+              
               submit.disabled = false;
               submit.textContent = 'Add Product';
               setTimeout(() => (message.textContent = ''), 5000);
@@ -9370,26 +9455,79 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
       // Render stats asynchronously
       async function renderStatsAsync() {
-        const stats = await fetchStats();
-        const icons = {
-          'Total Sales': 'ri-money-dollar-circle-line',
-          'Total Orders': 'ri-shopping-cart-line',
-          'Pending Orders': 'ri-time-line',
-          'Pending Returns': 'ri-arrow-go-back-line',
-          'Inventory Value': 'ri-store-2-line',
-          'Total Products': 'ri-shopping-bag-line',
-          'Registered Users': 'ri-user-star-line',
-          'Storage Used': 'ri-hard-drive-2-line'
-        };
-        statsGrid.innerHTML = stats
-          .map(stat => `
-            <article class="stat-card">
-              <small><i class="${icons[stat.label] || 'ri-bar-chart-line'}"></i> ${stat.label}</small>
-              <strong>${stat.value}</strong>
+        if (!statsGrid) {
+          console.error('[Admin] statsGrid element not found');
+          return;
+        }
+        
+        try {
+          const stats = await fetchStats();
+          
+          if (!stats || stats.length === 0) {
+            statsGrid.innerHTML = `
+              <article class="stat-card">
+                <div class="stat-icon-wrapper muted">
+                  <i class="ri-refresh-line"></i>
+                </div>
+                <div class="stat-content">
+                  <small>Loading...</small>
+                  <strong>--</strong>
+                </div>
+              </article>
+            `;
+            console.warn('[Admin] No stats data available');
+            return;
+          }
+          
+          const icons = {
+            'Total Sales': 'ri-money-dollar-circle-line',
+            'Total Orders': 'ri-shopping-cart-line',
+            'Pending Orders': 'ri-time-line',
+            'Pending Returns': 'ri-arrow-go-back-line',
+            'Inventory Value': 'ri-store-2-line',
+            'Total Products': 'ri-shopping-bag-line',
+            'Registered Users': 'ri-user-star-line',
+            'Storage Used': 'ri-hard-drive-2-line'
+          };
+          
+          // Color classes for stat cards
+          const colorClasses = {
+            'success': 'stat-success',
+            'warning': 'stat-warning',
+            'danger': 'stat-danger',
+            'primary': 'stat-primary',
+            'info': 'stat-info',
+            'muted': 'stat-muted'
+          };
+          
+          statsGrid.innerHTML = stats
+            .map(stat => `
+              <article class="stat-card ${colorClasses[stat.color] || ''} ${stat.highlight ? 'stat-highlight' : ''}">
+                <div class="stat-icon-wrapper ${stat.color || 'primary'}">
+                  <i class="${stat.icon || icons[stat.label] || 'ri-bar-chart-line'}"></i>
+                </div>
+                <div class="stat-content">
+                  <small>${stat.label}</small>
+                  <strong>${stat.value}</strong>
+                </div>
+              </article>
+            `)
+            .join('');
+          if (statsUpdatedEl) statsUpdatedEl.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+        } catch (error) {
+          console.error('[Admin] Failed to render stats:', error);
+          statsGrid.innerHTML = `
+            <article class="stat-card stat-danger">
+              <div class="stat-icon-wrapper danger">
+                <i class="ri-error-warning-line"></i>
+              </div>
+              <div class="stat-content">
+                <small>Error</small>
+                <strong>Failed to load</strong>
+              </div>
             </article>
-          `)
-          .join('');
-        if (statsUpdatedEl) statsUpdatedEl.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+          `;
+        }
       }
 
       // =====================
@@ -9461,6 +9599,9 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
       // Initialize dashboard
       async function initDashboard() {
+        // Initialize DOM element references first
+        initDOMElements();
+        
         // Check if API is available first
         await checkApiAvailability();
         
@@ -9476,7 +9617,12 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         setupAutoRefresh();
       }
 
-      initDashboard();
+      // Initialize dashboard when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDashboard);
+      } else {
+        initDashboard();
+      }
     </script>
     <script>
       document.addEventListener('contextmenu', function (e) {
