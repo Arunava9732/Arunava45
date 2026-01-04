@@ -2868,9 +2868,6 @@
         .mobile-nav-toggle.active {
           background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         }
-        .mobile-nav-toggle.active i::before {
-          content: "\\eb99"; /* ri-close-line */
-        }
         /* Hide nav by default on mobile, show when active */
         .admin-side-nav {
           transform: translateY(100%);
@@ -11146,16 +11143,25 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         
         function toggleMobileNav() {
           const isOpen = sideNav.classList.contains('mobile-open');
+          const toggleIcon = mobileNavToggle?.querySelector('i');
           if (isOpen) {
             sideNav.classList.remove('mobile-open');
             mobileNavToggle.classList.remove('active');
             mobileNavOverlay.classList.remove('active');
             document.body.style.overflow = '';
+            // Change icon back to menu
+            if (toggleIcon) {
+              toggleIcon.className = 'ri-menu-line';
+            }
           } else {
             sideNav.classList.add('mobile-open');
             mobileNavToggle.classList.add('active');
             mobileNavOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
+            // Change icon to close (X)
+            if (toggleIcon) {
+              toggleIcon.className = 'ri-close-line';
+            }
           }
         }
         
