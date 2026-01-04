@@ -75,7 +75,7 @@ const securityHeaders = helmet({
       scriptSrc,
       scriptSrcAttr: ["'unsafe-inline'"],
       frameSrc: ["'self'", "https://accounts.google.com", "https://www.facebook.com"],
-      connectSrc: ["'self'", "https://accounts.google.com", "https://graph.facebook.com", "https://www.facebook.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+      connectSrc: ["'self'", "https://blackonn.in", "https://www.blackonn.in", "https://accounts.google.com", "https://graph.facebook.com", "https://www.facebook.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: isProduction ? [] : null
     }

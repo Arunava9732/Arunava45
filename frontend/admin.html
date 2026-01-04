@@ -30,46 +30,153 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 5%;
+        padding: 12px 5%;
         max-width: 1400px;
         margin: 0 auto;
       }
       .admin-header .nav-logo img {
-        width: 150px;
-        height: 42px;
+        width: 130px;
+        height: 38px;
         object-fit: contain;
       }
-      .admin-header nav {
+      .admin-header .header-actions {
         display: flex;
         align-items: center;
-        gap: 4px;
-        flex-wrap: wrap;
+        gap: 12px;
       }
-      .admin-header nav a {
-        color: #374151;
-        font-weight: 500;
-        text-decoration: none;
-        font-size: 0.82rem;
-        padding: 6px 10px;
-        border-radius: 6px;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-      }
-      .admin-header nav a i {
-        font-size: 1rem;
-        vertical-align: -2px;
-        margin-right: 3px;
-      }
-      .admin-header nav a:hover {
-        background: #f3f4f6;
-        color: #0f172a;
-      }
-      .admin-header nav a.logout-btn {
+      .admin-header .header-actions .logout-btn {
         background: #fee2e2;
         color: #dc2626;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
       }
-      .admin-header nav a.logout-btn:hover {
+      .admin-header .header-actions .logout-btn:hover {
         background: #fecaca;
+      }
+      .admin-header nav {
+        display: none;
+      }
+      
+      /* Floating Side Navigation */
+      .admin-side-nav {
+        position: fixed;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: #fff;
+        padding: 12px 8px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        max-height: 80vh;
+        overflow: visible;
+      }
+      .admin-side-nav-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: calc(80vh - 24px);
+        overflow-y: auto;
+        overflow-x: visible;
+        scrollbar-width: none;
+      }
+      .admin-side-nav-inner::-webkit-scrollbar {
+        display: none;
+      }
+      .admin-side-nav a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        color: #64748b;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        flex-shrink: 0;
+      }
+      .admin-side-nav a i {
+        font-size: 1.2rem;
+        position: relative;
+        z-index: 1;
+      }
+      .admin-side-nav a:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+        transform: scale(1.08);
+      }
+      .admin-side-nav a.active {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+      }
+      /* JavaScript-controlled tooltip */
+      .nav-tooltip {
+        position: fixed;
+        background: #0f172a;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 9999999;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateX(-8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .nav-tooltip.visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .admin-side-nav .nav-divider {
+        height: 1px;
+        background: #e2e8f0;
+        margin: 6px 4px;
+        flex-shrink: 0;
+      }
+      .admin-side-nav .nav-group-label {
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8px 4px 4px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .admin-side-nav .scroll-top-btn {
+        margin-top: 4px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #fff;
+      }
+      .admin-side-nav .scroll-top-btn:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        transform: scale(1.08);
+      }
+      
+      /* Adjust main content for side nav */
+      .admin-page {
+        max-width: 1400px;
+        margin: 32px auto 80px;
+        padding: 0 5% 0 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
       }
       /* Dropdown for Management sections */
       .nav-dropdown {
@@ -1107,31 +1214,7 @@
         100% { transform: rotate(360deg); }
       }
 
-      /* Quick Actions */
-      .quick-actions {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        z-index: 1000;
-      }
-      .quick-action-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: #0f172a;
-        color: white;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-      }
+
       .quick-action-btn:hover {
         transform: scale(1.1);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
@@ -2039,7 +2122,9 @@
       
       /* Save Changes Button Styles */
       #saveOrderChangesBtn,
-      #saveReturnChangesBtn {
+      #saveReturnChangesBtn,
+      #saveExchangeChangesBtn,
+      #saveCancellationChangesBtn {
         display: none;
         background: linear-gradient(135deg, #059669 0%, #10b981 100%);
         color: #fff;
@@ -2056,16 +2141,22 @@
         animation: pulse-save 2s infinite;
       }
       #saveOrderChangesBtn.visible,
-      #saveReturnChangesBtn.visible {
+      #saveReturnChangesBtn.visible,
+      #saveExchangeChangesBtn.visible,
+      #saveCancellationChangesBtn.visible {
         display: inline-flex;
       }
       #saveOrderChangesBtn:hover,
-      #saveReturnChangesBtn:hover {
+      #saveReturnChangesBtn:hover,
+      #saveExchangeChangesBtn:hover,
+      #saveCancellationChangesBtn:hover {
         transform: translateY(-1px);
         box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
       }
       #saveOrderChangesBtn:disabled,
-      #saveReturnChangesBtn:disabled {
+      #saveReturnChangesBtn:disabled,
+      #saveExchangeChangesBtn:disabled,
+      #saveCancellationChangesBtn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         animation: none;
@@ -2573,6 +2664,54 @@
         text-transform: capitalize;
       }
       
+      /* Exchanges table specific column widths (10 columns) */
+      .exchanges-table th:first-child,
+      .exchanges-table td:first-child {
+        width: 40px;
+        text-align: center;
+        padding: 12px 8px;
+      }
+      .exchanges-table th:nth-child(2),
+      .exchanges-table td:nth-child(2) {
+        width: 90px;
+        word-break: break-word;
+      }
+      .exchanges-table th:nth-child(3),
+      .exchanges-table td:nth-child(3) {
+        width: 90px;
+        word-break: break-word;
+      }
+      .exchanges-table th:nth-child(4),
+      .exchanges-table td:nth-child(4) {
+        width: 130px;
+        word-break: break-word;
+      }
+      .exchanges-table th:nth-child(5),
+      .exchanges-table td:nth-child(5) {
+        width: 120px;
+      }
+      .exchanges-table th:nth-child(6),
+      .exchanges-table td:nth-child(6) {
+        width: 100px;
+      }
+      .exchanges-table th:nth-child(7),
+      .exchanges-table td:nth-child(7) {
+        width: 100px;
+      }
+      .exchanges-table th:nth-child(8),
+      .exchanges-table td:nth-child(8) {
+        width: 130px;
+      }
+      .exchanges-table th:nth-child(9),
+      .exchanges-table td:nth-child(9) {
+        width: 90px;
+      }
+      .exchanges-table th:nth-child(10),
+      .exchanges-table td:nth-child(10) {
+        width: 80px;
+        text-align: center;
+      }
+      
       /* Table scroll wrapper for mobile */
       .table-wrap {
         overflow-x: auto;
@@ -2599,36 +2738,58 @@
         }
       }
       @media (max-width: 768px) {
-        .admin-header .nav-container {
-          flex-direction: column;
-          gap: 16px;
-          padding: 12px 4%;
-        }
-        .admin-header nav {
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        .admin-header nav a {
-          padding: 6px 12px;
-          font-size: 0.85rem;
-        }
-        .nav-dropdown-menu {
-          position: fixed;
-          top: auto;
-          bottom: 0;
+        /* Convert side nav to bottom navigation bar on mobile */
+        .admin-side-nav {
           left: 0;
           right: 0;
+          top: auto;
+          bottom: 0;
+          transform: none;
+          flex-direction: row;
+          justify-content: flex-start;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding: 8px 12px;
           border-radius: 16px 16px 0 0;
-          max-height: 60vh;
-          overflow-y: auto;
+          max-height: none;
+          max-width: 100%;
+          gap: 2px;
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+          -webkit-overflow-scrolling: touch;
         }
-        .nav-dropdown-toggle {
-          padding: 6px 12px;
-          font-size: 0.85rem;
+        .admin-side-nav::-webkit-scrollbar {
+          height: 0;
+          display: none;
+        }
+        .admin-side-nav a {
+          width: 40px;
+          height: 40px;
+          flex-shrink: 0;
+        }
+        .admin-side-nav a i {
+          font-size: 1.1rem;
+        }
+        .admin-side-nav a::before {
+          left: 50%;
+          bottom: 48px;
+          top: auto;
+          transform: translateX(-50%) translateY(8px);
+        }
+        .admin-side-nav a:hover::before {
+          transform: translateX(-50%) translateY(0);
+        }
+        .admin-side-nav .nav-group-label {
+          display: none;
+        }
+        .admin-side-nav .nav-divider {
+          width: 1px;
+          height: 24px;
+          margin: 8px 4px;
         }
         .admin-page {
           padding: 0 4%;
           margin-top: 20px;
+          margin-bottom: 80px; /* Space for bottom nav */
         }
         .admin-panel {
           padding: 16px;
@@ -2733,6 +2894,24 @@
         }
       }
       @media (max-width: 480px) {
+        /* Bottom nav adjustments for very small screens */
+        .admin-side-nav {
+          padding: 6px 8px;
+          gap: 1px;
+        }
+        .admin-side-nav a {
+          width: 36px;
+          height: 36px;
+        }
+        .admin-side-nav a i {
+          font-size: 1rem;
+        }
+        .admin-side-nav .nav-divider {
+          margin: 6px 2px;
+        }
+        .admin-page {
+          margin-bottom: 70px;
+        }
         .stats-grid {
           grid-template-columns: 1fr;
         }
@@ -3933,40 +4112,51 @@
             <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN" />
           </a>
         </div>
-        <nav>
+        <div class="header-actions">
           <div id="apiStatusIndicator" class="api-status offline" title="Backend connection status">
             <span class="status-dot"></span>
             <span class="status-text">Offline</span>
           </div>
-          <a href="#dashboard"><i class="ri-dashboard-line"></i> Dashboard</a>
-          <a href="#products"><i class="ri-shopping-bag-line"></i> Products</a>
-          <a href="#orders"><i class="ri-file-list-3-line"></i> Orders</a>
-          <a href="#returns"><i class="ri-arrow-go-back-line"></i> Returns</a>
-          <a href="#users"><i class="ri-user-line"></i> Users</a>
-          <div class="notification-badge" id="messagesNotificationBadge">
-            <a href="#messages"><i class="ri-mail-line"></i> Messages</a>
-          </div>
-          <!-- Management Dropdown -->
-          <div class="nav-dropdown">
-            <button class="nav-dropdown-toggle">
-              <i class="ri-settings-3-line"></i> Manage <i class="ri-arrow-down-s-line"></i>
-            </button>
-            <div class="nav-dropdown-menu">
-              <a href="#sku-management"><i class="ri-barcode-line"></i> SKU & Barcode</a>
-              <a href="#inventory-management"><i class="ri-stock-line"></i> Inventory</a>
-              <a href="#marketing-management"><i class="ri-megaphone-line"></i> Marketing</a>
-              <a href="#shipping-management"><i class="ri-truck-line"></i> Shipping</a>
-              <a href="#tax-management"><i class="ri-percent-line"></i> Tax & GST</a>
-              <div class="nav-divider"></div>
-              <a href="#company-tax"><i class="ri-building-line"></i> Company Tax</a>
-              <a href="#gift-cards"><i class="ri-gift-line"></i> Gift Cards</a>
-            </div>
-          </div>
-          <a href="#health"><i class="ri-heart-pulse-line"></i> Health</a>
           <a href="#" class="logout-btn" id="adminLogoutBtn"><i class="ri-logout-box-r-line"></i> Logout</a>
-        </nav>
+        </div>
       </div>
     </header>
+
+    <!-- Floating Side Navigation for Quick Section Jump -->
+    <nav class="admin-side-nav" id="adminSideNav">
+      <div class="admin-side-nav-inner">
+        <span class="nav-group-label">Main</span>
+        <a href="#dashboard" data-tooltip="Dashboard" data-section="dashboard"><i class="ri-dashboard-line"></i></a>
+        <a href="#products" data-tooltip="Products" data-section="products"><i class="ri-shopping-bag-line"></i></a>
+        <a href="#orders" data-tooltip="Orders" data-section="orders"><i class="ri-file-list-3-line"></i></a>
+        
+        <div class="nav-divider"></div>
+        <span class="nav-group-label">RMA</span>
+        <a href="#returns" data-tooltip="Returns" data-section="returns"><i class="ri-arrow-go-back-line"></i></a>
+        <a href="#exchanges" data-tooltip="Exchanges" data-section="exchanges"><i class="ri-exchange-line"></i></a>
+        <a href="#cancellations" data-tooltip="Cancellations" data-section="cancellations"><i class="ri-close-circle-line"></i></a>
+        
+        <div class="nav-divider"></div>
+        <span class="nav-group-label">CRM</span>
+        <a href="#users" data-tooltip="Users" data-section="users"><i class="ri-user-line"></i></a>
+        <a href="#messages" data-tooltip="Messages" data-section="messages" id="sideNavMessages"><i class="ri-mail-line"></i></a>
+        
+        <div class="nav-divider"></div>
+        <span class="nav-group-label">Manage</span>
+        <a href="#sku-management" data-tooltip="SKU & Barcode" data-section="sku-management"><i class="ri-barcode-line"></i></a>
+        <a href="#inventory-management" data-tooltip="Inventory" data-section="inventory-management"><i class="ri-stock-line"></i></a>
+        <a href="#marketing-management" data-tooltip="Marketing" data-section="marketing-management"><i class="ri-megaphone-line"></i></a>
+        <a href="#shipping-management" data-tooltip="Shipping" data-section="shipping-management"><i class="ri-truck-line"></i></a>
+        <a href="#tax-management" data-tooltip="Tax & GST" data-section="tax-management"><i class="ri-percent-line"></i></a>
+        <a href="#company-tax" data-tooltip="Company Tax" data-section="company-tax"><i class="ri-building-line"></i></a>
+        <a href="#gift-cards" data-tooltip="Gift Cards" data-section="gift-cards"><i class="ri-gift-line"></i></a>
+        
+        <div class="nav-divider"></div>
+        <a href="#health" data-tooltip="System Health" data-section="health"><i class="ri-heart-pulse-line"></i></a>
+        <div class="nav-divider"></div>
+        <a href="#" class="scroll-top-btn" data-tooltip="Back to Top" id="scrollToTopBtn"><i class="ri-arrow-up-line"></i></a>
+      </div>
+    </nav>
 
     <!-- API Client for Full-Stack Mode -->
     <script src="assets/js/api.js"></script>
@@ -3974,26 +4164,57 @@
     <script src="assets/js/security.js"></script>
     <script>
       // Ensure a generic notification helper is available for admin UI
-      // Prefer the existing showToast from api.js when available
+      // Use the global showToast from api.js for consistent Dynamic Island style
       if (!window.showNotification) {
         window.showNotification = function(message, type = 'info', timeout = 4000) {
-          try {
-            if (typeof showToast === 'function') {
-              showToast(message, type, timeout);
-              return;
-            }
-          } catch (e) {
-            // fallthrough to simple fallback
+          // Use global showToast for consistent Dynamic Island style notifications
+          if (window.showToast) {
+            window.showToast(message, type, timeout);
+            return;
           }
 
-          // Simple fallback notification (non-blocking)
+          // Dynamic Island style fallback notification
           try {
+            // Remove existing notifications
+            document.querySelectorAll('.admin-notification').forEach(n => n.remove());
+            
             const n = document.createElement('div');
-            n.className = 'admin-notification';
-            n.textContent = message;
-            n.style.cssText = 'position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:10px 14px;border-radius:8px;z-index:100000;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,0.25);';
+            n.className = 'admin-notification ' + type;
+            
+            const icons = {
+              success: '<i class="ri-check-line"></i>',
+              error: '<i class="ri-close-line"></i>',
+              warning: '<i class="ri-alert-line"></i>',
+              info: '<i class="ri-information-line"></i>'
+            };
+            
+            const bgColors = {
+              success: 'linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95))',
+              error: 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))',
+              warning: 'linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95))',
+              info: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))'
+            };
+            
+            n.innerHTML = `
+              <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,0.2);">${icons[type] || icons.info}</span>
+              <span style="flex:1;">${message}</span>
+              <span onclick="this.parentElement.remove()" style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:rgba(255,255,255,0.15);cursor:pointer;opacity:0.6;"><i class="ri-close-line"></i></span>
+            `;
+            n.style.cssText = `position:fixed;top:16px;left:50%;transform:translateX(-50%);background:${bgColors[type] || bgColors.info};color:${type === 'warning' ? '#111' : '#fff'};padding:12px 20px;border-radius:50px;z-index:100000;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.25),0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;gap:10px;font-weight:500;font-size:0.9rem;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);animation:adminIslandIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards;cursor:pointer;`;
             document.body.appendChild(n);
-            setTimeout(() => n.remove(), timeout);
+            
+            // Add animation keyframes if not exists
+            if (!document.getElementById('admin-island-styles')) {
+              const style = document.createElement('style');
+              style.id = 'admin-island-styles';
+              style.textContent = `@keyframes adminIslandIn{0%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(0.8);}50%{opacity:1;}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}}@keyframes adminIslandOut{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}100%{opacity:0;transform:translateX(-50%) translateY(-10px) scale(0.9);}}`;
+              document.head.appendChild(style);
+            }
+            
+            setTimeout(() => {
+              n.style.animation = 'adminIslandOut 0.3s ease forwards';
+              setTimeout(() => n.remove(), 300);
+            }, timeout);
           } catch (e) {
             // Last resort
             try { console[type === 'error' ? 'error' : 'log'](message); } catch (_) {}
@@ -4973,6 +5194,175 @@
               </tr>
             </thead>
             <tbody id="returnsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Exchanges Section -->
+      <section id="exchanges" class="admin-panel">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2><i class="ri-exchange-line"></i> Exchange Requests</h2>
+            <small>Manage customer exchange requests and process replacements</small>
+          </div>
+          <div class="section-header-actions">
+            <div class="search-container">
+              <input type="text" id="exchangeSearch" placeholder="Search exchanges by ID, order ID, or customer..." />
+              <button id="clearExchangeSearch" title="Clear search">×</button>
+            </div>
+            <span class="refresh-indicator" id="exchangesRefreshIndicator">
+              <i class="ri-refresh-line"></i>
+              <span id="exchangesLastUpdate">--</span>
+            </span>
+            <label class="auto-refresh-toggle">
+              <input type="checkbox" id="exchangesAutoRefresh" checked />
+              Auto-refresh
+            </label>
+            <button class="btn-export" id="exportExchangesBtn" title="Export exchanges to CSV">
+              <i class="ri-download-2-line"></i> Export
+            </button>
+            <button class="btn-export" id="refreshExchangesBtn" title="Refresh now">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+            <button class="primary" id="saveExchangeChangesBtn" title="Save all pending changes">
+              <i class="ri-save-line"></i> Save Changes <span id="exchangePendingCount" class="pending-count"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <div class="filter-group">
+            <label for="exchangeStatusFilter">Status:</label>
+            <select id="exchangeStatusFilter">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Pickup Scheduled">Pickup Scheduled</option>
+              <option value="Picked Up">Picked Up</option>
+              <option value="Processing">Processing</option>
+              <option value="Shipped">New Item Shipped</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="exchangeReasonFilter">Reason:</label>
+            <select id="exchangeReasonFilter">
+              <option value="">All Reasons</option>
+              <option value="size_issue">Size/Fit Issue</option>
+              <option value="color_issue">Color Issue</option>
+              <option value="defective">Defective Product</option>
+              <option value="wrong_item">Wrong Item Received</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="bulk-actions">
+            <button id="selectAllExchangesBtn" class="btn-secondary">Select All</button>
+            <button id="bulkExchangeStatusBtn" class="btn-secondary" disabled>Bulk Update Status</button>
+            <button id="bulkExchangeDeleteBtn" class="btn-danger" disabled>Delete Selected</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="returns-table exchanges-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllExchanges" aria-label="Select all exchanges" /></th>
+                <th>Exchange ID</th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Exchange For</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="exchangesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Cancellations Section -->
+      <section id="cancellations" class="admin-panel">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2><i class="ri-close-circle-line"></i> Cancellation Requests</h2>
+            <small>Manage customer order cancellations and process refunds</small>
+          </div>
+          <div class="section-header-actions">
+            <div class="search-container">
+              <input type="text" id="cancellationSearch" placeholder="Search cancellations by ID, order ID, or customer..." />
+              <button id="clearCancellationSearch" title="Clear search">×</button>
+            </div>
+            <span class="refresh-indicator" id="cancellationsRefreshIndicator">
+              <i class="ri-refresh-line"></i>
+              <span id="cancellationsLastUpdate">--</span>
+            </span>
+            <label class="auto-refresh-toggle">
+              <input type="checkbox" id="cancellationsAutoRefresh" checked />
+              Auto-refresh
+            </label>
+            <button class="btn-export" id="exportCancellationsBtn" title="Export cancellations to CSV">
+              <i class="ri-download-2-line"></i> Export
+            </button>
+            <button class="btn-export" id="refreshCancellationsBtn" title="Refresh now">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+            <button class="primary" id="saveCancellationChangesBtn" title="Save all pending changes">
+              <i class="ri-save-line"></i> Save Changes <span id="cancellationPendingCount" class="pending-count"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <div class="filter-group">
+            <label for="cancellationStatusFilter">Status:</label>
+            <select id="cancellationStatusFilter">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Refunded">Refunded</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="cancellationReasonFilter">Reason:</label>
+            <select id="cancellationReasonFilter">
+              <option value="">All Reasons</option>
+              <option value="changed_mind">Changed Mind</option>
+              <option value="found_better_price">Found Better Price</option>
+              <option value="ordered_by_mistake">Ordered by Mistake</option>
+              <option value="delivery_too_slow">Delivery Taking Too Long</option>
+              <option value="duplicate_order">Duplicate Order</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="bulk-actions">
+            <button id="selectAllCancellationsBtn" class="btn-secondary">Select All</button>
+            <button id="bulkCancellationStatusBtn" class="btn-secondary" disabled>Bulk Update Status</button>
+            <button id="bulkCancellationDeleteBtn" class="btn-danger" disabled>Delete Selected</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="returns-table cancellations-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllCancellationsCheckbox" aria-label="Select all cancellations" /></th>
+                <th>Cancel ID</th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Order Total</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Requested</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cancellationsBody"></tbody>
           </table>
         </div>
       </section>
@@ -6602,6 +6992,8 @@
       const productBody = document.getElementById('productBody');
       const usersBody = document.getElementById('usersBody');
       const returnsBody = document.getElementById('returnsBody');
+      const exchangesBody = document.getElementById('exchangesBody');
+      const cancellationsBody = document.getElementById('cancellationsBody');
       const userCountLabel = document.getElementById('userCount');
       const statsUpdatedEl = document.getElementById('statsUpdated');
 
@@ -6609,6 +7001,8 @@
       let orders = [];
       let users = [];
       let returns = [];
+      let exchanges = [];
+      let cancellations = [];
       let editingProductId = null;
 
       // Fetch stats from API only
@@ -7177,9 +7571,9 @@
                   <div class="last-activity">${timeStr}</div>
                 </td>
                 <td data-label="Customer">
-                  <strong>${order.customer?.name || '-'}</strong>
-                  <div style="font-size:0.75rem;color:#6b7280;">${order.customer?.email || ''}</div>
-                  <div style="font-size:0.75rem;color:#9ca3af;">${order.customer?.phone || ''}</div>
+                  <strong>${order.shippingInfo?.name || order.userName || order.customer?.name || '-'}</strong>
+                  <div style="font-size:0.75rem;color:#6b7280;">${order.shippingInfo?.email || order.userEmail || order.customer?.email || ''}</div>
+                  <div style="font-size:0.75rem;color:#9ca3af;">${order.shippingInfo?.phone || order.customer?.phone || ''}</div>
                 </td>
                 <td data-label="Amount"><strong>₹${(order.total || order.amount || 0).toLocaleString()}</strong></td>
                 <td data-label="Date">${dateStr}</td>
@@ -7189,6 +7583,8 @@
                     <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>🔄 Processing</option>
                     <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>📦 Shipped</option>
                     <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
+                    <option value="Return Requested" ${order.status === 'Return Requested' ? 'selected' : ''}>↩️ Return Requested</option>
+                    <option value="Exchange Requested" ${order.status === 'Exchange Requested' ? 'selected' : ''}>🔄 Exchange Requested</option>
                     <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
                   </select>
                 </td>
@@ -7196,7 +7592,11 @@
                   <div class="order-items-detail">${itemsHtml}</div>
                 </td>
                 <td data-label="Address">
-                  <div class="order-address" title="${addressStr}">${addressStr.length > 40 ? addressStr.slice(0, 40) + '...' : addressStr}</div>
+                  <div class="order-address" title="${order.shippingInfo?.address || ''}, ${order.shippingInfo?.city || ''}, ${order.shippingInfo?.state || ''} ${order.shippingInfo?.postalCode || ''}">${(() => {
+                    const addr = order.shippingInfo || order.address || {};
+                    const fullAddr = [addr.address || addr.street, addr.city, addr.state, addr.postalCode || addr.postal].filter(Boolean).join(', ');
+                    return fullAddr.length > 40 ? fullAddr.slice(0, 40) + '...' : (fullAddr || '-');
+                  })()}</div>
                 </td>
                 <td data-label="Actions" class="actions">
                   <button type="button" data-action="view-order" data-id="${order.id}" aria-label="View" title="View order details">
@@ -7240,24 +7640,34 @@
             const orderId = btn.dataset.id;
             const order = orders.find(o => o.id === orderId);
             if (order) {
+              // Get customer info from shippingInfo, order fields, or customer object
+              const customerName = order.shippingInfo?.name || order.userName || order.customer?.name || '-';
+              const customerEmail = order.shippingInfo?.email || order.userEmail || order.customer?.email || '-';
+              const customerPhone = order.shippingInfo?.phone || order.userPhone || order.customer?.phone || '-';
+              const addressStreet = order.shippingInfo?.address || order.address?.street || '-';
+              const addressCity = order.shippingInfo?.city || order.address?.city || '';
+              const addressState = order.shippingInfo?.state || order.address?.state || '';
+              const addressPostal = order.shippingInfo?.pincode || order.shippingInfo?.postal || order.address?.postal || '';
+              const orderTotal = order.total || order.amount || 0;
+              
               const details = `
 Order ID: ${order.id}
 Status: ${order.status}
 Date: ${order.createdAt ? new Date(order.createdAt).toLocaleString() : '-'}
 
 Customer:
-  Name: ${order.customer?.name || '-'}
-  Email: ${order.customer?.email || '-'}
-  Phone: ${order.customer?.phone || '-'}
+  Name: ${customerName}
+  Email: ${customerEmail}
+  Phone: ${customerPhone}
 
 Items:
-${order.items?.map(i => `  - ${i.name} (${i.size}/${i.color}) x${i.quantity} = ₹${(i.price * i.quantity).toLocaleString()}`).join('\n') || '  No items'}
+${order.items?.map(i => `  - ${i.name} (${i.size || '-'}/${i.color || '-'}) x${i.quantity || 1} = ₹${((i.price || 0) * (i.quantity || 1)).toLocaleString()}`).join('\n') || '  No items'}
 
-Address:
-  ${order.address?.street || '-'}
-  ${order.address?.city || ''} ${order.address?.state || ''} ${order.address?.postal || ''}
+Shipping Address:
+  ${addressStreet}
+  ${addressCity} ${addressState} ${addressPostal}
 
-Amount: ₹${(order.amount || 0).toLocaleString()}
+Amount: ₹${orderTotal.toLocaleString()}
 Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Paid)' : '(Pending)'}
               `;
               // Show details in modal instead of blocking alert
@@ -7306,8 +7716,12 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
               `<div class="item">${i.name || 'Product'} <small>(${i.size || '-'}/${i.color || '-'}) x${i.quantity || 1}</small></div>`
             ).join('') || '<div class="item">-</div>';
 
-            const cust = ret.customer || {};
-            const customerHtml = `<strong>${cust.name || '-'}</strong><div style="font-size:0.75rem;color:#6b7280;">${cust.email || ''}</div><div style="font-size:0.75rem;color:#9ca3af;">${cust.phone || ''}</div>`;
+            // Get customer details from order or return data
+            const order = orders.find(o => o.id === ret.orderId) || {};
+            const customerName = order.shippingInfo?.name || order.userName || ret.customer?.name || '-';
+            const customerEmail = order.shippingInfo?.email || order.userEmail || ret.customer?.email || '';
+            const customerPhone = order.shippingInfo?.phone || ret.customer?.phone || '';
+            const customerHtml = `<strong>${customerName}</strong><div style="font-size:0.75rem;color:#6b7280;">${customerEmail}</div><div style="font-size:0.75rem;color:#9ca3af;">${customerPhone}</div>`;
 
             const reason = ret.reason || ret.reasonText || '-';
             const status = ret.status || 'Pending';
@@ -8292,12 +8706,399 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
       }
 
       // =====================
+      // EXCHANGES FUNCTIONS
+      // =====================
+
+      async function fetchExchanges() {
+        updateRefreshIndicator('exchanges', true);
+        try {
+          const data = await apiRequest('/exchanges');
+          exchanges = data.exchanges || [];
+        } catch (e) {
+          console.error('Failed to fetch exchanges:', e);
+          showNotification('Failed to load exchanges from server', 'error');
+          exchanges = [];
+        }
+        renderExchanges();
+        updateRefreshIndicator('exchanges', false);
+      }
+
+      function renderExchanges() {
+        renderExchangesTable(exchanges);
+      }
+
+      function renderExchangesTable(exchangesList) {
+        if (!exchangesList || !exchangesList.length) {
+          exchangesBody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#9ca3af;"><i class="ri-inbox-line" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No exchange requests yet</td></tr>';
+          return;
+        }
+
+        exchangesBody.innerHTML = exchangesList
+          .map(exc => {
+            const dateStr = exc.requestedAt ? new Date(exc.requestedAt).toLocaleDateString() : '-';
+            const timeStr = exc.requestedAt ? new Date(exc.requestedAt).toLocaleTimeString() : '';
+
+            const itemsHtml = exc.items?.map(i =>
+              `<div class="item">${i.name || 'Product'} <small>(${i.size || '-'}/${i.color || '-'}) x${i.quantity || 1}</small></div>`
+            ).join('') || '<div class="item">-</div>';
+
+            // Get customer details from order or exchange data
+            const order = orders.find(o => o.id === exc.orderId) || {};
+            const customerName = order.shippingInfo?.name || order.userName || exc.customer?.name || '-';
+            const customerEmail = order.shippingInfo?.email || order.userEmail || exc.customer?.email || '';
+            const customerPhone = order.shippingInfo?.phone || exc.customer?.phone || '';
+            const customerHtml = `<strong>${customerName}</strong><div style="font-size:0.75rem;color:#6b7280;">${customerEmail}</div><div style="font-size:0.75rem;color:#9ca3af;">${customerPhone}</div>`;
+
+            const reason = exc.reason || '-';
+            const exchangeFor = exc.exchangeFor || '-';
+            const newSize = exc.newSize || '';
+            const newColor = exc.newColor || '';
+            const status = exc.status || 'Pending';
+
+            // Build new size/color display
+            const newVariantHtml = (newSize || newColor) ? `
+              <div style="margin-top:6px;padding:4px 8px;background:#f0fdf4;border-radius:4px;font-size:0.75rem;">
+                <strong style="color:#15803d;">New:</strong>
+                ${newSize ? `<span style="color:#15803d;"> Size: ${newSize}</span>` : ''}
+                ${newColor ? `<span style="color:#15803d;"> Color: ${newColor}</span>` : ''}
+              </div>
+            ` : '';
+
+            return `
+              <tr>
+                <td><input type="checkbox" class="exchange-checkbox" data-id="${exc.id}" aria-label="Select exchange ${exc.id}" /></td>
+                <td data-label="Exchange ID">
+                  <strong>${exc.id}</strong>
+                  <div class="last-activity">${timeStr}</div>
+                </td>
+                <td data-label="Order ID"><strong>${exc.orderId || '-'}</strong></td>
+                <td data-label="Customer">${customerHtml}</td>
+                <td data-label="Items">
+                  <div class="order-items-detail">${itemsHtml}</div>
+                  ${newVariantHtml}
+                </td>
+                <td data-label="Exchange For">${exchangeFor.replace(/_/g, ' ')}</td>
+                <td data-label="Reason">${reason.replace(/_/g, ' ')}</td>
+                <td data-label="Status">
+                  <select class="exchange-status" data-id="${exc.id}" aria-label="Exchange ${exc.id} status">
+                    <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                    <option value="Approved" ${status === 'Approved' ? 'selected' : ''}>✅ Approved</option>
+                    <option value="Rejected" ${status === 'Rejected' ? 'selected' : ''}>❌ Rejected</option>
+                    <option value="Pickup Scheduled" ${status === 'Pickup Scheduled' ? 'selected' : ''}>📅 Pickup Scheduled</option>
+                    <option value="Picked Up" ${status === 'Picked Up' ? 'selected' : ''}>📦 Picked Up</option>
+                    <option value="Processing" ${status === 'Processing' ? 'selected' : ''}>🔄 Processing</option>
+                    <option value="Shipped" ${status === 'Shipped' ? 'selected' : ''}>🚚 New Item Shipped</option>
+                    <option value="Completed" ${status === 'Completed' ? 'selected' : ''}>🏁 Completed</option>
+                  </select>
+                </td>
+                <td data-label="Requested">${dateStr}</td>
+                <td data-label="Actions" class="actions">
+                  <button type="button" data-action="view-exchange" data-id="${exc.id}" aria-label="View" title="View exchange details">
+                    <i class="ri-eye-line"></i>
+                  </button>
+                  <button type="button" data-action="delete-exchange" data-id="${exc.id}" aria-label="Delete" title="Delete exchange">
+                    <i class="ri-delete-bin-6-line"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+
+        // Attach status change handlers
+        document.querySelectorAll('.exchange-status').forEach(select => {
+          select.dataset.originalStatus = select.value;
+          
+          select.addEventListener('change', (e) => {
+            const exchangeId = e.target.dataset.id;
+            const newStatus = e.target.value;
+            const originalStatus = e.target.dataset.originalStatus;
+            
+            if (newStatus !== originalStatus) {
+              pendingExchangeChanges.set(exchangeId, { status: newStatus, adminNotes: '' });
+              e.target.classList.add('status-changed');
+            } else {
+              pendingExchangeChanges.delete(exchangeId);
+              e.target.classList.remove('status-changed');
+            }
+            updatePendingExchangeUI();
+          });
+        });
+
+        // Attach view/delete handlers
+        document.querySelectorAll('[data-action="view-exchange"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const exchangeId = btn.dataset.id;
+            const exc = exchanges.find(x => x.id === exchangeId);
+            if (exc) {
+              const order = orders.find(o => o.id === exc.orderId) || {};
+              const customerName = order.shippingInfo?.name || order.userName || exc.customer?.name || '-';
+              const customerEmail = order.shippingInfo?.email || order.userEmail || exc.customer?.email || '-';
+              const customerPhone = order.shippingInfo?.phone || exc.customer?.phone || '-';
+              const newVariant = (exc.newSize || exc.newColor) ? `\n\nRequested New Variant:\n  Size: ${exc.newSize || 'Same'}\n  Color: ${exc.newColor || 'Same'}` : '';
+              const details = `Exchange ID: ${exc.id}\nOrder ID: ${exc.orderId || '-'}\nStatus: ${exc.status || '-'}\nRequested: ${exc.requestedAt ? new Date(exc.requestedAt).toLocaleString() : '-'}\n\nCustomer:\n  Name: ${customerName}\n  Email: ${customerEmail}\n  Phone: ${customerPhone}\n\nItems:\n${exc.items?.map(i => `  - ${i.name} (${i.size || '-'}/${i.color || '-'}) x${i.quantity || 1}`).join('\n') || '  No items'}\n\nExchange For: ${exc.exchangeFor || '-'}${newVariant}\nReason: ${exc.reason || '-'}\n\nComments:\n  ${exc.description || '-'}`;
+              showModal('Exchange Details', '<pre style="white-space:pre-wrap;">' + details.replace(/</g, '&lt;') + '</pre>');
+            }
+          });
+        });
+
+        document.querySelectorAll('[data-action="delete-exchange"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const exchangeId = btn.dataset.id;
+            const confirmed = await showConfirmModal({
+              title: 'Delete Exchange Request',
+              message: `Are you sure you want to delete exchange ${exchangeId}? This action cannot be undone.`,
+              confirmText: 'Yes, Delete',
+              cancelText: 'Cancel',
+              type: 'danger'
+            });
+            if (!confirmed) return;
+            
+            try {
+              await apiRequest(`/exchanges/${exchangeId}`, { method: 'DELETE' });
+              await fetchExchanges();
+            } catch (e) {
+              console.error('Failed to delete exchange:', e);
+              showNotification('Failed to delete exchange', 'error');
+            }
+          });
+        });
+      }
+
+      function updatePendingExchangeUI() {
+        const btn = document.getElementById('saveExchangeChangesBtn');
+        const countEl = document.getElementById('exchangePendingCount');
+        if (pendingExchangeChanges.size > 0) {
+          if (btn) btn.classList.add('visible');
+          if (countEl) countEl.textContent = `(${pendingExchangeChanges.size})`;
+        } else {
+          if (btn) btn.classList.remove('visible');
+          if (countEl) countEl.textContent = '';
+        }
+      }
+
+      async function saveExchangeChanges() {
+        if (pendingExchangeChanges.size === 0) return;
+        
+        const total = pendingExchangeChanges.size;
+        let success = 0;
+        let failed = 0;
+        
+        for (const [exchangeId, changes] of pendingExchangeChanges.entries()) {
+          try {
+            await apiRequest(`/exchanges/${exchangeId}/status`, {
+              method: 'PATCH',
+              body: JSON.stringify({ status: changes.status, adminNotes: changes.adminNotes })
+            });
+            success++;
+          } catch (e) {
+            console.error(`Failed to update exchange ${exchangeId}:`, e);
+            failed++;
+          }
+        }
+        
+        pendingExchangeChanges.clear();
+        updatePendingExchangeUI();
+        
+        if (failed === 0) {
+          showNotification(`Successfully updated ${success} exchange(s)`, 'success');
+        } else {
+          showNotification(`Updated ${success}, failed ${failed}`, 'warning');
+        }
+        
+        await fetchExchanges();
+      }
+
+      // =====================
+      // CANCELLATIONS FUNCTIONS
+      // =====================
+
+      async function fetchCancellations() {
+        updateRefreshIndicator('cancellations', true);
+        try {
+          const data = await apiRequest('/cancellations');
+          cancellations = data.cancellations || [];
+        } catch (e) {
+          console.error('Failed to fetch cancellations:', e);
+          showNotification('Failed to load cancellations from server', 'error');
+          cancellations = [];
+        }
+        renderCancellations();
+        updateRefreshIndicator('cancellations', false);
+      }
+
+      function renderCancellations() {
+        renderCancellationsTable(cancellations);
+      }
+
+      function renderCancellationsTable(cancellationsList) {
+        if (!cancellationsList || !cancellationsList.length) {
+          cancellationsBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#9ca3af;"><i class="ri-inbox-line" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No cancellation requests yet</td></tr>';
+          return;
+        }
+
+        cancellationsBody.innerHTML = cancellationsList
+          .map(canc => {
+            const dateStr = canc.requestedAt ? new Date(canc.requestedAt).toLocaleDateString() : '-';
+            const timeStr = canc.requestedAt ? new Date(canc.requestedAt).toLocaleTimeString() : '';
+
+            // Get customer details from order or cancellation data
+            const order = orders.find(o => o.id === canc.orderId) || {};
+            const customerName = order.shippingInfo?.name || order.userName || canc.customer?.name || '-';
+            const customerEmail = order.shippingInfo?.email || order.userEmail || canc.customer?.email || '';
+            const customerPhone = order.shippingInfo?.phone || canc.customer?.phone || '';
+            const customerHtml = `<strong>${customerName}</strong><div style="font-size:0.75rem;color:#6b7280;">${customerEmail}</div><div style="font-size:0.75rem;color:#9ca3af;">${customerPhone}</div>`;
+
+            const reason = canc.reason || '-';
+            const status = canc.status || 'Pending';
+            const orderTotal = canc.orderTotal || order.total || 0;
+
+            return `
+              <tr>
+                <td><input type="checkbox" class="cancellation-checkbox" data-id="${canc.id}" aria-label="Select cancellation ${canc.id}" /></td>
+                <td data-label="Cancel ID">
+                  <strong>${canc.id}</strong>
+                  <div class="last-activity">${timeStr}</div>
+                </td>
+                <td data-label="Order ID"><strong>${canc.orderId || '-'}</strong></td>
+                <td data-label="Customer">${customerHtml}</td>
+                <td data-label="Order Total">₹${orderTotal.toLocaleString()}</td>
+                <td data-label="Reason">${reason.replace(/_/g, ' ')}</td>
+                <td data-label="Status">
+                  <select class="cancellation-status" data-id="${canc.id}" aria-label="Cancellation ${canc.id} status">
+                    <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                    <option value="Approved" ${status === 'Approved' ? 'selected' : ''}>✅ Approved</option>
+                    <option value="Rejected" ${status === 'Rejected' ? 'selected' : ''}>❌ Rejected</option>
+                    <option value="Refunded" ${status === 'Refunded' ? 'selected' : ''}>💰 Refunded</option>
+                    <option value="Completed" ${status === 'Completed' ? 'selected' : ''}>🏁 Completed</option>
+                  </select>
+                </td>
+                <td data-label="Requested">${dateStr}</td>
+                <td data-label="Actions" class="actions">
+                  <button type="button" data-action="view-cancellation" data-id="${canc.id}" aria-label="View" title="View cancellation details">
+                    <i class="ri-eye-line"></i>
+                  </button>
+                  <button type="button" data-action="delete-cancellation" data-id="${canc.id}" aria-label="Delete" title="Delete cancellation">
+                    <i class="ri-delete-bin-6-line"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join('');
+
+        // Attach status change handlers
+        document.querySelectorAll('.cancellation-status').forEach(select => {
+          select.dataset.originalStatus = select.value;
+          
+          select.addEventListener('change', (e) => {
+            const cancellationId = e.target.dataset.id;
+            const newStatus = e.target.value;
+            const originalStatus = e.target.dataset.originalStatus;
+            
+            if (newStatus !== originalStatus) {
+              pendingCancellationChanges.set(cancellationId, { status: newStatus, adminNotes: '' });
+              e.target.classList.add('status-changed');
+            } else {
+              pendingCancellationChanges.delete(cancellationId);
+              e.target.classList.remove('status-changed');
+            }
+            updatePendingCancellationUI();
+          });
+        });
+
+        // Attach view/delete handlers
+        document.querySelectorAll('[data-action="view-cancellation"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const cancellationId = btn.dataset.id;
+            const canc = cancellations.find(x => x.id === cancellationId);
+            if (canc) {
+              const order = orders.find(o => o.id === canc.orderId) || {};
+              const customerName = order.shippingInfo?.name || order.userName || canc.customer?.name || '-';
+              const customerEmail = order.shippingInfo?.email || order.userEmail || canc.customer?.email || '-';
+              const customerPhone = order.shippingInfo?.phone || canc.customer?.phone || '-';
+              const details = `Cancellation ID: ${canc.id}\nOrder ID: ${canc.orderId || '-'}\nStatus: ${canc.status || '-'}\nRequested: ${canc.requestedAt ? new Date(canc.requestedAt).toLocaleString() : '-'}\n\nCustomer:\n  Name: ${customerName}\n  Email: ${customerEmail}\n  Phone: ${customerPhone}\n\nOrder Total: ₹${(canc.orderTotal || 0).toLocaleString()}\nPayment Method: ${canc.paymentMethod || '-'}\n\nReason: ${canc.reason || '-'}\n\nComments:\n  ${canc.description || '-'}`;
+              showModal('Cancellation Details', '<pre style="white-space:pre-wrap;">' + details.replace(/</g, '&lt;') + '</pre>');
+            }
+          });
+        });
+
+        document.querySelectorAll('[data-action="delete-cancellation"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const cancellationId = btn.dataset.id;
+            const confirmed = await showConfirmModal({
+              title: 'Delete Cancellation Request',
+              message: `Are you sure you want to delete cancellation ${cancellationId}? This action cannot be undone.`,
+              confirmText: 'Yes, Delete',
+              cancelText: 'Cancel',
+              type: 'danger'
+            });
+            if (!confirmed) return;
+            
+            try {
+              await apiRequest(`/cancellations/${cancellationId}`, { method: 'DELETE' });
+              await fetchCancellations();
+            } catch (e) {
+              console.error('Failed to delete cancellation:', e);
+              showNotification('Failed to delete cancellation', 'error');
+            }
+          });
+        });
+      }
+
+      function updatePendingCancellationUI() {
+        const btn = document.getElementById('saveCancellationChangesBtn');
+        const countEl = document.getElementById('cancellationPendingCount');
+        if (pendingCancellationChanges.size > 0) {
+          if (btn) btn.classList.add('visible');
+          if (countEl) countEl.textContent = `(${pendingCancellationChanges.size})`;
+        } else {
+          if (btn) btn.classList.remove('visible');
+          if (countEl) countEl.textContent = '';
+        }
+      }
+
+      async function saveCancellationChanges() {
+        if (pendingCancellationChanges.size === 0) return;
+        
+        const total = pendingCancellationChanges.size;
+        let success = 0;
+        let failed = 0;
+        
+        for (const [cancellationId, changes] of pendingCancellationChanges.entries()) {
+          try {
+            await apiRequest(`/cancellations/${cancellationId}/status`, {
+              method: 'PATCH',
+              body: JSON.stringify({ status: changes.status, adminNotes: changes.adminNotes })
+            });
+            success++;
+          } catch (e) {
+            console.error(`Failed to update cancellation ${cancellationId}:`, e);
+            failed++;
+          }
+        }
+        
+        pendingCancellationChanges.clear();
+        updatePendingCancellationUI();
+        
+        if (failed === 0) {
+          showNotification(`Successfully updated ${success} cancellation(s)`, 'success');
+        } else {
+          showNotification(`Updated ${success}, failed ${failed}`, 'warning');
+        }
+        
+        await fetchCancellations();
+      }
+
+      // =====================
       // API HELPER FUNCTIONS
       // =====================
 
       // Pending changes tracking
       const pendingOrderChanges = new Map(); // orderId -> newStatus
       const pendingReturnChanges = new Map(); // returnId -> { status, adminNotes }
+      const pendingExchangeChanges = new Map(); // exchangeId -> { status, adminNotes }
+      const pendingCancellationChanges = new Map(); // cancellationId -> { status, adminNotes }
 
       function updatePendingOrderUI() {
         const btn = document.getElementById('saveOrderChangesBtn');
@@ -8435,9 +9236,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         await renderStatsAsync();
       }
 
-      // Attach save button handlers
-      document.getElementById('saveOrderChangesBtn')?.addEventListener('click', saveAllOrderChanges);
-      document.getElementById('saveReturnChangesBtn')?.addEventListener('click', saveAllReturnChanges);
+      // Note: Save and refresh button handlers are now attached in DOMContentLoaded below
 
       // Fetch messages from API
       async function fetchMessagesFromAPI() {
@@ -8552,6 +9351,8 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         fetchOrders();
         fetchUsers();
         fetchReturns();
+        fetchExchanges();
+        fetchCancellations();
         attachProductHandlers();
         handleDownload();
         setupAutoRefresh();
@@ -8580,25 +9381,6 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           <button type="button" class="primary" id="modalConfirmBtn">Confirm</button>
         </div>
       </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <button class="quick-action-btn" onclick="scrollToTop()" title="Scroll to Top">
-        <i class="ri-arrow-up-line"></i>
-      </button>
-      <button class="quick-action-btn" onclick="showSection('dashboard')" title="Dashboard">
-        <i class="ri-dashboard-line"></i>
-      </button>
-      <button class="quick-action-btn" onclick="showSection('products')" title="Products">
-        <i class="ri-shopping-bag-line"></i>
-      </button>
-      <button class="quick-action-btn" onclick="showSection('orders')" title="Orders">
-        <i class="ri-file-list-line"></i>
-      </button>
-      <button class="quick-action-btn" onclick="showSection('returns')" title="Returns">
-        <i class="ri-arrow-go-back-line"></i>
-      </button>
     </div>
 
     <script>
@@ -8861,12 +9643,16 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
       // Export functionality
       function initializeExport() {
         const exportBtn = document.getElementById('exportOrdersBtn');
-        exportBtn.addEventListener('click', exportOrdersToCSV);
+        if (exportBtn) exportBtn.addEventListener('click', exportOrdersToCSV);
         
         const exportReturnsBtn = document.getElementById('exportReturnsBtn');
-        if (exportReturnsBtn) {
-          exportReturnsBtn.addEventListener('click', exportReturnsToCSV);
-        }
+        if (exportReturnsBtn) exportReturnsBtn.addEventListener('click', exportReturnsToCSV);
+        
+        const exportExchangesBtn = document.getElementById('exportExchangesBtn');
+        if (exportExchangesBtn) exportExchangesBtn.addEventListener('click', exportExchangesToCSV);
+        
+        const exportCancellationsBtn = document.getElementById('exportCancellationsBtn');
+        if (exportCancellationsBtn) exportCancellationsBtn.addEventListener('click', exportCancellationsToCSV);
       }
 
       async function exportOrdersToCSV() {
@@ -8968,6 +9754,100 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         document.body.removeChild(link);
       }
 
+      async function exportExchangesToCSV() {
+        let exchangesToExport = exchanges;
+        
+        if (!exchangesToExport.length) {
+          try {
+            const data = await apiRequest('/exchanges');
+            exchangesToExport = data.exchanges || [];
+          } catch (e) {
+            console.error('Failed to fetch exchanges for export:', e);
+            showNotification('Failed to fetch exchanges', 'error');
+            return;
+          }
+        }
+        
+        if (!exchangesToExport.length) {
+          showToast('No exchanges to export', 'info');
+          return;
+        }
+
+        const csvContent = [
+          ['Exchange ID', 'Order ID', 'Customer Name', 'Email', 'Phone', 'Items', 'Exchange For', 'Reason', 'Status', 'Requested Date'].join(','),
+          ...exchangesToExport.map(exc => [
+            exc.id || '',
+            exc.orderId || '',
+            exc.customer?.name || '',
+            exc.customer?.email || '',
+            exc.customer?.phone || '',
+            `"${exc.items?.map(i => `${i.name || 'Product'} (${i.size || '-'}/${i.color || '-'}) x${i.quantity || 1}`).join('; ') || ''}"`,
+            exc.exchangeFor || '',
+            exc.reason || '',
+            exc.status || 'Pending',
+            exc.requestedAt ? new Date(exc.requestedAt).toLocaleDateString() : ''
+          ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `exchanges_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showNotification('Exchanges exported successfully', 'success');
+      }
+
+      async function exportCancellationsToCSV() {
+        let cancellationsToExport = cancellations;
+        
+        if (!cancellationsToExport.length) {
+          try {
+            const data = await apiRequest('/cancellations');
+            cancellationsToExport = data.cancellations || [];
+          } catch (e) {
+            console.error('Failed to fetch cancellations for export:', e);
+            showNotification('Failed to fetch cancellations', 'error');
+            return;
+          }
+        }
+        
+        if (!cancellationsToExport.length) {
+          showToast('No cancellations to export', 'info');
+          return;
+        }
+
+        const csvContent = [
+          ['Cancellation ID', 'Order ID', 'Customer Name', 'Email', 'Phone', 'Order Total', 'Payment Method', 'Reason', 'Status', 'Requested Date'].join(','),
+          ...cancellationsToExport.map(canc => [
+            canc.id || '',
+            canc.orderId || '',
+            canc.customer?.name || '',
+            canc.customer?.email || '',
+            canc.customer?.phone || '',
+            canc.orderTotal || 0,
+            canc.paymentMethod || '',
+            canc.reason || '',
+            canc.status || 'Pending',
+            canc.requestedAt ? new Date(canc.requestedAt).toLocaleDateString() : ''
+          ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `cancellations_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showNotification('Cancellations exported successfully', 'success');
+      }
+
       // Enhanced renderOrders to include checkboxes
       function renderOrdersTable(ordersToRender = orders) {
         if (!ordersToRender.length) {
@@ -9018,6 +9898,8 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                     <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>🔄 Processing</option>
                     <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>📦 Shipped</option>
                     <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
+                    <option value="Return Requested" ${order.status === 'Return Requested' ? 'selected' : ''}>↩️ Return Requested</option>
+                    <option value="Exchange Requested" ${order.status === 'Exchange Requested' ? 'selected' : ''}>🔄 Exchange Requested</option>
                     <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
                   </select>
                 </td>
@@ -9957,6 +10839,16 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         initializeTrafficAnalytics(); // Initialize traffic analytics
         initializeSalesInsights(); // Initialize sales insights
 
+        // Attach save button handlers
+        document.getElementById('saveOrderChangesBtn')?.addEventListener('click', saveAllOrderChanges);
+        document.getElementById('saveReturnChangesBtn')?.addEventListener('click', saveAllReturnChanges);
+        document.getElementById('saveExchangeChangesBtn')?.addEventListener('click', saveExchangeChanges);
+        document.getElementById('saveCancellationChangesBtn')?.addEventListener('click', saveCancellationChanges);
+
+        // Attach refresh button handlers for exchanges and cancellations
+        document.getElementById('refreshExchangesBtn')?.addEventListener('click', fetchExchanges);
+        document.getElementById('refreshCancellationsBtn')?.addEventListener('click', fetchCancellations);
+
         // Initialize user filters and search
         const userRoleFilter = document.getElementById('userRoleFilter');
         const userSortBy = document.getElementById('userSortBy');
@@ -9983,6 +10875,12 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
         // Initialize returns search and filters
         initializeReturnsSearchAndFilters();
+
+        // Initialize exchanges search and filters
+        initializeExchangesSearchAndFilters();
+
+        // Initialize cancellations search and filters
+        initializeCancellationsSearchAndFilters();
 
         // Initialize messages management
         initializeMessagesManagement();
@@ -10109,7 +11007,138 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
             }
           });
         }
+
+        // ===============================
+        // SIDE NAVIGATION SCROLL TRACKING
+        // ===============================
+        initializeSideNavigation();
       });
+
+      // Side navigation active state tracking
+      function initializeSideNavigation() {
+        const sideNav = document.getElementById('adminSideNav');
+        if (!sideNav) return;
+
+        // Create tooltip element appended to body
+        let tooltip = document.getElementById('navTooltip');
+        if (!tooltip) {
+          tooltip = document.createElement('div');
+          tooltip.id = 'navTooltip';
+          tooltip.className = 'nav-tooltip';
+          document.body.appendChild(tooltip);
+        }
+
+        // Setup tooltip for nav links
+        const allNavLinks = sideNav.querySelectorAll('a[data-tooltip]');
+        allNavLinks.forEach(link => {
+          link.addEventListener('mouseenter', function(e) {
+            const text = this.getAttribute('data-tooltip');
+            if (!text) return;
+            tooltip.textContent = text;
+            const rect = this.getBoundingClientRect();
+            tooltip.style.left = (rect.right + 12) + 'px';
+            tooltip.style.top = (rect.top + rect.height / 2) + 'px';
+            tooltip.style.transform = 'translateY(-50%) translateX(-8px)';
+            tooltip.classList.add('visible');
+            setTimeout(() => {
+              tooltip.style.transform = 'translateY(-50%) translateX(0)';
+            }, 10);
+          });
+          link.addEventListener('mouseleave', function() {
+            tooltip.classList.remove('visible');
+          });
+        });
+
+        const navLinks = sideNav.querySelectorAll('a[data-section]');
+        const sections = [];
+
+        // Gather all sections
+        navLinks.forEach(link => {
+          const sectionId = link.getAttribute('data-section');
+          const section = document.getElementById(sectionId);
+          if (section) {
+            sections.push({ id: sectionId, element: section, link: link });
+          }
+        });
+
+        console.log('Side nav initialized with', sections.length, 'sections');
+
+        // Smooth scroll to section on click
+        navLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute('data-section');
+            const section = document.getElementById(sectionId);
+            if (section) {
+              const headerHeight = document.querySelector('.admin-header')?.offsetHeight || 80;
+              const targetPosition = section.offsetTop - headerHeight - 20;
+              
+              window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+              });
+
+              // Update active state immediately
+              navLinks.forEach(l => l.classList.remove('active'));
+              this.classList.add('active');
+            }
+          });
+        });
+
+        // Track scroll position for active state
+        let scrollTimeout;
+        let lastActiveId = null;
+        
+        function updateActiveSection() {
+          const scrollPosition = window.scrollY + 200; // Increased offset for better detection
+          let activeSection = null;
+
+          // Find the current section (iterate from last to first)
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const section = sections[i];
+            const sectionTop = section.element.getBoundingClientRect().top + window.scrollY;
+            if (sectionTop <= scrollPosition) {
+              activeSection = section;
+              break;
+            }
+          }
+
+          // Only update if active section changed
+          const newActiveId = activeSection?.id || sections[0]?.id;
+          if (newActiveId !== lastActiveId) {
+            lastActiveId = newActiveId;
+            
+            // Update active class
+            navLinks.forEach(link => link.classList.remove('active'));
+            if (activeSection) {
+              activeSection.link.classList.add('active');
+            } else if (sections.length > 0) {
+              sections[0].link.classList.add('active');
+            }
+          }
+        }
+
+        // Throttled scroll handler
+        window.addEventListener('scroll', function() {
+          if (scrollTimeout) clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(updateActiveSection, 30);
+        }, { passive: true });
+
+        // Initial update
+        setTimeout(updateActiveSection, 100);
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollToTopBtn');
+        if (scrollTopBtn) {
+          scrollTopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
+        }
+      }
 
       // ===============================
       // MESSAGES MANAGEMENT FUNCTIONS
@@ -11055,6 +12084,406 @@ ${message.message}`;
       const originalRenderReturns = renderReturns;
       renderReturns = function() {
         renderFilteredReturns();
+      };
+
+      // ==========================================
+      // EXCHANGES SEARCH AND FILTERS
+      // ==========================================
+
+      let exchangesFilters = {
+        search: '',
+        status: '',
+        reason: ''
+      };
+      let selectedExchanges = new Set();
+
+      function initializeExchangesSearchAndFilters() {
+        const searchInput = document.getElementById('exchangeSearch');
+        const clearSearchBtn = document.getElementById('clearExchangeSearch');
+        const statusFilter = document.getElementById('exchangeStatusFilter');
+        const reasonFilter = document.getElementById('exchangeReasonFilter');
+        const selectAllCheckbox = document.getElementById('selectAllExchanges');
+        const selectAllBtn = document.getElementById('selectAllExchangesBtn');
+        const bulkStatusBtn = document.getElementById('bulkExchangeStatusBtn');
+        const bulkDeleteBtn = document.getElementById('bulkExchangeDeleteBtn');
+
+        // Search functionality
+        if (searchInput) {
+          searchInput.addEventListener('input', debounce(() => {
+            exchangesFilters.search = searchInput.value.toLowerCase();
+            renderFilteredExchanges();
+          }, 300));
+        }
+
+        if (clearSearchBtn) {
+          clearSearchBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            exchangesFilters.search = '';
+            renderFilteredExchanges();
+          });
+        }
+
+        // Filter functionality
+        if (statusFilter) {
+          statusFilter.addEventListener('change', () => {
+            exchangesFilters.status = statusFilter.value;
+            renderFilteredExchanges();
+          });
+        }
+
+        if (reasonFilter) {
+          reasonFilter.addEventListener('change', () => {
+            exchangesFilters.reason = reasonFilter.value;
+            renderFilteredExchanges();
+          });
+        }
+
+        // Select all checkbox
+        if (selectAllCheckbox) {
+          selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.exchange-checkbox');
+            checkboxes.forEach(cb => {
+              cb.checked = selectAllCheckbox.checked;
+              updateExchangeSelection(cb.dataset.id, cb.checked);
+            });
+            updateExchangesBulkActionsState();
+          });
+        }
+
+        // Select all button
+        if (selectAllBtn) {
+          selectAllBtn.addEventListener('click', () => {
+            const allCheckboxes = document.querySelectorAll('.exchange-checkbox');
+            const allSelected = selectedExchanges.size === allCheckboxes.length;
+            const newState = !allSelected;
+
+            allCheckboxes.forEach(cb => {
+              cb.checked = newState;
+              updateExchangeSelection(cb.dataset.id, newState);
+            });
+            if (selectAllCheckbox) selectAllCheckbox.checked = newState;
+            updateExchangesBulkActionsState();
+          });
+        }
+
+        // Bulk delete button
+        if (bulkDeleteBtn) {
+          bulkDeleteBtn.addEventListener('click', async () => {
+            if (selectedExchanges.size === 0) return;
+            const confirmed = await showConfirmModal({
+              title: 'Delete Selected Exchanges',
+              message: `Are you sure you want to delete ${selectedExchanges.size} selected exchange(s)? This action cannot be undone.`,
+              confirmText: 'Yes, Delete',
+              cancelText: 'Cancel',
+              type: 'danger'
+            });
+            if (!confirmed) return;
+
+            for (const id of selectedExchanges) {
+              try {
+                await apiRequest(`/exchanges/${id}`, { method: 'DELETE' });
+              } catch (e) {
+                console.error(`Failed to delete exchange ${id}:`, e);
+              }
+            }
+            selectedExchanges.clear();
+            updateExchangesBulkActionsState();
+            await fetchExchanges();
+          });
+        }
+
+        // Bulk status update button
+        if (bulkStatusBtn) {
+          bulkStatusBtn.addEventListener('click', async () => {
+            if (selectedExchanges.size === 0) return;
+            
+            // Create status selection modal
+            const statusOptions = ['Pending', 'Approved', 'Processing', 'Shipped', 'Completed', 'Rejected'];
+            const statusSelect = statusOptions.map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            const modalContent = `
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select new status for ${selectedExchanges.size} exchange(s):</label>
+                <select id="bulkExchangeStatusSelect" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+                  ${statusSelect}
+                </select>
+              </div>
+            `;
+            
+            showModal('Bulk Update Status', modalContent, async () => {
+              const newStatus = document.getElementById('bulkExchangeStatusSelect')?.value;
+              if (!newStatus) return;
+              
+              let success = 0, failed = 0;
+              for (const id of selectedExchanges) {
+                try {
+                  await apiRequest(`/exchanges/${id}/status`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: newStatus })
+                  });
+                  success++;
+                } catch (e) {
+                  console.error(`Failed to update exchange ${id}:`, e);
+                  failed++;
+                }
+              }
+              
+              selectedExchanges.clear();
+              updateExchangesBulkActionsState();
+              await fetchExchanges();
+              showNotification(`Updated ${success} exchange(s)${failed ? `, ${failed} failed` : ''}`, failed ? 'warning' : 'success');
+            });
+          });
+        }
+      }
+
+      function updateExchangeSelection(exchangeId, selected) {
+        if (selected) {
+          selectedExchanges.add(exchangeId);
+        } else {
+          selectedExchanges.delete(exchangeId);
+        }
+        updateExchangesBulkActionsState();
+      }
+
+      function updateExchangesBulkActionsState() {
+        const bulkStatusBtn = document.getElementById('bulkExchangeStatusBtn');
+        const bulkDeleteBtn = document.getElementById('bulkExchangeDeleteBtn');
+        const hasSelection = selectedExchanges.size > 0;
+        if (bulkStatusBtn) bulkStatusBtn.disabled = !hasSelection;
+        if (bulkDeleteBtn) bulkDeleteBtn.disabled = !hasSelection;
+      }
+
+      function renderFilteredExchanges() {
+        let filtered = [...exchanges];
+
+        if (exchangesFilters.search) {
+          filtered = filtered.filter(exc => {
+            const searchStr = exchangesFilters.search;
+            return (
+              (exc.id || '').toLowerCase().includes(searchStr) ||
+              (exc.orderId || '').toLowerCase().includes(searchStr) ||
+              (exc.customer?.name || '').toLowerCase().includes(searchStr) ||
+              (exc.customer?.email || '').toLowerCase().includes(searchStr)
+            );
+          });
+        }
+
+        if (exchangesFilters.status) {
+          filtered = filtered.filter(exc => exc.status === exchangesFilters.status);
+        }
+
+        if (exchangesFilters.reason) {
+          filtered = filtered.filter(exc => exc.reason === exchangesFilters.reason);
+        }
+
+        renderExchangesTable(filtered);
+      }
+
+      // Override renderExchanges to use filtered version
+      const originalRenderExchanges = renderExchanges;
+      renderExchanges = function() {
+        renderFilteredExchanges();
+      };
+
+      // ==========================================
+      // CANCELLATIONS SEARCH AND FILTERS
+      // ==========================================
+
+      let cancellationsFilters = {
+        search: '',
+        status: '',
+        reason: ''
+      };
+      let selectedCancellations = new Set();
+
+      function initializeCancellationsSearchAndFilters() {
+        const searchInput = document.getElementById('cancellationSearch');
+        const clearSearchBtn = document.getElementById('clearCancellationSearch');
+        const statusFilter = document.getElementById('cancellationStatusFilter');
+        const reasonFilter = document.getElementById('cancellationReasonFilter');
+        const selectAllCheckbox = document.getElementById('selectAllCancellationsCheckbox');
+        const selectAllBtn = document.getElementById('selectAllCancellationsBtn');
+        const bulkStatusBtn = document.getElementById('bulkCancellationStatusBtn');
+        const bulkDeleteBtn = document.getElementById('bulkCancellationDeleteBtn');
+
+        // Search functionality
+        if (searchInput) {
+          searchInput.addEventListener('input', debounce(() => {
+            cancellationsFilters.search = searchInput.value.toLowerCase();
+            renderFilteredCancellations();
+          }, 300));
+        }
+
+        if (clearSearchBtn) {
+          clearSearchBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            cancellationsFilters.search = '';
+            renderFilteredCancellations();
+          });
+        }
+
+        // Filter functionality
+        if (statusFilter) {
+          statusFilter.addEventListener('change', () => {
+            cancellationsFilters.status = statusFilter.value;
+            renderFilteredCancellations();
+          });
+        }
+
+        if (reasonFilter) {
+          reasonFilter.addEventListener('change', () => {
+            cancellationsFilters.reason = reasonFilter.value;
+            renderFilteredCancellations();
+          });
+        }
+
+        // Select all checkbox
+        if (selectAllCheckbox) {
+          selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.cancellation-checkbox');
+            checkboxes.forEach(cb => {
+              cb.checked = selectAllCheckbox.checked;
+              updateCancellationSelection(cb.dataset.id, cb.checked);
+            });
+            updateCancellationsBulkActionsState();
+          });
+        }
+
+        // Select all button
+        if (selectAllBtn) {
+          selectAllBtn.addEventListener('click', () => {
+            const allCheckboxes = document.querySelectorAll('.cancellation-checkbox');
+            const allSelected = selectedCancellations.size === allCheckboxes.length;
+            const newState = !allSelected;
+
+            allCheckboxes.forEach(cb => {
+              cb.checked = newState;
+              updateCancellationSelection(cb.dataset.id, newState);
+            });
+            if (selectAllCheckbox) selectAllCheckbox.checked = newState;
+            updateCancellationsBulkActionsState();
+          });
+        }
+
+        // Bulk delete button
+        if (bulkDeleteBtn) {
+          bulkDeleteBtn.addEventListener('click', async () => {
+            if (selectedCancellations.size === 0) return;
+            const confirmed = await showConfirmModal({
+              title: 'Delete Selected Cancellations',
+              message: `Are you sure you want to delete ${selectedCancellations.size} selected cancellation(s)? This action cannot be undone.`,
+              confirmText: 'Yes, Delete',
+              cancelText: 'Cancel',
+              type: 'danger'
+            });
+            if (!confirmed) return;
+
+            for (const id of selectedCancellations) {
+              try {
+                await apiRequest(`/cancellations/${id}`, { method: 'DELETE' });
+              } catch (e) {
+                console.error(`Failed to delete cancellation ${id}:`, e);
+              }
+            }
+            selectedCancellations.clear();
+            updateCancellationsBulkActionsState();
+            await fetchCancellations();
+          });
+        }
+
+        // Bulk status update button
+        if (bulkStatusBtn) {
+          bulkStatusBtn.addEventListener('click', async () => {
+            if (selectedCancellations.size === 0) return;
+            
+            // Create status selection modal
+            const statusOptions = ['Pending', 'Approved', 'Rejected', 'Refunded', 'Completed'];
+            const statusSelect = statusOptions.map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            const modalContent = `
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Select new status for ${selectedCancellations.size} cancellation(s):</label>
+                <select id="bulkCancellationStatusSelect" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+                  ${statusSelect}
+                </select>
+              </div>
+            `;
+            
+            showModal('Bulk Update Status', modalContent, async () => {
+              const newStatus = document.getElementById('bulkCancellationStatusSelect')?.value;
+              if (!newStatus) return;
+              
+              let success = 0, failed = 0;
+              for (const id of selectedCancellations) {
+                try {
+                  await apiRequest(`/cancellations/${id}/status`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: newStatus })
+                  });
+                  success++;
+                } catch (e) {
+                  console.error(`Failed to update cancellation ${id}:`, e);
+                  failed++;
+                }
+              }
+              
+              selectedCancellations.clear();
+              updateCancellationsBulkActionsState();
+              await fetchCancellations();
+              showNotification(`Updated ${success} cancellation(s)${failed ? `, ${failed} failed` : ''}`, failed ? 'warning' : 'success');
+            });
+          });
+        }
+      }
+
+      function updateCancellationSelection(cancellationId, selected) {
+        if (selected) {
+          selectedCancellations.add(cancellationId);
+        } else {
+          selectedCancellations.delete(cancellationId);
+        }
+        updateCancellationsBulkActionsState();
+      }
+
+      function updateCancellationsBulkActionsState() {
+        const bulkStatusBtn = document.getElementById('bulkCancellationStatusBtn');
+        const bulkDeleteBtn = document.getElementById('bulkCancellationDeleteBtn');
+        const hasSelection = selectedCancellations.size > 0;
+        if (bulkStatusBtn) bulkStatusBtn.disabled = !hasSelection;
+        if (bulkDeleteBtn) bulkDeleteBtn.disabled = !hasSelection;
+      }
+
+      function renderFilteredCancellations() {
+        let filtered = [...cancellations];
+
+        if (cancellationsFilters.search) {
+          filtered = filtered.filter(canc => {
+            const searchStr = cancellationsFilters.search;
+            return (
+              (canc.id || '').toLowerCase().includes(searchStr) ||
+              (canc.orderId || '').toLowerCase().includes(searchStr) ||
+              (canc.customer?.name || '').toLowerCase().includes(searchStr) ||
+              (canc.customer?.email || '').toLowerCase().includes(searchStr)
+            );
+          });
+        }
+
+        if (cancellationsFilters.status) {
+          filtered = filtered.filter(canc => canc.status === cancellationsFilters.status);
+        }
+
+        if (cancellationsFilters.reason) {
+          filtered = filtered.filter(canc => canc.reason === cancellationsFilters.reason);
+        }
+
+        renderCancellationsTable(filtered);
+      }
+
+      // Override renderCancellations to use filtered version
+      const originalRenderCancellations = renderCancellations;
+      renderCancellations = function() {
+        renderFilteredCancellations();
       };
 
       // ==========================================

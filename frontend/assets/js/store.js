@@ -435,50 +435,104 @@ const BlackonnStore = {
   },
 
   showNotification(message, type = 'success') {
-    // Remove existing notifications
+    // Use the global showToast for Dynamic Island style notifications
+    if (window.showToast) {
+      window.showToast(message, type, 3000);
+      return;
+    }
+    
+    // Fallback: Remove existing notifications
     document.querySelectorAll('.store-notification').forEach(n => n.remove());
 
     const notification = document.createElement('div');
     notification.className = `store-notification ${type}`;
+    
+    const icons = {
+      success: '✓',
+      error: '✕',
+      warning: '⚠',
+      info: 'ℹ'
+    };
+    
     notification.innerHTML = `
-      <span>${message}</span>
-      <button onclick="this.parentElement.remove()">&times;</button>
+      <span class="notif-icon">${icons[type] || icons.info}</span>
+      <span class="notif-msg">${message}</span>
+      <button class="notif-close" onclick="this.parentElement.remove()">✕</button>
     `;
     notification.style.cssText = `
       position: fixed;
-      top: 100px;
-      right: 20px;
-      padding: 15px 20px;
-      background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-      color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 10000;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      background: ${type === 'success' ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95))' : 
+                    type === 'error' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))' : 
+                    type === 'warning' ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95))' :
+                    'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))'};
+      color: ${type === 'warning' ? '#111' : 'white'};
+      border-radius: 50px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 99999;
       display: flex;
       align-items: center;
       gap: 10px;
-      animation: slideIn 0.3s ease;
+      font-weight: 500;
+      font-size: 0.9rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      animation: islandIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      cursor: pointer;
     `;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.style.animation = 'slideOut 0.3s ease';
+      notification.style.animation = 'islandOut 0.3s ease forwards';
       setTimeout(() => notification.remove(), 300);
     }, 3000);
   }
 };
 
-// Add CSS animations
+// Add CSS animations for Dynamic Island style notifications
 const style = document.createElement('style');
 style.textContent = `
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+  @keyframes islandIn {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.8); }
+    50% { opacity: 1; }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
   }
-  @keyframes slideOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
+  @keyframes islandOut {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.9); }
+  }
+  .store-notification .notif-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .store-notification .notif-close {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .store-notification .notif-close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.25);
   }
 `;
 document.head.appendChild(style);

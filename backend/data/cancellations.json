@@ -1,0 +1,31 @@
+[
+  {
+    "id": "CAN-1767545591682",
+    "orderId": "ORD1767545527581",
+    "userId": "user_cf5db6a7-7184-4ea9-96c8-65efa99ab3d2",
+    "userName": "Arunava Malakar",
+    "userEmail": "arunava458@gmail.com",
+    "items": [
+      {
+        "id": "prod-7ddc82b9",
+        "name": "Oversize T-shirt",
+        "size": "M",
+        "color": "#000000",
+        "quantity": 1,
+        "price": 1111,
+        "image": "/uploads/products/1767530334792_lvjz6j.jpg",
+        "productId": "prod-7ddc82b9"
+      }
+    ],
+    "reason": "changed_mind",
+    "description": "sss",
+    "status": "Approved",
+    "refundAmount": 1111,
+    "paymentMethod": "upi",
+    "requestedAt": "2026-01-04T16:53:11.682Z",
+    "createdAt": "2026-01-04T16:53:11.682Z",
+    "updatedAt": "2026-01-04T16:53:11.682Z",
+    "approvedAt": "2026-01-04T16:53:11.682Z",
+    "autoApproved": true
+  }
+]

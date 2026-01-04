@@ -413,3 +413,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Newsletter Subscription
+async function subscribeNewsletter(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const emailInput = form.querySelector('.newsletter-input');
+    const btn = form.querySelector('.newsletter-btn');
+    const email = emailInput.value.trim();
+    
+    if (!email) {
+        window.showToast('Please enter your email address', 'error');
+        return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        window.showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    // Disable button while processing
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i>';
+    
+    try {
+        const API_BASE = window.location.origin + '/api';
+        const response = await fetch(`${API_BASE}/marketing/newsletter/subscribe`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Check if already subscribed
+            if (data.message && data.message.includes('already')) {
+                window.showToast('You are already subscribed to our newsletter!', 'info');
+            } else {
+                window.showToast('Thank you for subscribing! 🎉', 'success');
+                emailInput.value = '';
+            }
+        } else {
+            window.showToast(data.error || 'Failed to subscribe', 'error');
+        }
+    } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        window.showToast('Failed to subscribe. Please try again.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }
+}
+

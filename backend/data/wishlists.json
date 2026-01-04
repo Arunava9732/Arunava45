@@ -11,26 +11,6 @@
     }
   ],
   "user_6e48c6be-57a4-477f-98e6-eeb2527da9e8": [],
-  "user_cf5db6a7-7184-4ea9-96c8-65efa99ab3d2": [
-    {
-      "id": "wish-1767112680419",
-      "productId": "prod-e17a51ef",
-      "productIndex": 0,
-      "name": "dddd",
-      "price": 688,
-      "image": "/uploads/products/1767027141617_0lwav5.jpeg",
-      "addedAt": "2025-12-30T16:38:00.420Z"
-    }
-  ],
-  "admin": [
-    {
-      "id": "wish-1767202878338",
-      "productId": "prod-e17a51ef",
-      "productIndex": 0,
-      "name": "dddd",
-      "price": 688,
-      "image": "/uploads/products/1767027141617_0lwav5.jpeg",
-      "addedAt": "2025-12-31T17:41:18.338Z"
-    }
-  ]
+  "user_cf5db6a7-7184-4ea9-96c8-65efa99ab3d2": [],
+  "admin": []
 }

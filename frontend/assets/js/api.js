@@ -770,6 +770,90 @@ const API = (() => {
   };
 
   // =====================
+  // Exchanges API
+  // =====================
+
+  const exchanges = {
+    async getAll() {
+      return await request('/exchanges');
+    },
+
+    async getMine() {
+      return await request('/exchanges/my-exchanges');
+    },
+
+    async getById(id) {
+      return await request(`/exchanges/${id}`);
+    },
+
+    async create(exchangeData) {
+      return await request('/exchanges', {
+        method: 'POST',
+        body: JSON.stringify(exchangeData)
+      });
+    },
+
+    async updateStatus(id, status, adminNotes) {
+      return await request(`/exchanges/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, adminNotes })
+      });
+    },
+
+    async delete(id) {
+      return await request(`/exchanges/${id}`, {
+        method: 'DELETE'
+      });
+    },
+
+    async getStats() {
+      return await request('/exchanges/stats/summary');
+    }
+  };
+
+  // =====================
+  // Cancellations API
+  // =====================
+
+  const cancellations = {
+    async getAll() {
+      return await request('/cancellations');
+    },
+
+    async getMine() {
+      return await request('/cancellations/my-cancellations');
+    },
+
+    async getById(id) {
+      return await request(`/cancellations/${id}`);
+    },
+
+    async create(cancellationData) {
+      return await request('/cancellations', {
+        method: 'POST',
+        body: JSON.stringify(cancellationData)
+      });
+    },
+
+    async updateStatus(id, status, adminNotes) {
+      return await request(`/cancellations/${id}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, adminNotes })
+      });
+    },
+
+    async delete(id) {
+      return await request(`/cancellations/${id}`, {
+        method: 'DELETE'
+      });
+    },
+
+    async getStats() {
+      return await request('/cancellations/stats/summary');
+    }
+  };
+
+  // =====================
   // Contact API
   // =====================
 
@@ -919,6 +1003,8 @@ const API = (() => {
     users,
     wishlist,
     returns,
+    exchanges,
+    cancellations,
     contact,
     slides,
     checkApiAvailable,
@@ -949,18 +1035,42 @@ const API = (() => {
       const container = createContainer();
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      toast.innerHTML = `<div class="toast-message">${message}</div>`;
+      
+      // Dynamic Island style icons
+      const icons = {
+        success: '<i class="ri-check-line"></i>',
+        error: '<i class="ri-close-line"></i>',
+        warning: '<i class="ri-alert-line"></i>',
+        info: '<i class="ri-information-line"></i>'
+      };
+      
+      toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || icons.info}</span>
+        <span class="toast-message">${message}</span>
+        <span class="toast-close"><i class="ri-close-line"></i></span>
+        <div class="toast-progress"><div class="toast-progress-bar" style="animation-duration: ${timeout}ms"></div></div>
+      `;
       container.appendChild(toast);
 
       const remove = () => {
-        toast.style.opacity = '0';
+        toast.style.animation = 'toastIslandOut 0.3s ease forwards';
         setTimeout(() => toast.remove(), 300);
       };
 
       // Auto-dismiss
       const t = setTimeout(remove, timeout);
 
-      // Manual dismiss
+      // Manual dismiss on close button click
+      const closeBtn = toast.querySelector('.toast-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          clearTimeout(t);
+          remove();
+        });
+      }
+      
+      // Also dismiss on toast click
       toast.addEventListener('click', () => {
         clearTimeout(t);
         remove();

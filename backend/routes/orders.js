@@ -17,7 +17,20 @@ const router = express.Router();
 // Get all orders (admin only)
 router.get('/', authenticate, isAdmin, (req, res) => {
   try {
-    const orders = db.orders.findAll();
+    const allOrders = db.orders.findAll();
+    // Filter out orders that are awaiting payment confirmation (online payment not yet confirmed)
+    // Show all orders to admin, but mark unconfirmed ones
+    const orders = allOrders.filter(order => {
+      // Show COD orders always
+      if (order.paymentMethod === 'cod') return true;
+      // Show orders where payment is confirmed
+      if (order.paymentConfirmed === true) return true;
+      // Show orders that are already marked as paid/completed
+      const paymentStatus = (order.paymentStatus || '').toLowerCase();
+      if (paymentStatus === 'completed' || paymentStatus === 'paid') return true;
+      // Hide unconfirmed online payment orders (user cancelled or didn't pay)
+      return false;
+    });
     // Sort by date descending
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.json({ success: true, orders });
@@ -32,9 +45,22 @@ router.get('/my-orders', authenticate, (req, res) => {
   try {
     const allOrders = db.orders.findAll();
     // Filter by userId OR userEmail to catch all user's orders
-    const orders = allOrders.filter(order => 
-      order.userId === req.user.id || order.userEmail === req.user.email
-    );
+    // Also filter out orders that are awaiting payment confirmation
+    const orders = allOrders.filter(order => {
+      // First check if order belongs to this user
+      const isUserOrder = order.userId === req.user.id || order.userEmail === req.user.email;
+      if (!isUserOrder) return false;
+      
+      // Show COD orders always
+      if (order.paymentMethod === 'cod') return true;
+      // Show orders where payment is confirmed
+      if (order.paymentConfirmed === true) return true;
+      // Show orders that are already marked as paid/completed
+      const paymentStatus = (order.paymentStatus || '').toLowerCase();
+      if (paymentStatus === 'completed' || paymentStatus === 'paid') return true;
+      // Hide unconfirmed online payment orders
+      return false;
+    });
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.json({ success: true, orders });
   } catch (error) {
@@ -104,6 +130,11 @@ router.post('/',
         };
       });
 
+      // For COD orders, payment is confirmed immediately (will be collected on delivery)
+      // For online payments (UPI, card, etc.), payment needs to be verified before order is confirmed
+      const isCOD = paymentMethod === 'cod';
+      const paymentConfirmed = isCOD; // Only COD orders are confirmed immediately
+      
       const order = {
         id: 'ORD' + Date.now(),
         userId: req.user.id,
@@ -115,43 +146,48 @@ router.post('/',
         subtotal: Number(subtotal) || 0,
         shipping: Number(shipping) || 0,
         total: Number(total) || 0,
-        status: 'Pending',
-        paymentStatus: paymentMethod === 'cod' ? 'Pending' : 'Awaiting Payment',
+        status: isCOD ? 'Pending' : 'Awaiting Payment',
+        paymentStatus: isCOD ? 'Pending' : 'Awaiting Payment',
+        paymentConfirmed: paymentConfirmed,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
 
       db.orders.create(order);
-      sendOrderWebhook && sendOrderWebhook('order.created', order);
+      
+      // Only send notifications for confirmed orders (COD) - online payment orders will trigger on verification
+      if (paymentConfirmed) {
+        sendOrderWebhook && sendOrderWebhook('order.created', order);
 
-      // Send order confirmation email
-      sendOrderConfirmation(order, req.user.email).catch(err => console.error('Order email failed:', err));
+        // Send order confirmation email
+        sendOrderConfirmation(order, req.user.email).catch(err => console.error('Order email failed:', err));
 
-      // Send WhatsApp notification to admin
-      sendAdminNotification(formatOrderMessage(order)).catch(err => console.error('WhatsApp notification failed:', err));
+        // Send WhatsApp notification to admin
+        sendAdminNotification(formatOrderMessage(order)).catch(err => console.error('WhatsApp notification failed:', err));
 
-      // Update product stock
-      items.forEach(item => {
-        const product = db.products.findById(item.id);
-        if (product) {
-          const newStock = Math.max(0, (product.stock || 0) - (item.quantity || 1));
-          db.products.update(item.id, {
-            stock: newStock
-          });
+        // Update product stock only for confirmed orders (COD)
+        items.forEach(item => {
+          const product = db.products.findById(item.id);
+          if (product) {
+            const newStock = Math.max(0, (product.stock || 0) - (item.quantity || 1));
+            db.products.update(item.id, {
+              stock: newStock
+            });
 
-          // Trigger low stock alert if stock falls below 5
-          if (newStock <= 5) {
-            sendLowStockAlert({ ...product, stock: newStock }).catch(err => console.error('Low stock alert failed:', err));
-            sendAdminNotification(formatLowStockMessage({ ...product, stock: newStock })).catch(err => console.error('WhatsApp low stock alert failed:', err));
+            // Trigger low stock alert if stock falls below 5
+            if (newStock <= 5) {
+              sendLowStockAlert({ ...product, stock: newStock }).catch(err => console.error('Low stock alert failed:', err));
+              sendAdminNotification(formatLowStockMessage({ ...product, stock: newStock })).catch(err => console.error('WhatsApp low stock alert failed:', err));
+            }
           }
-        }
-      });
+        });
 
-      // Clear user's cart
-      const carts = db.carts.findAll();
-      if (typeof carts === 'object') {
-        delete carts[req.user.id];
-        db.carts.replaceAll(carts);
+        // Clear user's cart only for confirmed orders
+        const carts = db.carts.findAll();
+        if (typeof carts === 'object') {
+          delete carts[req.user.id];
+          db.carts.replaceAll(carts);
+        }
       }
 
       res.status(201).json({ success: true, order });
@@ -195,19 +231,64 @@ router.post('/:id/verify-payment', authenticate, (req, res) => {
       return res.status(403).json({ success: false, error: 'Not authorized' });
     }
 
-    // If already completed/paid, return current
+    // If already confirmed/paid, return current order
+    if (order.paymentConfirmed === true) {
+      return res.json({ success: true, order, message: 'Payment already confirmed' });
+    }
     const currentStatus = (order.paymentStatus || '').toLowerCase();
     if (currentStatus === 'completed' || currentStatus === 'paid') {
-      return res.json({ success: true, order });
+      return res.json({ success: true, order, message: 'Payment already completed' });
     }
 
-    const updates = { paymentStatus: 'Completed', updatedAt: new Date().toISOString() };
-    // If order was awaiting payment, optionally mark as Confirmed
-    if (!order.status || order.status === 'Pending' || order.status === 'Awaiting Payment') {
-      updates.status = 'Confirmed';
-    }
+    // Update order with payment confirmed status
+    const updates = { 
+      paymentStatus: 'Completed', 
+      paymentConfirmed: true,
+      status: 'Confirmed',
+      updatedAt: new Date().toISOString() 
+    };
 
     const updated = db.orders.update(req.params.id, updates);
+    
+    // Now that payment is confirmed, send all notifications
+    sendOrderWebhook && sendOrderWebhook('order.created', updated);
+    
+    // Send order confirmation email
+    const userEmail = order.userEmail || (order.shippingInfo && order.shippingInfo.email);
+    if (userEmail) {
+      sendOrderConfirmation(updated, userEmail).catch(err => console.error('Order email failed:', err));
+    }
+    
+    // Send WhatsApp notification to admin
+    sendAdminNotification(formatOrderMessage(updated)).catch(err => console.error('WhatsApp notification failed:', err));
+    
+    // Update product stock now that payment is confirmed
+    if (order.items && Array.isArray(order.items)) {
+      order.items.forEach(item => {
+        const productId = item.id || item.productId;
+        const product = db.products.findById(productId);
+        if (product) {
+          const newStock = Math.max(0, (product.stock || 0) - (item.quantity || 1));
+          db.products.update(productId, {
+            stock: newStock
+          });
+
+          // Trigger low stock alert if stock falls below 5
+          if (newStock <= 5) {
+            sendLowStockAlert({ ...product, stock: newStock }).catch(err => console.error('Low stock alert failed:', err));
+            sendAdminNotification(formatLowStockMessage({ ...product, stock: newStock })).catch(err => console.error('WhatsApp low stock alert failed:', err));
+          }
+        }
+      });
+    }
+    
+    // Clear user's cart after successful payment
+    const carts = db.carts.findAll();
+    if (typeof carts === 'object' && order.userId) {
+      delete carts[order.userId];
+      db.carts.replaceAll(carts);
+    }
+
     res.json({ success: true, order: updated });
   } catch (error) {
     console.error('Verify payment error:', error);
@@ -233,21 +314,31 @@ router.post('/:id/cancel', authenticate, (req, res) => {
       return res.status(400).json({ success: false, error: 'Order cannot be cancelled' });
     }
 
+    // If payment was never confirmed (online payment that wasn't completed), delete the order entirely
+    if (order.paymentConfirmed !== true && order.paymentMethod !== 'cod') {
+      db.orders.delete(req.params.id);
+      return res.json({ success: true, message: 'Unpaid order removed successfully', deleted: true });
+    }
+
+    // For confirmed orders (COD or paid online), mark as cancelled and restore stock
     const updated = db.orders.update(req.params.id, {
       status: 'Cancelled',
       cancelledAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
 
-    // Restore product stock
-    order.items.forEach(item => {
-      const product = db.products.findById(item.id);
-      if (product) {
-        db.products.update(item.id, {
-          stock: (product.stock || 0) + (item.quantity || 1)
-        });
-      }
-    });
+    // Restore product stock only if payment was confirmed (stock was deducted)
+    if (order.paymentConfirmed === true || order.paymentMethod === 'cod') {
+      order.items.forEach(item => {
+        const productId = item.id || item.productId;
+        const product = db.products.findById(productId);
+        if (product) {
+          db.products.update(productId, {
+            stock: (product.stock || 0) + (item.quantity || 1)
+          });
+        }
+      });
+    }
 
     res.json({ success: true, order: updated });
   } catch (error) {
@@ -277,7 +368,16 @@ router.delete('/:id', authenticate, isAdmin, (req, res) => {
 // Get order stats (admin only)
 router.get('/stats/summary', authenticate, isAdmin, (req, res) => {
   try {
-    const orders = db.orders.findAll();
+    const allOrders = db.orders.findAll();
+    
+    // Filter to only include confirmed orders (same logic as listing)
+    const orders = allOrders.filter(order => {
+      if (order.paymentMethod === 'cod') return true;
+      if (order.paymentConfirmed === true) return true;
+      const paymentStatus = (order.paymentStatus || '').toLowerCase();
+      if (paymentStatus === 'completed' || paymentStatus === 'paid') return true;
+      return false;
+    });
     
     const stats = {
       totalOrders: orders.length,

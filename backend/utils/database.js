@@ -364,6 +364,8 @@ const exportsObj = {
   orders: new Database('orders'),
   carts: new Database('carts'),
   returns: new Database('returns'),
+  exchanges: new Database('exchanges'),
+  cancellations: new Database('cancellations'),
   contacts: new Database('contacts'),
   passwordResets: new Database('passwordResets'),
   Database

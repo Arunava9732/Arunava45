@@ -3661,8 +3661,15 @@
       document.head.appendChild(style);
     }
     
-    // Generate QR code URL using free API
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+    // UPI payment data for QR code (will be generated client-side)
+    const qrData = `upi://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
+    
+    // Load QRCode library if not already loaded
+    if (!window.QRCode) {
+      const qrScript = document.createElement('script');
+      qrScript.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+      document.head.appendChild(qrScript);
+    }
     
     const instructionsModal = document.createElement('div');
     instructionsModal.className = 'upi-payment-modal';
@@ -3740,11 +3747,17 @@
           <!-- Web/QR Code Tab -->
           <div class="upi-tab-content" id="webTab">
             <div class="upi-qr-section">
-              <div class="upi-qr-code">
-                <img src="${qrCodeUrl}" alt="UPI QR Code" loading="lazy">
+              <div class="upi-qr-amount-display" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 12px 24px; border-radius: 12px; margin-bottom: 16px; display: inline-block;">
+                <span style="font-size: 0.9rem; opacity: 0.9;">Pay Amount:</span>
+                <strong style="font-size: 1.5rem; margin-left: 8px;">₹${order.total}</strong>
+              </div>
+              <div class="upi-qr-code" id="qrCodeContainer" data-qr="${qrData.replace(/"/g, '&quot;')}">
+                <div style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f5f5f5; border-radius: 8px;">
+                  <span style="color: #666; font-size: 14px;">Loading QR...</span>
+                </div>
               </div>
               <div class="upi-qr-instructions">
-                <p><strong>Scan with any UPI app</strong></p>
+                <p><strong>Scan to Pay ₹${order.total}</strong></p>
                 <p>Open PhonePe, GPay, Paytm or any UPI app<br>and scan this QR code to pay</p>
                 <div class="upi-copy-id" id="copyUpiId" title="Click to copy">
                   <code>${upiId}</code>
@@ -3776,6 +3789,84 @@
     `;
 
     document.body.appendChild(instructionsModal);
+    
+    // Generate QR code after modal is in DOM
+    const generateQRCode = () => {
+      const qrContainer = document.getElementById('qrCodeContainer');
+      if (!qrContainer) return;
+      
+      const qrDataValue = qrContainer.getAttribute('data-qr');
+      qrContainer.innerHTML = ''; // Clear loading text
+      
+      // Try using QRCode library if loaded
+      if (window.QRCode) {
+        try {
+          // Check if it's the qrcode npm package (has toDataURL method)
+          if (typeof QRCode.toDataURL === 'function') {
+            QRCode.toDataURL(qrDataValue, { width: 200, margin: 2 }, (error, url) => {
+              if (error) {
+                console.error('QR Code generation error:', error);
+                useFallbackQR(qrContainer, qrDataValue);
+              } else {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'UPI QR Code';
+                img.style.cssText = 'width: 200px; height: 200px; display: block;';
+                qrContainer.appendChild(img);
+              }
+            });
+          } else if (typeof QRCode.toCanvas === 'function') {
+            // Alternative canvas API
+            const canvas = document.createElement('canvas');
+            QRCode.toCanvas(canvas, qrDataValue, { width: 200, margin: 2 }, (error) => {
+              if (error) {
+                console.error('QR Code generation error:', error);
+                useFallbackQR(qrContainer, qrDataValue);
+              } else {
+                canvas.style.display = 'block';
+                qrContainer.appendChild(canvas);
+              }
+            });
+          } else {
+            // Constructor-based API (qrcodejs style)
+            new QRCode(qrContainer, {
+              text: qrDataValue,
+              width: 200,
+              height: 200
+            });
+          }
+        } catch (err) {
+          console.error('QRCode library error:', err);
+          useFallbackQR(qrContainer, qrDataValue);
+        }
+      } else {
+        // Fallback to external QR service
+        useFallbackQR(qrContainer, qrDataValue);
+      }
+    };
+    
+    // Fallback QR code using Google Charts API (reliable)
+    const useFallbackQR = (container, data) => {
+      const img = document.createElement('img');
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data)}`;
+      img.alt = 'UPI QR Code';
+      img.style.cssText = 'width: 200px; height: 200px; display: block;';
+      img.onerror = () => {
+        // Second fallback
+        img.src = `https://quickchart.io/qr?text=${encodeURIComponent(data)}&size=200`;
+      };
+      container.appendChild(img);
+    };
+    
+    // Wait for QRCode library to load, then generate
+    if (window.QRCode) {
+      generateQRCode();
+    } else {
+      // Wait a bit for script to load, then try again
+      setTimeout(() => {
+        generateQRCode();
+      }, 800);
+    }
     
     // Trigger animation
     requestAnimationFrame(() => {
@@ -3897,10 +3988,26 @@
     window.location.href = upiUrl;
   }
 
-  // Cancel payment and close modal (also add item to cart if Buy Now mode)
+  // Cancel payment and close modal - deletes the unpaid order
   async function cancelPaymentAndClose(orderId) {
+    try {
+      // Cancel/delete the unpaid order from the backend
+      if (orderId) {
+        console.log('Cancelling unpaid order:', orderId);
+        const result = await API.orders.cancel(orderId);
+        console.log('Order cancelled:', result);
+      }
+    } catch (error) {
+      console.error('Failed to cancel order:', error);
+      // Continue closing the modal even if cancel fails
+    }
+    
     await closePhonePeModal();
-    showToast('Payment cancelled. Your order is pending.', 'warning');
+    showToast('Payment cancelled. Order has been removed.', 'warning');
+    
+    // Reset checkout to review section so user can try again
+    document.getElementById('reviewSection').classList.add('show');
+    updateProgressIndicator(3);
   }
 
   function showPhonePeInstructions(order) {
@@ -4337,26 +4444,29 @@
 <footer class="footer" id="contact">
   <div class="logo">
     <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
-    <p style="font-size:16px; line-height:1.6; margin-top:15px;">
+    <p style="font-size:16px; line-height:1.6; margin-top: 20px;">
     Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
   </div>
   <div>
     <h3>The Atelier</h3>
     <ul>
-      <li><a href="#">Shop</a></li>
-      <li><a href="#">Category</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="products.html">Category</a></li>
       <li><a href="contact.html">Contact Info</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="size-guide.html">Size Guide</a></li>
     </ul>
   </div>
   <div>
     <h3>Regimen</h3>
     <ul>
-      <li><a href="return-policy.html">Return Policy</a></li>
-      <li><a href="shipping.html">Shipping & Delivery</a></li>
-      <li><a href="refund-policy.html">Refund Policy</a></li>
       <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
       <li><a href="payment-policy.html">Payment Policy</a></li>
       <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="refund-policy.html">Refund Policy</a></li>
+      <li><a href="return-policy.html">Return Policy</a></li>
+      <li><a href="shipping.html">Shipping & Delivery</a></li>
     </ul>
   </div>
   <div>
@@ -4372,6 +4482,13 @@
         <i class="ri-whatsapp-fill"></i>
       </a>
     </div>
+    
+    <h3 style="margin-top: 25px;">Newsletter</h3>
+    <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+      <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+    </form>
   </div>
 </footer>
 
@@ -4463,7 +4580,7 @@
   transition: 0.3s;
 }
 .footer .socials a:hover {
-  transform: translateY(-4px);
+  transform: translate3d(0, -4px, 0);
   background: rgba(0, 0, 0, 0.1);
 }
 .bottom {

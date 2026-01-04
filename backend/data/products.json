@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": "prod-7ddc82b9",
+    "name": "Oversize T-shirt",
+    "price": 1111,
+    "color": "Black",
+    "size": "M",
+    "description": "ddd",
+    "stock": 99,
+    "stockStatus": "in-stock",
+    "isOutOfStock": false,
+    "availableColors": [
+      "Black"
+    ],
+    "availableSizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "position": 1,
+    "image": "/uploads/products/1767530334792_lvjz6j.jpg",
+    "thumbImages": [
+      "/uploads/products/1767530334882_7yo07t.jpg"
+    ],
+    "createdAt": "2026-01-04T12:38:54.983Z",
+    "updatedAt": "2026-01-04T12:38:54.983Z"
+  }
+]

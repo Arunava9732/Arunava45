@@ -499,7 +499,7 @@
                 <p>Certain items have specific guidelines we follow:</p>
                 <ul>
                     <li><strong>Final Sale Items:</strong> Clearly marked clearance pieces</li>
-                    <li><strong>Return Window:</strong> Items outside 14-day period</li>
+                    <li><strong>Return Window:</strong> Items outside 7-day return period (or 2-day exchange period)</li>
                     <li><strong>Condition Requirements:</strong> Worn, altered, or damaged items</li>
                     <li><strong>Original Packaging:</strong> Items missing tags or packaging</li>
                     <li><strong>Special Cases:</strong> Contact us to discuss circumstances</li>
@@ -546,26 +546,29 @@
     <footer class="footer" id="contact">
       <div class="logo">
         <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
-        <p style="font-size:16px; line-height:1.6; margin-top:15px;">
+        <p style="font-size:16px; line-height:1.6; margin-top: 20px;">
         Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
       </div>
       <div>
         <h3>The Atelier</h3>
         <ul>
-          <li><a href="#">Shop</a></li>
-          <li><a href="#">Category</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="products.html">Category</a></li>
           <li><a href="contact.html">Contact Info</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="products.html">Shop</a></li>
+          <li><a href="size-guide.html">Size Guide</a></li>
         </ul>
       </div>
       <div>
         <h3>Regimen</h3>
         <ul>
-          <li><a href="return-policy.html">Return Policy</a></li>
-          <li><a href="shipping.html">Shipping & Delivery</a></li>
-          <li><a href="refund-policy.html">Refund Policy</a></li>
           <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
           <li><a href="payment-policy.html">Payment Policy</a></li>
           <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="refund-policy.html">Refund Policy</a></li>
+          <li><a href="return-policy.html">Return Policy</a></li>
+          <li><a href="shipping.html">Shipping & Delivery</a></li>
         </ul>
       </div>
       <div>
@@ -581,6 +584,13 @@
             <i class="ri-whatsapp-fill"></i>
           </a>
         </div>
+        
+        <h3 style="margin-top: 25px;">Newsletter</h3>
+        <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+          <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+        </form>
       </div>
     </footer>
 
@@ -672,7 +682,7 @@
       transition: 0.3s;
     }
     .footer .socials a:hover {
-      transform: translateY(-4px);
+      transform: translate3d(0, -4px, 0);
       background: rgba(0, 0, 0, 0.1);
     }
     .bottom {

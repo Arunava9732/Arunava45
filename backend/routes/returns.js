@@ -92,13 +92,33 @@ router.post('/',
       return res.status(403).json({ success: false, error: 'Access denied' });
     }
 
-    // Check if order is eligible for return (Delivered or allow for testing)
-    const eligibleStatuses = ['Delivered', 'Shipped', 'Processing', 'Confirmed'];
-    if (!eligibleStatuses.includes(order.status)) {
+    // Check if order is eligible for return (must be Delivered)
+    if (order.status !== 'Delivered') {
       return res.status(400).json({ 
         success: false, 
-        error: 'This order is not eligible for return' 
+        error: 'This order is not eligible for return. Only delivered orders can be returned.' 
       });
+    }
+
+    // Check if a return has already been requested for this order
+    if (order.returnId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'A return request has already been submitted for this order.' 
+      });
+    }
+
+    // Check 7-day return window from delivery date
+    const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : (order.createdAt ? new Date(order.createdAt) : null);
+    if (deliveryDate) {
+      const now = new Date();
+      const daysSinceDelivery = Math.floor((now - deliveryDate) / (1000 * 60 * 60 * 24));
+      if (daysSinceDelivery > 7) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Return period has expired. Returns are only accepted within 7 days of delivery.' 
+        });
+      }
     }
 
     // Build return items from the provided items

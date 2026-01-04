@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BLACKONN Return Policy - 7-day return window with reasonable terms. Quality fashion with fair return and exchange options.">
+    <meta name="description" content="BLACKONN Return Policy - 7-day return window and 2-day exchange window with reasonable terms. Quality fashion with fair return and exchange options.">
     <meta name="keywords" content="BLACKONN return policy, fashion returns, clothing exchange, return policy, customer service">
     <meta name="author" content="BLACKONN">
     <meta name="robots" content="index, follow">
@@ -12,7 +12,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="./return-policy.html">
     <meta property="og:title" content="Return Policy - BLACKONN">
-    <meta property="og:description" content="BLACKONN Return Policy - 7-day return window with reasonable terms. Quality fashion with fair return and exchange options.">
+    <meta property="og:description" content="BLACKONN Return Policy - 7-day return window and 2-day exchange window with reasonable terms. Quality fashion with fair return and exchange options.">
     <meta property="og:image" content="assets/img/BLACKONN 004_page-0001.png">
     <meta property="og:site_name" content="BLACKONN">
     
@@ -20,7 +20,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="./return-policy.html">
     <meta property="twitter:title" content="Return Policy - BLACKONN">
-    <meta property="twitter:description" content="BLACKONN Return Policy - 7-day return window with reasonable terms. Quality fashion with fair return and exchange options.">
+    <meta property="twitter:description" content="BLACKONN Return Policy - 7-day return window and 2-day exchange window with reasonable terms. Quality fashion with fair return and exchange options.">
     <meta property="twitter:image" content="assets/img/BLACKONN 004_page-0001.png">
     
     <title>Return Policy - BLACKONN</title>
@@ -481,10 +481,12 @@
                     <i class="ri-exchange-line"></i>
                 </div>
                 <h3>Size & Style Exchanges</h3>
-                <p>We want you to love your BLACKONN pieces. Exchanges are available for size or style changes when items are in stock.</p>
+                <p>We want you to love your BLACKONN pieces. Exchanges are available within <strong>2 days of delivery</strong> for size or style changes, subject to admin approval.</p>
                 <ul>
+                    <li><strong>2-day exchange window from delivery</strong></li>
                     <li>Exchange for different size or color</li>
                     <li>Exchange for different style or item</li>
+                    <li>Requires admin approval</li>
                     <li>Subject to current stock availability</li>
                     <li>Contact us to check availability</li>
                 </ul>
@@ -663,26 +665,29 @@
     <footer class="footer" id="contact">
       <div class="logo">
         <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
-        <p style="font-size:16px; line-height:1.6; margin-top:15px;">
+        <p style="font-size:16px; line-height:1.6; margin-top: 20px;">
         Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
       </div>
       <div>
         <h3>The Atelier</h3>
         <ul>
-          <li><a href="#">Shop</a></li>
-          <li><a href="#">Category</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="products.html">Category</a></li>
           <li><a href="contact.html">Contact Info</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="products.html">Shop</a></li>
+          <li><a href="size-guide.html">Size Guide</a></li>
         </ul>
       </div>
       <div>
         <h3>Regimen</h3>
         <ul>
-          <li><a href="return-policy.html">Return Policy</a></li>
-          <li><a href="shipping.html">Shipping & Delivery</a></li>
-          <li><a href="refund-policy.html">Refund Policy</a></li>
           <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
           <li><a href="payment-policy.html">Payment Policy</a></li>
           <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="refund-policy.html">Refund Policy</a></li>
+          <li><a href="return-policy.html">Return Policy</a></li>
+          <li><a href="shipping.html">Shipping & Delivery</a></li>
         </ul>
       </div>
       <div>
@@ -698,6 +703,13 @@
             <i class="ri-whatsapp-fill"></i>
           </a>
         </div>
+        
+        <h3 style="margin-top: 25px;">Newsletter</h3>
+        <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+          <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+        </form>
       </div>
     </footer>
 
@@ -789,7 +801,7 @@
       transition: 0.3s;
     }
     .footer .socials a:hover {
-      transform: translateY(-4px);
+      transform: translate3d(0, -4px, 0);
       background: rgba(0, 0, 0, 0.1);
     }
     .bottom {

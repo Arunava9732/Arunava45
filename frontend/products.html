@@ -63,7 +63,7 @@
     .footer > div {
       display: flex !important;
       flex-direction: column !important;
-      gap: 15px !important;
+      gap: 10px !important;
       visibility: visible !important;
       min-width: 0 !important;
       opacity: 1 !important;
@@ -88,13 +88,16 @@
       color: #000 !important;
     }
     .footer ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      list-style: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     .footer li {
-      margin: 0;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     .footer .logo img {
       width: 150px;
@@ -105,7 +108,7 @@
     .footer .logo p {
       font-size: 16px;
       line-height: 1.6;
-      margin-top: 15px;
+      margin-top: 20px !important;
       color: #666 !important;
       visibility: visible !important;
     }
@@ -126,7 +129,7 @@
       transition: 0.3s;
     }
     .footer .socials a:hover {
-      transform: translateY(-4px);
+      transform: translate3d(0, -4px, 0);
       background: rgba(0, 0, 0, 0.1);
     }
     .bottom {
@@ -212,11 +215,12 @@
       flex: 1;
       min-width: 300px;
       padding: 0;
-      transition: all 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
     }
 
     .info-section:hover {
-      transform: translateY(-2px);
+      transform: translate3d(0, -2px, 0);
     }
 
     .section-header {
@@ -250,11 +254,12 @@
       align-items: center;
       gap: 16px;
       padding: 0;
-      transition: all 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
     }
 
     .info-item:hover {
-      transform: translateX(4px);
+      transform: translate3d(4px, 0, 0);
     }
 
     .info-icon {
@@ -288,11 +293,12 @@
       align-items: center;
       gap: 14px;
       padding: 0;
-      transition: all 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
     }
 
     .care-item:hover {
-      transform: translateX(4px);
+      transform: translate3d(4px, 0, 0);
     }
 
     .care-icon {
@@ -332,15 +338,16 @@
       font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s ease;
       text-decoration: none;
       background: transparent;
       color: #000;
       justify-content: flex-start;
+      will-change: transform;
     }
 
     .social-btn:hover {
-      transform: translateX(4px);
+      transform: translate3d(4px, 0, 0);
       color: #666;
     }
 
@@ -890,8 +897,8 @@
       <div class="info-item">
         <i class="ri-refresh-line info-icon"></i>
         <div class="info-content">
-          <h4>Easy Returns</h4>
-          <p>14-day return policy</p>
+          <h4>Easy Returns & Exchange</h4>
+          <p>7-day return | 2-day exchange</p>
         </div>
       </div>
     </div>
@@ -964,28 +971,31 @@
   <div class="logo">
     <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
 
-    <p style="font-size:16px; line-height:1.6; margin-top:15px;">
+    <p style="font-size:16px; line-height:1.6;">
     Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
   </div>
 
   <div>
     <h3>The Atelier</h3>
     <ul>
-      <li><a href="#">Shop</a></li>
-      <li><a href="#">Category</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="products.html">Category</a></li>
       <li><a href="contact.html">Contact Info</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="size-guide.html">Size Guide</a></li>
     </ul>
   </div>
 
   <div>
     <h3>Regimen</h3>
     <ul>
-      <li><a href="return-policy.html">Return Policy</a></li>
-      <li><a href="shipping.html">Shipping & Delivery</a></li>
-      <li><a href="refund-policy.html">Refund Policy</a></li>
       <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
       <li><a href="payment-policy.html">Payment Policy</a></li>
       <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="refund-policy.html">Refund Policy</a></li>
+      <li><a href="return-policy.html">Return Policy</a></li>
+      <li><a href="shipping.html">Shipping & Delivery</a></li>
     </ul>
   </div>
 
@@ -1004,6 +1014,13 @@
         <i class="ri-whatsapp-fill"></i>
       </a>
     </div>
+    
+    <h3 style="margin-top: 25px;">Newsletter</h3>
+    <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+      <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+    </form>
   </div>
 </footer>
 
@@ -1066,11 +1083,11 @@
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(50px);
+      transform: translate3d(0, 50px, 0);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
     }
   }
 
@@ -1086,11 +1103,11 @@
   @keyframes fadeInLeft {
     from {
       opacity: 0;
-      transform: translateX(-60px);
+      transform: translate3d(-60px, 0, 0);
     }
     to {
       opacity: 1;
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
   }
 
@@ -1102,19 +1119,20 @@
     text-decoration: none;
     margin-bottom: 25px;
     font-size: 0.95rem;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.4s ease, background 0.4s ease;
     width: fit-content;
     padding: 12px 20px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    will-change: transform;
   }
 
   .back-link:hover {
     color: #1f2937;
     background: rgba(0, 0, 0, 0.05);
-    transform: translateX(-4px);
+    transform: translate3d(-4px, 0, 0);
   }
 
   .main-image-wrap {
@@ -1127,23 +1145,28 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    will-change: transform;
   }
 
   .main-image-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
     filter: brightness(1.02) contrast(1.05);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
   }
 
   .main-image-wrap:hover img {
-    transform: scale(1.15);
+    transform: scale3d(1.15, 1.15, 1);
     filter: brightness(1.05) contrast(1.08);
   }
 
   .main-image-wrap img.zoomed {
-    transform: scale(1.15);
+    transform: scale3d(1.15, 1.15, 1);
     filter: brightness(1.05) contrast(1.08);
   }
 
@@ -1180,39 +1203,45 @@
     border-radius: 14px;
     overflow: hidden;
     cursor: pointer;
-    border: 3px solid transparent;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: none;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     flex-shrink: 0;
     position: relative;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .thumbnail:hover {
-    transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.2);
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
 
   .thumbnail:hover img {
-    transform: scale(1.02);
+    transform: scale3d(1.02, 1.02, 1);
   }
 
   .thumbnail.active {
-    border-color: #000;
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
+    transform: translate3d(0, -2px, 0);
   }
 
   .thumbnail.active::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
     border-radius: 14px;
   }
 
@@ -1228,11 +1257,11 @@
   @keyframes fadeInRight {
     from {
       opacity: 0;
-      transform: translateX(60px);
+      transform: translate3d(60px, 0, 0);
     }
     to {
       opacity: 1;
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
   }
 
@@ -1325,12 +1354,13 @@
     color: #000;
     cursor: pointer;
     border-radius: 12px;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease, background 0.4s ease, color 0.4s ease;
     font-weight: 600;
     font-size: 1rem;
     position: relative;
     overflow: hidden;
     border: 1px solid #e5e7eb;
+    will-change: transform;
   }
 
   .size-option::before {
@@ -1346,7 +1376,7 @@
 
   .size-option:hover {
     border-color: #000;
-    transform: translateY(-3px);
+    transform: translate3d(0, -3px, 0);
   }
 
   .size-option:hover::before {
@@ -1357,7 +1387,7 @@
     background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
     color: #fff;
     border-color: #000;
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
   }
 
   /* Enhanced Color Options */
@@ -1373,9 +1403,10 @@
     border-radius: 50%;
     border: 3px solid rgba(0, 0, 0, 0.12);
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease;
     position: relative;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.05) 100%);
+    will-change: transform;
   }
 
   .color-option::after {
@@ -1384,17 +1415,17 @@
     inset: -4px;
     border-radius: 50%;
     border: 3px solid rgba(0, 0, 0, 0);
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
   .color-option:hover {
-    transform: scale(1.1);
+    transform: scale3d(1.1, 1.1, 1);
     border-color: rgba(0, 0, 0, 0.3);
   }
 
   .color-option.selected {
     border-color: #000;
-    transform: scale(1.1);
+    transform: scale3d(1.1, 1.1, 1);
   }
 
   .color-option.selected::after {
@@ -1409,7 +1440,7 @@
 
   .size-option.out-of-stock-option:hover {
     border-color: #000;
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
   }
 
   .size-option.out-of-stock-option:hover::before {
@@ -1428,12 +1459,12 @@
   }
 
   .color-option.out-of-stock-option:hover {
-    transform: scale(1.15);
+    transform: scale3d(1.15, 1.15, 1);
   }
 
   .color-option.out-of-stock-option.selected {
     border-color: #000;
-    transform: scale(1.12);
+    transform: scale3d(1.12, 1.12, 1);
   }
 
   .color-option.out-of-stock-option.selected::after {
@@ -1522,20 +1553,21 @@
     font-size: 1.2rem;
     font-weight: 600;
     color: #000;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s ease, border-color 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    will-change: transform;
   }
 
   .quantity-btn:hover {
     background: #f8f9fa;
     border-color: #000;
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
   }
 
   .quantity-btn:active {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 
   #quantityInput {
@@ -1573,7 +1605,7 @@
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -1584,6 +1616,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     text-transform: uppercase;
     min-height: 56px;
+    will-change: transform;
   }
 
   .buy-btn::before {
@@ -1591,21 +1624,21 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(0, 0, 0, 0.05) 100%);
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
     transition: transform 0.4s ease;
   }
 
   .buy-btn:hover {
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
   }
 
   .buy-btn:hover::before {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   .buy-btn:active {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 
   .buy-btn:disabled {
@@ -1625,16 +1658,59 @@
     border: 1.5px solid #000;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     min-height: 52px;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .add-cart-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #000;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
   }
 
   .add-cart-btn:hover {
-    background: #000;
     color: #fff;
+    transform: translate3d(0, -3px, 0);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .add-cart-btn:hover::before {
+    transform: scaleX(1);
+  }
+
+  .add-cart-btn:hover i {
+    animation: cartBounce 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  @keyframes cartBounce {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25% { transform: translate3d(-2px, -2px, 0); }
+    50% { transform: translate3d(0, -4px, 0); }
+    75% { transform: translate3d(2px, -2px, 0); }
+  }
+
+  .add-cart-btn:active {
+    transform: translate3d(0, -1px, 0) scale3d(0.98, 0.98, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .add-cart-btn i {
+    transition: transform 0.3s ease;
   }
 
   .wishlist-btn {
@@ -1647,13 +1723,14 @@
     border: 1.5px solid #e0e0e0;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s ease, box-shadow 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
+    will-change: transform;
   }
 
   .wishlist-btn::before {
@@ -1661,33 +1738,33 @@
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at center, rgba(229, 57, 53, 0.15) 0%, transparent 70%);
-    transform: scale(0);
+    transform: scale3d(0, 0, 1);
     transition: transform 0.4s ease;
     border-radius: 10px;
   }
 
   .wishlist-btn:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translate3d(0, -3px, 0) scale3d(1.05, 1.05, 1);
     border-color: #e53935;
     box-shadow: 0 8px 25px rgba(229, 57, 53, 0.25);
   }
 
   .wishlist-btn:hover::before {
-    transform: scale(1.5);
+    transform: scale3d(1.5, 1.5, 1);
   }
 
   .wishlist-btn:hover i {
     color: #e53935;
-    transform: scale(1.15);
-    transition: all 0.3s ease;
+    transform: scale3d(1.15, 1.15, 1);
+    transition: transform 0.3s ease, color 0.3s ease;
   }
 
   .wishlist-btn:active {
-    transform: translateY(-1px) scale(0.98);
+    transform: translate3d(0, -1px, 0) scale3d(0.98, 0.98, 1);
   }
 
   .wishlist-btn i {
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, color 0.3s ease;
     position: relative;
     z-index: 1;
   }
@@ -1705,27 +1782,23 @@
   }
 
   @keyframes heartPulse {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.3); }
-    50% { transform: scale(0.95); }
-    75% { transform: scale(1.15); }
-    100% { transform: scale(1); }
+    0% { transform: scale3d(1, 1, 1); }
+    25% { transform: scale3d(1.3, 1.3, 1); }
+    50% { transform: scale3d(0.95, 0.95, 1); }
+    75% { transform: scale3d(1.15, 1.15, 1); }
+    100% { transform: scale3d(1, 1, 1); }
   }
 
   .wishlist-btn.active:hover {
     background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
     border-color: #c62828;
-    transform: translateY(-3px) scale(1.05);
+    transform: translate3d(0, -3px, 0) scale3d(1.05, 1.05, 1);
     box-shadow: 0 8px 25px rgba(229, 57, 53, 0.45);
   }
 
   .wishlist-btn.active:hover i {
     color: #fff;
     transform: scale(1.1);
-  }
-
-  .add-cart-btn:active {
-    transform: translateY(-1px);
   }
 
   .buy-section {
@@ -1919,20 +1992,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s ease, border-color 0.3s ease;
+    will-change: transform;
   }
 
   .zoom-close:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
+    transform: scale3d(1.1, 1.1, 1);
   }
 
   .zoom-controls {
     position: absolute;
     bottom: 20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
     display: flex;
     gap: 15px;
     align-items: center;
@@ -1955,14 +2029,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s ease, border-color 0.3s ease;
     font-size: 16px;
+    will-change: transform;
   }
 
   .zoom-btn:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
+    transform: scale3d(1.1, 1.1, 1);
   }
 
   .zoom-btn:disabled {
@@ -2934,7 +3009,7 @@
         <p class="policy-intro">Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
         
         <div class="policy-section">
-          <p class="policy-content">We strive to accept returns within 14 days of delivery for unworn, unaltered items with original tags.</p>
+          <p class="policy-content">We strive to accept returns within 7 days of delivery for unworn, unaltered items with original tags.</p>
           <button class="read-more-btn" onclick="toggleExpand(this)">Read More</button>
           <div class="policy-expanded-content">
             <p class="policy-content">Eligible items must be in original condition with all packaging intact. Once we receive your return, processing typically takes 7-10 business days. Please note that original shipping costs are non-refundable.</p>

@@ -910,6 +910,7 @@
             .btn-track,
             .btn-reorder,
             .btn-return,
+            .btn-exchange,
             .btn-invoice,
             .btn-add-address,
             .btn-submit,
@@ -926,6 +927,41 @@
             
             .profile-main {
                 padding-bottom: 120px; /* Extra padding for main content area */
+            }
+            
+            /* Exchange card mobile styles */
+            .exchange-card .order-header,
+            .exchange-card .order-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .exchange-info-box,
+            .exchange-timeline-section {
+                padding: 12px 15px !important;
+            }
+            
+            .exchange-step {
+                padding: 8px 0 !important;
+            }
+            
+            .exchange-step > div:first-child {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px;
+            }
+            
+            .exchange-step span {
+                font-size: 13px !important;
+            }
+            
+            .exchanges-list .order-actions {
+                width: 100%;
+            }
+            
+            .exchanges-list .btn-track {
+                width: 100%;
             }
         }
 
@@ -1057,6 +1093,71 @@
         .return-status.picked-up {
             background: #f3e5f5;
             color: #7b1fa2;
+        }
+
+        /* Exchange Status Colors */
+        .exchange-status {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .exchange-status.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .exchange-status.approved {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .exchange-status.rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .exchange-status.processing {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .exchange-status.shipped {
+            background: #cffafe;
+            color: #0891b2;
+        }
+
+        .exchange-status.completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .exchange-status.pickup-scheduled {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .exchange-status.picked-up {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        /* Exchange card styling */
+        .exchange-card {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .exchange-card .order-id {
+            color: #f59e0b !important;
+        }
+
+        .exchanges-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .order-items {
@@ -1197,6 +1298,28 @@
 
         .btn-return:hover {
             background: #dc2626;
+            color: #fff;
+        }
+
+        .btn-exchange {
+            background: #fff;
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+
+        .btn-exchange:hover {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .btn-cancel-order {
+            background: #fff;
+            color: #6b7280;
+            border: 1px solid #6b7280;
+        }
+
+        .btn-cancel-order:hover {
+            background: #6b7280;
             color: #fff;
         }
 
@@ -3293,6 +3416,10 @@
                         <i class="ri-arrow-go-back-line"></i>
                         <span>My Returns</span>
                     </a>
+                    <a href="#" class="more-menu-item" data-section="exchanges">
+                        <i class="ri-exchange-line"></i>
+                        <span>My Exchanges</span>
+                    </a>
                     <a href="#" class="more-menu-item" data-section="addresses">
                         <i class="ri-map-pin-line"></i>
                         <span>Saved Addresses</span>
@@ -3315,6 +3442,7 @@
                     <li><a href="#" class="active" data-section="profile"><i class="ri-user-settings-line"></i> My Profile</a></li>
                     <li><a href="#" data-section="orders"><i class="ri-shopping-bag-3-line"></i> My Orders</a></li>
                     <li><a href="#" data-section="returns" id="returnsMenuLink"><i class="ri-arrow-go-back-line"></i> My Returns</a></li>
+                    <li><a href="#" data-section="exchanges" id="exchangesMenuLink"><i class="ri-exchange-line"></i> My Exchanges</a></li>
                     <li><a href="#" data-section="tracking"><i class="ri-truck-line"></i> Track Shipment</a></li>
                     <li><a href="#" data-section="addresses"><i class="ri-map-pin-line"></i> Addresses</a></li>
                     <li><a href="#" data-section="queries" id="queriesMenuLink"><i class="ri-question-line"></i> Raised Queries</a></li>
@@ -3446,6 +3574,23 @@
                         <i class="ri-arrow-go-back-line"></i>
                         <h3>No returns yet</h3>
                         <p>You haven't requested any returns</p>
+                    </div>
+                </section>
+
+                <!-- My Exchanges Section -->
+                <section class="profile-section" id="section-exchanges">
+                    <h2 class="section-title"><i class="ri-exchange-line"></i> My Exchanges</h2>
+                    <div class="exchanges-list" id="exchangesList">
+                        <!-- Exchanges will be loaded dynamically -->
+                        <div class="loading-orders" style="text-align:center;padding:40px;color:#666;">
+                            <i class="ri-loader-4-line" style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block;"></i>
+                            <p style="margin-top:16px;">Loading your exchanges...</p>
+                        </div>
+                    </div>
+                    <div class="empty-state" id="emptyExchanges" style="display: none;">
+                        <i class="ri-exchange-line"></i>
+                        <h3>No exchanges yet</h3>
+                        <p>You haven't requested any exchanges</p>
                     </div>
                 </section>
 
@@ -3755,6 +3900,8 @@
                 loadUserOrders();
             } else if (sectionName === 'returns') {
                 loadUserReturns();
+            } else if (sectionName === 'exchanges') {
+                loadUserExchanges();
             } else if (sectionName === 'queries') {
                 loadUserQueries();
                 // Mark queries as read when opening the section
@@ -3808,18 +3955,35 @@
             }
         });
 
-        // Success popup functions
+        // Success popup functions - now uses Dynamic Island toast
         function showSuccessPopup(title, message) {
-            document.getElementById('successTitle').textContent = title;
-            document.getElementById('successMessage').textContent = message;
-            document.getElementById('successPopup').classList.add('show');
+            // Determine notification type based on title
+            let type = 'info';
+            const titleLower = title.toLowerCase();
+            if (titleLower.includes('error') || titleLower.includes('failed') || titleLower.includes('cannot') || titleLower.includes('expired')) {
+                type = 'error';
+            } else if (titleLower.includes('success') || titleLower.includes('updated') || titleLower.includes('submitted') || titleLower.includes('added') || titleLower.includes('cancelled') || titleLower.includes('sent')) {
+                type = 'success';
+            } else if (titleLower.includes('warning') || titleLower.includes('not available')) {
+                type = 'warning';
+            }
+            
+            // Use global showToast for Dynamic Island style notification
+            if (window.showToast) {
+                window.showToast(`${title}: ${message}`, type, 5000);
+            } else {
+                // Fallback to old popup if showToast not available
+                document.getElementById('successTitle').textContent = title;
+                document.getElementById('successMessage').textContent = message;
+                document.getElementById('successPopup').classList.add('show');
+            }
         }
 
         function closeSuccessPopup() {
             document.getElementById('successPopup').classList.remove('show');
         }
 
-        // Close success popup when clicking outside or OK button
+        // Close success popup when clicking outside or OK button (kept for fallback)
         document.getElementById('successPopup').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeSuccessPopup();
@@ -3899,7 +4063,11 @@
                                 <button class="btn-track" data-action="track" data-order-id="${order.id}">Track Order</button>
                                 ${featureVisibility.invoiceEnabled ? `<button class="btn-invoice" data-action="invoice" data-order-id="${order.id}"><i class="ri-file-pdf-line"></i>Invoice</button>` : ''}
                                 <button class="btn-reorder" data-action="reorder" data-order-id="${order.id}">Reorder</button>
-                                <button class="btn-return" data-action="return" data-order-id="${order.id}">Return</button>
+                                ${order.status === 'Delivered' ? `<button class="btn-exchange" data-action="exchange" data-order-id="${order.id}">Exchange</button>` : ''}
+                                ${order.status === 'Exchange Requested' ? `<span class="btn-status-info" style="color:#f59e0b;font-size:12px;"><i class="ri-exchange-line"></i> Exchange Requested</span>` : ''}
+                                ${!['Shipped', 'Delivered', 'Cancelled', 'Return Requested', 'Exchange Requested'].includes(order.status) ? `<button class="btn-cancel-order" data-action="cancel-order" data-order-id="${order.id}">Cancel</button>` : ''}
+                                ${order.status === 'Delivered' ? `<button class="btn-return" data-action="return" data-order-id="${order.id}">Return</button>` : ''}
+                                ${order.status === 'Return Requested' ? `<span class="btn-status-info" style="color:#3b82f6;font-size:12px;"><i class="ri-arrow-go-back-line"></i> Return Requested</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -4043,6 +4211,181 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // Load user exchanges from API
+        async function loadUserExchanges() {
+            try {
+                const response = await API.exchanges.getMine();
+                const userExchanges = response.exchanges || [];
+
+                if (userExchanges.length === 0) {
+                    document.getElementById('exchangesList').innerHTML = '';
+                    document.getElementById('emptyExchanges').style.display = 'flex';
+                    return;
+                }
+
+                document.getElementById('emptyExchanges').style.display = 'none';
+
+                const exchangesHtml = userExchanges.map(exchange => {
+                    const exchangeDate = exchange.createdAt 
+                        ? new Date(exchange.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) 
+                        : 'Unknown';
+                    
+                    const status = exchange.status || 'Pending';
+                    const statusClass = status.toLowerCase().replace(/\s+/g, '-');
+                    
+                    const itemsHtml = (exchange.items || []).map(item => `
+                        <div class="order-item">
+                            <a href="products.html?id=${item.productId || item.id || ''}" class="order-item-image product-link">
+                                <img src="${normalizeUploadUrl(item.image) || getPlaceholder(80,80,'Product')}" alt="${item.name || 'Product'}" onerror="this.parentElement.innerHTML='<i class=\\'ri-image-line\\'></i>'">
+                            </a>
+                            <div class="order-item-details">
+                                <a href="products.html?id=${item.productId || item.id || ''}" class="order-item-name product-link">${item.name || 'Unknown Product'}</a>
+                                <div class="order-item-meta">Size: ${item.size || '-'} | Color: ${item.color || '-'}</div>
+                                <div class="order-item-price">₹${(item.price || 0).toLocaleString()} x ${item.quantity || 1}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Exchange tracking timeline
+                    const timelineHtml = getExchangeTimeline(status);
+
+                    // Exchange for info
+                    const exchangeForText = {
+                        'different_size': 'Different Size',
+                        'different_color': 'Different Color',
+                        'different_product': 'Different Product'
+                    }[exchange.exchangeFor] || exchange.exchangeFor || 'Not specified';
+
+                    return `
+                        <div class="order-card exchange-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-id" style="color:#f59e0b;">Exchange #${exchange.id}</div>
+                                    <div class="order-date">Requested on ${exchangeDate}</div>
+                                    <div class="order-date" style="color:#666;font-size:12px;">Order: #${exchange.orderId}</div>
+                                </div>
+                                <span class="exchange-status ${statusClass}" style="background:${getExchangeStatusColor(status)};color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;">${status}</span>
+                            </div>
+                            <div class="order-items">
+                                ${itemsHtml}
+                            </div>
+                            <div class="exchange-info-box" style="padding:15px 20px;background:#fffbeb;border-top:1px solid #fef3c7;">
+                                <p style="margin:0 0 8px 0;font-size:14px;"><strong><i class="ri-exchange-line" style="color:#f59e0b;"></i> Exchange For:</strong> ${exchangeForText}</p>
+                                <p style="margin:0 0 8px 0;font-size:14px;"><strong>Reason:</strong> ${(exchange.reason || 'Not specified').replace(/_/g, ' ')}</p>
+                                ${exchange.newSize || exchange.newColor ? `
+                                <div style="margin:10px 0;padding:10px;background:#f0fdf4;border-radius:8px;border-left:3px solid #22c55e;">
+                                    <p style="margin:0;font-size:13px;font-weight:600;color:#15803d;"><i class="ri-arrow-right-circle-line"></i> Requested New:</p>
+                                    ${exchange.newSize ? `<p style="margin:4px 0 0 0;font-size:13px;"><strong>Size:</strong> <span style="color:#15803d;font-weight:600;">${exchange.newSize}</span></p>` : ''}
+                                    ${exchange.newColor ? `<p style="margin:4px 0 0 0;font-size:13px;"><strong>Color:</strong> <span style="color:#15803d;font-weight:600;">${exchange.newColor}</span></p>` : ''}
+                                </div>
+                                ` : ''}
+                                ${exchange.description ? `<p style="margin:8px 0 0 0;font-size:13px;color:#666;"><strong>Details:</strong> ${exchange.description}</p>` : ''}
+                                ${exchange.adminNotes ? `<p style="margin:8px 0 0 0;font-size:13px;color:#d97706;"><strong>Admin Note:</strong> ${exchange.adminNotes}</p>` : ''}
+                            </div>
+                            <div class="exchange-timeline-section" style="padding:20px;border-top:1px solid #eee;">
+                                <h4 style="margin:0 0 15px 0;font-size:14px;color:#333;"><i class="ri-exchange-line" style="color:#f59e0b;"></i> Exchange Progress</h4>
+                                <div class="exchange-tracking-timeline">
+                                    ${timelineHtml}
+                                </div>
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total" style="color:#f59e0b;">Exchange ID: ${exchange.id}</div>
+                                <div class="order-actions">
+                                    <button class="btn-track" style="background:#f59e0b;" data-action="track-exchange" data-exchange-id="${exchange.id}">Track Exchange</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('exchangesList').innerHTML = exchangesHtml;
+            } catch (error) {
+                console.error('Failed to load exchanges:', error);
+                document.getElementById('exchangesList').innerHTML = '<div class="empty-state" style="text-align:center;padding:40px;color:#e74c3c;"><i class="ri-error-warning-line" style="font-size:2rem;display:block;margin-bottom:8px;"></i><p>Failed to load exchanges. Please try again.</p></div>';
+            }
+        }
+
+        // Get exchange status color
+        function getExchangeStatusColor(status) {
+            const colors = {
+                'Pending': '#f59e0b',
+                'Approved': '#10b981',
+                'Rejected': '#ef4444',
+                'Pickup Scheduled': '#3b82f6',
+                'Picked Up': '#8b5cf6',
+                'Processing': '#6366f1',
+                'Shipped': '#0ea5e9',
+                'Completed': '#22c55e'
+            };
+            return colors[status] || '#6b7280';
+        }
+
+        // Get exchange timeline HTML based on status
+        function getExchangeTimeline(status) {
+            const steps = [
+                { key: 'Pending', label: 'Request Submitted', icon: 'ri-file-list-3-line' },
+                { key: 'Approved', label: 'Approved', icon: 'ri-checkbox-circle-line' },
+                { key: 'Pickup Scheduled', label: 'Pickup Scheduled', icon: 'ri-calendar-check-line' },
+                { key: 'Picked Up', label: 'Item Picked Up', icon: 'ri-truck-line' },
+                { key: 'Processing', label: 'Processing Exchange', icon: 'ri-loop-left-line' },
+                { key: 'Shipped', label: 'New Item Shipped', icon: 'ri-truck-line' },
+                { key: 'Completed', label: 'Exchange Completed', icon: 'ri-checkbox-circle-fill' }
+            ];
+
+            const statusOrder = ['Pending', 'Approved', 'Pickup Scheduled', 'Picked Up', 'Processing', 'Shipped', 'Completed'];
+            const currentIndex = statusOrder.indexOf(status);
+            const isRejected = status === 'Rejected';
+
+            if (isRejected) {
+                return `
+                    <div class="exchange-step completed" style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;color:#f59e0b;">
+                            <i class="ri-file-list-3-line"></i>
+                        </div>
+                        <span style="font-size:14px;">Request Submitted</span>
+                    </div>
+                    <div class="exchange-step rejected" style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;color:#dc2626;">
+                            <i class="ri-close-circle-line"></i>
+                        </div>
+                        <span style="font-size:14px;color:#dc2626;font-weight:500;">Exchange Rejected</span>
+                    </div>
+                `;
+            }
+
+            return steps.map((step, index) => {
+                const stepIndex = statusOrder.indexOf(step.key);
+                const isCompleted = stepIndex <= currentIndex;
+                const isCurrent = stepIndex === currentIndex;
+                
+                const bgColor = isCompleted ? '#fef3c7' : '#f5f5f5';
+                const iconColor = isCompleted ? '#f59e0b' : '#999';
+                const textColor = isCurrent ? '#000' : (isCompleted ? '#d97706' : '#999');
+                const fontWeight = isCurrent ? '600' : '400';
+
+                return `
+                    <div class="exchange-step ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}" style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:${bgColor};display:flex;align-items:center;justify-content:center;color:${iconColor};">
+                            <i class="${step.icon}"></i>
+                        </div>
+                        <span style="font-size:14px;color:${textColor};font-weight:${fontWeight};">${step.label}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Track exchange by ID
+        function trackExchange(exchangeId) {
+            // Find and navigate to the tracking section with the exchange info
+            showSection('tracking');
+            const trackingInput = document.getElementById('trackingInput');
+            if (trackingInput) {
+                trackingInput.value = exchangeId;
+                // Trigger the search
+                searchTracking();
+            }
         }
 
         // Mark queries as read (remove notification)
@@ -4404,18 +4747,18 @@
                     return;
                 }
 
-                // Check if order is eligible for return (delivered and within 14 days)
-                const orderDate = order.createdAt ? new Date(order.createdAt) : null;
+                // Check if order is eligible for return (delivered and within 7 days)
+                const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : (order.createdAt ? new Date(order.createdAt) : null);
                 const now = new Date();
-                const daysSinceOrder = orderDate ? Math.floor((now - orderDate) / (1000 * 60 * 60 * 24)) : 0;
+                const daysSinceDelivery = deliveryDate ? Math.floor((now - deliveryDate) / (1000 * 60 * 60 * 24)) : 0;
                 
                 if (order.status !== 'Delivered') {
                     showSuccessPopup('Return Not Available', 'You can only return delivered orders.');
                     return;
                 }
                 
-                if (daysSinceOrder > 14) {
-                    showSuccessPopup('Return Period Expired', 'Returns are only accepted within 14 days of delivery.');
+                if (daysSinceDelivery > 7) {
+                    showSuccessPopup('Return Period Expired', 'Returns are only accepted within 7 days of delivery.');
                     return;
                 }
 
@@ -4432,6 +4775,29 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.id = 'returnModal';
+            
+            // Safely encode items data to avoid HTML injection issues
+            const itemsHtml = order.items?.map((item, index) => {
+                const itemData = encodeURIComponent(JSON.stringify(item));
+                return `
+                    <div class="return-item">
+                        <label>
+                            <input type="checkbox" value="${item.id || index}" data-item="${itemData}">
+                            <div class="return-item-info">
+                                <img src="${normalizeUploadUrl(item.image || item.thumbImage) || getPlaceholder(50,50,'Product')}" 
+                                     alt="${(item.name || 'Product').replace(/"/g, '&quot;')}" 
+                                     onerror="this.src=getPlaceholder(50,50,'Product')"
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                <div>
+                                    <div style="font-weight: 500; font-size: 14px;">${item.name || 'Product'} (${item.size || '-'}/${item.color || '-'})</div>
+                                    <div style="font-size: 12px; color: #666;">Qty: ${item.quantity || 1}</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                `;
+            }).join('') || '<p>No items found</p>';
+            
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 500px;">
                     <div class="modal-header">
@@ -4444,23 +4810,7 @@
                             <p><strong>Order Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown'}</p>
                             <p><strong>Items:</strong></p>
                             <div class="return-items">
-                                ${order.items?.map(item => `
-                                    <div class="return-item">
-                                        <label>
-                                            <input type="checkbox" value="${item.id}" data-item='${JSON.stringify(item)}'>
-                                            <div class="return-item-info">
-                                                <img src="${normalizeUploadUrl(item.image || item.thumbImage) || getPlaceholder(50,50,'Product')}" 
-                                                     alt="${item.name || 'Product'}" 
-                                                     onerror="this.src=getPlaceholder(50,50,'Product')"
-                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
-                                                <div>
-                                                    <div style="font-weight: 500; font-size: 14px;">${item.name} (${item.size}/${item.color})</div>
-                                                    <div style="font-size: 12px; color: #666;">Qty: ${item.quantity}</div>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                `).join('') || '<p>No items found</p>'}
+                                ${itemsHtml}
                             </div>
                         </div>
                         <div class="return-reason">
@@ -4540,7 +4890,8 @@
                 // Create return request via API
                 // Map items to backend expected format
                 const itemsForReturn = selectedItems.map(checkbox => {
-                    const item = JSON.parse(checkbox.dataset.item);
+                    // Decode the URI-encoded item data
+                    const item = JSON.parse(decodeURIComponent(checkbox.dataset.item));
                     return {
                         productId: item.id || item.productId,
                         name: item.name,
@@ -4579,6 +4930,379 @@
             }
         }
 
+        // Exchange items from a previous order
+        async function exchangeItems(orderId) {
+            try {
+                const response = await API.orders.get(orderId);
+                const order = response.order;
+                if (!order) {
+                    showSuccessPopup('Error', 'Could not find order details.');
+                    return;
+                }
+
+                // Check if order is eligible for exchange (delivered and within 2 days)
+                const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : (order.createdAt ? new Date(order.createdAt) : null);
+                const now = new Date();
+                const daysSinceDelivery = deliveryDate ? Math.floor((now - deliveryDate) / (1000 * 60 * 60 * 24)) : 0;
+                
+                if (order.status !== 'Delivered') {
+                    showSuccessPopup('Exchange Not Available', 'You can only exchange delivered orders.');
+                    return;
+                }
+                
+                if (daysSinceDelivery > 2) {
+                    showSuccessPopup('Exchange Period Expired', 'Exchanges are only accepted within 2 days of delivery.');
+                    return;
+                }
+
+                // Show exchange request modal
+                showExchangeModal(order);
+            } catch (error) {
+                console.error('Failed to get order for exchange:', error);
+                showSuccessPopup('Error', 'Failed to load order details. Please try again.');
+            }
+        }
+
+        // Show exchange request modal
+        function showExchangeModal(order) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'exchangeModal';
+            
+            // Safely encode items data to avoid HTML injection issues
+            const itemsHtml = order.items?.map((item, index) => {
+                const itemData = encodeURIComponent(JSON.stringify(item));
+                return `
+                    <div class="return-item">
+                        <label>
+                            <input type="checkbox" value="${item.id || index}" data-item="${itemData}">
+                            <div class="return-item-info">
+                                <img src="${normalizeUploadUrl(item.image || item.thumbImage) || getPlaceholder(50,50,'Product')}" 
+                                     alt="${(item.name || 'Product').replace(/"/g, '&quot;')}" 
+                                     onerror="this.src=getPlaceholder(50,50,'Product')"
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                <div>
+                                    <div style="font-weight: 500; font-size: 14px;">${item.name || 'Product'} (${item.size || '-'}/${item.color || '-'})</div>
+                                    <div style="font-size: 12px; color: #666;">Qty: ${item.quantity || 1}</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                `;
+            }).join('') || '<p>No items found</p>';
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3>Request Exchange</h3>
+                        <span class="modal-close" data-action="close-exchange-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="return-order-info">
+                            <p><strong>Order ID:</strong> ${order.id}</p>
+                            <p><strong>Order Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown'}</p>
+                            <p><strong>Items to Exchange:</strong></p>
+                            <div class="return-items">
+                                ${itemsHtml}
+                            </div>
+                        </div>
+                        <div class="return-reason">
+                            <label for="exchangeReason"><strong>Exchange Reason:</strong></label>
+                            <select id="exchangeReason" required>
+                                <option value="">Select a reason</option>
+                                <option value="size_issue">Size/Fit Issue</option>
+                                <option value="color_issue">Color Issue</option>
+                                <option value="defective">Defective Product</option>
+                                <option value="wrong_item">Wrong Item Received</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="return-reason" style="margin-top: 15px;">
+                            <label for="exchangeFor"><strong>Exchange For:</strong></label>
+                            <select id="exchangeFor" required>
+                                <option value="">What do you want instead?</option>
+                                <option value="different_size">Different Size</option>
+                                <option value="different_color">Different Color</option>
+                                <option value="different_size_color">Different Size & Color</option>
+                                <option value="different_product">Different Product</option>
+                            </select>
+                        </div>
+                        <div class="exchange-new-options" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="return-reason">
+                                <label for="exchangeNewSize"><strong>New Size:</strong></label>
+                                <select id="exchangeNewSize">
+                                    <option value="">Select new size</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                    <option value="XXXL">XXXL</option>
+                                    <option value="Free Size">Free Size</option>
+                                </select>
+                            </div>
+                            <div class="return-reason">
+                                <label for="exchangeNewColor"><strong>New Color:</strong></label>
+                                <input type="text" id="exchangeNewColor" placeholder="e.g., Black, Navy Blue" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
+                            </div>
+                        </div>
+                        <div class="return-comments" style="margin-top: 15px;">
+                            <label for="exchangeComments"><strong>Additional Comments:</strong></label>
+                            <textarea id="exchangeComments" rows="3" placeholder="Any additional details about your exchange request..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" data-action="close-exchange-modal">Cancel</button>
+                        <button class="btn-submit" style="background: #f59e0b;" data-action="submit-exchange" data-order-id="${order.id}">Submit Exchange Request</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.classList.add('show');
+            
+            // Add event delegation for the modal
+            modal.addEventListener('click', function(e) {
+                const target = e.target.closest('[data-action]');
+                if (!target) return;
+                
+                const action = target.dataset.action;
+                if (action === 'close-exchange-modal') {
+                    closeExchangeModal();
+                } else if (action === 'submit-exchange') {
+                    const orderId = target.dataset.orderId;
+                    submitExchangeRequest(orderId);
+                }
+            });
+        }
+
+        // Close exchange modal
+        function closeExchangeModal() {
+            const modal = document.getElementById('exchangeModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        // Submit exchange request via API
+        async function submitExchangeRequest(orderId) {
+            const selectedItems = Array.from(document.querySelectorAll('#exchangeModal input[type="checkbox"]:checked'));
+            const reason = document.getElementById('exchangeReason').value;
+            const exchangeFor = document.getElementById('exchangeFor').value;
+            const newSize = document.getElementById('exchangeNewSize').value;
+            const newColor = document.getElementById('exchangeNewColor').value.trim();
+            const comments = document.getElementById('exchangeComments').value;
+
+            if (selectedItems.length === 0) {
+                showToast('Please select at least one item to exchange.', 'warning');
+                return;
+            }
+
+            if (!reason) {
+                showToast('Please select an exchange reason.', 'warning');
+                return;
+            }
+
+            if (!exchangeFor) {
+                showToast('Please select what you want to exchange for.', 'warning');
+                return;
+            }
+
+            // Validate new size/color based on exchange type
+            if ((exchangeFor === 'different_size' || exchangeFor === 'different_size_color') && !newSize) {
+                showToast('Please select the new size you want.', 'warning');
+                return;
+            }
+            if ((exchangeFor === 'different_color' || exchangeFor === 'different_size_color') && !newColor) {
+                showToast('Please enter the new color you want.', 'warning');
+                return;
+            }
+
+            try {
+                const user = await window.blackonnAuth.getCurrentUser();
+                if (!user) {
+                    showToast('Please login to submit an exchange request.', 'warning');
+                    return;
+                }
+                
+                const itemsForExchange = selectedItems.map(checkbox => {
+                    // Decode the URI-encoded item data
+                    const item = JSON.parse(decodeURIComponent(checkbox.dataset.item));
+                    return {
+                        productId: item.id || item.productId,
+                        name: item.name,
+                        size: item.size,
+                        color: item.color,
+                        quantity: item.quantity || 1,
+                        price: item.price || 0,
+                        image: item.image || item.thumbImage
+                    };
+                });
+                
+                const exchangeData = {
+                    orderId: orderId,
+                    items: itemsForExchange,
+                    reason: reason,
+                    exchangeFor: exchangeFor,
+                    newSize: newSize || null,
+                    newColor: newColor || null,
+                    description: comments
+                };
+
+                const response = await API.exchanges.create(exchangeData);
+
+                if (response.success) {
+                    closeExchangeModal();
+                    showSuccessPopup('Exchange Request Submitted', 'Your exchange request has been submitted and is pending admin approval. We will review and process it within 2-3 business days.');
+                    loadUserOrders();
+                } else {
+                    showToast(response.error || 'Failed to submit exchange request', 'error');
+                }
+            } catch (error) {
+                console.error('Exchange submission error:', error);
+                showToast('Failed to submit exchange request. Please try again.', 'error');
+            }
+        }
+
+        // Cancel order
+        async function cancelOrder(orderId) {
+            try {
+                const response = await API.orders.get(orderId);
+                const order = response.order;
+                if (!order) {
+                    showSuccessPopup('Error', 'Could not find order details.');
+                    return;
+                }
+
+                // Check if order is eligible for cancellation
+                const nonCancellableStatuses = ['Shipped', 'Delivered', 'Cancelled', 'Return Requested', 'Exchange Requested'];
+                if (nonCancellableStatuses.includes(order.status)) {
+                    showSuccessPopup('Cannot Cancel', 'This order cannot be cancelled. It may have already been shipped or delivered.');
+                    return;
+                }
+
+                // Show cancellation request modal
+                showCancelModal(order);
+            } catch (error) {
+                console.error('Failed to get order for cancellation:', error);
+                showSuccessPopup('Error', 'Failed to load order details. Please try again.');
+            }
+        }
+
+        // Show cancellation request modal
+        function showCancelModal(order) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'cancelModal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3>Cancel Order</h3>
+                        <span class="modal-close" data-action="close-cancel-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="return-order-info">
+                            <p><strong>Order ID:</strong> ${order.id}</p>
+                            <p><strong>Order Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown'}</p>
+                            <p><strong>Order Total:</strong> ₹${(order.total || 0).toLocaleString()}</p>
+                            <p><strong>Payment Method:</strong> ${order.paymentMethod || 'Unknown'}</p>
+                            <p style="margin-top: 15px; padding: 10px; background: #fef3c7; border-radius: 8px; color: #92400e;">
+                                <i class="ri-information-line"></i> If you paid online, the refund will be processed within 5-7 business days.
+                            </p>
+                        </div>
+                        <div class="return-reason">
+                            <label for="cancelReason"><strong>Cancellation Reason:</strong></label>
+                            <select id="cancelReason" required>
+                                <option value="">Select a reason</option>
+                                <option value="changed_mind">Changed Mind</option>
+                                <option value="found_better_price">Found Better Price</option>
+                                <option value="ordered_by_mistake">Ordered by Mistake</option>
+                                <option value="delivery_too_slow">Delivery Taking Too Long</option>
+                                <option value="duplicate_order">Duplicate Order</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="return-comments">
+                            <label for="cancelComments"><strong>Additional Comments (Optional):</strong></label>
+                            <textarea id="cancelComments" rows="3" placeholder="Any additional details..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" data-action="close-cancel-modal">Keep Order</button>
+                        <button class="btn-submit" style="background: #6b7280;" data-action="submit-cancel" data-order-id="${order.id}">Cancel Order</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.classList.add('show');
+            
+            // Add event delegation for the modal
+            modal.addEventListener('click', function(e) {
+                const target = e.target.closest('[data-action]');
+                if (!target) return;
+                
+                const action = target.dataset.action;
+                if (action === 'close-cancel-modal') {
+                    closeCancelModal();
+                } else if (action === 'submit-cancel') {
+                    const orderId = target.dataset.orderId;
+                    submitCancelRequest(orderId);
+                }
+            });
+        }
+
+        // Close cancel modal
+        function closeCancelModal() {
+            const modal = document.getElementById('cancelModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        // Submit cancellation request via API
+        async function submitCancelRequest(orderId) {
+            const reason = document.getElementById('cancelReason').value;
+            const comments = document.getElementById('cancelComments').value;
+
+            if (!reason) {
+                showToast('Please select a cancellation reason.', 'warning');
+                return;
+            }
+
+            try {
+                const user = await window.blackonnAuth.getCurrentUser();
+                if (!user) {
+                    showToast('Please login to cancel this order.', 'warning');
+                    return;
+                }
+                
+                const cancellationData = {
+                    orderId: orderId,
+                    reason: reason,
+                    description: comments
+                };
+
+                const response = await API.cancellations.create(cancellationData);
+
+                if (response.success) {
+                    closeCancelModal();
+                    // Check if auto-approved
+                    const message = response.cancellation?.autoApproved 
+                        ? 'Your order has been cancelled successfully. Stock has been restored and refund will be processed if applicable.'
+                        : 'Your cancellation request has been submitted and is pending review. This order may have already shipped.';
+                    showSuccessPopup('Order Cancelled', message);
+                    loadUserOrders();
+                } else {
+                    showToast(response.error || 'Failed to submit cancellation request', 'error');
+                }
+            } catch (error) {
+                console.error('Cancellation submission error:', error);
+                showToast('Failed to submit cancellation request. Please try again.', 'error');
+            }
+        }
+
         // Search tracking via API
         async function searchTracking() {
             const trackingInput = document.getElementById('trackingInput').value.trim();
@@ -4589,6 +5313,7 @@
 
             try {
                 let returnRequest = null;
+                let exchangeRequest = null;
                 let order = null;
                 let courierTracking = null;
                 
@@ -4618,6 +5343,18 @@
                     } catch (e) {
                         console.log('Return not found by ID');
                     }
+                } else if (trackingInput.toUpperCase().startsWith('EXC-')) {
+                    // Tracking an exchange by exchange ID
+                    try {
+                        const exchangeResponse = await API.exchanges.getById(trackingInput);
+                        exchangeRequest = exchangeResponse.exchange;
+                        if (exchangeRequest && exchangeRequest.orderId) {
+                            const orderResponse = await API.orders.get(exchangeRequest.orderId);
+                            order = orderResponse.order;
+                        }
+                    } catch (e) {
+                        console.log('Exchange not found by ID');
+                    }
                 } else {
                     // Tracking an order by order ID
                     try {
@@ -4633,31 +5370,110 @@
                                 console.log('No returns found');
                             }
                         }
+                        
+                        // Check if order has exchange request
+                        if (order && (order.status === 'Exchange Requested' || order.status?.includes('Exchange'))) {
+                            try {
+                                const myExchanges = await API.exchanges.getMine();
+                                exchangeRequest = myExchanges.exchanges?.find(e => e.orderId === order.id);
+                            } catch (e) {
+                                console.log('No exchanges found');
+                            }
+                        }
                     } catch (e) {
                         console.log('Order not found');
                     }
                 }
 
-                if (!order && !returnRequest) {
+                if (!order && !returnRequest && !exchangeRequest) {
                     document.getElementById('trackingResult').innerHTML = `
                         <div class="empty-state" style="text-align:center;padding:40px;color:#666;">
                             <i class="ri-error-warning-line" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
-                            <p>Order or Return not found. Please check your Order ID or Return ID and try again.</p>
+                            <p>Order, Return or Exchange not found. Please check your ID and try again.</p>
                         </div>
                     `;
                     document.getElementById('trackingResult').style.display = 'block';
                     return;
                 }
 
-                // Determine if this is a return tracking
+                // Determine if this is a return or exchange tracking
                 const isReturnTracking = returnRequest && trackingInput.toUpperCase().startsWith('RET-');
-                const currentStatus = isReturnTracking ? returnRequest.status : (order?.status || 'Pending');
+                const isExchangeTracking = exchangeRequest && trackingInput.toUpperCase().startsWith('EXC-');
+                const currentStatus = isReturnTracking ? returnRequest.status : (isExchangeTracking ? exchangeRequest.status : (order?.status || 'Pending'));
                 const statusClass = currentStatus.toLowerCase().replace(' ', '-');
                 const orderDate = order?.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN') : 'Unknown';
 
                 let timelineSteps;
 
-                if (isReturnTracking) {
+                if (isExchangeTracking) {
+                    // Exchange tracking timeline
+                    const isRejected = exchangeRequest.status === 'Rejected';
+                    
+                    if (isRejected) {
+                        // Rejected exchange - show red tracker
+                        timelineSteps = [
+                            {
+                                title: 'Exchange Requested',
+                                desc: 'Your exchange request has been submitted',
+                                completed: true,
+                                time: exchangeRequest.requestedAt || exchangeRequest.createdAt ? new Date(exchangeRequest.requestedAt || exchangeRequest.createdAt).toLocaleString('en-IN') : '',
+                                rejected: false
+                            },
+                            {
+                                title: 'Exchange Rejected',
+                                desc: 'Your exchange request has been rejected',
+                                completed: true,
+                                time: exchangeRequest.statusUpdatedAt ? new Date(exchangeRequest.statusUpdatedAt).toLocaleString('en-IN') : 'Rejected',
+                                rejected: true
+                            }
+                        ];
+                    } else {
+                        timelineSteps = [
+                            {
+                                title: 'Exchange Requested',
+                                desc: 'Your exchange request has been submitted',
+                                completed: true,
+                                time: exchangeRequest.requestedAt || exchangeRequest.createdAt ? new Date(exchangeRequest.requestedAt || exchangeRequest.createdAt).toLocaleString('en-IN') : ''
+                            },
+                            {
+                                title: 'Exchange Approved',
+                                desc: 'Your exchange request has been approved',
+                                completed: ['Approved', 'Pickup Scheduled', 'Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status),
+                                time: ['Approved', 'Pickup Scheduled', 'Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status) ? 'Approved' : ''
+                            },
+                            {
+                                title: 'Pickup Scheduled',
+                                desc: 'Pickup has been scheduled for your item',
+                                completed: ['Pickup Scheduled', 'Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status),
+                                time: ['Pickup Scheduled', 'Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status) ? 'Scheduled' : ''
+                            },
+                            {
+                                title: 'Item Picked Up',
+                                desc: 'Your item has been picked up',
+                                completed: ['Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status),
+                                time: ['Picked Up', 'Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status) ? 'Picked Up' : ''
+                            },
+                            {
+                                title: 'Processing',
+                                desc: 'Your exchange is being processed',
+                                completed: ['Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status),
+                                time: ['Processing', 'New Item Dispatched', 'Completed'].includes(exchangeRequest.status) ? 'Processing' : ''
+                            },
+                            {
+                                title: 'New Item Dispatched',
+                                desc: 'Your replacement item has been dispatched',
+                                completed: ['New Item Dispatched', 'Completed'].includes(exchangeRequest.status),
+                                time: ['New Item Dispatched', 'Completed'].includes(exchangeRequest.status) ? 'Dispatched' : ''
+                            },
+                            {
+                                title: 'Exchange Completed',
+                                desc: 'Your exchange has been completed successfully',
+                                completed: exchangeRequest.status === 'Completed',
+                                time: exchangeRequest.status === 'Completed' ? 'Completed' : ''
+                            }
+                        ];
+                    }
+                } else if (isReturnTracking) {
                     // Return tracking timeline
                     const isRejected = returnRequest.status === 'Rejected';
                     
@@ -4722,6 +5538,7 @@
                 } else {
                     // Regular order tracking timeline
                     const isReturnRequest = currentStatus === 'Return Requested' || currentStatus.includes('Return');
+                    const isExchangeRequest = currentStatus === 'Exchange Requested' || currentStatus.includes('Exchange');
                     const isCancelled = currentStatus === 'Cancelled' || currentStatus === 'Canceled';
                     
                     if (isCancelled) {
@@ -4753,32 +5570,38 @@
                             {
                                 title: 'Order Confirmed',
                                 desc: 'Seller has confirmed your order',
-                                completed: ['Processing', 'Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest,
-                                time: ['Processing', 'Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest ? 'Confirmed' : ''
+                                completed: ['Processing', 'Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest || isExchangeRequest,
+                                time: ['Processing', 'Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest || isExchangeRequest ? 'Confirmed' : ''
                             },
                             {
                                 title: 'Packed',
                                 desc: 'Your order has been packed and ready for dispatch',
-                                completed: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest,
-                                time: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest ? 'Packed' : ''
+                                completed: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest || isExchangeRequest,
+                                time: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest || isExchangeRequest ? 'Packed' : ''
                             },
                             {
                                 title: 'Shipped',
                                 desc: 'Package is in transit',
-                                completed: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest,
-                                time: currentStatus === 'Shipped' ? 'In transit' : (currentStatus === 'Delivered' ? 'Delivered' : (isReturnRequest ? 'Delivered' : ''))
+                                completed: ['Shipped', 'Delivered'].includes(currentStatus) || isReturnRequest || isExchangeRequest,
+                                time: currentStatus === 'Shipped' ? 'In transit' : (currentStatus === 'Delivered' ? 'Delivered' : ((isReturnRequest || isExchangeRequest) ? 'Delivered' : ''))
                             },
                             {
                                 title: 'Delivered',
                                 desc: 'Package has been delivered successfully',
-                                completed: currentStatus === 'Delivered' || isReturnRequest,
-                                time: currentStatus === 'Delivered' ? 'Delivered' : (isReturnRequest ? 'Delivered' : '')
+                                completed: currentStatus === 'Delivered' || isReturnRequest || isExchangeRequest,
+                                time: currentStatus === 'Delivered' ? 'Delivered' : ((isReturnRequest || isExchangeRequest) ? 'Delivered' : '')
                             },
                             ...(isReturnRequest ? [{
                                 title: 'Return Requested',
                                 desc: 'Return request has been submitted',
                                 completed: true,
                                 time: returnRequest ? new Date(returnRequest.requestedAt || returnRequest.createdAt).toLocaleString('en-IN') : 'Requested'
+                            }] : []),
+                            ...(isExchangeRequest ? [{
+                                title: 'Exchange Requested',
+                                desc: 'Exchange request has been submitted',
+                                completed: true,
+                                time: exchangeRequest ? new Date(exchangeRequest.requestedAt || exchangeRequest.createdAt).toLocaleString('en-IN') : 'Requested'
                             }] : [])
                         ];
                     }
@@ -4802,8 +5625,9 @@
                 document.getElementById('trackingResult').innerHTML = `
                     <div class="tracking-header">
                         <div class="tracking-order-info">
-                            <h3 id="trackingOrderId">${isReturnTracking ? 'Return' : 'Order'} #${isReturnTracking ? returnRequest.id : order.id}</h3>
-                            <p>${isReturnTracking ? 'Return requested' : 'Ordered'} on ${orderDate}</p>
+                            <h3 id="trackingOrderId">${isExchangeTracking ? 'Exchange' : (isReturnTracking ? 'Return' : 'Order')} #${isExchangeTracking ? exchangeRequest.id : (isReturnTracking ? returnRequest.id : order.id)}</h3>
+                            <p>${isExchangeTracking ? 'Exchange requested' : (isReturnTracking ? 'Return requested' : 'Ordered')} on ${orderDate}</p>
+                            ${isExchangeTracking ? `<p><strong>Original Order:</strong> #${order?.id || exchangeRequest.orderId}</p>` : ''}
                             ${isReturnTracking ? `<p><strong>Original Order:</strong> #${order?.id || returnRequest.orderId}</p>` : ''}
                         </div>
                         <span class="order-status ${statusClass}" id="trackingStatus">${currentStatus}</span>
@@ -4838,8 +5662,38 @@
                     </div>
                     ` : ''}
                     <div class="tracking-details">
-                        <h4>${isReturnTracking ? 'Return Details' : 'Order Details'}</h4>
-                        ${isReturnTracking ? `
+                        <h4>${isExchangeTracking ? 'Exchange Details' : (isReturnTracking ? 'Return Details' : 'Order Details')}</h4>
+                        ${isExchangeTracking ? `
+                            <div class="exchange-info" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                <p><strong>Exchange Reason:</strong> ${exchangeRequest.reason?.replace(/_/g, ' ') || 'Not specified'}</p>
+                                <p><strong>Exchange For:</strong> ${(exchangeRequest.exchangeFor || 'Not specified').replace(/_/g, ' ')}</p>
+                                ${exchangeRequest.description || exchangeRequest.comments ? `<p><strong>Comments:</strong> ${exchangeRequest.description || exchangeRequest.comments}</p>` : ''}
+                            </div>
+                            ${exchangeRequest.newSize || exchangeRequest.newColor ? `
+                            <div class="new-variant-info" style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 8px; border-left: 4px solid #22c55e;">
+                                <h5 style="margin: 0 0 10px 0; color: #15803d; display: flex; align-items: center; gap: 8px;"><i class="ri-arrow-right-circle-line"></i> Requested New Variant:</h5>
+                                ${exchangeRequest.newSize ? `<p style="margin: 5px 0;"><strong>New Size:</strong> <span style="color: #15803d; font-weight: 600; font-size: 1.1em;">${exchangeRequest.newSize}</span></p>` : ''}
+                                ${exchangeRequest.newColor ? `<p style="margin: 5px 0;"><strong>New Color:</strong> <span style="color: #15803d; font-weight: 600; font-size: 1.1em;">${exchangeRequest.newColor}</span></p>` : ''}
+                            </div>
+                            ` : ''}
+                            <div class="tracking-items">
+                                <h5 style="display: flex; align-items: center; gap: 8px;"><i class="ri-arrow-left-right-line" style="color: #f59e0b;"></i> Items Being Exchanged:</h5>
+                                ${exchangeRequest.items?.map(item => `
+                                    <div class="tracking-item">
+                                        <span>${item.name} (${item.size}/${item.color}) x${item.quantity}</span>
+                                        <span>₹${((item.price || 0) * (item.quantity || 1)).toLocaleString()}</span>
+                                    </div>
+                                `).join('') || '<div class="tracking-item">No items found</div>'}
+                            </div>
+                            ${exchangeRequest.newItem ? `
+                            <div class="tracking-items" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e5e7eb;">
+                                <h5 style="display: flex; align-items: center; gap: 8px;"><i class="ri-gift-line" style="color: #22c55e;"></i> New Item You'll Receive:</h5>
+                                <div class="tracking-item" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 10px; border-radius: 6px;">
+                                    <span style="font-weight: 600; color: #15803d;">${exchangeRequest.newItem.name || 'Same product'} (${exchangeRequest.newItem.size || 'Same'}/${exchangeRequest.newItem.color || 'Same'})</span>
+                                </div>
+                            </div>
+                            ` : ''}
+                        ` : isReturnTracking ? `
                             <div class="return-info" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                                 <p><strong>Return Reason:</strong> ${returnRequest.reason?.replace('_', ' ') || 'Not specified'}</p>
                                 ${returnRequest.comments ? `<p><strong>Comments:</strong> ${returnRequest.comments}</p>` : ''}
@@ -5603,6 +6457,10 @@
                     reorderItems(orderId);
                 } else if (action === 'return' && orderId) {
                     returnItems(orderId);
+                } else if (action === 'exchange' && orderId) {
+                    exchangeItems(orderId);
+                } else if (action === 'cancel-order' && orderId) {
+                    cancelOrder(orderId);
                 } else if (action === 'invoice' && orderId) {
                     downloadInvoice(orderId);
                 } else if (action === 'retry') {
@@ -5624,6 +6482,23 @@
                 
                 if (action === 'track-return' && returnId) {
                     trackReturn(returnId);
+                }
+            });
+        }
+        
+        // Exchanges list event delegation
+        const exchangesList = document.getElementById('exchangesList');
+        if (exchangesList && !exchangesList.dataset.exchangesHandlerAttached) {
+            exchangesList.dataset.exchangesHandlerAttached = 'true';
+            exchangesList.addEventListener('click', function(e) {
+                const button = e.target.closest('button[data-action]');
+                if (!button) return;
+                
+                const action = button.dataset.action;
+                const exchangeId = button.dataset.exchangeId;
+                
+                if (action === 'track-exchange' && exchangeId) {
+                    trackExchange(exchangeId);
                 }
             });
         }

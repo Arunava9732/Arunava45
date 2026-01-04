@@ -591,24 +591,12 @@
       color: #64748b;
     }
     
-    /* Footer */
-    .footer { 
-      opacity: 1 !important;
-      padding: 100px 8% 24px !important;
-      color: #000 !important;
-      display: grid !important;
-      grid-template-columns: 2fr 1fr 1fr 1fr !important;
-      gap: 60px !important;
-      align-items: start !important;
-    }
-    
     @media (max-width: 768px) {
       .back-button { top: 80px; left: 12px; padding: 10px 16px; font-size: 0.85rem; }
       .gift-hero h1 { font-size: 2rem; }
       .gift-card-value { font-size: 2rem; }
       .purchase-section { flex-direction: column; text-align: center; }
       .purchase-btn { width: 100%; justify-content: center; }
-      .footer { grid-template-columns: 1fr !important; gap: 40px !important; }
     }
   </style>
 </head>
@@ -791,38 +779,213 @@
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" id="contact">
     <div class="logo">
-      <a href="index.html">
-        <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN" style="width:150px;">
-      </a>
-      <p style="color:#666;font-size:0.9rem;margin:0;">Premium Black Clothing</p>
+      <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+      <p style="font-size:16px; line-height:1.6; margin-top: 20px;">
+      Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
     </div>
     <div>
-      <h3>Shop</h3>
+      <h3>The Atelier</h3>
       <ul>
-        <li><a href="products.html">All Products</a></li>
-        <li><a href="gift-cards.html">Gift Cards</a></li>
-        <li><a href="cart.html">Cart</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="products.html">Category</a></li>
+        <li><a href="contact.html">Contact Info</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="products.html">Shop</a></li>
+        <li><a href="size-guide.html">Size Guide</a></li>
       </ul>
     </div>
     <div>
-      <h3>Support</h3>
+      <h3>Regimen</h3>
       <ul>
-        <li><a href="contact.html">Contact Us</a></li>
-        <li><a href="shipping.html">Shipping</a></li>
-        <li><a href="return-policy.html">Returns</a></li>
-      </ul>
-    </div>
-    <div>
-      <h3>Legal</h3>
-      <ul>
+        <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+        <li><a href="payment-policy.html">Payment Policy</a></li>
         <li><a href="privacy-policy.html">Privacy Policy</a></li>
-        <li><a href="terms.html">Terms of Service</a></li>
         <li><a href="refund-policy.html">Refund Policy</a></li>
+        <li><a href="return-policy.html">Return Policy</a></li>
+        <li><a href="shipping.html">Shipping & Delivery</a></li>
       </ul>
+    </div>
+    <div>
+      <h3>Contact Us</h3>
+      <div class="socials">
+        <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="ri-facebook-fill"></i>
+        </a>
+        <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+          <i class="ri-instagram-fill"></i>
+        </a>
+        <a href="https://wa.me/+919732726750" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <i class="ri-whatsapp-fill"></i>
+        </a>
+      </div>
+      
+      <h3 style="margin-top: 25px;">Newsletter</h3>
+      <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+      <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+        <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+        <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+      </form>
     </div>
   </footer>
+
+  <div class="bottom">
+    © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a>
+  </div>
+
+  <style>
+  .footer { 
+    opacity: 1 !important;
+    padding: 100px 8% 24px !important;
+    color: #000 !important;
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1fr 1fr !important;
+    gap: 60px !important;
+    align-items: start !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    position: relative !important;
+    z-index: 1 !important;
+    transition: none !important;
+    transform: translateY(0) !important;
+  }
+  .footer > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    visibility: visible !important;
+    min-width: 0 !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  .footer .logo {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    visibility: visible !important;
+  }
+  .footer h3 {
+    color: #000 !important;
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+    visibility: visible !important;
+  }
+  .footer a {
+    color: #666 !important;
+  }
+  .footer a:hover {
+    color: #000 !important;
+  }
+  .footer ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .footer li {
+    margin: 0;
+  }
+  .footer .logo img {
+    width: 150px;
+    height: 50px;
+    display: block !important;
+    visibility: visible !important;
+  }
+  .footer .logo p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 20px;
+    color: #666 !important;
+    visibility: visible !important;
+  }
+  .footer .socials {
+    display: flex;
+    gap: 10px;
+  }
+  .footer .socials a {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #e5e5e5;
+    color: #000 !important;
+    font-size: 18px;
+    transition: 0.3s;
+  }
+  .footer .socials a:hover {
+    transform: translate3d(0, -4px, 0);
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .bottom {
+    background: #eef3f8 !important;
+    padding: 10px 20px !important;
+    text-align: center !important;
+    color: #666 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    margin-top: 100px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .bottom a {
+    color: #000;
+    text-decoration: none;
+  }
+  .bottom a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mobile Responsive Footer */
+  @media (max-width: 980px) {
+    .footer {
+      grid-template-columns: 1fr !important;
+      padding: 40px 6% !important;
+      gap: 36px !important;
+    }
+    .footer > div {
+      align-items: flex-start !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .footer {
+      padding: 30px 5% !important;
+      gap: 30px !important;
+    }
+    .footer h3 {
+      font-size: 1rem !important;
+    }
+    .footer .logo p {
+      font-size: 14px !important;
+    }
+    .bottom {
+      margin-top: 60px !important;
+      padding: 10px 15px !important;
+      font-size: 13px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .footer {
+      padding: 25px 4% !important;
+      gap: 25px !important;
+    }
+    .footer .logo img {
+      width: 120px !important;
+      height: auto !important;
+    }
+    .bottom {
+      margin-top: 40px !important;
+      flex-direction: column !important;
+      gap: 5px !important;
+    }
+  }
+  </style>
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/auth.js"></script>
