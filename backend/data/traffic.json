@@ -427,21 +427,20 @@
   {
     "id": "traffic-2026-01-04",
     "date": "2026-01-04",
-    "totalVisits": 139,
+    "totalVisits": 141,
     "uniqueVisitors": [
       "MTI3LjAuMC4xTW96"
     ],
     "pageViews": {
-      "/index.html": 60,
+      "/index.html": 59,
       "/profile.html": 17,
-      "/products.html": 29,
+      "/products.html": 30,
       "/about.html": 6,
       "/size-guide.html": 14,
       "/faq.html": 1,
-      "/": 5,
+      "/": 9,
       "/cart.html": 2,
-      "/login.html": 3,
-      "/checkout.html": 2
+      "/login.html": 3
     },
     "hourlyVisits": {
       "18": 9,
@@ -449,18 +448,51 @@
       "20": 65,
       "21": 9,
       "22": 13,
-      "23": 5
+      "23": 7
     },
     "devices": {
-      "desktop": 139,
+      "desktop": 141,
       "mobile": 0,
       "tablet": 0
     },
     "browsers": {
-      "Chrome": 139
+      "Chrome": 141
     },
     "referrers": {
-      "Direct": 139
+      "Direct": 141
+    }
+  },
+  {
+    "id": "traffic-2026-01-05",
+    "date": "2026-01-05",
+    "totalVisits": 29,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/index.html": 13,
+      "/shipping.html": 3,
+      "/about.html": 1,
+      "/contact.html": 2,
+      "/login.html": 2,
+      "/": 2,
+      "/cancellation-policy.html": 4,
+      "/products.html": 2
+    },
+    "hourlyVisits": {
+      "19": 6,
+      "20": 23
+    },
+    "devices": {
+      "desktop": 29,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 29
+    },
+    "referrers": {
+      "Direct": 29
     }
   }
 ]

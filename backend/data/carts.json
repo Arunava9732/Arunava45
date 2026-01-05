@@ -43,5 +43,19 @@
     }
   ],
   "admin": [],
-  "user_cf5db6a7-7184-4ea9-96c8-65efa99ab3d2": []
+  "user_cf5db6a7-7184-4ea9-96c8-65efa99ab3d2": [
+    {
+      "id": "prod-7ddc82b9",
+      "name": "Oversize T-shirt",
+      "price": 1111,
+      "image": "/uploads/products/1767530334792_lvjz6j.jpg",
+      "thumbImage": "/uploads/products/1767530334792_lvjz6j.jpg",
+      "color": "Black",
+      "size": "M",
+      "selectedSize": "M",
+      "selectedColor": "#000000",
+      "quantity": 1,
+      "addedAt": "2026-01-04T16:52:19.929Z"
+    }
+  ]
 }

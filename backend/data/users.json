@@ -6,7 +6,7 @@
     "password": "$2a$12$4Gyjha2uwnrHhB.vbefui.UtGr7QPQKYxjcRz.XXyWutaLhBDDM4e",
     "role": "admin",
     "createdAt": "2025-12-20T18:09:44.254Z",
-    "lastLogin": "2026-01-04T17:55:17.637Z",
+    "lastLogin": "2026-01-05T14:09:44.794Z",
     "failedAttempts": 0,
     "lockedUntil": null
   },
@@ -68,7 +68,7 @@
     "password": "$2a$12$DRYoHcBL8MW84xNpSELwjOyMfswRepUXJGDYyLyd6vVMpRz5NpCpy",
     "role": "customer",
     "createdAt": "2025-12-27T13:25:53.721Z",
-    "lastLogin": "2026-01-04T18:00:23.845Z",
+    "lastLogin": "2026-01-04T17:40:02.751Z",
     "failedAttempts": 0,
     "lockedUntil": null
   }

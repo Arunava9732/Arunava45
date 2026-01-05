@@ -23,6 +23,11 @@
       "/uploads/products/1767530334882_7yo07t.jpg"
     ],
     "createdAt": "2026-01-04T12:38:54.983Z",
-    "updatedAt": "2026-01-04T12:38:54.983Z"
+    "updatedAt": "2026-01-05T14:45:33.260Z",
+    "lowStockThreshold": 10,
+    "sku": "GEN-OVER-4HCWDS",
+    "skuCreatedAt": "2026-01-05T14:10:28.335Z",
+    "barcode": "8907421068980",
+    "barcodeCreatedAt": "2026-01-05T14:10:28.335Z"
   }
 ]
