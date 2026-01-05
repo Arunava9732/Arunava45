@@ -2554,6 +2554,22 @@
       .generate-btn i {
         font-size: 1rem;
       }
+      
+      /* Mobile responsive for input with generate button */
+      @media (max-width: 480px) {
+        .input-with-btn {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .input-with-btn input {
+          width: 100%;
+        }
+        .generate-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 12px 16px;
+        }
+      }
 
       /* Multi-select checkbox group styles */
       .multi-select-group {
