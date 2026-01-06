@@ -12,6 +12,8 @@
   <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <!-- API Client for Full-Stack Mode -->
   <script src="assets/js/api.js?v=20241224"></script>
   <script src="assets/js/auth.js"></script>
@@ -2464,6 +2466,101 @@
   let discountAmount = 0;
   let promoEnabled = false;
   
+  // Razorpay configuration
+  let razorpayEnabled = false;
+  let razorpayKeyId = null;
+  let paymentMethods = { upi: true, card: false, netbanking: false, wallet: false };
+  
+  // Fast check for payment mode (< 100ms)
+  async function checkPaymentMode() {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1000); // 1 second timeout
+      
+      const response = await fetch('/api/payment/mode', { 
+        credentials: 'include',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (response.ok) {
+        const data = await response.json();
+        razorpayEnabled = data.mode === 'razorpay';
+        razorpayKeyId = data.keyId;
+        if (razorpayEnabled) {
+          paymentMethods = { card: true, upi: true, netbanking: true, wallet: true };
+          updatePaymentOptionsUI();
+        }
+      }
+    } catch (error) {
+      // If timeout or error, default to manual UPI
+      console.log('Payment mode check failed, using manual UPI');
+      razorpayEnabled = false;
+    }
+  }
+  
+  // Check Razorpay configuration from server (detailed)
+  async function checkRazorpayConfig() {
+    // First do a fast check
+    await checkPaymentMode();
+    
+    // If Razorpay is enabled, get full config
+    if (razorpayEnabled) {
+      try {
+        const response = await fetch('/api/payment/config', { 
+          credentials: 'include',
+          cache: 'no-store'
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            paymentMethods = data.paymentMethods || paymentMethods;
+            updatePaymentOptionsUI();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to get full Razorpay config:', error);
+      }
+    }
+  
+  // Update payment options based on Razorpay configuration
+  function updatePaymentOptionsUI() {
+    const paymentOptionsContainer = document.getElementById('paymentOptions');
+    if (!paymentOptionsContainer) return;
+    
+    if (razorpayEnabled) {
+      // Enable all payment methods when Razorpay is active
+      paymentOptionsContainer.innerHTML = `
+        <div class="payment-option" data-payment="card">
+          <i class="ri-bank-card-line"></i>
+          <span>Credit/Debit Card</span>
+        </div>
+        <div class="payment-option" data-payment="upi">
+          <i class="ri-smartphone-line"></i>
+          <span>UPI</span>
+        </div>
+        <div class="payment-option" data-payment="netbanking">
+          <i class="ri-building-line"></i>
+          <span>Net Banking</span>
+        </div>
+        <div class="payment-option" data-payment="wallet">
+          <i class="ri-wallet-line"></i>
+          <span>Digital Wallet</span>
+        </div>
+      `;
+      
+      // Reattach click handlers
+      paymentOptionsContainer.querySelectorAll('.payment-option').forEach(option => {
+        option.addEventListener('click', function() {
+          if (!this.classList.contains('disabled')) {
+            selectPayment(this, this.dataset.payment);
+          }
+        });
+      });
+    }
+    // If Razorpay is not enabled, keep the default UPI-only option
+  }
+  
   // Check if promo codes and gift cards are enabled
   async function checkPromoEnabled() {
     try {
@@ -3104,14 +3201,143 @@
       if (result.success) {
         const order = result.order;
         
-        // Show UPI payment options (supports all UPI apps)
-        showUPIPaymentModal(order);
+        // Check if Razorpay is enabled - use Razorpay for all payment methods
+        if (razorpayEnabled && razorpayKeyId) {
+          await initiateRazorpayPayment(order, {
+            customerName,
+            customerEmail,
+            customerPhone
+          });
+        } else {
+          // Fallback to UPI payment modal (manual payment)
+          showUPIPaymentModal(order);
+        }
       } else {
         throw new Error(result.error || 'Failed to create order');
       }
     } catch (error) {
       console.error('Order creation failed:', error);
       showToast('Failed to create order: ' + (error.message || 'Unknown error'), 'error');
+    }
+  }
+
+  // Initiate Razorpay Payment
+  async function initiateRazorpayPayment(order, customerInfo) {
+    try {
+      // Create Razorpay order on backend
+      const response = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          amount: order.total,
+          currency: 'INR',
+          orderId: order.id,
+          receipt: order.id,
+          notes: {
+            orderId: order.id,
+            customerName: customerInfo.customerName,
+            customerEmail: customerInfo.customerEmail
+          }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create payment order');
+      }
+      
+      // Razorpay checkout options
+      const options = {
+        key: razorpayKeyId,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: 'BLACKONN',
+        description: `Order ${order.id}`,
+        image: window.location.origin + '/assets/img/favicon.png',
+        order_id: data.order.id,
+        handler: async function(response) {
+          // Payment successful - verify on backend
+          await handleRazorpaySuccess(response, order.id);
+        },
+        prefill: {
+          name: customerInfo.customerName,
+          email: customerInfo.customerEmail,
+          contact: customerInfo.customerPhone
+        },
+        notes: {
+          orderId: order.id
+        },
+        theme: {
+          color: '#000000',
+          backdrop_color: 'rgba(0, 0, 0, 0.8)'
+        },
+        modal: {
+          ondismiss: async function() {
+            // User closed the payment modal without completing
+            showToast('Payment was not completed. You can try again from your orders page.', 'warning');
+            // Cancel the unpaid order
+            try {
+              await API.orders.cancel(order.id);
+            } catch (e) {
+              console.error('Failed to cancel order:', e);
+            }
+            // Reset checkout to review section
+            document.getElementById('reviewSection').classList.add('show');
+            updateProgressIndicator(3);
+          }
+        }
+      };
+      
+      // Open Razorpay checkout
+      const rzp = new Razorpay(options);
+      
+      rzp.on('payment.failed', function(response) {
+        console.error('Payment failed:', response.error);
+        showToast('Payment failed: ' + (response.error.description || 'Please try again'), 'error');
+      });
+      
+      rzp.open();
+      
+    } catch (error) {
+      console.error('Razorpay initialization failed:', error);
+      showToast('Payment initialization failed. Please try again.', 'error');
+      // Fall back to UPI modal if Razorpay fails
+      showUPIPaymentModal(order);
+    }
+  }
+  
+  // Handle successful Razorpay payment
+  async function handleRazorpaySuccess(response, orderId) {
+    try {
+      // Show loading indicator
+      showToast('Verifying payment...', 'info');
+      
+      // Verify payment on backend
+      const verifyResponse = await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          orderId: orderId
+        })
+      });
+      
+      const result = await verifyResponse.json();
+      
+      if (result.success) {
+        // Payment verified - show success
+        showOrderConfirmation(result.order || { id: orderId });
+      } else {
+        throw new Error(result.error || 'Payment verification failed');
+      }
+    } catch (error) {
+      console.error('Payment verification failed:', error);
+      showToast('Payment verification failed. Please contact support with Order ID: ' + orderId, 'error');
     }
   }
 
@@ -4242,6 +4468,7 @@
   // Initialize
   loadCheckoutSummary();
   checkPromoEnabled(); // Check if coupons/gift cards are enabled
+  checkRazorpayConfig(); // Check if Razorpay is enabled
 
   // ========================================
   // Event Listeners (CSP-compliant)
@@ -4478,7 +4705,7 @@
       <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
         <i class="ri-instagram-fill"></i>
       </a>
-      <a href="https://wa.me/+918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
         <i class="ri-whatsapp-fill"></i>
       </a>
     </div>

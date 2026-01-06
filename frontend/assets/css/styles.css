@@ -3120,6 +3120,10 @@ button:focus {
   }
   
   .hamburger span {
-    height: 2px;
+    display: block !important;
+    width: 100% !important;
+    height: 2px !important;
+    background: #000 !important;
+    visibility: visible !important;
   }
 }

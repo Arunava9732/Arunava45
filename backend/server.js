@@ -52,6 +52,7 @@ const shippingRoutes = require('./routes/shipping');
 const taxRoutes = require('./routes/tax');
 const giftCardsRoutes = require('./routes/giftCards');
 const settingsRoutes = require('./routes/settings');
+const paymentRoutes = require('./routes/payment');
 const { router: webhookRoutes, sendOrderWebhook } = require('./routes/webhooks');
 
 // Create Express app
@@ -322,6 +323,7 @@ app.use('/api/shipping', shippingRoutes);
 app.use('/api/tax', taxRoutes);
 app.use('/api/gift-cards', giftCardsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api/webhooks', webhookRoutes);
 
 // Serve uploaded files statically with cache control and proper MIME types
