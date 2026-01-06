@@ -1409,11 +1409,12 @@
         .tracking-timeline::before {
             content: '';
             position: absolute;
-            left: 10px;
+            left: 8px;
             top: 0;
             bottom: 0;
             width: 2px;
             background: #eee;
+            transform: translateX(6px);
         }
 
         .tracking-step {
@@ -1436,6 +1437,7 @@
             background: #ddd;
             border: 3px solid #fff;
             box-shadow: 0 0 0 2px #ddd;
+            z-index: 1;
         }
 
         .tracking-step.completed::before {
@@ -1968,6 +1970,379 @@
                 transform: scale(1.1);
                 box-shadow: 0 2px 12px rgba(220, 38, 38, 0.5);
             }
+        }
+
+        /* ============ BUTTON ANIMATIONS & HOVER EFFECTS ============ */
+        /* All Profile Page Buttons - Enhanced Animations */
+        .btn-edit,
+        .btn-logout,
+        .btn-save,
+        .btn-track,
+        .btn-reorder,
+        .btn-return,
+        .btn-exchange,
+        .btn-cancel-order,
+        .btn-invoice,
+        .btn-add-cart,
+        .btn-remove-wishlist,
+        .btn-add-address,
+        .btn-edit-address,
+        .btn-delete-address,
+        .btn-cancel,
+        .btn-submit,
+        .btn-confirm-logout,
+        .btn-confirm-delete,
+        .btn-success-ok,
+        .btn-save-address,
+        .btn-reply-query,
+        .btn-send-reply,
+        .btn-cancel-reply,
+        .tracking-search button,
+        .empty-state a,
+        .query-actions button,
+        .wishlist-item-actions button,
+        .address-modal-buttons button,
+        .logout-popup-buttons button,
+        .delete-modal-buttons button,
+        .modal-footer button {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.3s ease,
+                        color 0.3s ease,
+                        border-color 0.3s ease !important;
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        /* Button Hover - Lift Effect */
+        .btn-edit:hover,
+        .btn-logout:hover,
+        .btn-save:hover,
+        .btn-track:hover,
+        .btn-reorder:hover,
+        .btn-return:hover,
+        .btn-exchange:hover,
+        .btn-cancel-order:hover,
+        .btn-invoice:hover,
+        .btn-add-cart:hover,
+        .btn-add-address:hover,
+        .btn-edit-address:hover,
+        .btn-reply-query:hover,
+        .btn-send-reply:hover,
+        .tracking-search button:hover,
+        .empty-state a:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Button Active - Press Effect */
+        .btn-edit:active,
+        .btn-logout:active,
+        .btn-save:active,
+        .btn-track:active,
+        .btn-reorder:active,
+        .btn-return:active,
+        .btn-exchange:active,
+        .btn-cancel-order:active,
+        .btn-invoice:active,
+        .btn-add-cart:active,
+        .btn-remove-wishlist:active,
+        .btn-add-address:active,
+        .btn-edit-address:active,
+        .btn-delete-address:active,
+        .btn-cancel:active,
+        .btn-submit:active,
+        .btn-confirm-logout:active,
+        .btn-confirm-delete:active,
+        .btn-success-ok:active,
+        .btn-save-address:active,
+        .btn-reply-query:active,
+        .btn-send-reply:active,
+        .btn-cancel-reply:active,
+        .tracking-search button:active,
+        .empty-state a:active {
+            transform: translateY(-1px) scale(0.98) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Ripple Effect for Primary Buttons */
+        .btn-edit::after,
+        .btn-save::after,
+        .btn-track::after,
+        .btn-add-cart::after,
+        .btn-submit::after,
+        .btn-confirm-logout::after,
+        .btn-confirm-delete::after,
+        .btn-save-address::after,
+        .btn-reply-query::after,
+        .btn-send-reply::after,
+        .tracking-search button::after,
+        .empty-state a::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.25) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .btn-edit:hover::after,
+        .btn-save:hover::after,
+        .btn-track:hover::after,
+        .btn-add-cart:hover::after,
+        .btn-submit:hover::after,
+        .btn-confirm-logout:hover::after,
+        .btn-confirm-delete:hover::after,
+        .btn-save-address:hover::after,
+        .btn-reply-query:hover::after,
+        .btn-send-reply:hover::after,
+        .tracking-search button:hover::after,
+        .empty-state a:hover::after {
+            transform: scale(2.5);
+        }
+
+        /* Icon Animation in Buttons */
+        .btn-track i,
+        .btn-invoice i,
+        .btn-return i,
+        .btn-exchange i,
+        .btn-reorder i,
+        .btn-reply-query i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-track:hover i,
+        .btn-invoice:hover i,
+        .btn-return:hover i,
+        .btn-exchange:hover i,
+        .btn-reorder:hover i,
+        .btn-reply-query:hover i {
+            transform: scale(1.15);
+        }
+
+        /* ============ TRACKING SYSTEM ANIMATIONS ============ */
+        /* Tracking Search Input Animation */
+        .tracking-search input {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
+        }
+
+        .tracking-search input:focus {
+            border-color: #000 !important;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Tracking Result Card Animation */
+        .tracking-result {
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .tracking-result:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tracking Header Animation */
+        .tracking-header {
+            animation: slideInFromLeft 0.5s ease-out 0.1s both;
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Tracking Timeline Animation */
+        .tracking-timeline {
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Tracking Step Animation */
+        .tracking-step {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            opacity: 0;
+            animation: stepReveal 0.5s ease-out forwards;
+        }
+
+        .tracking-step:nth-child(1) { animation-delay: 0.1s; }
+        .tracking-step:nth-child(2) { animation-delay: 0.2s; }
+        .tracking-step:nth-child(3) { animation-delay: 0.3s; }
+        .tracking-step:nth-child(4) { animation-delay: 0.4s; }
+        .tracking-step:nth-child(5) { animation-delay: 0.5s; }
+        .tracking-step:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes stepReveal {
+            from {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Tracking Step Hover Effect */
+        .tracking-step:hover {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            padding-left: 10px;
+            margin-left: -10px;
+        }
+
+        .tracking-step:hover .tracking-step-title {
+            color: #000;
+        }
+
+        /* Tracking Step Circle Animation Enhancement */
+        .tracking-step::before {
+            transition: all 0.3s ease !important;
+        }
+
+        .tracking-step:hover::before {
+            transform: scale(1.2);
+        }
+
+        .tracking-step.completed:hover::before {
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3);
+        }
+
+        .tracking-step.current:hover::before {
+            box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Tracking Details Animation */
+        .tracking-details {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        /* Tracking Item Hover */
+        .tracking-item {
+            transition: all 0.3s ease !important;
+            padding: 10px 8px;
+            margin: 0 -8px;
+            border-radius: 6px;
+        }
+
+        .tracking-item:hover {
+            background: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        /* Order Card Animations */
+        .order-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Order Status Badge Animation */
+        .order-status,
+        .return-status,
+        .exchange-status {
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
+        .order-status:hover,
+        .return-status:hover,
+        .exchange-status:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Sidebar Menu Animation */
+        .sidebar-menu a {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .sidebar-menu a:hover {
+            transform: translateX(5px);
+            background: #f5f5f5;
+        }
+
+        .sidebar-menu a:hover i {
+            transform: scale(1.1);
+        }
+
+        .sidebar-menu a i {
+            transition: transform 0.3s ease;
+        }
+
+        /* Query Card Animation */
+        .query-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        border-color 0.3s ease !important;
+        }
+
+        .query-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Address Card Animation */
+        .address-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .address-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Profile Avatar Hover Enhancement */
+        .profile-avatar {
+            transition: transform 0.4s ease, box-shadow 0.4s ease !important;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Profile Header Card Animation */
+        .profile-header {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .profile-header:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive - Minimal Aesthetic Mobile Layout */

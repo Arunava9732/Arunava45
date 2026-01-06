@@ -857,7 +857,7 @@
         <i class="ri-instagram-fill"></i>
       </a>
 
-      <a href="https://wa.me/+919732726750" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <a href="https://wa.me/+918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
         <i class="ri-whatsapp-fill"></i>
       </a>
     </div>
@@ -947,6 +947,23 @@
     height: fit-content;
   }
 
+  /* Ensure thumbnails are always visible below main image */
+  .thumbnails {
+    display: flex !important;
+    gap: 18px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    order: 2;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .main-image-wrap {
+    order: 1;
+  }
+
   @keyframes fadeInLeft {
     from {
       opacity: 0;
@@ -1017,13 +1034,18 @@
     filter: brightness(1.05) contrast(1.08);
   }
 
+  /* Thumbnails - Always show below main image */
   .thumbnails {
-    display: flex;
+    display: flex !important;
     gap: 18px;
     overflow-x: auto;
-    padding-bottom: 12px;
+    padding: 15px 0;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    order: 2;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    visibility: visible !important;
   }
 
   .thumbnails::-webkit-scrollbar {
@@ -1723,9 +1745,9 @@
     }
 
     .main-image-wrap {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 0.85 / 1;
       width: 100%;
-      min-height: 320px;
+      min-height: 420px;
       border-radius: 16px;
     }
     
@@ -1735,14 +1757,23 @@
       object-fit: cover;
     }
 
-    .thumbnail {
-      width: 70px;
-      height: 70px;
+    /* Thumbnails below main image for mobile */
+    .product-images {
+      flex-direction: column;
     }
 
     .thumbnails {
-      gap: 10px;
+      order: 2;
+      display: flex;
+      gap: 12px;
       justify-content: center;
+      flex-wrap: wrap;
+      padding: 15px 0;
+    }
+
+    .thumbnail {
+      width: 70px;
+      height: 70px;
     }
 
     .size-option {
@@ -2071,7 +2102,7 @@
       name: apiProduct.name || 'Product',
       desc: apiProduct.desc || apiProduct.description || `Premium ${apiProduct.name || 'product'} with quality materials.`,
       price: apiProduct.price || 0,
-      wa: "https://wa.me/919732726750",
+      wa: "https://wa.me/918420889722",
       sizes: allSizes,              // Show ALL sizes in UI
       colors: allColors.map(c => c.hex), // Show ALL colors in UI
       availableSizes: isOutOfStock ? [] : availableSizes,    // Empty if out of stock
@@ -2843,7 +2874,7 @@
         <span class="modal1close">✕</span>
         <h2>Contact Information</h2>
         <p><strong>Email:</strong><a href="mailto:hello@blackonn.com" style="color: rgb(59, 57, 57);"> hello@blackonn.com</a></p>
-        <p><strong>Phone:</strong><a href="tel:+919732726750" style="color: rgb(59, 57, 57);"> +91 9732726750</a></p>
+        <p><strong>Phone:</strong><a href="tel:+918420889722" style="color: rgb(59, 57, 57);"> +91 8420889722</a></p>
         <p><strong>Address:</strong><a style="color: rgb(59, 57, 57);"> Kolkata, West Bengal</a></p>
       </div>
     </div>

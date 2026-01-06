@@ -2062,24 +2062,85 @@ ul li a:hover {
 .footer {
   opacity: 0;
   transform: translate3d(0, 30px, 0);
-  transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease;
+  transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease !important;
 }
 
 .footer.in-view {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
 }
 
 /* Stagger footer columns for smoother entrance */
 .footer > div {
   opacity: 0;
   transform: translate3d(0, 18px, 0);
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease !important;
 }
 
 .footer > div.in-view {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* ============ PROFILE PAGE BUTTON ANIMATIONS ============ */
+.profile-actions .btn-edit,
+.profile-actions .btn-logout,
+.profile-container button,
+.profile-container .btn,
+.address-modal-buttons button,
+.logout-popup-buttons button,
+.delete-modal-buttons button,
+.btn-save-address,
+.btn-cancel,
+.btn-confirm-logout,
+.btn-success-ok {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background-color 0.3s ease,
+              color 0.3s ease,
+              border-color 0.3s ease !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.profile-actions .btn-edit:hover,
+.profile-actions .btn-logout:hover,
+.profile-container button:hover,
+.profile-container .btn:hover,
+.address-modal-buttons button:hover,
+.btn-save-address:hover {
+  transform: translate3d(0, -3px, 0) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.profile-actions .btn-edit:active,
+.profile-actions .btn-logout:active,
+.profile-container button:active,
+.profile-container .btn:active {
+  transform: translate3d(0, -1px, 0) scale3d(0.98, 0.98, 1) !important;
+}
+
+/* Profile button ripple effect */
+.profile-actions .btn-edit::after,
+.profile-actions .btn-logout::after,
+.btn-save-address::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.profile-actions .btn-edit:hover::after,
+.profile-actions .btn-logout:hover::after,
+.btn-save-address:hover::after {
+  transform: scale(2.5);
 }
 
 /* ============ PAGE-SPECIFIC ANIMATIONS ============ */
@@ -2894,3 +2955,171 @@ button:focus {
   display: none;
 }
 
+/* ============ HOME PAGE MOBILE IMPROVEMENTS ============ */
+/* Increase horizontal gap between Show More button and next product image on mobile */
+@media (max-width: 768px) {
+  .section .controls {
+    margin-bottom: 35px;
+  }
+  
+  .section .text {
+    padding: 12px;
+    margin-bottom: 25px;
+  }
+  
+  #productsContainer .section {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section .controls {
+    margin-bottom: 45px;
+  }
+  
+  .section .text {
+    margin-bottom: 30px;
+  }
+  
+  #productsContainer .section {
+    margin-bottom: 50px;
+  }
+}
+
+/* ============ SIZE GUIDE TABLE OVERFLOW FIX ============ */
+/* Prevent table overflow on mobile for size guide page */
+.size-section {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.size-section .size-table {
+  min-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .size-section {
+    padding: 25px 15px;
+  }
+  
+  .size-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.85rem;
+  }
+  
+  .size-table th,
+  .size-table td {
+    padding: 10px 12px;
+    min-width: 70px;
+  }
+  
+  .size-table th:first-child,
+  .size-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: #f8fafc;
+    z-index: 1;
+    min-width: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .size-section {
+    padding: 20px 10px;
+    margin-bottom: 25px;
+  }
+  
+  .size-table {
+    font-size: 0.8rem;
+  }
+  
+  .size-table th,
+  .size-table td {
+    padding: 8px 10px;
+    min-width: 60px;
+  }
+}
+
+/* ============ NAVBAR MOBILE ICONS SPACING FIX ============ */
+/* Improve vertical alignment of cart icon, login icon, hamburger menu and logo on mobile */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 12px 5%;
+    align-items: center;
+  }
+  
+  .logo {
+    margin-top: 0;
+  }
+  
+  .logo img {
+    width: 140px;
+    height: 40px;
+    margin-bottom: 0;
+  }
+  
+  .nav-right {
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .nav-icons {
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .nav-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hamburger {
+    margin-top: 0;
+    width: 32px;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    padding: 10px 4%;
+  }
+  
+  .logo img {
+    width: 120px;
+    height: 35px;
+  }
+  
+  .nav-right {
+    gap: 12px;
+  }
+  
+  .nav-icons {
+    gap: 10px;
+  }
+  
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+  
+  .hamburger {
+    width: 28px;
+    height: 20px;
+  }
+  
+  .hamburger span {
+    height: 2px;
+  }
+}
