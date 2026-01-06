@@ -3147,7 +3147,7 @@ button:focus {
     flex-direction: column !important;
     justify-content: space-between !important;
     width: 30px !important;
-    height: 22px !important;
+    height: 20px !important;
     background: transparent !important;
     padding: 0 !important;
   }
@@ -3155,12 +3155,12 @@ button:focus {
   .hamburger span {
     display: block !important;
     width: 100% !important;
-    height: 3px !important;
-    min-height: 3px !important;
-    background-color: #000 !important;
+    height: 2px !important;
+    min-height: 2px !important;
+    background-color: #333 !important;
     visibility: visible !important;
-    opacity: 1 !important;
-    border-radius: 2px !important;
+    opacity: 0.85 !important;
+    border-radius: 1px !important;
     transform: none;
   }
   
