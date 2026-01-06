@@ -814,6 +814,10 @@ transform: translate3d(0, -.25rem, 0);
   backdrop-filter: blur(6px);
   box-shadow: 0 6px 22px rgba(6,10,15,0.08);
 }
+
+.nav.nav-scrolled .hamburger span {
+  background: #000 !important;
+}
 .nav-container {
   display:flex;
   align-items:center;
@@ -3117,13 +3121,58 @@ button:focus {
   .hamburger {
     width: 28px;
     height: 20px;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
   }
   
   .hamburger span {
     display: block !important;
     width: 100% !important;
-    height: 2px !important;
+    height: 3px !important;
     background: #000 !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    border: none !important;
+    min-height: 3px !important;
+    border-radius: 2px !important;
+  }
+}
+
+/* ============ HAMBURGER MENU MOBILE FORCE VISIBILITY ============ */
+/* Force hamburger icon lines to be visible on all mobile devices */
+@media (max-width: 992px) {
+  .hamburger {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 30px !important;
+    height: 22px !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  
+  .hamburger span {
+    display: block !important;
+    width: 100% !important;
+    height: 3px !important;
+    min-height: 3px !important;
+    background-color: #000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    border-radius: 2px !important;
+    transform: none;
+  }
+  
+  .hamburger.open span:nth-child(1) {
+    transform: translate3d(0, 8px, 0) rotate(45deg) !important;
+  }
+  
+  .hamburger.open span:nth-child(2) {
+    opacity: 0 !important;
+  }
+  
+  .hamburger.open span:nth-child(3) {
+    transform: translate3d(0, -8px, 0) rotate(-45deg) !important;
   }
 }

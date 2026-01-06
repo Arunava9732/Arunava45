@@ -2522,6 +2522,7 @@
         console.error('Failed to get full Razorpay config:', error);
       }
     }
+  }
   
   // Update payment options based on Razorpay configuration
   function updatePaymentOptionsUI() {
@@ -2790,6 +2791,14 @@
   async function loadCheckoutSummary() {
     const orderItems = document.getElementById('orderItems');
     
+    if (!orderItems) {
+      console.error('Order items container not found');
+      return;
+    }
+    
+    // Show loading state
+    orderItems.innerHTML = '<p style="color: #666;">Loading cart...</p>';
+    
     // Initialize Buy Now mode
     initBuyNowMode();
     
@@ -2800,10 +2809,19 @@
       if (isBuyNowMode && buyNowItem) {
         // Use Buy Now item only
         items = [buyNowItem];
+        console.log('Buy Now mode - item:', buyNowItem);
       } else {
         // Fetch cart from API
+        console.log('Fetching cart from API...');
         const cartData = await API.cart.get();
+        console.log('Cart data received:', cartData);
         items = cartData.cart || [];
+        
+        // If user not logged in, show message
+        if (cartData.requiresLogin) {
+          orderItems.innerHTML = '<p style="color: #666;">Please login to view your cart</p>';
+          return;
+        }
       }
       
       // Store items for order processing
@@ -4466,9 +4484,22 @@
   }
 
   // Initialize
-  loadCheckoutSummary();
-  checkPromoEnabled(); // Check if coupons/gift cards are enabled
-  checkRazorpayConfig(); // Check if Razorpay is enabled
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Wait a small moment to ensure API is ready
+    await new Promise(resolve => setTimeout(resolve, 100));
+    loadCheckoutSummary();
+    checkPromoEnabled(); // Check if coupons/gift cards are enabled
+    checkRazorpayConfig(); // Check if Razorpay is enabled
+  });
+  
+  // Also call immediately if DOM is already loaded
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(() => {
+      loadCheckoutSummary();
+      checkPromoEnabled();
+      checkRazorpayConfig();
+    }, 100);
+  }
 
   // ========================================
   // Event Listeners (CSP-compliant)

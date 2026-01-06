@@ -68,6 +68,12 @@ self.addEventListener('fetch', (event) => {
 
   const url = event.request.url;
   
+  // Skip external URLs - don't try to cache or intercept third-party resources
+  const currentOrigin = self.location.origin;
+  if (!url.startsWith(currentOrigin) && !url.startsWith('/')) {
+    return;
+  }
+  
   // Network First strategy for HTML pages and API calls - ALWAYS bypass cache
   if (shouldSkipCache(url) || event.request.mode === 'navigate') {
     event.respondWith(
