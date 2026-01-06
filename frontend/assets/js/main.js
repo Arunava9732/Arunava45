@@ -144,36 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* IntersectionObserver to reveal .section elements from sides (replay on re-entry) */
 (() => {
-    const revealEls = document.querySelectorAll('.section, .footer, .slider-wrapper');
+    const revealEls = document.querySelectorAll('.section, .slider-wrapper');
     if (!('IntersectionObserver' in window) || !revealEls.length) return;
 
     const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             const el = entry.target;
             const idx = parseInt(el.dataset.index) || 0;
-
-            if (el.classList.contains('footer')) {
-                // Stagger footer child columns with a larger base delay
-                const base = 300; // ms before first column
-                const step = 140; // ms between columns
-                const cols = Array.from(el.querySelectorAll(':scope > div'));
-
-                if (entry.isIntersecting) {
-                    el.classList.add('in-view');
-                    cols.forEach((col, i) => {
-                        col.style.transitionDelay = (base + i * step) + 'ms';
-                        col.classList.add('in-view');
-                    });
-                } else {
-                    el.classList.remove('in-view');
-                    cols.forEach(col => {
-                        col.classList.remove('in-view');
-                        col.style.transitionDelay = '';
-                    });
-                }
-
-                return; // footer handled
-            }
 
             if (entry.isIntersecting) {
                 // set a per-entry stagger so repeated entries still feel staggered
@@ -189,6 +166,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
 
     revealEls.forEach(s => io.observe(s));
+})();
+
+/* Separate IntersectionObserver for footer columns - each column animates independently */
+(() => {
+    const footer = document.querySelector('.footer');
+    if (!footer || !('IntersectionObserver' in window)) return;
+    
+    const footerCols = footer.querySelectorAll(':scope > div');
+    if (!footerCols.length) return;
+    
+    // Observe footer itself for the base animation
+    const footerIO = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                footer.classList.add('in-view');
+            } else {
+                footer.classList.remove('in-view');
+            }
+        });
+    }, { threshold: 0.05 });
+    footerIO.observe(footer);
+    
+    // Observe each column separately for independent fade in/out
+    // Use different thresholds based on column index for staggered effect
+    footerCols.forEach((col, index) => {
+        const colIO = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Add delay based on column index for staggered entrance
+                    setTimeout(() => {
+                        col.classList.add('in-view');
+                    }, index * 150);
+                } else {
+                    col.classList.remove('in-view');
+                }
+            });
+        }, { 
+            threshold: 0.3,
+            rootMargin: '0px 0px -15% 0px'
+        });
+        
+        colIO.observe(col);
+    });
 })();
 
 
