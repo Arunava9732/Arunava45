@@ -16592,11 +16592,17 @@ ${message.message}`;
           clearInterval(autoRefreshIntervals[sectionId]);
         }
         
-        // Set up new interval
-        autoRefreshIntervals[sectionId] = setInterval(() => {
-          console.log(`[AUTO-REFRESH] Refreshing ${sectionId}`);
-          refreshFunction();
-        }, AUTO_REFRESH_DELAY);
+        // Only set up interval if function exists
+        if (typeof refreshFunction === 'function') {
+          autoRefreshIntervals[sectionId] = setInterval(() => {
+            console.log(`[AUTO-REFRESH] Refreshing ${sectionId}`);
+            try {
+              refreshFunction();
+            } catch (error) {
+              console.error(`[AUTO-REFRESH] Error refreshing ${sectionId}:`, error);
+            }
+          }, AUTO_REFRESH_DELAY);
+        }
       }
       
       function stopAutoRefresh(sectionId) {
@@ -16608,30 +16614,77 @@ ${message.message}`;
       
       function initializeAutoRefresh() {
         // Start auto-refresh for all sections that need it
-        startAutoRefresh('messages', loadMessages);
-        startAutoRefresh('health', loadHealthStatus);
-        startAutoRefresh('ai-analytics', loadAiAnalytics);
-        startAutoRefresh('ai-seo', loadAiSeo);
-        startAutoRefresh('sku-management', loadSkuData);
-        startAutoRefresh('inventory', loadInventoryData);
-        startAutoRefresh('marketing', () => { loadMarketingSettings(); loadCoupons(); });
-        startAutoRefresh('shipping', loadShippingSettings);
-        startAutoRefresh('tax', loadTaxSettings);
-        startAutoRefresh('company-tax', loadCompanyTaxData);
-        startAutoRefresh('gift-cards', loadGiftCards);
+        // Using actual function names that exist in the codebase
+        startAutoRefresh('messages', () => {
+          if (typeof loadAndRenderMessages === 'function') loadAndRenderMessages();
+        });
+        startAutoRefresh('health', () => {
+          if (typeof runHealthCheck === 'function') runHealthCheck();
+        });
+        startAutoRefresh('ai-analytics', () => {
+          if (typeof loadAiAnalytics === 'function') loadAiAnalytics();
+        });
+        startAutoRefresh('ai-seo', () => {
+          if (typeof loadAiSeo === 'function') loadAiSeo();
+        });
+        startAutoRefresh('sku-management', () => {
+          if (typeof loadSkuData === 'function') loadSkuData();
+        });
+        startAutoRefresh('inventory', () => {
+          if (typeof loadInventoryData === 'function') loadInventoryData();
+        });
+        startAutoRefresh('marketing', () => {
+          if (typeof loadMarketingSettings === 'function') loadMarketingSettings();
+          if (typeof loadCoupons === 'function') loadCoupons();
+        });
+        startAutoRefresh('shipping', () => {
+          if (typeof loadShippingSettings === 'function') loadShippingSettings();
+        });
+        startAutoRefresh('tax', () => {
+          if (typeof loadTaxSettings === 'function') loadTaxSettings();
+        });
+        startAutoRefresh('company-tax', () => {
+          if (typeof loadCompanyTaxData === 'function') loadCompanyTaxData();
+        });
+        startAutoRefresh('gift-cards', () => {
+          if (typeof loadGiftCards === 'function') loadGiftCards();
+        });
         
         // Set up manual refresh button handlers
-        document.getElementById('refreshProductsBtn')?.addEventListener('click', loadProducts);
-        document.getElementById('refreshMessagesBtn')?.addEventListener('click', loadMessages);
-        document.getElementById('refreshHealthBtn')?.addEventListener('click', loadHealthStatus);
-        document.getElementById('refreshSkuBtn')?.addEventListener('click', loadSkuData);
-        document.getElementById('refreshInventoryBtn')?.addEventListener('click', loadInventoryData);
-        document.getElementById('refreshMarketingBtn')?.addEventListener('click', () => { loadMarketingSettings(); loadCoupons(); });
-        document.getElementById('refreshShippingBtn')?.addEventListener('click', loadShippingSettings);
-        document.getElementById('refreshTaxBtn')?.addEventListener('click', loadTaxSettings);
-        document.getElementById('refreshCompanyTaxBtn')?.addEventListener('click', loadCompanyTaxData);
-        document.getElementById('refreshCompanyTaxBtnAlt')?.addEventListener('click', loadCompanyTaxData);
-        document.getElementById('refreshGiftCardsBtn')?.addEventListener('click', loadGiftCards);
+        document.getElementById('refreshProductsBtn')?.addEventListener('click', () => {
+          if (typeof fetchProducts === 'function') fetchProducts();
+        });
+        document.getElementById('refreshMessagesBtn')?.addEventListener('click', () => {
+          if (typeof loadAndRenderMessages === 'function') loadAndRenderMessages();
+        });
+        document.getElementById('refreshHealthBtn')?.addEventListener('click', () => {
+          if (typeof runHealthCheck === 'function') runHealthCheck();
+        });
+        document.getElementById('refreshSkuBtn')?.addEventListener('click', () => {
+          if (typeof loadSkuData === 'function') loadSkuData();
+        });
+        document.getElementById('refreshInventoryBtn')?.addEventListener('click', () => {
+          if (typeof loadInventoryData === 'function') loadInventoryData();
+        });
+        document.getElementById('refreshMarketingBtn')?.addEventListener('click', () => {
+          if (typeof loadMarketingSettings === 'function') loadMarketingSettings();
+          if (typeof loadCoupons === 'function') loadCoupons();
+        });
+        document.getElementById('refreshShippingBtn')?.addEventListener('click', () => {
+          if (typeof loadShippingSettings === 'function') loadShippingSettings();
+        });
+        document.getElementById('refreshTaxBtn')?.addEventListener('click', () => {
+          if (typeof loadTaxSettings === 'function') loadTaxSettings();
+        });
+        document.getElementById('refreshCompanyTaxBtn')?.addEventListener('click', () => {
+          if (typeof loadCompanyTaxData === 'function') loadCompanyTaxData();
+        });
+        document.getElementById('refreshCompanyTaxBtnAlt')?.addEventListener('click', () => {
+          if (typeof loadCompanyTaxData === 'function') loadCompanyTaxData();
+        });
+        document.getElementById('refreshGiftCardsBtn')?.addEventListener('click', () => {
+          if (typeof loadGiftCards === 'function') loadGiftCards();
+        });
       }
       
       if (document.readyState === 'loading') {
