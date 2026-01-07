@@ -30,6 +30,25 @@ const {
   blockBadBots
 } = require('./middleware/security');
 
+// Import advanced security middleware
+const {
+  checkBlockedIP,
+  preventInjection,
+  preventPathTraversal,
+  advancedBotDetection,
+  honeypotProtection,
+  requestLimits,
+  sessionIntegrity,
+  ddosMitigation,
+  enhancedSecurityHeaders,
+  getThreatStatus,
+  runSecurityAudit,
+  runVulnerabilityScan,
+  unblockIP,
+  clearAllBlocks,
+  trustIP
+} = require('./middleware/advancedSecurity');
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
@@ -63,14 +82,29 @@ const app = express();
 // Configure trusted proxy (for rate limiting behind reverse proxy)
 configureTrust(app);
 
-// Check for IP Bans
+// Enhanced security headers (beyond helmet)
+app.use(enhancedSecurityHeaders);
+
+// Check for blocked IPs (advanced security)
+app.use(checkBlockedIP);
+
+// DDoS mitigation
+app.use(ddosMitigation);
+
+// Check for IP Bans (legacy)
 app.use(checkBan);
 
-// Block Bad Bots
+// Advanced bot detection with behavior analysis
+app.use(advancedBotDetection);
+
+// Block Bad Bots (legacy)
 app.use(blockBadBots);
 
 // Security headers (Helmet)
 app.use(securityHeaders);
+
+// Path traversal protection
+app.use(preventPathTraversal);
 
 // Security logging
 app.use(securityLogger);
@@ -190,6 +224,19 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 // Data sanitization against XSS
 app.use(xss());
 
+// ============ ADVANCED SECURITY (POST-PARSING) ============
+// SQL/NoSQL injection prevention (needs parsed body)
+app.use(preventInjection);
+
+// Request limits and depth checking
+app.use(requestLimits);
+
+// Honeypot protection for forms
+app.use(honeypotProtection);
+
+// Session integrity checking
+app.use(sessionIntegrity);
+
 // Request timeout middleware to avoid stuck requests (will return 503 on timeout)
 app.use((req, res, next) => {
   const timeoutMs = process.env.REQUEST_TIMEOUT_MS ? parseInt(process.env.REQUEST_TIMEOUT_MS, 10) : 120000; // 2 minutes
@@ -243,6 +290,139 @@ app.use((req, res, next) => {
 
 // Frontend root (one level above backend directory)
 const frontendRoot = path.join(__dirname, '..', 'frontend');
+
+// ============ SEO-FRIENDLY URL ROUTING ============
+// These clean URLs map to actual HTML files with keyword-rich paths
+// This helps with SEO by having meaningful URLs instead of .html extensions
+
+const seoUrlMappings = {
+  // Main pages with SEO-friendly paths
+  '/': 'index.html',
+  '/home': 'index.html',
+  '/shop': 'products.html',
+  '/shop/all': 'products.html',
+  '/shop/black-tshirts': 'products.html',
+  '/shop/black-oversized-tshirts': 'products.html',
+  '/shop/black-hoodies': 'products.html',
+  '/shop/black-caps': 'products.html',
+  '/shop/black-bags': 'products.html',
+  '/shop/streetwear-india': 'products.html',
+  '/shop/premium-black-clothing': 'products.html',
+  '/shop/oversized-tshirts-india': 'products.html',
+  '/collection': 'products.html',
+  '/collection/all': 'products.html',
+  '/products': 'products.html',
+  
+  // Category-specific SEO URLs
+  '/black-tshirts-online-india': 'products.html',
+  '/oversized-black-tshirts': 'products.html',
+  '/premium-black-hoodies-india': 'products.html',
+  '/black-streetwear-collection': 'products.html',
+  
+  // Info pages
+  '/about': 'about.html',
+  '/about-us': 'about.html',
+  '/about-blackonn': 'about.html',
+  '/our-story': 'about.html',
+  
+  '/contact': 'contact.html',
+  '/contact-us': 'contact.html',
+  '/support': 'contact.html',
+  '/help': 'contact.html',
+  '/customer-support': 'contact.html',
+  
+  '/faq': 'faq.html',
+  '/faqs': 'faq.html',
+  '/frequently-asked-questions': 'faq.html',
+  '/help-center': 'faq.html',
+  
+  '/size-guide': 'size-guide.html',
+  '/sizing-chart': 'size-guide.html',
+  '/size-chart': 'size-guide.html',
+  '/how-to-measure': 'size-guide.html',
+  
+  // Policy pages
+  '/privacy': 'privacy-policy.html',
+  '/privacy-policy': 'privacy-policy.html',
+  '/terms': 'terms.html',
+  '/terms-and-conditions': 'terms.html',
+  '/terms-of-service': 'terms.html',
+  '/refund': 'refund-policy.html',
+  '/refund-policy': 'refund-policy.html',
+  '/refunds': 'refund-policy.html',
+  '/return': 'return-policy.html',
+  '/return-policy': 'return-policy.html',
+  '/returns': 'return-policy.html',
+  '/shipping-policy': 'shipping.html',
+  '/shipping-info': 'shipping.html',
+  '/delivery': 'shipping.html',
+  '/delivery-info': 'shipping.html',
+  '/cancellation': 'cancellation-policy.html',
+  '/cancellation-policy': 'cancellation-policy.html',
+  '/payment': 'payment-policy.html',
+  '/payment-policy': 'payment-policy.html',
+  '/payment-options': 'payment-policy.html',
+  
+  // User pages
+  '/account': 'profile.html',
+  '/my-account': 'profile.html',
+  '/profile': 'profile.html',
+  '/dashboard': 'profile.html',
+  '/login': 'login.html',
+  '/signin': 'login.html',
+  '/sign-in': 'login.html',
+  '/signup': 'signup.html',
+  '/register': 'signup.html',
+  '/sign-up': 'signup.html',
+  '/create-account': 'signup.html',
+  '/forgot-password': 'forgot-password.html',
+  '/password-reset': 'forgot-password.html',
+  '/reset-password': 'reset-password.html',
+  
+  // Shopping pages
+  '/cart': 'cart.html',
+  '/shopping-cart': 'cart.html',
+  '/bag': 'cart.html',
+  '/checkout': 'checkout.html',
+  '/place-order': 'checkout.html',
+  
+  // Gift Cards
+  '/gift-cards': 'gift-cards.html',
+  '/gift-card': 'gift-cards.html',
+  '/giftcards': 'gift-cards.html',
+  '/vouchers': 'gift-cards.html',
+  
+  // Admin (protected by auth anyway)
+  '/admin': 'admin.html',
+  '/admin-panel': 'admin.html',
+  '/dashboard/admin': 'admin.html'
+};
+
+// SEO URL handler - serves HTML without .html extension
+app.get('*', (req, res, next) => {
+  const cleanPath = req.path.toLowerCase().replace(/\/$/, '') || '/';
+  
+  // Skip API routes, static assets, and actual file requests
+  if (cleanPath.startsWith('/api/') || 
+      cleanPath.startsWith('/uploads/') ||
+      cleanPath.startsWith('/assets/') ||
+      cleanPath.match(/\.(html|css|js|png|jpg|jpeg|gif|svg|ico|webp|mp4|webm|woff|woff2|ttf|json|xml|txt)$/)) {
+    return next();
+  }
+  
+  // Check SEO mappings
+  if (seoUrlMappings[cleanPath]) {
+    const htmlFile = path.join(frontendRoot, seoUrlMappings[cleanPath]);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    // Set canonical URL header for SEO
+    res.setHeader('Link', `<https://blackonn.com${cleanPath}>; rel="canonical"`);
+    return res.sendFile(htmlFile, (err) => {
+      if (err) next();
+    });
+  }
+  
+  next();
+});
 
 // Explicit route for homepage - ensures index.html is served with correct Content-Type
 app.get('/', (req, res) => {
@@ -325,6 +505,84 @@ app.use('/api/gift-cards', giftCardsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/webhooks', webhookRoutes);
+
+// SEO API routes
+app.use('/api/seo', seoRoutes);
+
+// ============ SECURITY MONITORING (Admin Only) ============
+const { authenticate, isAdmin } = require('./middleware/auth');
+
+// Get security status
+app.get('/api/security/status', authenticate, isAdmin, (req, res) => {
+  try {
+    const threatStatus = getThreatStatus();
+    res.json({
+      success: true,
+      security: {
+        ...threatStatus,
+        serverTime: new Date().toISOString(),
+        uptime: process.uptime(),
+        memoryUsage: process.memoryUsage()
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to get security status' });
+  }
+});
+
+// Run security audit
+app.get('/api/security/audit', authenticate, isAdmin, (req, res) => {
+  try {
+    const audit = runSecurityAudit();
+    res.json({ success: true, audit });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to run security audit' });
+  }
+});
+
+// Run vulnerability scan
+app.get('/api/security/scan', authenticate, isAdmin, async (req, res) => {
+  try {
+    const scan = await runVulnerabilityScan(req);
+    res.json({ success: true, scan });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to run vulnerability scan' });
+  }
+});
+
+// Unblock an IP address
+app.post('/api/security/unblock', authenticate, isAdmin, (req, res) => {
+  try {
+    const { ip } = req.body;
+    if (!ip) {
+      return res.status(400).json({ success: false, error: 'IP address required' });
+    }
+    unblockIP(ip);
+    res.json({ success: true, message: `IP ${ip} has been unblocked` });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to unblock IP' });
+  }
+});
+
+// Clear all blocks (emergency)
+app.post('/api/security/clear-all', authenticate, isAdmin, (req, res) => {
+  try {
+    const count = clearAllBlocks();
+    res.json({ success: true, message: `Cleared ${count} IP blocks` });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to clear blocks' });
+  }
+});
+
+// Trust current IP (whitelist self)
+app.post('/api/security/trust-me', authenticate, isAdmin, (req, res) => {
+  try {
+    trustIP(req.ip);
+    res.json({ success: true, message: `Your IP ${req.ip} has been trusted` });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to trust IP' });
+  }
+});
 
 // Serve uploaded files statically with cache control and proper MIME types
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {

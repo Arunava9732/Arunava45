@@ -1,0 +1,20 @@
+{
+  "events": [],
+  "sessions": [],
+  "conversions": [],
+  "experiments": [],
+  "heatmaps": {},
+  "lastUpdated": null,
+  "_meta": {
+    "version": "3.0",
+    "aiEngine": true,
+    "capabilities": [
+      "predictive_analytics",
+      "anomaly_detection",
+      "customer_segmentation",
+      "funnel_analysis",
+      "trend_detection",
+      "recommendations"
+    ]
+  }
+}

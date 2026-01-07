@@ -1,6 +1,27 @@
 /**
- * Health Check Utility
- * Monitors server health, database status, and system resources
+ * AI-Powered Health Check & Auto-Healing Utility (v2.0)
+ * ======================================================
+ * 
+ * This module provides intelligent server health monitoring and self-healing:
+ * 
+ * AI-FRIENDLY FEATURES:
+ * - Structured JSON diagnostics for AI parsing
+ * - Categorized health metrics with severity levels
+ * - Automatic issue detection and resolution
+ * - Event timeline for debugging context
+ * - Predictive health scoring
+ * - Self-healing actions with logging
+ * 
+ * AI Integration Points:
+ * - getAIDiagnostics(): Full diagnostic report for AI analysis
+ * - runAutoHealer(): Trigger automatic fixes
+ * - getHealthTimeline(): Chronological events for context
+ * 
+ * Console Tags for AI Parsing:
+ * - [AI-HEALTH]: Health status updates
+ * - [AI-HEAL]: Auto-healing actions
+ * - [AI-METRIC]: Performance metrics
+ * - [AI-ALERT]: Critical issues requiring attention
  */
 
 const fs = require('fs');
@@ -9,9 +30,84 @@ const os = require('os');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
+const LOGS_DIR = path.join(__dirname, '..', 'logs');
 
 // Store server start time
 const serverStartTime = Date.now();
+
+// AI-friendly health timeline
+const healthTimeline = [];
+const MAX_TIMELINE_ENTRIES = 200;
+
+// Auto-healing action log
+const healingLog = [];
+
+// Health thresholds for AI decision making
+const THRESHOLDS = {
+  memory: {
+    warning: 70, // % heap usage
+    critical: 85
+  },
+  disk: {
+    warning: 80, // % usage
+    critical: 90
+  },
+  responseTime: {
+    warning: 500, // ms
+    critical: 2000
+  },
+  errorRate: {
+    warning: 5, // % of requests
+    critical: 15
+  }
+};
+
+/**
+ * Add event to health timeline
+ */
+function addToTimeline(event) {
+  const entry = {
+    id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+    timestamp: new Date().toISOString(),
+    timestampMs: Date.now(),
+    uptime: Date.now() - serverStartTime,
+    ...event
+  };
+  
+  healthTimeline.unshift(entry);
+  if (healthTimeline.length > MAX_TIMELINE_ENTRIES) {
+    healthTimeline.pop();
+  }
+  
+  // Log with AI-parseable tag
+  const severity = event.severity || 'info';
+  if (severity === 'critical' || severity === 'high') {
+    console.log(`[AI-ALERT] ${event.type}:`, JSON.stringify(entry));
+  } else {
+    console.log(`[AI-HEALTH] ${event.type}:`, JSON.stringify(entry));
+  }
+  
+  return entry;
+}
+
+/**
+ * Log healing action
+ */
+function logHealingAction(action) {
+  const entry = {
+    id: `heal_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    ...action
+  };
+  
+  healingLog.unshift(entry);
+  if (healingLog.length > 100) {
+    healingLog.pop();
+  }
+  
+  console.log('[AI-HEAL]', JSON.stringify(entry));
+  return entry;
+}
 
 /**
  * Get formatted uptime
@@ -41,21 +137,31 @@ function getMemoryInfo() {
   const used = process.memoryUsage();
   const totalMem = os.totalmem();
   const freeMem = os.freemem();
+  const heapPercent = (used.heapUsed / used.heapTotal) * 100;
   
   return {
     process: {
       heapUsed: formatBytes(used.heapUsed),
+      heapUsedBytes: used.heapUsed,
       heapTotal: formatBytes(used.heapTotal),
+      heapTotalBytes: used.heapTotal,
       external: formatBytes(used.external),
       rss: formatBytes(used.rss),
-      heapUsedPercent: ((used.heapUsed / used.heapTotal) * 100).toFixed(2) + '%'
+      heapUsedPercent: heapPercent.toFixed(2) + '%',
+      heapUsedPercentNum: parseFloat(heapPercent.toFixed(2))
     },
     system: {
       total: formatBytes(totalMem),
+      totalBytes: totalMem,
       free: formatBytes(freeMem),
+      freeBytes: freeMem,
       used: formatBytes(totalMem - freeMem),
-      usedPercent: (((totalMem - freeMem) / totalMem) * 100).toFixed(2) + '%'
-    }
+      usedBytes: totalMem - freeMem,
+      usedPercent: (((totalMem - freeMem) / totalMem) * 100).toFixed(2) + '%',
+      usedPercentNum: parseFloat((((totalMem - freeMem) / totalMem) * 100).toFixed(2))
+    },
+    status: heapPercent > THRESHOLDS.memory.critical ? 'critical' : 
+            heapPercent > THRESHOLDS.memory.warning ? 'warning' : 'healthy'
   };
 }
 
@@ -77,7 +183,6 @@ function getCPUInfo() {
   const cpus = os.cpus();
   const loadAvg = os.loadavg();
   
-  // Calculate average CPU usage
   let totalIdle = 0;
   let totalTick = 0;
   
@@ -99,12 +204,14 @@ function getCPUInfo() {
       '5min': loadAvg[1]?.toFixed(2) || 'N/A',
       '15min': loadAvg[2]?.toFixed(2) || 'N/A'
     },
-    usagePercent: avgUsage + '%'
+    usagePercent: avgUsage + '%',
+    usagePercentNum: parseFloat(avgUsage),
+    status: parseFloat(avgUsage) > 90 ? 'critical' : parseFloat(avgUsage) > 70 ? 'warning' : 'healthy'
   };
 }
 
 /**
- * Check database files status
+ * Check database files status with AI-friendly output
  */
 function checkDatabaseStatus() {
   const dataFiles = [
@@ -117,14 +224,23 @@ function checkDatabaseStatus() {
     'sessions.json',
     'passwordResets.json',
     'slides.json',
-    'wishlists.json'
+    'wishlists.json',
+    'seoData.json',
+    'adminSettings.json',
+    'marketing.json',
+    'traffic.json'
   ];
   
   const status = {
     healthy: true,
+    healthScore: 100,
     files: {},
     totalSize: 0,
-    errors: []
+    totalSizeBytes: 0,
+    errors: [],
+    warnings: [],
+    corruptedFiles: [],
+    missingFiles: []
   };
   
   dataFiles.forEach(file => {
@@ -133,32 +249,57 @@ function checkDatabaseStatus() {
       if (fs.existsSync(filePath)) {
         const stats = fs.statSync(filePath);
         const content = fs.readFileSync(filePath, 'utf8');
-        JSON.parse(content); // Validate JSON
         
-        status.files[file] = {
-          status: 'ok',
-          size: formatBytes(stats.size),
-          lastModified: stats.mtime.toISOString()
-        };
-        status.totalSize += stats.size;
+        // Validate JSON
+        try {
+          const parsed = JSON.parse(content);
+          const recordCount = Array.isArray(parsed) ? parsed.length : 
+                             typeof parsed === 'object' ? Object.keys(parsed).length : 0;
+          
+          status.files[file] = {
+            status: 'ok',
+            size: formatBytes(stats.size),
+            sizeBytes: stats.size,
+            lastModified: stats.mtime.toISOString(),
+            recordCount: recordCount,
+            valid: true
+          };
+          status.totalSizeBytes += stats.size;
+        } catch (parseError) {
+          status.files[file] = {
+            status: 'corrupted',
+            error: 'Invalid JSON: ' + parseError.message,
+            valid: false
+          };
+          status.corruptedFiles.push(file);
+          status.errors.push(`${file}: Invalid JSON`);
+          status.healthy = false;
+          status.healthScore -= 10;
+        }
       } else {
         status.files[file] = {
           status: 'missing',
-          size: '0 Bytes'
+          size: '0 Bytes',
+          valid: false
         };
-        status.errors.push(`${file} is missing`);
+        status.missingFiles.push(file);
+        status.warnings.push(`${file} is missing`);
+        status.healthScore -= 5;
       }
     } catch (error) {
       status.files[file] = {
         status: 'error',
-        error: error.message
+        error: error.message,
+        valid: false
       };
       status.errors.push(`${file}: ${error.message}`);
       status.healthy = false;
+      status.healthScore -= 10;
     }
   });
   
-  status.totalSize = formatBytes(status.totalSize);
+  status.totalSize = formatBytes(status.totalSizeBytes);
+  status.healthScore = Math.max(0, status.healthScore);
   return status;
 }
 
@@ -166,12 +307,14 @@ function checkDatabaseStatus() {
  * Check uploads directory status
  */
 function checkUploadsStatus() {
-  const uploadFolders = ['products', 'slides', 'users', 'misc'];
+  const uploadFolders = ['products', 'slides', 'users', 'misc', 'contact'];
   const status = {
     healthy: true,
     folders: {},
     totalFiles: 0,
-    totalSize: 0
+    totalSize: 0,
+    totalSizeBytes: 0,
+    missingFolders: []
   };
   
   uploadFolders.forEach(folder => {
@@ -183,24 +326,28 @@ function checkUploadsStatus() {
         
         files.forEach(file => {
           const filePath = path.join(folderPath, file);
-          const stats = fs.statSync(filePath);
-          if (stats.isFile()) {
-            folderSize += stats.size;
-          }
+          try {
+            const stats = fs.statSync(filePath);
+            if (stats.isFile()) {
+              folderSize += stats.size;
+            }
+          } catch(e) {}
         });
         
         status.folders[folder] = {
           status: 'ok',
           fileCount: files.length,
-          size: formatBytes(folderSize)
+          size: formatBytes(folderSize),
+          sizeBytes: folderSize
         };
         status.totalFiles += files.length;
-        status.totalSize += folderSize;
+        status.totalSizeBytes += folderSize;
       } else {
         status.folders[folder] = {
           status: 'missing',
           fileCount: 0
         };
+        status.missingFolders.push(folder);
       }
     } catch (error) {
       status.folders[folder] = {
@@ -211,7 +358,7 @@ function checkUploadsStatus() {
     }
   });
   
-  status.totalSize = formatBytes(status.totalSize);
+  status.totalSize = formatBytes(status.totalSizeBytes);
   return status;
 }
 
@@ -224,7 +371,61 @@ function getSystemInfo() {
     arch: os.arch(),
     hostname: os.hostname(),
     nodeVersion: process.version,
-    uptime: formatUptime(os.uptime() * 1000)
+    uptime: formatUptime(os.uptime() * 1000),
+    uptimeSeconds: Math.floor(os.uptime()),
+    processUptime: formatUptime(Date.now() - serverStartTime),
+    processUptimeSeconds: Math.floor((Date.now() - serverStartTime) / 1000)
+  };
+}
+
+/**
+ * Calculate overall health score (0-100)
+ */
+function calculateHealthScore() {
+  let score = 100;
+  const issues = [];
+  
+  // Check database health
+  const dbStatus = checkDatabaseStatus();
+  score = Math.min(score, dbStatus.healthScore);
+  if (dbStatus.corruptedFiles.length > 0) {
+    issues.push({ type: 'DATABASE', severity: 'critical', message: `Corrupted files: ${dbStatus.corruptedFiles.join(', ')}` });
+  }
+  if (dbStatus.missingFiles.length > 0) {
+    issues.push({ type: 'DATABASE', severity: 'warning', message: `Missing files: ${dbStatus.missingFiles.join(', ')}` });
+  }
+  
+  // Check memory
+  const memInfo = getMemoryInfo();
+  if (memInfo.status === 'critical') {
+    score -= 20;
+    issues.push({ type: 'MEMORY', severity: 'critical', message: `Heap usage at ${memInfo.process.heapUsedPercent}` });
+  } else if (memInfo.status === 'warning') {
+    score -= 10;
+    issues.push({ type: 'MEMORY', severity: 'warning', message: `Heap usage at ${memInfo.process.heapUsedPercent}` });
+  }
+  
+  // Check CPU
+  const cpuInfo = getCPUInfo();
+  if (cpuInfo.status === 'critical') {
+    score -= 15;
+    issues.push({ type: 'CPU', severity: 'critical', message: `CPU usage at ${cpuInfo.usagePercent}` });
+  } else if (cpuInfo.status === 'warning') {
+    score -= 5;
+    issues.push({ type: 'CPU', severity: 'warning', message: `CPU usage at ${cpuInfo.usagePercent}` });
+  }
+  
+  // Check uploads
+  const uploadsStatus = checkUploadsStatus();
+  if (uploadsStatus.missingFolders.length > 0) {
+    score -= 5;
+    issues.push({ type: 'UPLOADS', severity: 'warning', message: `Missing folders: ${uploadsStatus.missingFolders.join(', ')}` });
+  }
+  
+  return {
+    score: Math.max(0, Math.min(100, score)),
+    status: score >= 80 ? 'healthy' : score >= 50 ? 'degraded' : 'critical',
+    issues
   };
 }
 
@@ -232,42 +433,75 @@ function getSystemInfo() {
  * Get quick health status
  */
 function getQuickHealth() {
-  const dbStatus = checkDatabaseStatus();
+  const health = calculateHealthScore();
   
   return {
-    status: dbStatus.healthy ? 'healthy' : 'degraded',
+    status: health.status,
+    score: health.score,
     timestamp: new Date().toISOString(),
     uptime: formatUptime(Date.now() - serverStartTime),
-    security: 'enabled'
+    security: 'enabled',
+    issueCount: health.issues.length
   };
 }
 
 /**
- * Get detailed health status
+ * Get detailed health status with AI-friendly structure
  */
 function getDetailedHealth() {
   const startTime = Date.now();
   const dbStatus = checkDatabaseStatus();
   const uploadsStatus = checkUploadsStatus();
+  const health = calculateHealthScore();
   
-  const health = {
-    status: dbStatus.healthy && uploadsStatus.healthy ? 'healthy' : 'degraded',
+  const healthReport = {
+    // AI-friendly metadata
+    _meta: {
+      version: '2.0.0',
+      generatedAt: new Date().toISOString(),
+      responseTimeMs: null,
+      format: 'ai-friendly'
+    },
+    
+    // Overall status
+    status: health.status,
+    healthScore: health.score,
     timestamp: new Date().toISOString(),
-    responseTime: null,
+    
+    // Issues for AI to address
+    issues: health.issues,
+    
+    // Server info
     server: {
       uptime: formatUptime(Date.now() - serverStartTime),
+      uptimeMs: Date.now() - serverStartTime,
       startedAt: new Date(serverStartTime).toISOString(),
       environment: process.env.NODE_ENV || 'development',
       port: process.env.PORT || 3000,
       security: 'enabled'
     },
+    
+    // System resources
     system: getSystemInfo(),
     memory: getMemoryInfo(),
     cpu: getCPUInfo(),
+    
+    // Data storage
     database: dbStatus,
     uploads: uploadsStatus,
+    
+    // Recent timeline for context
+    recentEvents: healthTimeline.slice(0, 20),
+    
+    // Healing actions taken
+    recentHealingActions: healingLog.slice(0, 10),
+    
+    // Thresholds for AI decision making
+    thresholds: THRESHOLDS,
+    
+    // Available endpoints (without /api prefix - frontend adds it)
     endpoints: {
-      total: 10,
+      total: 15,
       list: [
         '/auth/me',
         '/products',
@@ -278,25 +512,279 @@ function getDetailedHealth() {
         '/contact',
         '/slides',
         '/wishlist',
-        '/health'
+        '/health',
+        '/seo',
+        '/security/status',
+        '/security/audit',
+        '/analytics',
+        '/settings'
       ]
     }
   };
   
-  health.responseTime = (Date.now() - startTime) + 'ms';
-  return health;
+  healthReport._meta.responseTimeMs = Date.now() - startTime;
+  return healthReport;
 }
 
 /**
- * Get health metrics for monitoring dashboards
+ * AI-friendly diagnostic report
+ */
+function getAIDiagnostics() {
+  const health = getDetailedHealth();
+  
+  return {
+    // Summary for quick AI parsing
+    summary: {
+      healthScore: health.healthScore,
+      status: health.status,
+      criticalIssues: health.issues.filter(i => i.severity === 'critical').length,
+      warnings: health.issues.filter(i => i.severity === 'warning').length,
+      uptime: health.server.uptime,
+      memoryStatus: health.memory.status,
+      cpuStatus: health.cpu.status,
+      databaseHealthy: health.database.healthy,
+      healingActionsCount: healingLog.length
+    },
+    
+    // Full details
+    details: health,
+    
+    // Recommendations for AI
+    recommendations: generateRecommendations(health),
+    
+    // Context timeline
+    timeline: healthTimeline.slice(0, 50),
+    
+    // Healing history
+    healingHistory: healingLog
+  };
+}
+
+/**
+ * Generate AI recommendations based on health status
+ */
+function generateRecommendations(health) {
+  const recommendations = [];
+  
+  // Memory recommendations
+  if (health.memory.status === 'critical') {
+    recommendations.push({
+      priority: 'high',
+      type: 'MEMORY',
+      action: 'RESTART_SERVER',
+      reason: 'Memory usage critically high',
+      command: 'pm2 restart blackonn'
+    });
+  } else if (health.memory.status === 'warning') {
+    recommendations.push({
+      priority: 'medium',
+      type: 'MEMORY',
+      action: 'MONITOR',
+      reason: 'Memory usage elevated, monitor for increases'
+    });
+  }
+  
+  // Database recommendations
+  if (health.database.corruptedFiles && health.database.corruptedFiles.length > 0) {
+    recommendations.push({
+      priority: 'critical',
+      type: 'DATABASE',
+      action: 'RESTORE_BACKUP',
+      reason: 'Corrupted data files detected',
+      files: health.database.corruptedFiles
+    });
+  }
+  
+  if (health.database.missingFiles && health.database.missingFiles.length > 0) {
+    recommendations.push({
+      priority: 'medium',
+      type: 'DATABASE',
+      action: 'CREATE_FILES',
+      reason: 'Missing data files',
+      files: health.database.missingFiles
+    });
+  }
+  
+  // Upload folder recommendations
+  if (health.uploads.missingFolders && health.uploads.missingFolders.length > 0) {
+    recommendations.push({
+      priority: 'low',
+      type: 'FILESYSTEM',
+      action: 'CREATE_FOLDERS',
+      reason: 'Missing upload folders',
+      folders: health.uploads.missingFolders
+    });
+  }
+  
+  return recommendations;
+}
+
+/**
+ * Auto-healer: Automatically fix common issues
+ */
+function runAutoHealer() {
+  const results = {
+    timestamp: new Date().toISOString(),
+    actionsAttempted: 0,
+    actionsSucceeded: 0,
+    actionsFailed: 0,
+    actions: []
+  };
+  
+  // 1. Create missing upload folders
+  const uploadsStatus = checkUploadsStatus();
+  uploadsStatus.missingFolders.forEach(folder => {
+    results.actionsAttempted++;
+    try {
+      const folderPath = path.join(UPLOADS_DIR, folder);
+      fs.mkdirSync(folderPath, { recursive: true });
+      results.actionsSucceeded++;
+      const action = {
+        type: 'CREATE_FOLDER',
+        target: folder,
+        success: true
+      };
+      results.actions.push(action);
+      logHealingAction(action);
+    } catch (error) {
+      results.actionsFailed++;
+      results.actions.push({
+        type: 'CREATE_FOLDER',
+        target: folder,
+        success: false,
+        error: error.message
+      });
+    }
+  });
+  
+  // 2. Create missing data files with empty structure
+  const dbStatus = checkDatabaseStatus();
+  const defaultStructures = {
+    'users.json': [],
+    'products.json': [],
+    'orders.json': [],
+    'carts.json': [],
+    'returns.json': [],
+    'contacts.json': [],
+    'sessions.json': {},
+    'passwordResets.json': [],
+    'slides.json': [],
+    'wishlists.json': [],
+    'marketing.json': { campaigns: [], emails: [] },
+    'traffic.json': { visits: [], pageViews: [] },
+    'adminSettings.json': { siteName: 'BLACKONN', maintenance: false }
+  };
+  
+  dbStatus.missingFiles.forEach(file => {
+    results.actionsAttempted++;
+    try {
+      const filePath = path.join(DATA_DIR, file);
+      const defaultData = defaultStructures[file] || {};
+      fs.writeFileSync(filePath, JSON.stringify(defaultData, null, 2));
+      results.actionsSucceeded++;
+      const action = {
+        type: 'CREATE_DATA_FILE',
+        target: file,
+        success: true
+      };
+      results.actions.push(action);
+      logHealingAction(action);
+    } catch (error) {
+      results.actionsFailed++;
+      results.actions.push({
+        type: 'CREATE_DATA_FILE',
+        target: file,
+        success: false,
+        error: error.message
+      });
+    }
+  });
+  
+  // 3. Create logs directory if missing
+  if (!fs.existsSync(LOGS_DIR)) {
+    results.actionsAttempted++;
+    try {
+      fs.mkdirSync(LOGS_DIR, { recursive: true });
+      results.actionsSucceeded++;
+      const action = {
+        type: 'CREATE_LOGS_DIR',
+        target: LOGS_DIR,
+        success: true
+      };
+      results.actions.push(action);
+      logHealingAction(action);
+    } catch (error) {
+      results.actionsFailed++;
+      results.actions.push({
+        type: 'CREATE_LOGS_DIR',
+        target: LOGS_DIR,
+        success: false,
+        error: error.message
+      });
+    }
+  }
+  
+  // 4. Attempt to fix corrupted JSON files (backup and reset)
+  dbStatus.corruptedFiles.forEach(file => {
+    results.actionsAttempted++;
+    try {
+      const filePath = path.join(DATA_DIR, file);
+      const backupPath = path.join(DATA_DIR, `${file}.backup.${Date.now()}`);
+      
+      // Backup corrupted file
+      if (fs.existsSync(filePath)) {
+        fs.copyFileSync(filePath, backupPath);
+      }
+      
+      // Reset with default structure
+      const defaultData = defaultStructures[file] || {};
+      fs.writeFileSync(filePath, JSON.stringify(defaultData, null, 2));
+      
+      results.actionsSucceeded++;
+      const action = {
+        type: 'REPAIR_DATA_FILE',
+        target: file,
+        backupCreated: backupPath,
+        success: true
+      };
+      results.actions.push(action);
+      logHealingAction(action);
+    } catch (error) {
+      results.actionsFailed++;
+      results.actions.push({
+        type: 'REPAIR_DATA_FILE',
+        target: file,
+        success: false,
+        error: error.message
+      });
+    }
+  });
+  
+  // Log summary
+  addToTimeline({
+    type: 'AUTO_HEAL_RUN',
+    severity: results.actionsFailed > 0 ? 'warning' : 'info',
+    attempted: results.actionsAttempted,
+    succeeded: results.actionsSucceeded,
+    failed: results.actionsFailed
+  });
+  
+  return results;
+}
+
+/**
+ * Get health metrics for monitoring dashboards (Prometheus-compatible)
  */
 function getHealthMetrics() {
   const memUsage = process.memoryUsage();
   const dbStatus = checkDatabaseStatus();
+  const health = calculateHealthScore();
   
   return {
     timestamp: Date.now(),
     uptime_seconds: Math.floor((Date.now() - serverStartTime) / 1000),
+    health_score: health.score,
+    health_status: health.status === 'healthy' ? 1 : health.status === 'degraded' ? 0.5 : 0,
     memory_heap_used_bytes: memUsage.heapUsed,
     memory_heap_total_bytes: memUsage.heapTotal,
     memory_rss_bytes: memUsage.rss,
@@ -305,19 +793,78 @@ function getHealthMetrics() {
     system_memory_total_bytes: os.totalmem(),
     cpu_cores: os.cpus().length,
     database_healthy: dbStatus.healthy ? 1 : 0,
-    database_error_count: dbStatus.errors.length
+    database_error_count: dbStatus.errors.length,
+    database_warning_count: dbStatus.warnings.length,
+    healing_actions_total: healingLog.length,
+    active_issues_count: health.issues.length
   };
 }
 
+/**
+ * Get health timeline for AI context
+ */
+function getHealthTimeline(count = 50) {
+  return healthTimeline.slice(0, count);
+}
+
+/**
+ * Get healing log
+ */
+function getHealingLog(count = 50) {
+  return healingLog.slice(0, count);
+}
+
+/**
+ * Clear old timeline entries
+ */
+function cleanupTimeline() {
+  const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+  const now = Date.now();
+  
+  while (healthTimeline.length > 0 && 
+         now - healthTimeline[healthTimeline.length - 1].timestampMs > maxAge) {
+    healthTimeline.pop();
+  }
+}
+
+// Run cleanup every hour
+setInterval(cleanupTimeline, 60 * 60 * 1000);
+
+// Initial health check on load
+addToTimeline({
+  type: 'INIT',
+  severity: 'info',
+  message: 'Health Check System v2.0 initialized'
+});
+
 module.exports = {
+  // Quick checks
   getQuickHealth,
   getDetailedHealth,
   getHealthMetrics,
-  formatUptime,
-  formatBytes,
+  
+  // AI-friendly APIs
+  getAIDiagnostics,
+  getHealthTimeline,
+  getHealingLog,
+  
+  // Auto-healing
+  runAutoHealer,
+  
+  // Component checks
   checkDatabaseStatus,
   checkUploadsStatus,
   getMemoryInfo,
   getCPUInfo,
-  getSystemInfo
+  getSystemInfo,
+  calculateHealthScore,
+  
+  // Utilities
+  formatUptime,
+  formatBytes,
+  addToTimeline,
+  logHealingAction,
+  
+  // Constants
+  THRESHOLDS
 };

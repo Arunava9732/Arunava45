@@ -4014,6 +4014,395 @@
         .server-info-grid { grid-template-columns: 1fr; }
       }
 
+      /* ========== AI ANALYTICS & SEO STYLES ========== */
+      .ai-section { margin-top: 24px; }
+      .ai-status-badge, .seo-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        color: #fff;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      }
+      .seo-status-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+      
+      /* AI Insights Grid */
+      .ai-insights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .ai-insight-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+      }
+      .ai-insight-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+      .ai-insight-card.positive { border-left: 4px solid #10b981; }
+      .ai-insight-card.warning { border-left: 4px solid #f59e0b; }
+      .ai-insight-card.critical { border-left: 4px solid #ef4444; }
+      .ai-insight-card.loading { opacity: 0.6; }
+      .insight-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+      .ai-insight-card.positive .insight-icon { background: #d1fae5; color: #059669; }
+      .ai-insight-card.warning .insight-icon { background: #fef3c7; color: #d97706; }
+      .ai-insight-card.critical .insight-icon { background: #fee2e2; color: #dc2626; }
+      .ai-insight-card.loading .insight-icon { background: #f3f4f6; color: #6b7280; }
+      .insight-content h4 { margin: 0 0 6px; font-size: 1rem; color: #1f2937; }
+      .insight-content p { margin: 0 0 8px; font-size: 0.85rem; color: #6b7280; }
+      .insight-confidence {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        color: #9ca3af;
+        background: #f3f4f6;
+        padding: 4px 10px;
+        border-radius: 12px;
+      }
+      
+      /* AI Section Blocks */
+      .ai-section-block {
+        background: #fff;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        border: 1px solid #e5e7eb;
+      }
+      .ai-block-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      .ai-block-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #1f2937;
+      }
+      .ai-badge {
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      
+      /* Predictions Chart */
+      .predictions-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 200px;
+        padding: 20px 0;
+      }
+      .prediction-bar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .prediction-bar .bar {
+        width: 100%;
+        max-width: 60px;
+        background: linear-gradient(180deg, #8b5cf6, #6366f1);
+        border-radius: 6px 6px 0 0;
+        position: relative;
+        min-height: 10px;
+        transition: height 0.5s ease;
+      }
+      .prediction-bar .bar.actual {
+        background: linear-gradient(180deg, #10b981, #059669);
+      }
+      .prediction-bar .value {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #374151;
+      }
+      .prediction-bar .date {
+        font-size: 0.7rem;
+        color: #9ca3af;
+      }
+      .prediction-loading {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+      }
+      
+      /* Anomalies List */
+      .anomalies-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .anomaly-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #fef2f2;
+        border-radius: 10px;
+        border-left: 4px solid #ef4444;
+      }
+      .anomaly-item.warning {
+        background: #fffbeb;
+        border-left-color: #f59e0b;
+      }
+      .anomaly-item i { font-size: 1.3rem; color: #ef4444; }
+      .anomaly-item.warning i { color: #f59e0b; }
+      .anomaly-info { flex: 1; }
+      .anomaly-info .metric { font-weight: 600; color: #1f2937; }
+      .anomaly-info .details { font-size: 0.85rem; color: #6b7280; }
+      .no-anomalies {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px;
+        color: #10b981;
+        background: #d1fae5;
+        border-radius: 10px;
+      }
+      .no-anomalies i { font-size: 1.5rem; }
+      .anomaly-count {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      
+      /* Segments Grid */
+      .segments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+      }
+      .segment-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+      }
+      .segment-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+      .segment-card i { font-size: 2rem; margin-bottom: 10px; }
+      .segment-card.champions { border-top: 4px solid #f59e0b; }
+      .segment-card.champions i { color: #f59e0b; }
+      .segment-card.loyal { border-top: 4px solid #ef4444; }
+      .segment-card.loyal i { color: #ef4444; }
+      .segment-card.at-risk { border-top: 4px solid #8b5cf6; }
+      .segment-card.at-risk i { color: #8b5cf6; }
+      .segment-card.new { border-top: 4px solid #10b981; }
+      .segment-card.new i { color: #10b981; }
+      .segment-name { display: block; font-size: 0.85rem; color: #6b7280; margin-bottom: 6px; }
+      .segment-count { display: block; font-size: 1.5rem; font-weight: 700; color: #1f2937; }
+      
+      /* Conversion Funnel */
+      .funnel-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .funnel-stage {
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        color: #fff;
+        padding: 16px 20px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: var(--width, 100%);
+        margin: 0 auto;
+        transition: width 0.5s ease;
+      }
+      .stage-name { font-weight: 500; }
+      .stage-count { font-weight: 700; font-size: 1.1rem; }
+      .funnel-bottleneck {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: #fef3c7;
+        border-radius: 8px;
+        margin-top: 16px;
+        color: #92400e;
+      }
+      .funnel-bottleneck i { color: #f59e0b; }
+      .conversion-rate {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      
+      /* SEO Score Card */
+      .seo-score-card {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 24px;
+        border: 1px solid #bbf7d0;
+      }
+      .score-circle {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+      }
+      .score-circle svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .score-bg {
+        fill: none;
+        stroke: #d1fae5;
+        stroke-width: 8;
+      }
+      .score-fill {
+        fill: none;
+        stroke: #10b981;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 283;
+        transition: stroke-dashoffset 1s ease;
+      }
+      .score-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        font-weight: 700;
+        color: #065f46;
+      }
+      .score-details h3 { margin: 0 0 8px; font-size: 1.3rem; color: #065f46; }
+      .score-details p { margin: 0; color: #047857; font-size: 0.95rem; }
+      
+      /* Keyword Categories */
+      .keyword-categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+      }
+      .keyword-category {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+      }
+      .keyword-category:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+      .keyword-category i { font-size: 2rem; color: #6366f1; margin-bottom: 10px; display: block; }
+      .cat-name { display: block; font-size: 0.85rem; color: #6b7280; margin-bottom: 6px; }
+      .cat-count { display: block; font-size: 1.5rem; font-weight: 700; color: #1f2937; }
+      
+      /* Trending Keywords */
+      .trending-keywords {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .keyword-tag {
+        background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+        color: #6d28d9;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        cursor: default;
+      }
+      .keyword-tag:hover { transform: scale(1.05); }
+      .keyword-tag.hot {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+      }
+      .keyword-tag.loading { background: #f3f4f6; color: #9ca3af; }
+      
+      /* SEO Recommendations */
+      .seo-recommendations {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .recommendation-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border-left: 4px solid #6366f1;
+      }
+      .recommendation-item i { font-size: 1.3rem; color: #6366f1; }
+      .recommendation-item.success { border-left-color: #10b981; }
+      .recommendation-item.success i { color: #10b981; }
+      .recommendation-item.warning { border-left-color: #f59e0b; }
+      .recommendation-item.warning i { color: #f59e0b; }
+      .spinning { animation: spin 1s linear infinite; }
+      @keyframes spin { 100% { transform: rotate(360deg); } }
+      
+      /* AI Mobile Responsive */
+      @media (max-width: 768px) {
+        .ai-insights-grid { grid-template-columns: 1fr; }
+        .segments-grid { grid-template-columns: repeat(2, 1fr); }
+        .keyword-categories-grid { grid-template-columns: repeat(2, 1fr); }
+        .seo-score-card { flex-direction: column; text-align: center; padding: 24px; }
+        .score-circle { margin: 0 auto; }
+        .predictions-chart { height: 160px; overflow-x: auto; }
+        .funnel-stage { width: 100% !important; }
+        .ai-block-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      }
+      @media (max-width: 480px) {
+        .segments-grid { grid-template-columns: 1fr; }
+        .keyword-categories-grid { grid-template-columns: 1fr; }
+        .ai-status-badge, .seo-status-badge { font-size: 0.75rem; padding: 6px 12px; }
+      }
+      /* ========== END AI STYLES ========== */
+
       /* Toggle Switch Styles */
       .toggle-switch-label {
         display: inline-flex;
@@ -4317,6 +4706,8 @@
         
         <div class="nav-divider"></div>
         <a href="#health" data-tooltip="System Health" data-section="health"><i class="ri-heart-pulse-line"></i></a>
+        <a href="#ai-analytics" data-tooltip="AI Analytics" data-section="ai-analytics"><i class="ri-robot-2-line"></i></a>
+        <a href="#ai-seo" data-tooltip="AI SEO" data-section="ai-seo"><i class="ri-seo-line"></i></a>
         <div class="nav-divider"></div>
         <a href="#" class="scroll-top-btn" data-tooltip="Back to Top" id="scrollToTopBtn"><i class="ri-arrow-up-line"></i></a>
       </div>
@@ -5835,6 +6226,213 @@
             <div class="info-item">
               <span class="info-label">Last Checked</span>
               <span class="info-value" id="infoLastChecked">--</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Analytics Section -->
+      <section id="ai-analytics" class="admin-panel ai-section">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2><i class="ri-robot-2-line"></i> AI Analytics Engine</h2>
+            <small>AI-powered insights, predictions, and anomaly detection</small>
+          </div>
+          <div class="section-header-right">
+            <div class="ai-status-badge" id="aiStatusBadge">
+              <i class="ri-sparkling-line"></i>
+              <span>AI Engine v3.0</span>
+            </div>
+            <button class="secondary" id="refreshAiAnalyticsBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <!-- AI Insights Cards -->
+          <div class="ai-insights-grid" id="aiInsightsGrid">
+            <div class="ai-insight-card loading">
+              <div class="insight-icon"><i class="ri-lightbulb-flash-line"></i></div>
+              <div class="insight-content">
+                <h4>Loading AI Insights...</h4>
+                <p>Analyzing your data</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Predictions -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-line-chart-line"></i> Traffic Predictions</h3>
+              <span class="ai-badge">7-Day Forecast</span>
+            </div>
+            <div class="predictions-chart" id="predictionsChart">
+              <div class="prediction-loading">Generating predictions...</div>
+            </div>
+          </div>
+
+          <!-- Anomaly Detection -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-error-warning-line"></i> Anomaly Detection</h3>
+              <span class="anomaly-count" id="anomalyCount">0 detected</span>
+            </div>
+            <div class="anomalies-list" id="anomaliesList">
+              <div class="no-anomalies">
+                <i class="ri-checkbox-circle-line"></i>
+                <span>No anomalies detected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Segments -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-group-line"></i> Customer Segments</h3>
+              <span class="ai-badge">RFM Analysis</span>
+            </div>
+            <div class="segments-grid" id="segmentsGrid">
+              <div class="segment-card champions">
+                <i class="ri-vip-crown-line"></i>
+                <span class="segment-name">Champions</span>
+                <span class="segment-count" id="championsCount">0</span>
+              </div>
+              <div class="segment-card loyal">
+                <i class="ri-heart-line"></i>
+                <span class="segment-name">Loyal</span>
+                <span class="segment-count" id="loyalCount">0</span>
+              </div>
+              <div class="segment-card at-risk">
+                <i class="ri-alarm-warning-line"></i>
+                <span class="segment-name">At Risk</span>
+                <span class="segment-count" id="atRiskCount">0</span>
+              </div>
+              <div class="segment-card new">
+                <i class="ri-user-star-line"></i>
+                <span class="segment-name">New</span>
+                <span class="segment-count" id="newCustomersCount">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversion Funnel -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-filter-3-line"></i> Conversion Funnel</h3>
+              <span class="conversion-rate" id="conversionRate">0%</span>
+            </div>
+            <div class="funnel-container" id="funnelContainer">
+              <div class="funnel-stage" style="--width: 100%">
+                <span class="stage-name">Page Views</span>
+                <span class="stage-count" id="funnelPageViews">0</span>
+              </div>
+              <div class="funnel-stage" style="--width: 70%">
+                <span class="stage-name">Product Views</span>
+                <span class="stage-count" id="funnelProductViews">0</span>
+              </div>
+              <div class="funnel-stage" style="--width: 40%">
+                <span class="stage-name">Add to Cart</span>
+                <span class="stage-count" id="funnelAddToCart">0</span>
+              </div>
+              <div class="funnel-stage" style="--width: 25%">
+                <span class="stage-name">Checkout</span>
+                <span class="stage-count" id="funnelCheckout">0</span>
+              </div>
+              <div class="funnel-stage" style="--width: 15%">
+                <span class="stage-name">Purchase</span>
+                <span class="stage-count" id="funnelPurchase">0</span>
+              </div>
+            </div>
+            <div class="funnel-bottleneck" id="funnelBottleneck">
+              <i class="ri-error-warning-line"></i>
+              <span>Bottleneck: <strong id="bottleneckStage">--</strong></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI SEO Section -->
+      <section id="ai-seo" class="admin-panel ai-section">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2><i class="ri-seo-line"></i> AI SEO Engine</h2>
+            <small>Smart keyword analysis and SEO optimization</small>
+          </div>
+          <div class="section-header-right">
+            <div class="seo-status-badge" id="seoStatusBadge">
+              <i class="ri-search-eye-line"></i>
+              <span id="seoKeywordCount">0</span> Keywords
+            </div>
+            <button class="secondary" id="refreshSeoBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <!-- SEO Score Card -->
+          <div class="seo-score-card" id="seoScoreCard">
+            <div class="score-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="score-bg" cx="50" cy="50" r="45"/>
+                <circle class="score-fill" cx="50" cy="50" r="45" id="seoScoreCircle"/>
+              </svg>
+              <div class="score-value" id="seoScore">--</div>
+            </div>
+            <div class="score-details">
+              <h3>SEO Health Score</h3>
+              <p id="seoScoreDesc">Analyzing your SEO performance...</p>
+            </div>
+          </div>
+
+          <!-- Keyword Categories -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-hashtag"></i> Keyword Categories</h3>
+            </div>
+            <div class="keyword-categories-grid" id="keywordCategoriesGrid">
+              <div class="keyword-category">
+                <i class="ri-t-shirt-line"></i>
+                <span class="cat-name">Product Keywords</span>
+                <span class="cat-count" id="productKeywords">0</span>
+              </div>
+              <div class="keyword-category">
+                <i class="ri-map-pin-line"></i>
+                <span class="cat-name">Local SEO</span>
+                <span class="cat-count" id="localKeywords">0</span>
+              </div>
+              <div class="keyword-category">
+                <i class="ri-calendar-event-line"></i>
+                <span class="cat-name">Seasonal</span>
+                <span class="cat-count" id="seasonalKeywords">0</span>
+              </div>
+              <div class="keyword-category">
+                <i class="ri-flashlight-line"></i>
+                <span class="cat-name">Intent-Based</span>
+                <span class="cat-count" id="intentKeywords">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Keywords -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-fire-line"></i> Trending Keywords</h3>
+            </div>
+            <div class="trending-keywords" id="trendingKeywords">
+              <span class="keyword-tag loading">Loading...</span>
+            </div>
+          </div>
+
+          <!-- SEO Recommendations -->
+          <div class="ai-section-block">
+            <div class="ai-block-header">
+              <h3><i class="ri-lightbulb-line"></i> SEO Recommendations</h3>
+            </div>
+            <div class="seo-recommendations" id="seoRecommendations">
+              <div class="recommendation-item">
+                <i class="ri-loader-4-line spinning"></i>
+                <span>Analyzing your content...</span>
+              </div>
             </div>
           </div>
         </div>
@@ -15633,6 +16231,278 @@ ${message.message}`;
       }
 
       // ===============================
+      // AI ANALYTICS FUNCTIONS
+      // ===============================
+      async function loadAiAnalytics() {
+        try {
+          // Load AI insights
+          const insightsRes = await fetch(getApiUrl('/api/analytics/ai-insights'), { credentials: 'include' });
+          const insightsData = await insightsRes.json();
+          
+          if (insightsData.success) {
+            renderAiInsights(insightsData.insights || []);
+            renderAnomalies(insightsData.anomalies || []);
+          }
+          
+          // Load predictions
+          const predictRes = await fetch(getApiUrl('/api/analytics/predictions'), { credentials: 'include' });
+          const predictData = await predictRes.json();
+          
+          if (predictData.success && predictData.predictions) {
+            renderPredictions(predictData.predictions.traffic || []);
+          }
+          
+          // Load segments
+          const segmentsRes = await fetch(getApiUrl('/api/analytics/segments'), { credentials: 'include' });
+          const segmentsData = await segmentsRes.json();
+          
+          if (segmentsData.success && segmentsData.segmentation) {
+            renderSegments(segmentsData.segmentation.stats || {});
+          }
+          
+          // Load funnel
+          const funnelRes = await fetch(getApiUrl('/api/analytics/funnel'), { credentials: 'include' });
+          const funnelData = await funnelRes.json();
+          
+          if (funnelData.success && funnelData.funnel) {
+            renderFunnel(funnelData.funnel);
+          }
+        } catch (error) {
+          console.error('[AI-Analytics] Error loading:', error);
+        }
+      }
+      
+      function renderAiInsights(insights) {
+        const grid = document.getElementById('aiInsightsGrid');
+        if (!grid) return;
+        
+        if (insights.length === 0) {
+          grid.innerHTML = '<div class="ai-insight-card"><div class="insight-icon"><i class="ri-information-line"></i></div><div class="insight-content"><h4>No Insights Yet</h4><p>Need more data to generate insights</p></div></div>';
+          return;
+        }
+        
+        grid.innerHTML = insights.slice(0, 6).map(insight => {
+          const icons = {
+            'TRAFFIC_HIGH': 'ri-line-chart-line',
+            'TRAFFIC_GROWING': 'ri-arrow-up-circle-line',
+            'TRAFFIC_DECLINING': 'ri-arrow-down-circle-line',
+            'LOW_CONVERSION': 'ri-shopping-cart-line',
+            'HIGH_BOUNCE': 'ri-logout-circle-line',
+            'ENGAGED_USERS': 'ri-user-heart-line'
+          };
+          const icon = icons[insight.type] || 'ri-lightbulb-flash-line';
+          const severity = insight.severity || 'positive';
+          
+          return `
+            <div class="ai-insight-card ${severity}">
+              <div class="insight-icon"><i class="${icon}"></i></div>
+              <div class="insight-content">
+                <h4>${insight.title}</h4>
+                <p>${insight.description}</p>
+                <span class="insight-confidence"><i class="ri-sparkling-line"></i> ${Math.round((insight.confidence || 0.8) * 100)}% confidence</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      function renderAnomalies(anomalies) {
+        const list = document.getElementById('anomaliesList');
+        const count = document.getElementById('anomalyCount');
+        if (!list) return;
+        
+        if (count) count.textContent = `${anomalies.length} detected`;
+        
+        if (anomalies.length === 0) {
+          list.innerHTML = '<div class="no-anomalies"><i class="ri-checkbox-circle-line"></i><span>No anomalies detected - everything looks normal!</span></div>';
+          return;
+        }
+        
+        list.innerHTML = anomalies.map(anomaly => `
+          <div class="anomaly-item ${anomaly.type === 'CRITICAL' ? '' : 'warning'}">
+            <i class="ri-error-warning-line"></i>
+            <div class="anomaly-info">
+              <div class="metric">${anomaly.metric} on ${anomaly.date}</div>
+              <div class="details">Value: ${anomaly.value} (expected ~${anomaly.expected}) - ${anomaly.deviation}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      function renderPredictions(predictions) {
+        const chart = document.getElementById('predictionsChart');
+        if (!chart) return;
+        
+        if (predictions.length === 0) {
+          chart.innerHTML = '<div class="prediction-loading">Need more historical data for predictions</div>';
+          return;
+        }
+        
+        const maxValue = Math.max(...predictions.map(p => p.predicted), 1);
+        
+        chart.innerHTML = predictions.map(pred => {
+          const height = Math.max(10, (pred.predicted / maxValue) * 150);
+          const date = new Date(pred.date);
+          const dayName = date.toLocaleDateString('en', { weekday: 'short' });
+          
+          return `
+            <div class="prediction-bar">
+              <div class="value">${pred.predicted}</div>
+              <div class="bar" style="height: ${height}px" title="Confidence: ${Math.round(pred.confidence * 100)}%"></div>
+              <div class="date">${dayName}</div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      function renderSegments(stats) {
+        const elements = {
+          championsCount: stats.champions?.count || 0,
+          loyalCount: stats.loyalCustomers?.count || 0,
+          atRiskCount: stats.atRisk?.count || 0,
+          newCustomersCount: stats.newCustomers?.count || 0
+        };
+        
+        Object.entries(elements).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = value;
+        });
+      }
+      
+      function renderFunnel(funnel) {
+        const stages = funnel.stages || [];
+        const rate = document.getElementById('conversionRate');
+        const bottleneck = document.getElementById('bottleneckStage');
+        
+        if (rate) rate.textContent = funnel.overallConversionRate + '%';
+        if (bottleneck) bottleneck.textContent = funnel.bottleneck || 'None';
+        
+        stages.forEach((stage, i) => {
+          const ids = ['funnelPageViews', 'funnelProductViews', 'funnelAddToCart', 'funnelCheckout', 'funnelPurchase'];
+          const el = document.getElementById(ids[i]);
+          if (el) el.textContent = stage.count || 0;
+        });
+      }
+      
+      // ===============================
+      // AI SEO FUNCTIONS
+      // ===============================
+      async function loadAiSeo() {
+        try {
+          // Load SEO overview
+          const seoRes = await fetch(getApiUrl('/api/seo'), { credentials: 'include' });
+          const seoData = await seoRes.json();
+          
+          if (seoData.success) {
+            const keywordCount = document.getElementById('seoKeywordCount');
+            if (keywordCount) keywordCount.textContent = seoData.keywordCount || 0;
+          }
+          
+          // Load keywords for categories
+          const keywordsRes = await fetch(getApiUrl('/api/seo/keywords'), { credentials: 'include' });
+          const keywordsData = await keywordsRes.json();
+          
+          if (keywordsData.success && keywordsData.keywords) {
+            renderKeywordCategories(keywordsData.keywords);
+            renderTrendingKeywords(keywordsData.keywords);
+          }
+          
+          // Load SEO report
+          const reportRes = await fetch(getApiUrl('/api/seo/report'), { credentials: 'include' });
+          const reportData = await reportRes.json();
+          
+          if (reportData.success && reportData.report) {
+            renderSeoScore(reportData.report);
+            renderSeoRecommendations(reportData.report.recommendations || []);
+          }
+        } catch (error) {
+          console.error('[AI-SEO] Error loading:', error);
+        }
+      }
+      
+      function renderKeywordCategories(keywords) {
+        const counts = {
+          productKeywords: (keywords.products || []).length + (keywords.brand || []).length,
+          localKeywords: (keywords.localSEO || []).length,
+          seasonalKeywords: (keywords.seasonal || []).length,
+          intentKeywords: (keywords.buyingIntent || []).length
+        };
+        
+        Object.entries(counts).forEach(([id, count]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = count;
+        });
+      }
+      
+      function renderTrendingKeywords(keywords) {
+        const container = document.getElementById('trendingKeywords');
+        if (!container) return;
+        
+        // Flatten and pick random trending keywords
+        const allKeywords = Object.values(keywords).flat().slice(0, 20);
+        const trending = allKeywords.sort(() => Math.random() - 0.5).slice(0, 12);
+        
+        container.innerHTML = trending.map((kw, i) => 
+          `<span class="keyword-tag ${i < 3 ? 'hot' : ''}">${i < 3 ? '🔥 ' : ''}${kw}</span>`
+        ).join('');
+      }
+      
+      function renderSeoScore(report) {
+        const score = report.score || 75;
+        const scoreEl = document.getElementById('seoScore');
+        const descEl = document.getElementById('seoScoreDesc');
+        const circle = document.getElementById('seoScoreCircle');
+        
+        if (scoreEl) scoreEl.textContent = score;
+        if (descEl) {
+          if (score >= 80) descEl.textContent = 'Excellent! Your SEO is well optimized.';
+          else if (score >= 60) descEl.textContent = 'Good, but there\'s room for improvement.';
+          else descEl.textContent = 'Needs attention. Follow the recommendations below.';
+        }
+        
+        if (circle) {
+          // Animate the circle (283 is the circumference of r=45 circle)
+          const offset = 283 - (283 * score / 100);
+          circle.style.strokeDashoffset = offset;
+        }
+      }
+      
+      function renderSeoRecommendations(recommendations) {
+        const container = document.getElementById('seoRecommendations');
+        if (!container) return;
+        
+        if (recommendations.length === 0) {
+          container.innerHTML = '<div class="recommendation-item success"><i class="ri-checkbox-circle-line"></i><span>All SEO checks passed! Great job.</span></div>';
+          return;
+        }
+        
+        container.innerHTML = recommendations.map(rec => {
+          const type = rec.priority === 'high' ? 'warning' : '';
+          const icon = rec.priority === 'high' ? 'ri-alert-line' : 'ri-information-line';
+          return `<div class="recommendation-item ${type}"><i class="${icon}"></i><span>${rec.message || rec}</span></div>`;
+        }).join('');
+      }
+      
+      // Initialize AI sections
+      function initAiSections() {
+        // Refresh buttons
+        document.getElementById('refreshAiAnalyticsBtn')?.addEventListener('click', loadAiAnalytics);
+        document.getElementById('refreshSeoBtn')?.addEventListener('click', loadAiSeo);
+        
+        // Load on section view
+        window.addEventListener('hashchange', () => {
+          const hash = window.location.hash;
+          if (hash === '#ai-analytics') loadAiAnalytics();
+          if (hash === '#ai-seo') loadAiSeo();
+        });
+        
+        // Initial load if on AI section
+        const hash = window.location.hash;
+        if (hash === '#ai-analytics') loadAiAnalytics();
+        if (hash === '#ai-seo') loadAiSeo();
+      }
+
+      // ===============================
       // INITIALIZE NEW SECTIONS
       // ===============================
       function initializeNewSections() {
@@ -15642,6 +16512,9 @@ ${message.message}`;
         // Initialize company tax and gift cards
         initCompanyTax();
         initGiftCards();
+        
+        // Initialize AI sections
+        initAiSections();
         
         // Load data when section becomes visible
         window.addEventListener('hashchange', () => {
@@ -15654,6 +16527,8 @@ ${message.message}`;
             case '#tax-management': loadTaxSettings(); break;
             case '#company-tax': loadCompanyTaxData(); break;
             case '#gift-cards': loadGiftCards(); break;
+            case '#ai-analytics': loadAiAnalytics(); break;
+            case '#ai-seo': loadAiSeo(); break;
           }
         });
         
@@ -15666,6 +16541,8 @@ ${message.message}`;
         if (hash === '#tax-management') loadTaxSettings();
         if (hash === '#company-tax') loadCompanyTaxData();
         if (hash === '#gift-cards') loadGiftCards();
+        if (hash === '#ai-analytics') loadAiAnalytics();
+        if (hash === '#ai-seo') loadAiSeo();
       }
       
       if (document.readyState === 'loading') {

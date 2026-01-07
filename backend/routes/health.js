@@ -1,7 +1,15 @@
 /**
- * Health Check Routes
- * Provides endpoints for monitoring server health and status
- * Includes auto-debugger endpoint for client-side error reporting
+ * AI-Powered Health Check Routes (v2.0)
+ * ======================================
+ * 
+ * Provides AI-friendly endpoints for monitoring server health and status.
+ * Includes auto-debugger endpoint for client-side error reporting.
+ * 
+ * AI Integration Points:
+ * - GET /api/health/ai-diagnostics: Full AI-parseable diagnostic report
+ * - GET /api/health/timeline: Event timeline for debugging context
+ * - POST /api/health/heal: Trigger auto-healing actions
+ * - GET /api/health/healing-log: History of healing actions
  */
 
 const express = require('express');
@@ -11,7 +19,12 @@ const path = require('path');
 const {
   getQuickHealth,
   getDetailedHealth,
-  getHealthMetrics
+  getHealthMetrics,
+  getAIDiagnostics,
+  getHealthTimeline,
+  getHealingLog,
+  runAutoHealer,
+  addToTimeline
 } = require('../utils/healthCheck');
 
 // Error log storage
@@ -357,6 +370,205 @@ router.get('/auto-status', (req, res) => {
     serverUptime: process.uptime(),
     timestamp: new Date().toISOString()
   });
+});
+
+// ============ AI-FRIENDLY ENDPOINTS ============
+
+/**
+ * @route   GET /api/health/ai-diagnostics
+ * @desc    Full AI-parseable diagnostic report
+ * @access  Public (consider protecting in production)
+ */
+router.get('/ai-diagnostics', (req, res) => {
+  try {
+    const diagnostics = getAIDiagnostics();
+    
+    // Add client-side error summary
+    diagnostics.clientErrors = {
+      total: clientErrors.length,
+      lastHour: clientErrors.filter(e => 
+        Date.now() - new Date(e.receivedAt).getTime() < 60 * 60 * 1000
+      ).length,
+      byCategory: {},
+      recent: clientErrors.slice(-10)
+    };
+    
+    // Categorize client errors
+    clientErrors.forEach(err => {
+      const category = err.category || err.type || 'unknown';
+      diagnostics.clientErrors.byCategory[category] = 
+        (diagnostics.clientErrors.byCategory[category] || 0) + 1;
+    });
+    
+    // Add auto-fix summary
+    diagnostics.autoFixes = {
+      total: autoFixActions.length,
+      recent: autoFixActions.slice(-10)
+    };
+    
+    res.json({
+      success: true,
+      _format: 'ai-friendly',
+      _version: '2.0',
+      _generatedAt: new Date().toISOString(),
+      diagnostics
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route   GET /api/health/timeline
+ * @desc    Get health event timeline for AI context
+ * @access  Public
+ */
+router.get('/timeline', (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 50;
+    const timeline = getHealthTimeline(count);
+    
+    res.json({
+      success: true,
+      count: timeline.length,
+      timeline
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @route   GET /api/health/healing-log
+ * @desc    Get auto-healing action history
+ * @access  Public
+ */
+router.get('/healing-log', (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 50;
+    const log = getHealingLog(count);
+    
+    res.json({
+      success: true,
+      count: log.length,
+      healingActions: log
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @route   POST /api/health/heal
+ * @desc    Trigger auto-healing actions
+ * @access  Protected (should require admin auth)
+ */
+router.post('/heal', async (req, res) => {
+  try {
+    addToTimeline({
+      type: 'HEAL_TRIGGERED',
+      severity: 'info',
+      source: 'api',
+      ip: req.ip
+    });
+    
+    const results = runAutoHealer();
+    
+    res.json({
+      success: true,
+      message: 'Auto-healing completed',
+      results
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @route   GET /api/health/ai-summary
+ * @desc    Quick AI-readable summary
+ * @access  Public
+ */
+router.get('/ai-summary', (req, res) => {
+  try {
+    const health = getQuickHealth();
+    const now = Date.now();
+    const oneHour = 60 * 60 * 1000;
+    
+    const recentClientErrors = clientErrors.filter(e => 
+      now - new Date(e.receivedAt).getTime() < oneHour
+    ).length;
+    
+    res.json({
+      _format: 'ai-summary',
+      timestamp: new Date().toISOString(),
+      
+      // Quick status indicators
+      serverHealthy: health.status === 'healthy',
+      healthScore: health.score,
+      uptime: health.uptime,
+      
+      // Issue counts
+      serverIssues: health.issueCount || 0,
+      clientErrorsLastHour: recentClientErrors,
+      autoFixesApplied: autoFixActions.length,
+      
+      // Actionable flags
+      needsAttention: health.status !== 'healthy' || recentClientErrors > 20,
+      criticalIssues: health.status === 'critical',
+      
+      // Links to detailed info
+      detailsEndpoint: '/api/health/ai-diagnostics',
+      timelineEndpoint: '/api/health/timeline',
+      healEndpoint: '/api/health/heal'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @route   POST /api/health/diagnostics
+ * @desc    Receive diagnostic data from frontend auto-debugger
+ * @access  Public
+ */
+router.post('/diagnostics', express.json(), async (req, res) => {
+  try {
+    const { error, summary, userAgent, url } = req.body;
+    
+    // Log for AI analysis
+    addToTimeline({
+      type: 'CLIENT_DIAGNOSTIC',
+      severity: error?.severity || 'info',
+      category: error?.category || 'unknown',
+      message: error?.message?.substring(0, 100),
+      clientHealthScore: summary?.healthScore,
+      url: url?.substring(0, 200)
+    });
+    
+    res.json({
+      received: true,
+      serverHealthScore: getQuickHealth().score
+    });
+  } catch (error) {
+    res.json({ received: true });
+  }
 });
 
 module.exports = router;

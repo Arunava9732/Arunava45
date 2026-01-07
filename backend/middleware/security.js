@@ -63,7 +63,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Build CSP directives with stricter settings in production
 const styleSrc = ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://accounts.google.com"];
-const scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://accounts.google.com", "https://apis.google.com", "https://connect.facebook.net", "https://www.facebook.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"];
+const scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://accounts.google.com", "https://apis.google.com", "https://connect.facebook.net", "https://www.facebook.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://checkout.razorpay.com", "https://*.razorpay.com"];
 
 const securityHeaders = helmet({
   contentSecurityPolicy: {
@@ -74,8 +74,8 @@ const securityHeaders = helmet({
       imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
       scriptSrc,
       scriptSrcAttr: ["'unsafe-inline'"],
-      frameSrc: ["'self'", "https://accounts.google.com", "https://www.facebook.com"],
-      connectSrc: ["'self'", "https://blackonn.in", "https://www.blackonn.in", "https://accounts.google.com", "https://graph.facebook.com", "https://www.facebook.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+      frameSrc: ["'self'", "https://accounts.google.com", "https://www.facebook.com", "https://api.razorpay.com", "https://*.razorpay.com"],
+      connectSrc: ["'self'", "https://blackonn.in", "https://www.blackonn.in", "https://accounts.google.com", "https://graph.facebook.com", "https://www.facebook.com", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://api.razorpay.com", "https://*.razorpay.com", "https://checkout.razorpay.com", "https://lumberjack.razorpay.com"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: isProduction ? [] : null
     }
