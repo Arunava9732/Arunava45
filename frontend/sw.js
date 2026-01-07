@@ -1,24 +1,23 @@
-const CACHE_NAME = 'blackonn-v3';
+const CACHE_NAME = 'blackonn-v4';
 const ASSETS_TO_CACHE = [
   '/offline.html',
-  '/assets/css/styles.css',
-  '/assets/css/swiper-bundle.min.css',
-  '/assets/js/main.js',
-  '/assets/js/api.js',
-  '/assets/js/auth.js',
-  '/assets/js/store.js',
-  '/assets/js/swiper-bundle.min.js',
-  '/assets/js/scrollreveal.min.js',
   '/assets/img/favicon.png',
   '/manifest.json'
 ];
 
-// HTML pages should not be cached - always fetch from network
+// JS/CSS files should NOT be cached to ensure updates are reflected immediately
+// These will always be fetched from network
+
+// Files that should NOT be cached - always fetch from network for immediate updates
 const NO_CACHE_PATTERNS = [
   /\.html$/,
   /\.html\?/,  // HTML with query strings
-  /\/$/,  // Root paths
-  /\/api\//  // API calls
+  /\.js$/,     // JavaScript files - for immediate updates
+  /\.js\?/,    // JS with query strings
+  /\.css$/,    // CSS files - for immediate updates  
+  /\.css\?/,   // CSS with query strings
+  /\/$/,       // Root paths
+  /\/api\//    // API calls
 ];
 
 // Install event - cache static assets only

@@ -489,11 +489,29 @@ const BlackonnSecurity = (() => {
 
   /**
    * Monitor for DOM-based XSS attempts
+   * Whitelists legitimate image/video sources to avoid false positives
    */
   const monitorDOMChanges = () => {
     if (typeof MutationObserver === 'undefined') return;
     
-    const dangerousPatterns = ['javascript:', 'data:', 'vbscript:', 'onerror', 'onload', 'onclick'];
+    // Only these patterns are actually dangerous in attribute VALUES
+    const dangerousPatterns = ['javascript:', 'vbscript:'];
+    
+    // Safe URL patterns - don't flag these as suspicious
+    const safePatterns = [
+      /^https?:\/\//i,           // Regular HTTP/HTTPS URLs
+      /^\/uploads\//i,            // Local uploads
+      /^\/assets\//i,             // Local assets
+      /^\/api\//i,                // API endpoints
+      /^data:image\//i,           // Data URLs for images (safe)
+      /^blob:/i,                  // Blob URLs (used for video/image preview)
+      /\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|ico)$/i  // Image/video file extensions
+    ];
+    
+    const isSafeValue = (value) => {
+      if (!value) return true;
+      return safePatterns.some(pattern => pattern.test(value));
+    };
     
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -504,12 +522,19 @@ const BlackonnSecurity = (() => {
               console.warn('Security: Inline script injection detected');
             }
             
-            // Check attributes for dangerous content
+            // Check attributes for dangerous content - but whitelist safe values
             if (node.attributes) {
               Array.from(node.attributes).forEach(attr => {
                 const value = attr.value.toLowerCase();
+                
+                // Skip src/href attributes with safe values (images, videos, etc.)
+                if ((attr.name === 'src' || attr.name === 'href') && isSafeValue(attr.value)) {
+                  return; // Safe - don't flag
+                }
+                
+                // Only flag actually dangerous patterns like javascript: URLs
                 if (dangerousPatterns.some(p => value.includes(p))) {
-                  console.warn('Security: Suspicious attribute detected:', attr.name);
+                  console.warn('Security: Dangerous attribute detected:', attr.name, value);
                   node.removeAttribute(attr.name);
                 }
               });
@@ -519,11 +544,12 @@ const BlackonnSecurity = (() => {
       });
     });
     
+    // Only observe event handlers, not src/href (too many false positives)
     observer.observe(document.body, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['href', 'src', 'onclick', 'onerror', 'onload']
+      attributeFilter: ['onclick', 'onerror', 'onload', 'onmouseover', 'onfocus']
     });
   };
 

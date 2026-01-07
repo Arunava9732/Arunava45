@@ -427,13 +427,19 @@ app.get('*', (req, res, next) => {
 // Explicit route for homepage - ensures index.html is served with correct Content-Type
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(frontendRoot, 'index.html'));
 });
 
-// Serve static HTML pages explicitly (ensures correct Content-Type)
+// Serve static HTML pages explicitly (ensures correct Content-Type and no caching)
 app.get('/*.html', (req, res, next) => {
   const htmlFile = path.join(frontendRoot, req.path);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(htmlFile, (err) => {
     if (err) next(); // Fall through if file doesn't exist
   });
@@ -442,42 +448,59 @@ app.get('/*.html', (req, res, next) => {
 app.use(express.static(frontendRoot, {
   dotfiles: 'ignore', // Don't serve dotfiles
   etag: true,
-  maxAge: '1d', // Cache static files for 1 day
   index: false,
   setHeaders: (res, filePath) => {
-    // Set correct MIME types explicitly
+    // HTML, JS, CSS should NOT be cached to ensure immediate updates
     if (filePath.endsWith('.html')) {
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     } else if (filePath.endsWith('.css')) {
       res.setHeader('Content-Type', 'text/css; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     } else if (filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     } else if (filePath.endsWith('.json')) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     } else if (filePath.endsWith('.png')) {
       res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day for images
     } else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
       res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.gif')) {
       res.setHeader('Content-Type', 'image/gif');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.svg')) {
       res.setHeader('Content-Type', 'image/svg+xml');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.ico')) {
       res.setHeader('Content-Type', 'image/x-icon');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.webp')) {
       res.setHeader('Content-Type', 'image/webp');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.mp4')) {
       res.setHeader('Content-Type', 'video/mp4');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.webm')) {
       res.setHeader('Content-Type', 'video/webm');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (filePath.endsWith('.woff')) {
       res.setHeader('Content-Type', 'font/woff');
+      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days for fonts
     } else if (filePath.endsWith('.woff2')) {
       res.setHeader('Content-Type', 'font/woff2');
+      res.setHeader('Cache-Control', 'public, max-age=604800');
     } else if (filePath.endsWith('.ttf')) {
       res.setHeader('Content-Type', 'font/ttf');
+      res.setHeader('Cache-Control', 'public, max-age=604800');
     } else if (filePath.endsWith('.eot')) {
       res.setHeader('Content-Type', 'application/vnd.ms-fontobject');
+      res.setHeader('Cache-Control', 'public, max-age=604800');
     }
   }
 }));

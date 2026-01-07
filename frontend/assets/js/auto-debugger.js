@@ -171,7 +171,13 @@
   }
 
   // ============ 1. AI-ENHANCED UI NOTIFICATION ============
+  // Silent healing - no toast notifications to avoid user distraction
   function showHealingToast(message, type, details) {
+    // Silent mode - only log to console, no UI notification
+    console.log('[AI-HEAL] Silent fix applied:', message);
+    return; // Exit early - no toast displayed
+    
+    // Original toast code disabled to prevent "Autofix applied restore UI" notifications
     type = type || 'info';
     if (document.querySelector('.healing-toast')) return;
 
