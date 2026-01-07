@@ -743,58 +743,74 @@ router.get('/funnel', (req, res) => {
  */
 router.get('/stats', (req, res) => {
   try {
-    const range = req.query.range || '7d';
+    const days = parseInt(req.query.days) || 7;
     const traffic = loadTrafficData();
     const analytics = loadAnalyticsData();
     
     // Calculate date range
-    const days = range === '30d' ? 30 : range === '90d' ? 90 : 7;
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     
     const filteredTraffic = traffic.filter(d => new Date(d.date) >= cutoffDate);
     
-    // Aggregate stats
-    const stats = {
-      period: {
-        start: cutoffDate.toISOString().split('T')[0],
-        end: new Date().toISOString().split('T')[0],
-        days: days
-      },
-      traffic: {
-        totalVisits: filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0),
-        uniqueVisitors: new Set(filteredTraffic.flatMap(d => d.uniqueVisitors || [])).size,
-        avgDailyVisits: filteredTraffic.length > 0 
-          ? Math.round(filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0) / filteredTraffic.length)
-          : 0,
-        trend: aiEngine.detectTrend(filteredTraffic.map(d => d.totalVisits || 0))
-      },
-      pageViews: {},
-      devices: { desktop: 0, mobile: 0, tablet: 0 },
-      topPages: [],
-      hourlyDistribution: {}
-    };
-
-    // Aggregate page views and devices
+    // Get today and yesterday
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    
+    const todayData = traffic.find(d => d.date === today) || { totalVisits: 0, uniqueVisitors: [] };
+    const yesterdayData = traffic.find(d => d.date === yesterday) || { totalVisits: 0, uniqueVisitors: [] };
+    
+    // Aggregate page views, devices, browsers, referrers
+    const pageViews = {};
+    const devices = { desktop: 0, mobile: 0, tablet: 0 };
+    const browsers = {};
+    const referrers = {};
+    
     filteredTraffic.forEach(day => {
       Object.entries(day.pageViews || {}).forEach(([page, count]) => {
-        stats.pageViews[page] = (stats.pageViews[page] || 0) + count;
+        pageViews[page] = (pageViews[page] || 0) + count;
       });
       Object.entries(day.devices || {}).forEach(([device, count]) => {
-        stats.devices[device] = (stats.devices[device] || 0) + count;
+        devices[device] = (devices[device] || 0) + count;
       });
-      Object.entries(day.hourlyVisits || {}).forEach(([hour, count]) => {
-        stats.hourlyDistribution[hour] = (stats.hourlyDistribution[hour] || 0) + count;
+      Object.entries(day.browsers || {}).forEach(([browser, count]) => {
+        browsers[browser] = (browsers[browser] || 0) + count;
+      });
+      Object.entries(day.referrers || {}).forEach(([ref, count]) => {
+        referrers[ref] = (referrers[ref] || 0) + count;
       });
     });
 
-    // Get top pages
-    stats.topPages = Object.entries(stats.pageViews)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([page, views]) => ({ page, views }));
+    // Build stats object matching frontend expectations
+    const stats = {
+      today: {
+        visits: todayData.totalVisits || 0,
+        uniqueVisitors: todayData.uniqueVisitors?.length || 0
+      },
+      yesterday: {
+        visits: yesterdayData.totalVisits || 0,
+        uniqueVisitors: yesterdayData.uniqueVisitors?.length || 0
+      },
+      totalVisits: filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0),
+      uniqueVisitors: new Set(filteredTraffic.flatMap(d => d.uniqueVisitors || [])).size,
+      avgVisitsPerDay: filteredTraffic.length > 0 
+        ? Math.round(filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0) / filteredTraffic.length)
+        : 0,
+      dailyVisits: filteredTraffic.map(d => ({
+        date: d.date,
+        visits: d.totalVisits || 0,
+        uniqueVisitors: d.uniqueVisitors?.length || 0
+      })),
+      topPages: Object.entries(pageViews)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([page, views]) => ({ page, views })),
+      devices,
+      browsers,
+      referrers
+    };
 
-    // Generate AI insights for this period
+    // Generate AI insights
     const insights = aiEngine.generateInsights({ traffic: filteredTraffic, ...analytics });
 
     res.json({

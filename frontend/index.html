@@ -424,13 +424,15 @@
             track.innerHTML = slidesData.map((slide, index) => {
               const src = normalizeMediaUrl(slide.src || '');
               if (slide.type === 'video') {
-                // First video loads immediately, others lazy load
-                const preload = index === 0 ? 'auto' : 'none';
-                return `<video src="${src}" muted playsinline preload="${preload}" loading="${index === 0 ? 'eager' : 'lazy'}"></video>`;
-              } else {
-                // First image loads eagerly, others lazy load
+                // All videos preload metadata only to avoid buffering
+                // Only first video loads immediately
+                const preload = index === 0 ? 'auto' : 'metadata';
                 const loading = index === 0 ? 'eager' : 'lazy';
-                return `<img src="${src}" alt="${slide.title || 'Hero Image'}" style="width:100%;height:100%;object-fit:cover;" loading="${loading}" decoding="async" />`;
+                return `<video src="${src}" muted playsinline preload="${preload}" loading="${loading}"></video>`;
+              } else {
+                // First image loads eagerly, others lazy load with decoding optimization
+                const loading = index === 0 ? 'eager' : 'lazy';
+                return `<img src="${src}" alt="${slide.title || 'Hero Image'}" style="width:100%;height:100%;object-fit:cover;" loading="${loading}" decoding="async" fetchpriority="${index === 0 ? 'high' : 'low'}" />`;
               }
             }).join('');
             
@@ -762,11 +764,17 @@
             const isReverse = index % 2 === 1;
             // Use main image as primary, fall back to first thumbnail only if main image is missing
             const imgSrc = normalizeProductUrl(product.image || product.thumbImage);
+            // First two products load eagerly, rest lazy load to improve performance
+            const loading = index < 2 ? 'eager' : 'lazy';
+            const fetchpriority = index === 0 ? 'high' : index === 1 ? 'medium' : 'low';
             
             return `
               <div class="section${isReverse ? ' reverse' : ''}" data-index="${index}">
                 <div class="media hover-scale">
                   <img src="${imgSrc}" alt="${product.name}" 
+                       loading="${loading}"
+                       decoding="async"
+                       fetchpriority="${fetchpriority}"
                        onerror="this.src=getPlaceholder(800, 800, '${product.name.replace(/'/g, '')}')">
                 </div>
                 <div class="text">

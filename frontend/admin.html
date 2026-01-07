@@ -632,7 +632,7 @@
       }
       .chart-bar {
         flex: 1;
-        background: linear-gradient(to top, #3b82f6, #60a5fa);
+        background: linear-gradient(to top, #8b5cf6, #a78bfa, #c4b5fd);
         border-radius: 4px 4px 0 0;
         min-height: 4px;
         position: relative;
@@ -640,7 +640,8 @@
         transition: all 0.2s ease;
       }
       .chart-bar:hover {
-        background: linear-gradient(to top, #2563eb, #3b82f6);
+        background: linear-gradient(to top, #7c3aed, #8b5cf6, #a78bfa);
+        transform: scaleY(1.05);
       }
       .chart-bar::after {
         content: attr(data-visits);
@@ -719,8 +720,14 @@
       }
       .detail-item .bar-fill {
         height: 100%;
-        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
         border-radius: 3px;
+        transition: all 0.3s ease;
+        box-shadow: 0 1px 4px rgba(245, 158, 11, 0.3);
+      }
+      .detail-item:hover .bar-fill {
+        background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
+        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
       }
       .realtime-indicator {
         display: flex;
@@ -890,15 +897,17 @@
       .sales-bar {
         width: 100%;
         min-height: 4px;
-        background: linear-gradient(180deg, #059669 0%, #10b981 100%);
+        background: linear-gradient(180deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
         border-radius: 4px 4px 0 0;
         position: relative;
         cursor: pointer;
         transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
       }
       .sales-bar:hover {
-        transform: scaleX(1.1);
-        background: linear-gradient(180deg, #047857 0%, #059669 100%);
+        transform: scaleX(1.08) scaleY(1.02);
+        background: linear-gradient(180deg, #059669 0%, #10b981 50%, #34d399 100%);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
       }
       .sales-bar::after {
         content: attr(data-value);
@@ -5410,6 +5419,11 @@
             <h2><i class="ri-shopping-bag-line"></i> Product Management</h2>
             <small>Upload images, set pricing, colors, sizes, and stock</small>
           </div>
+          <div class="section-header-right">
+            <button class="secondary" id="refreshProductsBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+          </div>
         </div>
 
         <!-- Low Stock Notification -->
@@ -6451,8 +6465,11 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshSkuBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
             <button class="secondary" id="generateAllSkuBtn">
-              <i class="ri-refresh-line"></i> Generate All SKUs
+              <i class="ri-barcode-line"></i> Generate All SKUs
             </button>
           </div>
         </div>
@@ -6515,6 +6532,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshInventoryBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
             <button class="secondary" id="exportInventoryBtn">
               <i class="ri-download-line"></i> Export
             </button>
@@ -6633,6 +6653,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshMarketingBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
           </div>
         </div>
         <div class="panel-body" id="marketingSectionBody">
@@ -6793,6 +6816,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshShippingBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
           </div>
         </div>
         <div class="panel-body" id="shippingSectionBody">
@@ -6970,6 +6996,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshTaxBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
           </div>
         </div>
         <div class="panel-body" id="taxSectionBody">
@@ -7256,6 +7285,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshCompanyTaxBtnAlt">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
           </div>
         </div>
         <div class="panel-body" id="companyTaxSectionBody">
@@ -7591,6 +7623,9 @@
               <span class="toggle-switch"></span>
               <span>Section Enabled</span>
             </label>
+            <button class="secondary" id="refreshGiftCardsBtn">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
             <button class="primary" id="createGiftCardBtn"><i class="ri-add-line"></i> Create Gift Card</button>
           </div>
         </div>
@@ -16545,10 +16580,68 @@ ${message.message}`;
         if (hash === '#ai-seo') loadAiSeo();
       }
       
+      // ===============================
+      // AUTO-REFRESH FUNCTIONALITY (2 MINUTE INTERVALS)
+      // ===============================
+      const autoRefreshIntervals = {};
+      const AUTO_REFRESH_DELAY = 2 * 60 * 1000; // 2 minutes in milliseconds
+      
+      function startAutoRefresh(sectionId, refreshFunction) {
+        // Clear any existing interval for this section
+        if (autoRefreshIntervals[sectionId]) {
+          clearInterval(autoRefreshIntervals[sectionId]);
+        }
+        
+        // Set up new interval
+        autoRefreshIntervals[sectionId] = setInterval(() => {
+          console.log(`[AUTO-REFRESH] Refreshing ${sectionId}`);
+          refreshFunction();
+        }, AUTO_REFRESH_DELAY);
+      }
+      
+      function stopAutoRefresh(sectionId) {
+        if (autoRefreshIntervals[sectionId]) {
+          clearInterval(autoRefreshIntervals[sectionId]);
+          delete autoRefreshIntervals[sectionId];
+        }
+      }
+      
+      function initializeAutoRefresh() {
+        // Start auto-refresh for all sections that need it
+        startAutoRefresh('messages', loadMessages);
+        startAutoRefresh('health', loadHealthStatus);
+        startAutoRefresh('ai-analytics', loadAiAnalytics);
+        startAutoRefresh('ai-seo', loadAiSeo);
+        startAutoRefresh('sku-management', loadSkuData);
+        startAutoRefresh('inventory', loadInventoryData);
+        startAutoRefresh('marketing', () => { loadMarketingSettings(); loadCoupons(); });
+        startAutoRefresh('shipping', loadShippingSettings);
+        startAutoRefresh('tax', loadTaxSettings);
+        startAutoRefresh('company-tax', loadCompanyTaxData);
+        startAutoRefresh('gift-cards', loadGiftCards);
+        
+        // Set up manual refresh button handlers
+        document.getElementById('refreshProductsBtn')?.addEventListener('click', loadProducts);
+        document.getElementById('refreshMessagesBtn')?.addEventListener('click', loadMessages);
+        document.getElementById('refreshHealthBtn')?.addEventListener('click', loadHealthStatus);
+        document.getElementById('refreshSkuBtn')?.addEventListener('click', loadSkuData);
+        document.getElementById('refreshInventoryBtn')?.addEventListener('click', loadInventoryData);
+        document.getElementById('refreshMarketingBtn')?.addEventListener('click', () => { loadMarketingSettings(); loadCoupons(); });
+        document.getElementById('refreshShippingBtn')?.addEventListener('click', loadShippingSettings);
+        document.getElementById('refreshTaxBtn')?.addEventListener('click', loadTaxSettings);
+        document.getElementById('refreshCompanyTaxBtn')?.addEventListener('click', loadCompanyTaxData);
+        document.getElementById('refreshCompanyTaxBtnAlt')?.addEventListener('click', loadCompanyTaxData);
+        document.getElementById('refreshGiftCardsBtn')?.addEventListener('click', loadGiftCards);
+      }
+      
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeNewSections);
+        document.addEventListener('DOMContentLoaded', () => {
+          initializeNewSections();
+          initializeAutoRefresh();
+        });
       } else {
         initializeNewSections();
+        initializeAutoRefresh();
       }
     </script>
     <script src="assets/js/console-block.js"></script>
