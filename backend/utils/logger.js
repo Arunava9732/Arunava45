@@ -1,11 +1,12 @@
 /**
  * Lightweight logger wrapper for consistent timestamps and levels
  * Optimized for production - minimal output to reduce overhead
- * Features: Log Rotation, File Persistence
+ * Features: Log Rotation, File Persistence, AI-Friendly Structured Logging
  */
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const LOG_DIR = path.join(__dirname, '..', 'logs');
@@ -58,6 +59,45 @@ function logAdminActivity(adminId, action, details = {}) {
   const logLine = `[${ts()}] [ADMIN] [${adminId}] [${action}] ${JSON.stringify(details)}\n`;
   const filePath = path.join(LOG_DIR, 'admin-activity.log');
   fs.appendFileSync(filePath, logLine);
+  
+  // AI-friendly console log
+  console.log(`[AI-ADMIN-ACTIVITY]`, JSON.stringify({
+    timestamp: ts(),
+    adminId,
+    action,
+    details,
+    logId: crypto.randomBytes(8).toString('hex')
+  }));
+}
+
+/**
+ * AI-Structured Logger - Outputs machine-readable JSON logs
+ * @param {string} category - Log category
+ * @param {object} data - Structured data to log
+ */
+function aiLog(category, data) {
+  const structuredLog = {
+    timestamp: new Date().toISOString(),
+    category,
+    logId: crypto.randomBytes(8).toString('hex'),
+    ...data,
+    _aiReadable: true,
+    _structured: true
+  };
+  
+  console.log(`[AI-LOG]`, JSON.stringify(structuredLog));
+  
+  // Also write to AI log file
+  const dateStr = new Date().toISOString().split('T')[0];
+  const fileName = `ai-logs-${dateStr}.json`;
+  const filePath = path.join(LOG_DIR, fileName);
+  
+  try {
+    // Append as JSONL (JSON Lines format)
+    fs.appendFileSync(filePath, JSON.stringify(structuredLog) + '\n');
+  } catch (e) {
+    console.error('AI log write failed:', e);
+  }
 }
 
 module.exports = {
@@ -94,4 +134,5 @@ module.exports = {
     }
   },
   logAdminActivity,
+  aiLog,
 };

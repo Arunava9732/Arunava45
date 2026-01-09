@@ -7,8 +7,13 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Data file path
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -116,6 +121,8 @@ router.patch('/sections/:sectionKey', authenticate, requireAdmin, (req, res) => 
     
     settings.sections[sectionKey].enabled = Boolean(enabled);
     writeSettings(settings);
+    
+    console.log(`[AI-Enhanced] Section visibility updated: ${sectionKey}, Enabled: ${Boolean(enabled)}`);
     
     // Sync giftCards toggle to marketing settings for feature visibility
     if (sectionKey === 'giftCards') {

@@ -9,8 +9,13 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Data file path
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -203,6 +208,8 @@ router.post('/coupons', authenticate, requireAdmin, (req, res) => {
     
     data.coupons.push(coupon);
     writeData(data);
+
+    console.log(`[AI-Enhanced] Coupon created: ${coupon.code}, Type: ${coupon.type}, Value: ${coupon.value}`);
     
     res.status(201).json({ success: true, coupon });
   } catch (error) {

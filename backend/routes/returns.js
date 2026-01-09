@@ -9,8 +9,13 @@ const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validators, validateRequest, returnLimiter } = require('../middleware/security');
 const { body, param } = require('express-validator');
 const { sendAdminNotification, formatReturnMessage } = require('../utils/whatsapp');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Get all returns (admin)
 router.get('/', authenticate, requireAdmin, (req, res) => {
@@ -152,6 +157,8 @@ router.post('/',
     };
 
     db.returns.create(returnRequest);
+
+    console.log(`[AI-Enhanced] Return request created: ${returnRequest.id}, Order: ${orderId}, Refund: ₹${refundAmount}`);
 
     // Update order status to indicate return requested
     db.orders.update(orderId, { 

@@ -11,8 +11,13 @@ const { body, param } = require('express-validator');
 const { sendOrderConfirmation, sendLowStockAlert } = require('../utils/email');
 const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
 const { sendOrderWebhook } = require('../routes/webhooks');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Get all orders (admin only)
 router.get('/', authenticate, isAdmin, (req, res) => {
@@ -155,6 +160,8 @@ router.post('/',
 
       db.orders.create(order);
       
+      console.log(`[AI-Enhanced] Order created: ${order.id}, User: ${req.user.id}, Total: ₹${order.total}`);
+      
       // Only send notifications for confirmed orders (COD) - online payment orders will trigger on verification
       if (paymentConfirmed) {
         sendOrderWebhook && sendOrderWebhook('order.created', order);
@@ -212,6 +219,8 @@ router.patch('/:id/status', authenticate, isAdmin, (req, res) => {
     if (paymentStatus) updates.paymentStatus = paymentStatus;
 
     const updated = db.orders.update(req.params.id, updates);
+
+    console.log(`[AI-Enhanced] Order status updated: ${req.params.id}, Status: ${status || 'N/A'}, Payment: ${paymentStatus || 'N/A'}`);
 
     res.json({ success: true, order: updated });
   } catch (error) {

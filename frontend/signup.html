@@ -74,6 +74,7 @@
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group label {
@@ -82,49 +83,81 @@
             color: #333;
             font-weight: 500;
             font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: #000;
         }
 
         .form-group label .required {
-            color: #ff4444;
+            color: #ef4444;
             margin-left: 2px;
         }
 
         .form-group input {
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
             font-size: 15px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        .form-group input:hover:not(:focus) {
+            border-color: #d1d5db;
+            background: #fff;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #000;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
         }
 
         .form-group input:invalid:not(:placeholder-shown) {
-            border-color: #ff4444;
-            box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+            border-color: #ef4444;
+            background: #fef2f2;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
         }
 
         .form-group.error input {
-            border-color: #ff4444 !important;
-            box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1) !important;
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+            animation: inputShakeAnim 0.4s ease-in-out;
         }
 
-        .error-message {
+        .form-group.valid input {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.03) !important;
+        }
+
+        @keyframes inputShakeAnim {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-5px); }
+            30%, 60%, 90% { transform: translateX(5px); }
+        }
+
+        .form-group .error-message {
             display: none;
-            color: #ff4444;
-            font-size: 0.8rem;
-            margin-top: 5px;
-            font-weight: 500;
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 6px;
         }
 
         .form-group.error .error-message {
             display: block;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .password-toggle {
@@ -135,101 +168,180 @@
             padding-right: 50px;
         }
 
+        .password-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
         .password-toggle-btn {
             position: absolute;
             right: 12px;
-            top: 33px;
-            background: none;
-            border: none;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none !important;
+            border: none !important;
             cursor: pointer;
-            color: #666;
+            color: #9ca3af;
             font-size: 20px;
-            padding: 5px;
-            width: 36px;
-            height: 36px;
+            padding: 8px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: color 0.3s ease;
+            transition: none !important;
+            border-radius: 8px;
+            box-shadow: none !important;
+            outline: none !important;
+            z-index: 10;
         }
 
-        .password-toggle-btn:hover {
-            color: #000;
+        .password-toggle-btn:hover,
+        .password-toggle-btn:focus,
+        .password-toggle-btn:active {
+            color: #9ca3af !important;
+            background: none !important;
+            transform: translateY(-50%) !important;
         }
 
         .password-strength {
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .strength-bar {
-            height: 4px;
-            background: #eee;
-            border-radius: 2px;
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
             overflow: hidden;
         }
 
         .strength-bar-fill {
             height: 100%;
             width: 0;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
         }
 
-        .strength-bar-fill.weak { width: 33%; background: #ff4444; }
-        .strength-bar-fill.medium { width: 66%; background: #ffaa00; }
-        .strength-bar-fill.strong { width: 100%; background: #4caf50; }
+        .strength-bar-fill.weak { width: 33%; background: linear-gradient(90deg, #ef4444 0%, #f87171 100%); }
+        .strength-bar-fill.medium { width: 66%; background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%); }
+        .strength-bar-fill.strong { width: 100%; background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
 
         .strength-text {
             font-size: 12px;
-            margin-top: 5px;
-            color: #666;
+            font-weight: 500;
+            margin-top: 6px;
+            color: #6b7280;
+            transition: color 0.3s ease;
         }
+        .strength-text.weak { color: #ef4444; }
+        .strength-text.medium { color: #f59e0b; }
+        .strength-text.strong { color: #10b981; }
 
         .terms-group {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 25px;
         }
 
         .terms-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             margin-top: 2px;
             cursor: pointer;
+            accent-color: #1a1a1a;
+            transition: transform 0.2s ease;
+        }
+
+        .terms-group input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+
+        .terms-group input[type="checkbox"]:checked {
+            animation: checkBounce 0.3s ease;
+        }
+
+        @keyframes checkBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .terms-group label {
             font-size: 14px;
             color: #666;
             cursor: pointer;
+            line-height: 1.5;
         }
 
         .terms-group a {
             color: #000;
             text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .terms-group a:hover {
-            text-decoration: underline;
+        .terms-group a::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #000;
+            transition: width 0.3s ease;
+        }
+
+        .terms-group a:hover::after {
+            width: 100%;
         }
 
         .signup-btn {
             width: 100%;
-            padding: 15px;
-            background: #000;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .signup-btn:hover {
-            background: #333;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .signup-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .signup-btn:hover::before {
+            left: 100%;
+        }
+
+        .signup-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .signup-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .signup-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         .signup-btn:disabled {
@@ -352,6 +464,93 @@
 
         .facebook-btn:hover {
             border-color: #1877F2;
+        }
+
+        /* Biometric Authentication Option */
+        .biometric-signup-option {
+            margin-top: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .biometric-signup-option:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .biometric-signup-option input[type="checkbox"] {
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .biometric-info {
+            flex: 1;
+        }
+
+        .biometric-info-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .biometric-icon {
+            font-size: 20px;
+        }
+
+        .biometric-info-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .biometric-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .biometric-success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 500px) {
@@ -539,10 +738,12 @@
 
                 <div class="form-group password-toggle">
                     <label for="password">Password <span class="required">*</span></label>
-                    <input type="password" id="password" name="password" placeholder="Create a password" required>
-                    <button type="button" class="password-toggle-btn" id="togglePassword" title="Toggle password visibility">
-                        <i class="ri-eye-line" id="eyeIcon"></i>
-                    </button>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <button type="button" class="password-toggle-btn" id="togglePassword" title="Toggle password visibility">
+                            <i class="ri-eye-line" id="eyeIcon"></i>
+                        </button>
+                    </div>
                     <div class="password-strength">
                         <div class="strength-bar">
                             <div class="strength-bar-fill" id="strengthBar"></div>
@@ -554,16 +755,33 @@
 
                 <div class="form-group password-toggle">
                     <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
-                    <button type="button" class="password-toggle-btn" id="toggleConfirmPassword" title="Toggle password visibility">
-                        <i class="ri-eye-line" id="eyeIcon2"></i>
-                    </button>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        <button type="button" class="password-toggle-btn" id="toggleConfirmPassword" title="Toggle password visibility">
+                            <i class="ri-eye-line" id="eyeIcon2"></i>
+                        </button>
+                    </div>
                     <span class="error-message">Passwords do not match</span>
                 </div>
 
                 <div class="terms-group">
                     <input type="checkbox" id="terms" name="terms" required>
                     <label for="terms">I agree to the <a href="privacy-policy.html">Privacy Policy</a> and <a href="return-policy.html">Terms of Service</a></label>
+                </div>
+
+                <!-- Biometric Enrollment Option -->
+                <div class="biometric-signup-option" id="biometricSignupOption" style="display: none;">
+                    <input type="checkbox" id="enableBiometric" name="enableBiometric" checked>
+                    <div class="biometric-info">
+                        <div class="biometric-info-title">
+                            <span class="biometric-icon" id="biometricIcon">🔐</span>
+                            <span id="biometricTitle">Enable Biometric Authentication</span>
+                            <span class="biometric-badge">RECOMMENDED</span>
+                        </div>
+                        <div class="biometric-info-desc" id="biometricDesc">
+                            Secure your account with Face ID, Touch ID, or Fingerprint for quick and passwordless login.
+                        </div>
+                    </div>
                 </div>
 
                 <button type="submit" class="signup-btn">Create Account</button>
@@ -772,14 +990,11 @@
         });
         
         function showSignupError(message) {
-            let errorMsg = document.querySelector('.signup-error-message');
-            if (!errorMsg) {
-                errorMsg = document.createElement('div');
-                errorMsg.className = 'signup-error-message';
-                errorMsg.style.cssText = 'color:#d02626;margin-top:12px;text-align:center;padding:10px;background:#fee2e2;border-radius:8px;';
-                signupForm.insertBefore(errorMsg, signupForm.querySelector('button[type="submit"]'));
+            if (typeof showNotification === 'function') {
+                showNotification(message, 'error');
+            } else {
+                console.error(message);
             }
-            errorMsg.innerHTML = message;
         }
 
         // Wait for OAuth config to load, then setup buttons
@@ -1041,11 +1256,227 @@
   © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
 </div>
 
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
 
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+    
     <script src="assets/js/console-block.js"></script>
     <script src="assets/js/auto-debugger.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
     <script src="assets/js/analytics.js"></script>
 
     <script src="assets/js/main.js"></script>
+    
+    <!-- Biometric Authentication Setup for Signup -->
+    <script>
+        (async function initBiometricSignup() {
+            // Wait for BiometricAuth to be available
+            if (!window.biometricAuth) {
+                console.warn('BiometricAuth not available');
+                return;
+            }
+
+            const biometricOption = document.getElementById('biometricSignupOption');
+            const biometricCheckbox = document.getElementById('enableBiometric');
+            const biometricTitle = document.getElementById('biometricTitle');
+            const biometricDesc = document.getElementById('biometricDesc');
+            const biometricIcon = document.getElementById('biometricIcon');
+            const signupForm = document.getElementById('signupForm');
+            const emailInput = document.getElementById('email');
+
+            // Check if biometric is supported
+            const isSupported = await window.biometricAuth.checkSupport();
+            if (!isSupported) {
+                console.log('Biometric authentication not supported on this device');
+                return;
+            }
+
+            // Detect available authenticators
+            await window.biometricAuth.detectAuthenticators();
+
+            // Determine the best available method and update UI
+            const supportedTypes = window.biometricAuth.supportedTypes;
+            const userAgent = navigator.userAgent.toLowerCase();
+            let biometricMethod = 'Biometric Authentication';
+            let icon = '🔐';
+            
+            if (supportedTypes.faceID?.available) {
+                biometricMethod = 'Face ID';
+                icon = '👤';
+            } else if (supportedTypes.touchID?.available) {
+                biometricMethod = 'Touch ID';
+                icon = '👆';
+            } else if (supportedTypes.fingerprint?.available) {
+                if (userAgent.includes('windows')) {
+                    biometricMethod = 'Biometric';
+                    icon = '🔐';
+                } else {
+                    biometricMethod = 'Fingerprint';
+                    icon = '🖐️';
+                }
+            }
+
+            biometricTitle.textContent = `Enable ${biometricMethod}`;
+
+            biometricDesc.textContent = `Secure your account with ${biometricMethod} for quick and passwordless login.`;
+            biometricIcon.textContent = icon;
+            biometricOption.style.display = 'flex';
+
+            // Store original form submit handler
+            const originalFormHandler = signupForm.onsubmit;
+
+            // Enhanced form submission with biometric registration
+            signupForm.addEventListener('submit', async (e) => {
+                // Check if biometric enrollment is enabled
+                if (biometricCheckbox && biometricCheckbox.checked) {
+                    const email = emailInput.value.trim();
+                    
+                    if (email) {
+                        // Store email for biometric registration after successful signup
+                        sessionStorage.setItem('pendingBiometricEnrollment', JSON.stringify({
+                            email: email,
+                            method: biometricMethod,
+                            timestamp: Date.now()
+                        }));
+                        
+                        console.log(`\u2713 Biometric enrollment queued for ${email} using ${biometricMethod}`);
+                    }
+                }
+            });
+
+            // Listen for successful signup to trigger biometric enrollment
+            window.addEventListener('signup-success', async (event) => {
+                const pendingEnrollment = sessionStorage.getItem('pendingBiometricEnrollment');
+                
+                if (pendingEnrollment && biometricCheckbox && biometricCheckbox.checked) {
+                    try {
+                        const enrollment = JSON.parse(pendingEnrollment);
+                        
+                        // Small delay to let the success message show
+                        setTimeout(async () => {
+                            // Show biometric enrollment prompt
+                            const enrollNow = confirm(`Would you like to set up ${enrollment.method} now for faster login?`);
+                            
+                            if (enrollNow) {
+                                const submitBtn = signupForm.querySelector('button[type=\"submit\"]');
+                                if (submitBtn) {
+                                    submitBtn.textContent = `Setting up ${enrollment.method}...`;
+                                    submitBtn.disabled = true;
+                                }
+
+                                // Register biometric
+                                const credential = await window.biometricAuth.register(enrollment.email);
+                                
+                                if (credential) {
+                                    // Show success badge
+                                    const successBadge = document.createElement('div');
+                                    successBadge.className = 'biometric-success-badge';
+                                    successBadge.innerHTML = `
+                                        <span>\u2713</span>
+                                        <span>${enrollment.method} enabled successfully!</span>
+                                    `;
+                                    biometricOption.appendChild(successBadge);
+                                    
+                                    console.log(`\u2713 ${enrollment.method} registered successfully for ${enrollment.email}`);
+                                } else {
+                                    console.log(`Biometric registration was cancelled or failed`);
+                                }
+                                
+                                // Clear pending enrollment
+                                sessionStorage.removeItem('pendingBiometricEnrollment');
+                            }
+                        }, 1500);
+                        
+                    } catch (error) {
+                        console.error('Biometric enrollment error:', error);
+                        sessionStorage.removeItem('pendingBiometricEnrollment');
+                    }
+                }
+            });
+
+            // Alternative approach: Hook into the actual signup API success callback
+            // This watches for successful account creation
+            const observeSignupSuccess = () => {
+                const signupBox = document.querySelector('.signup-box');
+                if (!signupBox) return;
+
+                const observer = new MutationObserver(async (mutations) => {
+                    for (const mutation of mutations) {
+                        // Check if success message is shown
+                        if (signupBox.innerHTML.includes('Account Created!') || 
+                            signupBox.innerHTML.includes('Redirecting')) {
+                            
+                            const pendingEnrollment = sessionStorage.getItem('pendingBiometricEnrollment');
+                            if (pendingEnrollment && biometricCheckbox && biometricCheckbox.checked) {
+                                try {
+                                    const enrollment = JSON.parse(pendingEnrollment);
+                                    
+                                    // Register biometric immediately (no confirmation dialog for smoother UX)
+                                    const credential = await window.biometricAuth.register(enrollment.email);
+                                    
+                                    if (credential) {
+                                        console.log(`\u2713 ${enrollment.method} auto-registered for ${enrollment.email}`);
+                                        
+                                        // Update success message to include biometric confirmation
+                                        const successIcon = signupBox.querySelector('i');
+                                        if (successIcon) {
+                                            const biometricConfirm = document.createElement('p');
+                                            biometricConfirm.style.cssText = 'color: #667eea; margin-top: 15px; font-size: 14px;';
+                                            biometricConfirm.innerHTML = `${icon} ${enrollment.method} enabled!`;
+                                            successIcon.parentElement.appendChild(biometricConfirm);
+                                        }
+                                    }
+                                    
+                                    sessionStorage.removeItem('pendingBiometricEnrollment');
+                                } catch (error) {
+                                    console.error('Biometric auto-enrollment error:', error);
+                                }
+                            }
+                            
+                            observer.disconnect();
+                            break;
+                        }
+                    }
+                });
+
+                observer.observe(signupBox, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            };
+
+            observeSignupSuccess();
+
+            console.log(`\u2713 Biometric signup option initialized with ${biometricMethod}`);
+        })();
+    </script>
 </body>
 </html>

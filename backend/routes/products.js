@@ -1,5 +1,5 @@
 /**
- * Products Routes
+ * Products Routes - AI Enhanced
  */
 
 const express = require('express');
@@ -9,10 +9,15 @@ const fs = require('fs');
 const db = require('../utils/database');
 const { authenticate, isAdmin, optionalAuth } = require('../middleware/auth');
 const { validators, validateRequest } = require('../middleware/security');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 const { body, param } = require('express-validator');
 const { logAdminActivity } = require('../utils/logger');
 
 const router = express.Router();
+
+// Apply AI middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500)); // Alert on requests > 500ms
 
 // Upload directory for products
 const PRODUCTS_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'products');
@@ -42,9 +47,9 @@ function deleteUploadedFile(filePath) {
 }
 
 // Get all products (public)
-router.get('/', (req, res) => {
-  try {
+router.get('/', (req, res) => {  try {
     const products = db.products.findAll();
+    console.log(`[AI-PRODUCTS] Retrieved ${products.length} products`);
     // Cache for 5 minutes (300 seconds)
     res.set('Cache-Control', 'public, max-age=300');
     res.json({ success: true, products });

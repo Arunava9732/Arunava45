@@ -37,6 +37,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
+        /* Accessibility: Focus-visible states for keyboard navigation */
+        *:focus-visible {
+            outline: 2px solid #14b8a6;
+            outline-offset: 2px;
+        }
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid #14b8a6;
+            outline-offset: 2px;
+        }
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #14b8a6;
+            color: #fff;
+            padding: 8px 16px;
+            z-index: 10000;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 0 0 8px 0;
+            transition: top 0.3s ease;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        
         .profile-container {
             min-height: 100vh;
             padding: 100px 5% 60px;
@@ -813,6 +844,15 @@
             color: #fff;
         }
 
+        .sidebar-menu a.active:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .sidebar-menu a.active:hover i {
+            color: #fff;
+        }
+
         .sidebar-menu a i {
             font-size: 20px;
         }
@@ -902,6 +942,243 @@
             transition: all 0.3s ease;
             width: fit-content;
             margin: 10px 0 100px 0; /* Large bottom margin to clear bottom nav */
+        }
+
+        /* =====================================================
+           PASSWORD CHANGE SECTION - Clean Minimal Design
+           ===================================================== */
+        .password-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            max-width: 520px;
+            border: 1px solid #e5e7eb;
+        }
+        .password-card-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #2dd4bf 100%);
+            padding: 24px;
+            color: #fff;
+        }
+        .password-card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .password-card-header h3 i {
+            font-size: 22px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px;
+            border-radius: 10px;
+        }
+        .password-card-header p {
+            margin: 10px 0 0;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+        .password-form {
+            padding: 24px;
+        }
+        .password-form .form-group {
+            margin-bottom: 20px;
+        }
+        .password-form .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .password-form .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-form .input-wrapper input {
+            width: 100%;
+            padding: 14px 50px 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #fafafa;
+            box-sizing: border-box;
+        }
+        .password-form .input-wrapper input:focus {
+            outline: none;
+            border-color: #14b8a6;
+            background: #fff;
+        }
+        .password-form .input-wrapper input.valid {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .password-form .input-wrapper input.invalid {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        /* Toggle button - EXACT copy from login.html */
+        .password-form .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none !important;
+            border: none !important;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 20px;
+            padding: 8px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: none !important;
+            border-radius: 8px;
+            box-shadow: none !important;
+            outline: none !important;
+            z-index: 10;
+        }
+        .password-form .toggle-btn:hover,
+        .password-form .toggle-btn:focus,
+        .password-form .toggle-btn:active {
+            color: #9ca3af !important;
+            background: none !important;
+            transform: translateY(-50%) !important;
+            box-shadow: none !important;
+        }
+        .password-form .toggle-btn i {
+            font-size: 20px;
+            pointer-events: none;
+        }
+        /* Strength bar */
+        .strength-bar {
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .strength-fill.weak { width: 25%; background: #ef4444; }
+        .strength-fill.fair { width: 50%; background: #f59e0b; }
+        .strength-fill.good { width: 75%; background: #3b82f6; }
+        .strength-fill.strong { width: 100%; background: #10b981; }
+        .strength-text {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            color: #6b7280;
+        }
+        .strength-text.weak { color: #ef4444; }
+        .strength-text.fair { color: #f59e0b; }
+        .strength-text.good { color: #3b82f6; }
+        .strength-text.strong { color: #10b981; }
+        /* Mismatch error */
+        .mismatch-error {
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .mismatch-error.show {
+            opacity: 1;
+        }
+        /* Requirements box */
+        .requirements-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        .requirements-box h4 {
+            margin: 0 0 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .req-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6b7280;
+            padding: 6px 10px;
+            background: #fff;
+            border-radius: 6px;
+        }
+        .req-item i {
+            font-size: 14px;
+            color: #d1d5db;
+        }
+        .req-item.valid {
+            color: #059669;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .req-item.valid i {
+            color: #10b981;
+        }
+        /* Submit button */
+        .password-form .submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .password-form .submit-btn:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+        .password-form .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .password-card {
+                border-radius: 12px;
+            }
+            .password-card-header {
+                padding: 20px;
+            }
+            .password-form {
+                padding: 20px;
+            }
+            .password-form .input-wrapper input {
+                font-size: 16px;
+            }
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Ensure all action buttons have bottom spacing on mobile */
@@ -3451,6 +3728,8 @@
     <script src="assets/js/security.js"></script>
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Premium Glass Hamburger Navbar -->
     <header class="nav">
@@ -3634,7 +3913,7 @@
         updateNavUser();
     </script>
 
-    <main class="profile-container animate-fade-up">
+    <main class="profile-container animate-fade-up" id="main-content" role="main" aria-label="Profile management">
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar" id="profileAvatarContainer" title="Click to upload photo">
@@ -3735,15 +4014,15 @@
             </div>
         </div>
 
-        <!-- Success Popup -->
-        <div class="success-popup-overlay" id="successPopup">
-            <div class="success-popup">
-                <div class="success-popup-icon">
+        <!-- Success Popup with Accessibility -->
+        <div class="success-popup-overlay" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successMessage">
+            <div class="success-popup" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="success-popup-icon" aria-hidden="true">
                     <i class="ri-check-line"></i>
                 </div>
                 <h3 id="successTitle">Success!</h3>
                 <p id="successMessage">Your changes have been saved successfully.</p>
-                <button class="btn-success-ok" data-action="close-success-popup">OK</button>
+                <button class="btn-success-ok" data-action="close-success-popup" aria-label="Close notification">OK</button>
             </div>
         </div>
 
@@ -3803,6 +4082,10 @@
                         <i class="ri-question-answer-line"></i>
                         <span>Raised Queries</span>
                     </a>
+                    <a href="#" class="more-menu-item" data-section="password">
+                        <i class="ri-lock-password-line"></i>
+                        <span>Change Password</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -3822,6 +4105,7 @@
                     <li><a href="#" data-section="addresses"><i class="ri-map-pin-line"></i> Addresses</a></li>
                     <li><a href="#" data-section="queries" id="queriesMenuLink"><i class="ri-question-line"></i> Raised Queries</a></li>
                     <li><a href="#" data-section="wishlist"><i class="ri-heart-line"></i> Wishlist</a></li>
+                    <li><a href="#" data-section="password"><i class="ri-lock-password-line"></i> Change Password</a></li>
                 </ul>
             </aside>
 
@@ -3994,6 +4278,66 @@
                         <h3>Your wishlist is empty</h3>
                         <p>Save your favorite items here to buy them later</p>
                         <a href="index.html#shop">Start Shopping</a>
+                    </div>
+                </section>
+
+                <!-- Change Password Section -->
+                <section class="profile-section" id="section-password">
+                    <h2 class="section-title"><i class="ri-lock-password-line"></i> Change Password</h2>
+                    <div class="password-card">
+                        <div class="password-card-header">
+                            <h3><i class="ri-shield-check-line"></i> Update Your Password</h3>
+                            <p>Keep your account secure with a strong password</p>
+                        </div>
+                        <form class="password-form" id="passwordChangeForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="currentPassword" placeholder="Enter your current password" required>
+                                    <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('currentPassword', this)">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                                    <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('newPassword', this)">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </div>
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmNewPassword">Confirm New Password</label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="confirmNewPassword" placeholder="Confirm new password" required>
+                                    <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('confirmNewPassword', this)">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </div>
+                                <div class="mismatch-error" id="passwordMismatchError">
+                                    <i class="ri-error-warning-line"></i> Passwords do not match
+                                </div>
+                            </div>
+                            <div class="requirements-box">
+                                <h4><i class="ri-information-line"></i> Password Requirements</h4>
+                                <div class="requirements-grid">
+                                    <div class="req-item" id="req-length"><i class="ri-checkbox-blank-circle-line"></i><span>At least 8 characters</span></div>
+                                    <div class="req-item" id="req-uppercase"><i class="ri-checkbox-blank-circle-line"></i><span>One uppercase letter (A-Z)</span></div>
+                                    <div class="req-item" id="req-lowercase"><i class="ri-checkbox-blank-circle-line"></i><span>One lowercase letter (a-z)</span></div>
+                                    <div class="req-item" id="req-number"><i class="ri-checkbox-blank-circle-line"></i><span>One number (0-9)</span></div>
+                                    <div class="req-item" id="req-special"><i class="ri-checkbox-blank-circle-line"></i><span>One special character (@$!%*?&)</span></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="submit-btn" id="btnChangePassword">
+                                <i class="ri-lock-password-line"></i> Update Password
+                            </button>
+                        </form>
                     </div>
                 </section>
             </div>
@@ -4330,6 +4674,207 @@
             }
         });
 
+        // =====================================================
+        // PASSWORD CHANGE FUNCTIONALITY (Clean Rebuild)
+        // =====================================================
+        
+        // Toggle password visibility - simple and static
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'ri-eye-off-line';
+            } else {
+                input.type = 'password';
+                icon.className = 'ri-eye-line';
+            }
+        }
+
+        // Password validation
+        function validatePasswordRequirements(password) {
+            return {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                special: /[@$!%*?&]/.test(password)
+            };
+        }
+
+        // Update requirement indicators
+        function updateRequirementIndicators(requirements) {
+            Object.entries(requirements).forEach(([key, valid]) => {
+                const el = document.getElementById(`req-${key}`);
+                if (el) {
+                    el.classList.toggle('valid', valid);
+                    el.querySelector('i').className = valid ? 'ri-checkbox-circle-fill' : 'ri-checkbox-blank-circle-line';
+                }
+            });
+        }
+
+        // Calculate password strength
+        function getPasswordStrength(password) {
+            const reqs = validatePasswordRequirements(password);
+            const count = Object.values(reqs).filter(Boolean).length;
+            if (count <= 1) return { level: 'weak', text: 'Weak password' };
+            if (count <= 2) return { level: 'fair', text: 'Fair password' };
+            if (count <= 4) return { level: 'good', text: 'Good password' };
+            return { level: 'strong', text: 'Strong password' };
+        }
+
+        // Update password strength display
+        function updatePasswordStrength(password) {
+            const fill = document.getElementById('strengthFill');
+            const text = document.getElementById('strengthText');
+            if (!password) {
+                fill.className = 'strength-fill';
+                text.className = 'strength-text';
+                text.textContent = '';
+                return;
+            }
+            const strength = getPasswordStrength(password);
+            fill.className = `strength-fill ${strength.level}`;
+            text.className = `strength-text ${strength.level}`;
+            text.textContent = strength.text;
+        }
+
+        // Check passwords match
+        function checkPasswordsMatch() {
+            const newPwd = document.getElementById('newPassword').value;
+            const confirmPwd = document.getElementById('confirmNewPassword').value;
+            const confirmInput = document.getElementById('confirmNewPassword');
+            const errorEl = document.getElementById('passwordMismatchError');
+            
+            if (confirmPwd && newPwd !== confirmPwd) {
+                errorEl.classList.add('show');
+                confirmInput.classList.add('invalid');
+                confirmInput.classList.remove('valid');
+                return false;
+            } else if (confirmPwd && newPwd === confirmPwd) {
+                errorEl.classList.remove('show');
+                confirmInput.classList.remove('invalid');
+                confirmInput.classList.add('valid');
+                return true;
+            } else {
+                errorEl.classList.remove('show');
+                confirmInput.classList.remove('invalid', 'valid');
+                return !confirmPwd;
+            }
+        }
+
+        // Initialize password change form
+        function initPasswordChangeForm() {
+            const currentPwdInput = document.getElementById('currentPassword');
+            const newPwdInput = document.getElementById('newPassword');
+            const confirmPwdInput = document.getElementById('confirmNewPassword');
+            const form = document.getElementById('passwordChangeForm');
+            
+            if (!newPwdInput || !form) return;
+
+            if (currentPwdInput) {
+                currentPwdInput.addEventListener('input', (e) => {
+                    e.target.classList.toggle('valid', e.target.value.length > 0);
+                });
+            }
+
+            newPwdInput.addEventListener('input', (e) => {
+                const pwd = e.target.value;
+                const reqs = validatePasswordRequirements(pwd);
+                const allValid = Object.values(reqs).every(Boolean);
+                updateRequirementIndicators(reqs);
+                updatePasswordStrength(pwd);
+                checkPasswordsMatch();
+                newPwdInput.classList.toggle('valid', allValid);
+                if (!allValid && pwd.length > 0) newPwdInput.classList.remove('valid');
+                if (!pwd) newPwdInput.classList.remove('valid', 'invalid');
+            });
+
+            confirmPwdInput.addEventListener('input', checkPasswordsMatch);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const currentPwd = currentPwdInput.value;
+                const newPwd = newPwdInput.value;
+                const confirmPwd = confirmPwdInput.value;
+                const submitBtn = document.getElementById('btnChangePassword');
+
+                if (!currentPwd) {
+                    showSuccessPopup('Error', 'Please enter your current password');
+                    currentPwdInput.classList.add('invalid');
+                    currentPwdInput.focus();
+                    return;
+                }
+
+                const reqs = validatePasswordRequirements(newPwd);
+                if (!Object.values(reqs).every(Boolean)) {
+                    showSuccessPopup('Error', 'Please meet all password requirements');
+                    newPwdInput.classList.add('invalid');
+                    newPwdInput.focus();
+                    return;
+                }
+
+                if (newPwd !== confirmPwd) {
+                    showSuccessPopup('Error', 'Passwords do not match');
+                    confirmPwdInput.classList.add('invalid');
+                    confirmPwdInput.focus();
+                    return;
+                }
+
+                if (currentPwd === newPwd) {
+                    showSuccessPopup('Error', 'New password must be different from current password');
+                    newPwdInput.classList.add('invalid');
+                    return;
+                }
+
+                const user = await window.blackonnAuth.getCurrentUser();
+                if (!user) {
+                    showSuccessPopup('Error', 'Please login to change your password');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Updating...';
+
+                try {
+                    const response = await API.users.changePassword(user.id, currentPwd, newPwd);
+                    
+                    if (response.success) {
+                        showSuccessPopup('Password Updated!', 'Your password has been changed successfully');
+                        form.reset();
+                        updateRequirementIndicators({ length: false, uppercase: false, lowercase: false, number: false, special: false });
+                        updatePasswordStrength('');
+                        currentPwdInput.classList.remove('valid', 'invalid');
+                        newPwdInput.classList.remove('valid', 'invalid');
+                        confirmPwdInput.classList.remove('valid', 'invalid');
+                    } else {
+                        showSuccessPopup('Error', response.error || 'Failed to change password');
+                        if (response.error && response.error.toLowerCase().includes('current password')) {
+                            currentPwdInput.classList.add('invalid');
+                            currentPwdInput.focus();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Password change error:', error);
+                    const errMsg = error.message || 'Failed to change password. Please try again.';
+                    showSuccessPopup('Error', errMsg);
+                    if (errMsg.toLowerCase().includes('current') || errMsg.toLowerCase().includes('incorrect')) {
+                        currentPwdInput.classList.add('invalid');
+                        currentPwdInput.focus();
+                    }
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="ri-lock-password-line"></i> Update Password';
+                }
+            });
+        }
+
+        initPasswordChangeForm();
+        // =====================================================
+        // END PASSWORD CHANGE FUNCTIONALITY
+        // =====================================================
+
         // Success popup functions - now uses Dynamic Island toast
         function showSuccessPopup(title, message) {
             // Determine notification type based on title
@@ -4641,7 +5186,7 @@
                                     <div class="order-date">Requested on ${exchangeDate}</div>
                                     <div class="order-date" style="color:#666;font-size:12px;">Order: #${exchange.orderId}</div>
                                 </div>
-                                <span class="exchange-status ${statusClass}" style="background:${getExchangeStatusColor(status)};color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;">${status}</span>
+                                <span class="exchange-status ${statusClass}">${status}</span>
                             </div>
                             <div class="order-items">
                                 ${itemsHtml}
@@ -5246,19 +5791,19 @@
             const comments = document.getElementById('returnComments').value;
 
             if (selectedItems.length === 0) {
-                showToast('Please select at least one item to return.', 'warning');
+                showSuccessPopup('Warning', 'Please select at least one item to return.');
                 return;
             }
 
             if (!reason) {
-                showToast('Please select a return reason.', 'warning');
+                showSuccessPopup('Warning', 'Please select a return reason.');
                 return;
             }
 
             try {
                 const user = await window.blackonnAuth.getCurrentUser();
                 if (!user) {
-                    showToast('Please login to submit a return request.', 'warning');
+                    showSuccessPopup('Warning', 'Please login to submit a return request.');
                     return;
                 }
                 
@@ -5297,11 +5842,11 @@
                     // Refresh orders display
                     loadUserOrders();
                 } else {
-                    showToast(response.error || 'Failed to submit return request', 'error');
+                    showSuccessPopup('Error', response.error || 'Failed to submit return request');
                 }
             } catch (error) {
                 console.error('Return submission error:', error);
-                showToast('Failed to submit return request. Please try again.', 'error');
+                showSuccessPopup('Error', 'Failed to submit return request. Please try again.');
             }
         }
 
@@ -5470,34 +6015,34 @@
             const comments = document.getElementById('exchangeComments').value;
 
             if (selectedItems.length === 0) {
-                showToast('Please select at least one item to exchange.', 'warning');
+                showSuccessPopup('Warning', 'Please select at least one item to exchange.');
                 return;
             }
 
             if (!reason) {
-                showToast('Please select an exchange reason.', 'warning');
+                showSuccessPopup('Warning', 'Please select an exchange reason.');
                 return;
             }
 
             if (!exchangeFor) {
-                showToast('Please select what you want to exchange for.', 'warning');
+                showSuccessPopup('Warning', 'Please select what you want to exchange for.');
                 return;
             }
 
             // Validate new size/color based on exchange type
             if ((exchangeFor === 'different_size' || exchangeFor === 'different_size_color') && !newSize) {
-                showToast('Please select the new size you want.', 'warning');
+                showSuccessPopup('Warning', 'Please select the new size you want.');
                 return;
             }
             if ((exchangeFor === 'different_color' || exchangeFor === 'different_size_color') && !newColor) {
-                showToast('Please enter the new color you want.', 'warning');
+                showSuccessPopup('Warning', 'Please enter the new color you want.');
                 return;
             }
 
             try {
                 const user = await window.blackonnAuth.getCurrentUser();
                 if (!user) {
-                    showToast('Please login to submit an exchange request.', 'warning');
+                    showSuccessPopup('Warning', 'Please login to submit an exchange request.');
                     return;
                 }
                 
@@ -5532,11 +6077,11 @@
                     showSuccessPopup('Exchange Request Submitted', 'Your exchange request has been submitted and is pending admin approval. We will review and process it within 2-3 business days.');
                     loadUserOrders();
                 } else {
-                    showToast(response.error || 'Failed to submit exchange request', 'error');
+                    showSuccessPopup('Error', response.error || 'Failed to submit exchange request');
                 }
             } catch (error) {
                 console.error('Exchange submission error:', error);
-                showToast('Failed to submit exchange request. Please try again.', 'error');
+                showSuccessPopup('Error', 'Failed to submit exchange request. Please try again.');
             }
         }
 
@@ -5642,14 +6187,14 @@
             const comments = document.getElementById('cancelComments').value;
 
             if (!reason) {
-                showToast('Please select a cancellation reason.', 'warning');
+                showSuccessPopup('Warning', 'Please select a cancellation reason.');
                 return;
             }
 
             try {
                 const user = await window.blackonnAuth.getCurrentUser();
                 if (!user) {
-                    showToast('Please login to cancel this order.', 'warning');
+                    showSuccessPopup('Warning', 'Please login to cancel this order.');
                     return;
                 }
                 
@@ -5670,11 +6215,11 @@
                     showSuccessPopup('Order Cancelled', message);
                     loadUserOrders();
                 } else {
-                    showToast(response.error || 'Failed to submit cancellation request', 'error');
+                    showSuccessPopup('Error', response.error || 'Failed to submit cancellation request');
                 }
             } catch (error) {
                 console.error('Cancellation submission error:', error);
-                showToast('Failed to submit cancellation request. Please try again.', 'error');
+                showSuccessPopup('Error', 'Failed to submit cancellation request. Please try again.');
             }
         }
 
@@ -6515,10 +7060,11 @@
         async function removeFromWishlist(itemId) {
             try {
                 await API.wishlist.remove(itemId);
+                showSuccessPopup('Item Removed!', 'Item has been removed from your wishlist.');
                 loadWishlist();
             } catch (error) {
                 console.error('Error removing from wishlist:', error);
-                showToast('Failed to remove item from wishlist', 'error');
+                showSuccessPopup('Error', 'Failed to remove item from wishlist');
             }
         }
 
@@ -6632,16 +7178,18 @@
                 if (!addressId) {
                     // Add new address
                     await API.users.addAddress(newAddress);
+                    showSuccessPopup('Address Added!', 'Your new address has been saved successfully.');
                 } else {
                     // Update existing address
                     await API.users.updateAddress(addressId, newAddress);
+                    showSuccessPopup('Address Updated!', 'Your address has been updated successfully.');
                 }
                 
                 closeAddressModal();
                 loadAddresses();
             } catch (error) {
                 console.error('Error saving address:', error);
-                showToast('Failed to save address. Please try again.', 'error');
+                showSuccessPopup('Error', 'Failed to save address. Please try again.');
             }
         });
 
@@ -6661,7 +7209,7 @@
             const addressId = document.getElementById('deleteAddressIndex').value;
             
             if (!addressId || addressId === '-1') {
-                showToast('No address selected to delete', 'error');
+                showSuccessPopup('Error', 'No address selected to delete');
                 closeDeleteModal();
                 return;
             }
@@ -6670,14 +7218,14 @@
                 const result = await API.users.deleteAddress(addressId);
                 if (result && result.success) {
                     closeDeleteModal();
-                    showToast('Address deleted successfully', 'success');
+                    showSuccessPopup('Address Deleted!', 'Your address has been removed successfully.');
                     loadAddresses();
                 } else {
                     throw new Error(result?.error || 'Failed to delete address');
                 }
             } catch (error) {
                 console.error('Error deleting address:', error);
-                showToast('Failed to delete address. Please try again.', 'error');
+                showSuccessPopup('Error', 'Failed to delete address. Please try again.');
                 closeDeleteModal();
             }
         }
@@ -7111,9 +7659,42 @@
             initMobileNav();
         });
     </script>
+
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
+
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+    
     <script src="assets/js/security.js"></script>
     <script src="assets/js/console-block.js"></script>
     <script src="assets/js/auto-debugger.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
     <script src="assets/js/analytics.js"></script>
     <script src="assets/js/main.js"></script>
 </body>

@@ -13,8 +13,13 @@ const db = require('../utils/database');
 const { sendOrderConfirmation, sendLowStockAlert } = require('../utils/email');
 const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
 const { sendOrderWebhook } = require('./webhooks');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Razorpay configuration
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
@@ -239,6 +244,8 @@ router.post('/verify', authenticate, async (req, res) => {
         };
 
         const updatedOrder = db.orders.update(orderId, updates);
+
+        console.log(`[AI-Enhanced] Payment verified: Order ${orderId}, Payment ID ${razorpay_payment_id}`);
 
         // Send notifications for confirmed payment
         sendOrderWebhook && sendOrderWebhook('order.created', updatedOrder);

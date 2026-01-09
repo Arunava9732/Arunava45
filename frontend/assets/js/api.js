@@ -1,6 +1,10 @@
 /**
- * BLACKONN API Client
- * Frontend API wrapper for the full-stack backend
+ * BLACKONN API Client - AI Enhanced
+ * Frontend API wrapper with AI-friendly features:
+ * - Structured error handling
+ * - Performance tracking
+ * - Request/response logging
+ * - Automatic retry logic
  * Cloud-ready: Uses httpOnly cookies for auth (no localStorage)
  * Compatible with any hosting platform (AWS, Azure, Heroku, etc.)
  */
@@ -27,6 +31,40 @@ const API = (() => {
   let connectionRetries = 0;
   const MAX_RETRIES = 5;
   const HEALTH_CHECK_INTERVAL = 30000; // Re-check health every 30 seconds if down
+  
+  // AI Performance Tracker
+  const performanceTracker = {
+    requests: [],
+    logRequest(endpoint, duration, status) {
+      this.requests.push({
+        endpoint,
+        duration,
+        status,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Keep only last 100 requests
+      if (this.requests.length > 100) {
+        this.requests.shift();
+      }
+      
+      // Log slow requests
+      if (duration > 1000) {
+        console.warn('[AI-PERFORMANCE] Slow API request', { endpoint, duration, status });
+      }
+    },
+    getStats() {
+      if (this.requests.length === 0) return null;
+      
+      const durations = this.requests.map(r => r.duration);
+      return {
+        totalRequests: this.requests.length,
+        avgDuration: durations.reduce((a, b) => a + b, 0) / durations.length,
+        maxDuration: Math.max(...durations),
+        minDuration: Math.min(...durations)
+      };
+    }
+  };
 
   // =====================
   // Helper Functions
@@ -41,6 +79,7 @@ const API = (() => {
       if (data.success && data.user) {
         cachedUser = data.user;
         authChecked = true;
+        console.log('[AI-AUTH] User authenticated:', cachedUser.email);
         return cachedUser;
       }
     } catch {
@@ -163,6 +202,8 @@ const API = (() => {
     }
 
     const url = `${API_URL}${endpoint}`;
+    const startTime = performance.now();
+    
     const config = {
       headers: getHeaders(),
       credentials: 'include', // Include httpOnly cookies
@@ -172,6 +213,9 @@ const API = (() => {
     try {
       const response = await fetch(url, config);
       const data = await response.json();
+      
+      const duration = performance.now() - startTime;
+      performanceTracker.logRequest(endpoint, duration, response.status);
 
       if (!response.ok) {
         // Handle auth errors
@@ -179,11 +223,23 @@ const API = (() => {
           clearCachedUser();
           window.dispatchEvent(new Event('auth:logout'));
         }
+        
+        console.error('[AI-API-ERROR]', JSON.stringify({
+          endpoint,
+          status: response.status,
+          error: data.error,
+          aiAnalysis: data._aiAnalysis
+        }));
+        
         throw new Error(data.error || 'Request failed');
       }
 
+      console.log('[AI-API-SUCCESS]', { endpoint, duration: `${duration.toFixed(0)}ms`, status: response.status });
       return data;
     } catch (error) {
+      const duration = performance.now() - startTime;
+      performanceTracker.logRequest(endpoint, duration, 'ERROR');
+      
       if (error.message === 'Failed to fetch') {
         apiAvailable = false;
         throw new Error('API_UNAVAILABLE');
@@ -1008,6 +1064,7 @@ const API = (() => {
     contact,
     slides,
     checkApiAvailable,
+    getPerformanceStats: () => performanceTracker.getStats(),
     isApiAvailable: () => apiAvailable,
     getBaseUrl: () => BASE_URL,
     // Export auth state helpers
@@ -1025,30 +1082,36 @@ const API = (() => {
     if (!c) {
       c = document.createElement('div');
       c.className = 'toast-container';
+      c.setAttribute('role', 'region');
+      c.setAttribute('aria-label', 'Notifications');
+      c.setAttribute('aria-live', 'polite');
       document.body.appendChild(c);
     }
     return c;
   }
 
-  window.showToast = function (message, type = 'info', timeout = 4000) {
+  window.showNotification = function (message, type = 'info', timeout = 4000) {
     try {
       const container = createContainer();
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+      toast.setAttribute('aria-atomic', 'true');
       
       // Dynamic Island style icons
       const icons = {
-        success: '<i class="ri-check-line"></i>',
-        error: '<i class="ri-close-line"></i>',
-        warning: '<i class="ri-alert-line"></i>',
-        info: '<i class="ri-information-line"></i>'
+        success: '<i class="ri-check-line" aria-hidden="true"></i>',
+        error: '<i class="ri-close-line" aria-hidden="true"></i>',
+        warning: '<i class="ri-alert-line" aria-hidden="true"></i>',
+        info: '<i class="ri-information-line" aria-hidden="true"></i>'
       };
       
       toast.innerHTML = `
-        <span class="toast-icon">${icons[type] || icons.info}</span>
+        <span class="toast-icon" aria-hidden="true">${icons[type] || icons.info}</span>
         <span class="toast-message">${message}</span>
-        <span class="toast-close"><i class="ri-close-line"></i></span>
-        <div class="toast-progress"><div class="toast-progress-bar" style="animation-duration: ${timeout}ms"></div></div>
+        <button class="toast-close" aria-label="Dismiss notification"><i class="ri-close-line" aria-hidden="true"></i></button>
+        <div class="toast-progress" aria-hidden="true"><div class="toast-progress-bar" style="animation-duration: ${timeout}ms"></div></div>
       `;
       container.appendChild(toast);
 
@@ -1080,6 +1143,9 @@ const API = (() => {
       try { alert(message); } catch (_) { console.log(message); }
     }
   };
+
+  // Alias for backward compatibility
+  window.showToast = window.showNotification;
 })();
 
 // Export for module systems

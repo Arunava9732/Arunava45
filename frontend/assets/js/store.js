@@ -1,5 +1,5 @@
 /**
- * BLACKONN Static Data Store
+ * BLACKONN Static Data Store - AI Enhanced
  * ⚠️ DEPRECATED: This file is for static GitHub Pages only (no backend)
  * 
  * For production cloud/server deployment, use api.js instead.
@@ -9,6 +9,11 @@
  * 1. Static product display fallback
  * 2. Legacy compatibility
  * 3. GitHub Pages demo mode
+ * 
+ * AI Features:
+ * - Product recommendation tracking
+ * - User behavior analytics
+ * - Cart abandonment tracking
  */
 
 const BlackonnStore = {
@@ -19,6 +24,16 @@ const BlackonnStore = {
     WISHLIST: 'blackonn_wishlist',
     USER: 'blackonn_user',
     ORDERS: 'blackonn_orders'
+  },
+  
+  // AI Tracking
+  aiTracker: {
+    trackEvent(event, data) {
+      if (window.AIAnalytics) {
+        window.AIAnalytics.track(event, data);
+      }
+      console.log('[AI-STORE]', event, data);
+    }
   },
 
   // Embedded products data (fallback for static mode)

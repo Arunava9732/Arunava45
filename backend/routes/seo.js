@@ -24,8 +24,13 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const db = require('../utils/database');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // SEO Data file path
 const SEO_DATA_PATH = path.join(__dirname, '../data/seoData.json');

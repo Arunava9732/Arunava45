@@ -10,8 +10,13 @@ const path = require('path');
 const https = require('https');
 const http = require('http');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Data file path
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -346,6 +351,8 @@ router.patch('/couriers/:id', authenticate, requireAdmin, (req, res) => {
     data.couriers[idx].updatedAt = new Date().toISOString();
     writeData(data);
     
+    console.log(`[AI-Enhanced] Courier updated: ${courierId}, Active: ${data.couriers[idx].active}`);
+    
     res.json({ success: true, courier: data.couriers[idx] });
   } catch (error) {
     console.error('Update courier error:', error);
@@ -389,6 +396,8 @@ router.post('/rates', authenticate, requireAdmin, (req, res) => {
     
     data.shippingRates.push(shippingRate);
     writeData(data);
+    
+    console.log(`[AI-Enhanced] Shipping rate created: ${shippingRate.name}, Rate: ₹${shippingRate.rate}`);
     
     res.status(201).json({ success: true, rate: shippingRate });
   } catch (error) {

@@ -1,5 +1,5 @@
 /**
- * Authentication Routes with Security
+ * Authentication Routes with Security - AI Enhanced
  */
 
 const express = require('express');
@@ -15,9 +15,14 @@ const {
   validateRequest,
   validators 
 } = require('../middleware/security');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 const { sendPasswordResetOTP } = require('../utils/email');
 
 const router = express.Router();
+
+// Apply AI middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(1000)); // Auth should be fast
 
 // Admin credentials should be seeded into the users DB via environment variables (see server startup)
 

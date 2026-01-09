@@ -1,17 +1,30 @@
 /**
- * JSON File Database Utility
+ * JSON File Database Utility - AI Enhanced
  * Simple file-based storage for the full-stack website
+ * Features: In-memory caching, AI-friendly logging, structured queries
  * Can be replaced with MongoDB/PostgreSQL for production
  */
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const DB_DIR = path.join(__dirname, '..', 'data');
 
 // Ensure data directory exists
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
+}
+
+// AI Logger helper
+function aiDbLog(operation, collection, details = {}) {
+  console.log('[AI-DB]', JSON.stringify({
+    timestamp: new Date().toISOString(),
+    operation,
+    collection,
+    ...details,
+    _structured: true
+  }));
 }
 
 // Default data structures
@@ -96,9 +109,11 @@ class Database {
       fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
       fs.renameSync(tempPath, this.filePath);
       
+      aiDbLog('WRITE', this.collection, { recordCount: Array.isArray(data) ? data.length : Object.keys(data).length });
       return true;
     } catch (error) {
       console.error(`Error writing ${this.collection}:`, error);
+      aiDbLog('WRITE_ERROR', this.collection, { error: error.message });
       return false;
     }
   }

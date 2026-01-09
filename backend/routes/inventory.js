@@ -7,8 +7,13 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../utils/database');
 const { authenticate, requireAdmin } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // ===============================
 // SKU & BARCODE MANAGEMENT
@@ -136,6 +141,8 @@ router.post('/sku/:productId', authenticate, requireAdmin, (req, res) => {
       category: category || product.category,
       updatedAt: new Date().toISOString()
     });
+    
+    console.log(`[AI-Enhanced] SKU updated: Product ${productId}, SKU: ${newSku}`);
     
     res.json({ success: true, product: updated, sku: newSku });
   } catch (error) {

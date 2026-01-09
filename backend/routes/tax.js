@@ -9,8 +9,13 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Data file path
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -186,6 +191,8 @@ router.patch('/settings', authenticate, requireAdmin, (req, res) => {
     
     data.settings.updatedAt = new Date().toISOString();
     writeData(data);
+    
+    console.log(`[AI-Enhanced] Tax settings updated: GST Enabled: ${data.settings.gstEnabled}`);
     
     res.json({ success: true, settings: data.settings });
   } catch (error) {

@@ -11,8 +11,13 @@ const { authenticate, isAdmin } = require('../middleware/auth');
 const { Database } = require('../utils/database');
 const { validators, validateRequest } = require('../middleware/security');
 const { body, param } = require('express-validator');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const slidesDb = new Database('slides');
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Upload directory for slides
 const SLIDES_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'slides');
@@ -113,6 +118,8 @@ router.post('/', authenticate, isAdmin, (req, res) => {
     slides.push(newSlide);
     slidesDb._write(slides);
 
+    console.log(`[AI-Enhanced] Slide created: ${newId}, Type: ${type}, Position: ${newPosition}`);
+
     res.status(201).json({ success: true, slide: newSlide });
   } catch (error) {
     console.error('Error creating slide:', error);
@@ -142,6 +149,8 @@ router.put('/:id', authenticate, isAdmin, (req, res) => {
     slides[slideIndex].updatedAt = new Date().toISOString();
 
     slidesDb._write(slides);
+
+    console.log(`[AI-Enhanced] Slide updated: ${id}, Type: ${type || 'unchanged'}`);
 
     res.json({ success: true, slide: slides[slideIndex] });
   } catch (error) {

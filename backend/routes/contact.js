@@ -12,8 +12,13 @@ const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth
 const { contactLimiter, validators } = require('../middleware/security');
 const { sendContactNotification } = require('../utils/email');
 const { sendAdminNotification, formatContactMessage } = require('../utils/whatsapp');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Upload directory for contact attachments
 const CONTACT_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'contact');
@@ -222,6 +227,8 @@ router.post('/',
     };
 
     db.contacts.create(contactMessage);
+
+    console.log(`[AI-Enhanced] Contact message created: ${contactMessage.id}, Query: ${contactMessage.queryNumber}`);
 
     // Send notification email to admin
     sendContactNotification(contactMessage).catch(err => console.error('Contact email failed:', err));

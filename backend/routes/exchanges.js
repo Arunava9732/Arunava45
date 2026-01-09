@@ -8,8 +8,13 @@ const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validateRequest, returnLimiter } = require('../middleware/security');
 const { body } = require('express-validator');
 const { sendAdminNotification } = require('../utils/whatsapp');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Format exchange message for WhatsApp
 function formatExchangeMessage(exchange) {
@@ -159,6 +164,8 @@ router.post('/',
       db.exchanges.create(exchangeRequest);
     }
 
+    console.log(`[AI-Enhanced] Exchange request created: ${exchangeRequest.id}, Order: ${orderId}`);
+
     // Update order status
     db.orders.update(orderId, { 
       status: 'Exchange Requested',
@@ -199,6 +206,8 @@ router.patch('/:id/status', authenticate, requireAdmin, (req, res) => {
     if (adminNotes) {
       updates.adminNotes = adminNotes;
     }
+
+    console.log(`[AI-Enhanced] Exchange status updated: ${req.params.id}, Status: ${status}`);
 
     if (status === 'Completed') {
       updates.completedAt = new Date().toISOString();

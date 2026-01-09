@@ -1,0 +1,51 @@
+{
+  "events": [],
+  "sessions": [],
+  "conversions": [],
+  "experiments": [],
+  "heatmaps": {},
+  "lastUpdated": "2026-01-09T00:00:00.000Z",
+  "_meta": {
+    "version": "3.0",
+    "aiEngine": true,
+    "capabilities": [
+      "predictive_analytics",
+      "anomaly_detection",
+      "customer_segmentation",
+      "funnel_analysis",
+      "trend_detection",
+      "recommendations"
+    ]
+  },
+  "summary": {
+    "totalVisits": 0,
+    "totalOrders": 0,
+    "totalRevenue": 0,
+    "conversionRate": 0,
+    "avgOrderValue": 0,
+    "returningCustomers": 0
+  },
+  "dailyStats": [],
+  "topProducts": [],
+  "topCategories": [],
+  "trafficSources": {
+    "direct": 0,
+    "organic": 0,
+    "social": 0,
+    "referral": 0,
+    "paid": 0
+  },
+  "deviceStats": {
+    "mobile": 0,
+    "desktop": 0,
+    "tablet": 0
+  },
+  "geographicData": [],
+  "funnelData": {
+    "visited": 0,
+    "viewedProduct": 0,
+    "addedToCart": 0,
+    "initiatedCheckout": 0,
+    "completed": 0
+  }
+}

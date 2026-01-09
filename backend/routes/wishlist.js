@@ -9,8 +9,13 @@ const { authenticate } = require('../middleware/auth');
 const { Database } = require('../utils/database');
 const { validators, validateRequest } = require('../middleware/security');
 const { body, param } = require('express-validator');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const wishlistDb = new Database('wishlists');
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // GET /api/wishlist - Get user's wishlist
 router.get('/', authenticate, (req, res) => {
@@ -70,6 +75,8 @@ router.post('/', authenticate, (req, res) => {
     wishlists[userId].push(newItem);
     wishlistDb._write(wishlists);
 
+    console.log(`[AI-Enhanced] Wishlist item added: User ${userId}, Product ${productId}`);
+
     res.status(201).json({ success: true, item: newItem, wishlist: wishlists[userId] });
   } catch (error) {
     console.error('Error adding to wishlist:', error);
@@ -98,6 +105,8 @@ router.delete('/:itemId', authenticate, (req, res) => {
 
     const removedItem = wishlists[userId].splice(itemIndex, 1)[0];
     wishlistDb._write(wishlists);
+
+    console.log(`[AI-Enhanced] Wishlist item removed: User ${userId}, Item ${itemId}`);
 
     res.json({ success: true, message: 'Item removed from wishlist', item: removedItem });
   } catch (error) {

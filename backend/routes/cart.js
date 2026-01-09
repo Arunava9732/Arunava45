@@ -8,8 +8,13 @@ const db = require('../utils/database');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const { validators, validateRequest } = require('../middleware/security');
 const { body, param } = require('express-validator');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Get cart
 router.get('/', authenticate, (req, res) => {
@@ -93,6 +98,8 @@ router.post('/add',
     // Save cart
     carts[req.user.id] = cart;
     db.carts.replaceAll(carts);
+
+    console.log(`[AI-Enhanced] Cart item added: User ${req.user.id}, Product ${productId}`);
 
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);

@@ -1012,6 +1012,64 @@ router.get('/recommendations/:userId', (req, res) => {
 });
 
 /**
+ * POST /api/analytics/track - AI-Friendly Event Tracking
+ * Accepts structured, semantic event data from frontend
+ */
+router.post('/track', (req, res) => {
+  try {
+    const eventData = req.body;
+    
+    // Validate event structure
+    if (!eventData.type || !eventData.sessionId || !eventData.timestamp) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid event structure',
+        required: ['type', 'sessionId', 'timestamp']
+      });
+    }
+    
+    // Enrich with server-side data
+    const enrichedEvent = {
+      ...eventData,
+      serverTimestamp: new Date().toISOString(),
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+      _aiEnriched: true,
+      _aiVersion: '3.0.0'
+    };
+    
+    // Save to analytics
+    let analytics = loadAnalyticsData();
+    if (!analytics.events) analytics.events = [];
+    analytics.events.push(enrichedEvent);
+    
+    // Keep only last 10000 events
+    if (analytics.events.length > 10000) {
+      analytics.events = analytics.events.slice(-10000);
+    }
+    
+    saveAnalyticsData(analytics);
+    
+    // Also update traffic data for page views
+    if (eventData.type === 'page_view') {
+      trackVisit(req);
+    }
+    
+    console.log(`[AI-ANALYTICS] Tracked: ${eventData.type} | Session: ${eventData.sessionId}`);
+    
+    res.json({ 
+      success: true, 
+      eventId: crypto.randomBytes(8).toString('hex'),
+      processed: true,
+      _aiAcknowledged: true
+    });
+  } catch (error) {
+    console.error('[AI-ANALYTICS] Error tracking event:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * GET /api/analytics/export - Export data for ML training
  */
 router.get('/export', (req, res) => {

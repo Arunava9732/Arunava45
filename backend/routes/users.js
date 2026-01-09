@@ -6,12 +6,20 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
 const db = require('../utils/database');
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { validators, validateRequest, passwordResetLimiter } = require('../middleware/security');
 const { body, param } = require('express-validator');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
+const { sendPasswordResetOTP } = require('../utils/email');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Upload directory for users
 const USERS_UPLOAD_DIR = path.join(__dirname, '..', 'uploads', 'users');
@@ -106,6 +114,8 @@ router.put('/:id', authenticate, async (req, res) => {
 
     const updated = db.users.update(req.params.id, updates);
     const { password, ...userWithoutPassword } = updated;
+
+    console.log(`[AI-Enhanced] User updated: ${req.params.id}, Fields: ${Object.keys(updates).join(', ')}`);
 
     res.json({ success: true, user: userWithoutPassword });
   } catch (error) {
@@ -358,6 +368,255 @@ router.delete('/:id/addresses/:addressId', authenticate, (req, res) => {
   } catch (error) {
     console.error('Delete address error:', error);
     res.status(500).json({ success: false, error: 'Failed to delete address' });
+  }
+});
+
+// ==========================================
+// ADMIN PASSWORD RESET MANAGEMENT
+// ==========================================
+
+// Get all pending password reset requests (admin only)
+router.get('/password-resets/pending', authenticate, isAdmin, (req, res) => {
+  try {
+    const resets = db.passwordResets.findAll();
+    const pendingResets = resets
+      .filter(r => !r.used && new Date(r.expiresAt) > new Date())
+      .map(r => {
+        const user = db.users.findOne({ email: r.email });
+        return {
+          id: r.id,
+          userId: r.userId,
+          email: r.email,
+          userName: user?.name || 'Unknown',
+          otp: r.otp,
+          expiresAt: r.expiresAt,
+          createdAt: r.createdAt,
+          remainingMinutes: Math.max(0, Math.floor((new Date(r.expiresAt) - new Date()) / 60000))
+        };
+      });
+    
+    res.json({ success: true, resets: pendingResets });
+  } catch (error) {
+    console.error('Get pending resets error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get pending resets' });
+  }
+});
+
+// Get password reset history for a user (admin only)
+router.get('/password-resets/history/:userId', authenticate, isAdmin, (req, res) => {
+  try {
+    const user = db.users.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    const resets = db.passwordResets.findAll();
+    const userResets = resets
+      .filter(r => r.userId === req.params.userId || r.email === user.email)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 20) // Last 20 requests
+      .map(r => ({
+        id: r.id,
+        otp: r.used ? '******' : r.otp,
+        expiresAt: r.expiresAt,
+        createdAt: r.createdAt,
+        used: r.used,
+        expired: new Date(r.expiresAt) < new Date(),
+        initiatedBy: r.initiatedByAdmin ? 'Admin' : 'User'
+      }));
+    
+    res.json({ 
+      success: true, 
+      user: { id: user.id, name: user.name, email: user.email },
+      history: userResets 
+    });
+  } catch (error) {
+    console.error('Get reset history error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get reset history' });
+  }
+});
+
+// Admin generates password reset OTP for a user (20 minutes validity)
+router.post('/password-resets/generate', authenticate, isAdmin, async (req, res) => {
+  try {
+    const { userId, sendEmail = true } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'User ID is required' });
+    }
+
+    const user = db.users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Invalidate any existing unused OTPs for this user
+    const existingResets = db.passwordResets.findAll();
+    existingResets.forEach(r => {
+      if ((r.userId === userId || r.email === user.email) && !r.used) {
+        db.passwordResets.update(r.id, { used: true, invalidatedAt: new Date().toISOString() });
+      }
+    });
+
+    // Generate 6-digit OTP
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    const resetToken = uuidv4();
+    
+    const resetRequest = {
+      id: 'reset_' + uuidv4(),
+      userId: user.id,
+      email: user.email.toLowerCase(),
+      token: resetToken,
+      otp: otp,
+      expiresAt: new Date(Date.now() + 20 * 60 * 1000).toISOString(), // 20 minutes
+      used: false,
+      initiatedByAdmin: true,
+      adminId: req.user.id,
+      createdAt: new Date().toISOString()
+    };
+
+    db.passwordResets.create(resetRequest);
+
+    // Optionally send email
+    let emailSent = false;
+    if (sendEmail) {
+      try {
+        await sendPasswordResetOTP(user.email, otp);
+        emailSent = true;
+      } catch (emailError) {
+        console.error('Failed to send OTP email:', emailError);
+      }
+    }
+
+    console.log(`[Admin] Password reset OTP generated for ${user.email} by admin ${req.user.email}: ${otp}`);
+
+    res.json({ 
+      success: true, 
+      message: `Password reset OTP generated for ${user.name}`,
+      otp: otp,
+      token: resetToken,
+      expiresAt: resetRequest.expiresAt,
+      expiresInMinutes: 20,
+      emailSent,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error('Admin generate OTP error:', error);
+    res.status(500).json({ success: false, error: 'Failed to generate OTP' });
+  }
+});
+
+// Admin directly resets user password (without OTP)
+router.post('/password-resets/direct-reset', authenticate, isAdmin, async (req, res) => {
+  try {
+    const { userId, newPassword } = req.body;
+
+    if (!userId || !newPassword) {
+      return res.status(400).json({ success: false, error: 'User ID and new password are required' });
+    }
+
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+    }
+
+    const user = db.users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    
+    db.users.update(userId, {
+      password: hashedPassword,
+      passwordChangedAt: new Date().toISOString(),
+      passwordResetByAdmin: true,
+      lastPasswordResetBy: req.user.id
+    });
+
+    // Invalidate all existing sessions for this user (force re-login)
+    const sessions = db.sessions.findAll();
+    const userSessions = sessions.filter(s => s.userId === userId);
+    userSessions.forEach(s => {
+      db.sessions.delete(s.id);
+    });
+
+    console.log(`[Admin] Password directly reset for ${user.email} by admin ${req.user.email}`);
+
+    res.json({ 
+      success: true, 
+      message: `Password reset successfully for ${user.name}. User will need to login with the new password.`,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error('Admin direct reset error:', error);
+    res.status(500).json({ success: false, error: 'Failed to reset password' });
+  }
+});
+
+// Invalidate/cancel a pending OTP (admin only)
+router.delete('/password-resets/:resetId', authenticate, isAdmin, (req, res) => {
+  try {
+    const reset = db.passwordResets.findById(req.params.resetId);
+    if (!reset) {
+      return res.status(404).json({ success: false, error: 'Reset request not found' });
+    }
+
+    db.passwordResets.update(req.params.resetId, { 
+      used: true, 
+      invalidatedAt: new Date().toISOString(),
+      invalidatedBy: req.user.id
+    });
+
+    res.json({ success: true, message: 'Reset OTP invalidated successfully' });
+  } catch (error) {
+    console.error('Invalidate OTP error:', error);
+    res.status(500).json({ success: false, error: 'Failed to invalidate OTP' });
+  }
+});
+
+// Get all users with password reset capability summary (admin only)
+router.get('/password-resets/users-summary', authenticate, isAdmin, (req, res) => {
+  try {
+    const users = db.users.findAll();
+    const resets = db.passwordResets.findAll();
+
+    const usersSummary = users.map(user => {
+      const userResets = resets.filter(r => r.userId === user.id || r.email === user.email);
+      const pendingReset = userResets.find(r => !r.used && new Date(r.expiresAt) > new Date());
+      const lastReset = userResets
+        .filter(r => r.used)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        role: user.role,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        hasPendingReset: !!pendingReset,
+        pendingOtp: pendingReset ? pendingReset.otp : null,
+        pendingExpiresAt: pendingReset ? pendingReset.expiresAt : null,
+        lastResetDate: lastReset ? lastReset.createdAt : null,
+        totalResets: userResets.length
+      };
+    });
+
+    res.json({ success: true, users: usersSummary });
+  } catch (error) {
+    console.error('Get users summary error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get users summary' });
   }
 });
 

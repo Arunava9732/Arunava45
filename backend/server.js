@@ -73,6 +73,8 @@ const giftCardsRoutes = require('./routes/giftCards');
 const settingsRoutes = require('./routes/settings');
 const paymentRoutes = require('./routes/payment');
 const { router: webhookRoutes, sendOrderWebhook } = require('./routes/webhooks');
+const docsRoutes = require('./routes/docs');
+const newsletterRoutes = require('./routes/newsletter');
 
 // Create Express app
 const app = express();
@@ -261,6 +263,58 @@ app.use(cookieParser(process.env.COOKIE_SECRET || 'blackonn_cookie_secret_2025')
 
 // Input sanitization
 app.use(sanitizationMiddleware);
+
+// ============ AI-FRIENDLY API ENHANCEMENTS ============
+// Add comprehensive metadata to all API responses for AI consumption
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (data) => {
+    // Only enhance API responses
+    if (req.path.startsWith('/api/')) {
+      const enhanced = {
+        ...data,
+        _metadata: {
+          timestamp: new Date().toISOString(),
+          endpoint: req.path,
+          method: req.method,
+          version: 'v1',
+          requestId: req.id || Math.random().toString(36).substr(2, 9),
+          processingTime: Date.now() - (req._startTime || Date.now()),
+          ai: {
+            friendly: true,
+            structured: true,
+            machineReadable: true,
+            semantic: true
+          }
+        },
+        _links: {
+          self: req.originalUrl,
+          documentation: '/api/docs'
+        }
+      };
+      return originalJson(enhanced);
+    }
+    return originalJson(data);
+  };
+  req._startTime = Date.now();
+  next();
+});
+
+// Advanced request logging for AI analysis
+app.use((req, res, next) => {
+  const logData = {
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    referer: req.get('referer'),
+    origin: req.get('origin'),
+    tags: ['request', 'api', 'http']
+  };
+  console.log('[AI-LOG]', JSON.stringify(logData));
+  next();
+});
 
 // SEO Routes (Sitemap & Robots)
 app.use('/', seoRoutes);
@@ -505,6 +559,81 @@ app.use(express.static(frontendRoot, {
   }
 }));
 
+// ============ AI-FRIENDLY API ENHANCEMENTS ============
+// Add comprehensive metadata to all API responses for AI consumption
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (data) => {
+    // Only enhance API responses
+    if (req.path.startsWith('/api/')) {
+      const enhanced = {
+        ...data,
+        _metadata: {
+          timestamp: new Date().toISOString(),
+          endpoint: req.path,
+          method: req.method,
+          version: 'v1',
+          requestId: req.id || Math.random().toString(36).substr(2, 9),
+          processingTime: Date.now() - (req._startTime || Date.now()),
+          ai: {
+            friendly: true,
+            structured: true,
+            machineReadable: true,
+            semantic: true,
+            schema: 'json-ld'
+          }
+        },
+        _links: {
+          self: req.originalUrl,
+          documentation: '/api/docs',
+          health: '/api/health'
+        }
+      };
+      return originalJson(enhanced);
+    }
+    return originalJson(data);
+  };
+  req._startTime = Date.now();
+  next();
+});
+
+// Advanced structured logging for AI/ML analysis
+app.use((req, res, next) => {
+  const logData = {
+    timestamp: new Date().toISOString(),
+    type: 'http_request',
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    referer: req.get('referer'),
+    origin: req.get('origin'),
+    acceptLanguage: req.get('accept-language'),
+    tags: ['request', 'api', 'http'],
+    context: {
+      isApi: req.path.startsWith('/api/'),
+      isAuth: req.path.startsWith('/api/auth'),
+      isPublic: !req.path.startsWith('/api/admin')
+    }
+  };
+  console.log('[AI-LOG]', JSON.stringify(logData));
+  
+  // Track response
+  res.on('finish', () => {
+    const responseLog = {
+      timestamp: new Date().toISOString(),
+      type: 'http_response',
+      path: req.path,
+      statusCode: res.statusCode,
+      duration: Date.now() - (req._startTime || Date.now()),
+      tags: ['response', 'performance']
+    };
+    console.log('[AI-LOG]', JSON.stringify(responseLog));
+  });
+  
+  next();
+});
+
 // ============ API ROUTES ============
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -528,9 +657,13 @@ app.use('/api/gift-cards', giftCardsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // SEO API routes
 app.use('/api/seo', seoRoutes);
+
+// API Documentation
+app.use('/api/docs', docsRoutes);
 
 // ============ SECURITY MONITORING (Admin Only) ============
 const { authenticate, isAdmin } = require('./middleware/auth');
@@ -795,6 +928,80 @@ async function findAvailablePort(startPort, maxAttempts = MAX_PORT_ATTEMPTS) {
   }
   throw new Error(`No available port found after ${maxAttempts} attempts starting from ${startPort}`);
 }
+
+// 404 handler with AI-friendly response
+app.use((req, res, next) => {
+  const error404 = {
+    success: false,
+    error: {
+      message: 'Resource not found',
+      type: 'NotFoundError',
+      code: 'RESOURCE_NOT_FOUND',
+      statusCode: 404,
+      path: req.path,
+      method: req.method,
+      timestamp: new Date().toISOString()
+    },
+    _metadata: {
+      errorId: Math.random().toString(36).substr(2, 9),
+      aiAnalysis: {
+        category: 'client_error',
+        severity: 'low',
+        retryable: false,
+        suggestion: 'Check the API documentation for valid endpoints'
+      }
+    },
+    _links: {
+      documentation: '/api/docs',
+      home: '/'
+    }
+  };
+  
+  console.log('[AI-ERROR]', JSON.stringify({ ...error404, type: '404_not_found' }));
+  res.status(404).json(error404);
+});
+
+// Global AI-friendly error handler
+app.use((err, req, res, next) => {
+  const errorResponse = {
+    success: false,
+    error: {
+      message: err.message || 'Internal server error',
+      type: err.name || 'Error',
+      code: err.code || 'INTERNAL_ERROR',
+      statusCode: err.statusCode || 500,
+      timestamp: new Date().toISOString(),
+      path: req.path,
+      method: req.method
+    },
+    _metadata: {
+      errorId: Math.random().toString(36).substr(2, 9),
+      aiAnalysis: {
+        category: err.statusCode >= 500 ? 'server_error' : 'client_error',
+        severity: err.statusCode >= 500 ? 'high' : 'medium',
+        retryable: err.statusCode >= 500 && err.statusCode !== 501,
+        context: {
+          userAgent: req.get('user-agent'),
+          ip: req.ip,
+          endpoint: req.path
+        }
+      }
+    },
+    _links: {
+      support: '/contact',
+      documentation: '/api/docs'
+    }
+  };
+
+  // Structured error logging for AI/ML analysis
+  console.error('[AI-ERROR]', JSON.stringify({
+    ...errorResponse,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    tags: ['error', 'exception', err.statusCode >= 500 ? 'server' : 'client']
+  }));
+
+  res.status(err.statusCode || 500).json(errorResponse);
+});
 
 // ============ START SERVER ============
 (async () => {

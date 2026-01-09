@@ -572,7 +572,7 @@ const BlackonnSecurity = (() => {
         'X-Request-Nonce': nonce
       };
       
-      return originalFetch.apply(this, [url, options]);
+      return originalFetch.call(window, url, options);
     };
   };
 

@@ -8,8 +8,13 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Data file path
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -164,6 +169,8 @@ router.post('/purchase', optionalAuth, async (req, res) => {
     });
     
     writeData(data);
+    
+    console.log(`[AI-Enhanced] Gift card purchased: Code ${giftCard.code}, Value ₹${amount}, Recipient ${recipientEmail}`);
     
     // TODO: Send email to recipient with gift card code
     // For now, just return success

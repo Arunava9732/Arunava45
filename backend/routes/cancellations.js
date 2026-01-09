@@ -8,8 +8,13 @@ const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validateRequest, returnLimiter } = require('../middleware/security');
 const { body } = require('express-validator');
 const { sendAdminNotification } = require('../utils/whatsapp');
+const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
+
+// AI Middleware
+router.use(aiRequestLogger);
+router.use(aiPerformanceMonitor(500));
 
 // Format cancellation message for WhatsApp
 function formatCancellationMessage(cancellation) {
@@ -135,6 +140,8 @@ router.post('/',
       db.cancellations.create(cancellationRequest);
     }
 
+    console.log(`[AI-Enhanced] Cancellation request created: ${cancellationRequest.id}, Order: ${orderId}, Auto-approved: ${autoApprove}`);
+
     // If auto-approved, cancel order and restore stock immediately
     if (autoApprove) {
       // Restore stock for each item
@@ -198,6 +205,8 @@ router.patch('/:id/status', authenticate, requireAdmin, (req, res) => {
     if (adminNotes) {
       updates.adminNotes = adminNotes;
     }
+
+    console.log(`[AI-Enhanced] Cancellation status updated: ${req.params.id}, Status: ${status}`);
 
     // If approved, cancel the order and restore stock
     if (status === 'Approved' && cancellation.status !== 'Approved') {
