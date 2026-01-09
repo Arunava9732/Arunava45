@@ -650,6 +650,8 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/marketing/newsletter', newsletterRoutes);
 app.use('/api/marketing', marketingRoutes);
 app.use('/api/shipping', shippingRoutes);
 app.use('/api/tax', taxRoutes);
@@ -657,7 +659,6 @@ app.use('/api/gift-cards', giftCardsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/webhooks', webhookRoutes);
-app.use('/api/newsletter', newsletterRoutes);
 
 // SEO API routes
 app.use('/api/seo', seoRoutes);

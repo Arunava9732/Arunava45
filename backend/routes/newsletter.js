@@ -55,14 +55,77 @@ router.get('/subscribers/list', authenticate, requireAdmin, async (req, res) => 
         // Get stats
         const stats = {
             total: subscribers.length,
-            active: subscribers.filter(s => s.status === 'active').length,
-            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length
+            active: subscribers.filter(s => s.status === 'active' || s.active === true).length,
+            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed' || s.active === false).length
         };
         
         res.json({ success: true, subscribers, stats });
     } catch (error) {
         logger.error('Failed to get subscribers:', error);
         res.status(500).json({ success: false, error: 'Failed to retrieve subscribers' });
+    }
+});
+
+// Alias for /subscribers/list to match different frontend calls
+router.get('/subscribers', authenticate, requireAdmin, async (req, res) => {
+    try {
+        const subscribers = await readSubscribers();
+        res.json({ 
+            success: true, 
+            subscribers,
+            total: subscribers.length,
+            active: subscribers.filter(s => s.status === 'active' || s.active === true).length
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to retrieve subscribers' });
+    }
+});
+
+// Alias for /subscribers/list to match /subscribers
+router.get('/subscribers', authenticate, requireAdmin, async (req, res) => {
+    try {
+        const subscribers = await readSubscribers();
+        res.json({ 
+            success: true, 
+            subscribers,
+            total: subscribers.length,
+            active: subscribers.filter(s => s.status === 'active' || s.active === true).length
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Failed to retrieve subscribers' });
+    }
+});
+
+// Subscribe to newsletter (public)
+router.post('/subscribe', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+
+        const subscribers = await readSubscribers();
+        const exists = subscribers.find(s => s.email.toLowerCase() === email.toLowerCase());
+
+        if (exists) {
+            if (exists.status === 'active' || exists.active === true) {
+                return res.json({ success: true, message: 'Already subscribed' });
+            }
+            exists.status = 'active';
+            exists.active = true;
+            exists.updatedAt = new Date().toISOString();
+        } else {
+            subscribers.push({
+                id: Math.random().toString(36).substr(2, 9),
+                email: email.toLowerCase(),
+                status: 'active',
+                active: true,
+                subscribedAt: new Date().toISOString()
+            });
+        }
+
+        await writeSubscribers(subscribers);
+        res.json({ success: true, message: 'Successfully subscribed' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Subscription failed' });
     }
 });
 
@@ -77,8 +140,8 @@ router.get('/stats/overview', authenticate, requireAdmin, async (req, res) => {
             draftNewsletters: newsletters.filter(n => n.status === 'draft').length,
             sentNewsletters: newsletters.filter(n => n.status === 'sent').length,
             totalSubscribers: subscribers.length,
-            activeSubscribers: subscribers.filter(s => s.status === 'active').length,
-            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length,
+            activeSubscribers: subscribers.filter(s => s.status === 'active' || s.active === true).length,
+            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed' || s.active === false).length,
             totalRecipients: newsletters.reduce((sum, n) => sum + (n.recipientCount || 0), 0),
             averageOpenRate: newsletters.filter(n => n.status === 'sent').length > 0 
                 ? (newsletters.filter(n => n.status === 'sent').reduce((sum, n) => sum + (n.openCount || 0), 0) / 
