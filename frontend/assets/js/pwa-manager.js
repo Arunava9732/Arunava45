@@ -87,29 +87,38 @@
     setupUpdateDetection() {
       if (!this.registration) return;
       
-      // Check for updates periodically
+      // Check for updates periodically (every 30 mins)
       setInterval(() => {
-        this.registration.update();
-      }, 60 * 60 * 1000); // Every hour
+        if (!document.hidden) {
+          this.registration.update();
+        }
+      }, 30 * 60 * 1000);
       
-      // Listen for updates
+      // Check for updates when returning to the tab
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          this.registration.update();
+        }
+      });
+      
+      // Listen for updates found
       this.registration.addEventListener('updatefound', () => {
         const newWorker = this.registration.installing;
         
-        console.log('[PWA] Update found, installing...');
-        
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New version available
+            // New version available, show a polite banner
             this.updateAvailable = true;
             this.showUpdateNotification();
           }
         });
       });
       
-      // Listen for controller change (new SW activated)
+      // Handle actual refresh only when user clicks "Update"
+      let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('[PWA] New service worker activated, reloading...');
+        if (refreshing) return;
+        refreshing = true;
         window.location.reload();
       });
     },

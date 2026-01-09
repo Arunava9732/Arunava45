@@ -47,7 +47,53 @@ router.get('/', authenticate, requireAdmin, async (req, res) => {
     }
 });
 
-// Get single newsletter
+// Get all subscribers (admin only) - MUST be before /:id route
+router.get('/subscribers/list', authenticate, requireAdmin, async (req, res) => {
+    try {
+        const subscribers = await readSubscribers();
+        
+        // Get stats
+        const stats = {
+            total: subscribers.length,
+            active: subscribers.filter(s => s.status === 'active').length,
+            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length
+        };
+        
+        res.json({ success: true, subscribers, stats });
+    } catch (error) {
+        logger.error('Failed to get subscribers:', error);
+        res.status(500).json({ success: false, error: 'Failed to retrieve subscribers' });
+    }
+});
+
+// Get newsletter statistics - MUST be before /:id route
+router.get('/stats/overview', authenticate, requireAdmin, async (req, res) => {
+    try {
+        const newsletters = await readNewsletters();
+        const subscribers = await readSubscribers();
+        
+        const stats = {
+            totalNewsletters: newsletters.length,
+            draftNewsletters: newsletters.filter(n => n.status === 'draft').length,
+            sentNewsletters: newsletters.filter(n => n.status === 'sent').length,
+            totalSubscribers: subscribers.length,
+            activeSubscribers: subscribers.filter(s => s.status === 'active').length,
+            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length,
+            totalRecipients: newsletters.reduce((sum, n) => sum + (n.recipientCount || 0), 0),
+            averageOpenRate: newsletters.filter(n => n.status === 'sent').length > 0 
+                ? (newsletters.filter(n => n.status === 'sent').reduce((sum, n) => sum + (n.openCount || 0), 0) / 
+                   newsletters.filter(n => n.status === 'sent').reduce((sum, n) => sum + (n.recipientCount || 1), 0) * 100).toFixed(2)
+                : 0
+        };
+        
+        res.json({ success: true, stats });
+    } catch (error) {
+        logger.error('Failed to get newsletter stats:', error);
+        res.status(500).json({ success: false, error: 'Failed to retrieve statistics' });
+    }
+});
+
+// Get single newsletter - MUST be after specific routes
 router.get('/:id', authenticate, requireAdmin, async (req, res) => {
     try {
         const newsletters = await readNewsletters();
@@ -217,25 +263,6 @@ router.post('/:id/send', authenticate, requireAdmin, async (req, res) => {
     }
 });
 
-// Get all subscribers (admin only)
-router.get('/subscribers/list', authenticate, requireAdmin, async (req, res) => {
-    try {
-        const subscribers = await readSubscribers();
-        
-        // Get stats
-        const stats = {
-            total: subscribers.length,
-            active: subscribers.filter(s => s.status === 'active').length,
-            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length
-        };
-        
-        res.json({ success: true, subscribers, stats });
-    } catch (error) {
-        logger.error('Failed to get subscribers:', error);
-        res.status(500).json({ success: false, error: 'Failed to retrieve subscribers' });
-    }
-});
-
 // Subscribe to newsletter (public endpoint)
 router.post('/subscribe', async (req, res) => {
     try {
@@ -331,33 +358,6 @@ router.delete('/subscribers/:id', authenticate, requireAdmin, async (req, res) =
     } catch (error) {
         logger.error('Failed to delete subscriber:', error);
         res.status(500).json({ success: false, error: 'Failed to delete subscriber' });
-    }
-});
-
-// Get newsletter statistics
-router.get('/stats/overview', authenticate, requireAdmin, async (req, res) => {
-    try {
-        const newsletters = await readNewsletters();
-        const subscribers = await readSubscribers();
-        
-        const stats = {
-            totalNewsletters: newsletters.length,
-            draftNewsletters: newsletters.filter(n => n.status === 'draft').length,
-            sentNewsletters: newsletters.filter(n => n.status === 'sent').length,
-            totalSubscribers: subscribers.length,
-            activeSubscribers: subscribers.filter(s => s.status === 'active').length,
-            unsubscribed: subscribers.filter(s => s.status === 'unsubscribed').length,
-            totalRecipients: newsletters.reduce((sum, n) => sum + (n.recipientCount || 0), 0),
-            averageOpenRate: newsletters.filter(n => n.status === 'sent').length > 0 
-                ? (newsletters.filter(n => n.status === 'sent').reduce((sum, n) => sum + (n.openCount || 0), 0) / 
-                   newsletters.filter(n => n.status === 'sent').reduce((sum, n) => sum + (n.recipientCount || 1), 0) * 100).toFixed(2)
-                : 0
-        };
-        
-        res.json({ success: true, stats });
-    } catch (error) {
-        logger.error('Failed to get newsletter stats:', error);
-        res.status(500).json({ success: false, error: 'Failed to retrieve statistics' });
     }
 });
 

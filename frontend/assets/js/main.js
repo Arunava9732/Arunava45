@@ -310,26 +310,42 @@ document.addEventListener('click', (e) => {
     }, 700);
 });
 
-
-// Register Service Worker for PWA and Caching
+// ============ SERVICE WORKER & PWA AUTO-UPDATE ============
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registered'))
-      .catch(err => console.log('Service Worker registration failed:', err));
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { 
+            scope: '/',
+            updateViaCache: 'none' // Bypass HTTP cache for sw.js
+        })
+        .then(reg => {
+            console.log('[PWA] Service Worker registered');
+            
+            // Check for updates when returning to the tab (non-intrusive)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) reg.update();
+            });
+        })
+        .catch(err => console.error('[PWA] Registration failed:', err));
+    });
 }
 
 // ============ PAGE TRANSITIONS ============
 document.addEventListener('DOMContentLoaded', () => {
-    // Create overlay if not exists
+    // Create overlay if not exists - start with active class for fade-in effect
     if (!document.querySelector('.page-transition-overlay')) {
         const overlay = document.createElement('div');
-        overlay.className = 'page-transition-overlay';
+        overlay.className = 'page-transition-overlay active';
         document.body.appendChild(overlay);
     }
 
     const overlay = document.querySelector('.page-transition-overlay');
+    
+    // Fade in effect - remove active class after a brief delay
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            overlay.classList.remove('active');
+        });
+    });
 
     // Handle internal links
     document.addEventListener('click', (e) => {
@@ -337,21 +353,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!link) return;
 
         const href = link.getAttribute('href');
-        // Ignore external links, anchors, or special protocols
-        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank') return;
+        // Ignore external links, anchors, special protocols, or javascript: links
+        if (!href || 
+            href.startsWith('#') || 
+            href.startsWith('mailto:') || 
+            href.startsWith('tel:') || 
+            href.startsWith('javascript:') ||
+            href.startsWith('http://') ||
+            href.startsWith('https://') ||
+            link.target === '_blank' ||
+            link.hasAttribute('download')) return;
+        
+        // Check if it's an internal navigation link (any relative link)
+        const isInternal = !href.includes('://') && !href.startsWith('//');
+        if (isInternal) {
+            e.preventDefault();
+            overlay.classList.add('active');
 
-        e.preventDefault();
-        overlay.classList.add('active');
-
-        setTimeout(() => {
-            window.location.href = href;
-        }, 400); // Match CSS transition duration
+            setTimeout(() => {
+                window.location.href = href;
+            }, 250); // Smooth 250ms transition
+        }
     });
 
-    // Fade out on load
+    // Fade in on page load and back/forward navigation
     window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
-            overlay.classList.remove('active');
+            // Page was loaded from bfcache
+            overlay.classList.add('active');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    overlay.classList.remove('active');
+                });
+            });
         }
     });
 });

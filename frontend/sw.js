@@ -4,10 +4,10 @@
  * background sync, push notifications support
  */
 
-const CACHE_VERSION = 'blackonn-v5-advanced';
-const STATIC_CACHE = 'static-v5';
-const DYNAMIC_CACHE = 'dynamic-v5';
-const API_CACHE = 'api-v5';
+const CACHE_VERSION = 'blackonn-v8-advanced';
+const STATIC_CACHE = 'static-v8';
+const DYNAMIC_CACHE = 'dynamic-v8';
+const API_CACHE = 'api-v8';
 
 // Static assets to precache
 const PRECACHE_ASSETS = [
@@ -17,7 +17,9 @@ const PRECACHE_ASSETS = [
   '/assets/css/styles.css',
   '/assets/js/advanced-cache.js',
   '/assets/js/state-manager.js',
-  '/assets/js/performance-optimizer.js'
+  '/assets/js/performance-optimizer.js',
+  '/assets/js/pwa-manager.js',
+  '/assets/js/main.js'
 ];
 
 // Cache strategies per route pattern
@@ -38,7 +40,7 @@ const MAX_CACHE_SIZE = {
 
 // Install - Precache static assets
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing advanced service worker v5...');
+  console.log('[SW] Installing advanced service worker v7...');
   
   event.waitUntil(
     caches.open(STATIC_CACHE)
@@ -53,7 +55,7 @@ self.addEventListener('install', (event) => {
 
 // Activate - Clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating advanced service worker v5...');
+  console.log('[SW] Activating advanced service worker v7...');
   
   event.waitUntil(
     caches.keys()
@@ -98,13 +100,21 @@ function getCacheName(url) {
   return DYNAMIC_CACHE;
 }
 
-// Network First Strategy
+// Network First Strategy with Timeout
 async function networkFirst(request, cacheName) {
+  const timeoutId = setTimeout(() => {}, 5000); // 5s timeout
+  
   try {
-    const response = await fetch(request);
+    // Fetch with a small timeout for navigation to ensure quick fallback
+    const fetchPromise = fetch(request);
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Network timeout')), 5000)
+    );
+
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
     
-    // Cache successful responses
-    if (response.ok) {
+    // Only cache full responses (status 200), skip partial responses (206)
+    if (response.ok && response.status === 200) {
       const responseClone = response.clone();
       const cache = await caches.open(cacheName);
       await cache.put(request, responseClone);
@@ -113,11 +123,11 @@ async function networkFirst(request, cacheName) {
     
     return response;
   } catch (error) {
-    // Network failed, try cache
+    // Network failed or timed out, try cache
     const cached = await caches.match(request);
     
     if (cached) {
-      console.log('[SW] Network failed, serving from cache:', request.url);
+      console.log('[SW] Network failed/timeout, serving from cache:', request.url);
       return cached;
     }
     
@@ -141,7 +151,9 @@ async function cacheFirst(request, cacheName) {
   try {
     const response = await fetch(request);
     
-    if (response.ok) {
+    // Only cache full responses (status 200), skip partial responses (206)
+    // 206 responses are range requests (videos) and cannot be cached
+    if (response.ok && response.status === 200) {
       const responseClone = response.clone();
       const cache = await caches.open(cacheName);
       await cache.put(request, responseClone);
@@ -161,7 +173,8 @@ async function staleWhileRevalidate(request, cacheName) {
   
   // Fetch in background and update cache
   const fetchPromise = fetch(request).then(async response => {
-    if (response.ok) {
+    // Only cache full responses (status 200), skip partial responses (206)
+    if (response.ok && response.status === 200) {
       const responseClone = response.clone();
       const cache = await caches.open(cacheName);
       await cache.put(request, responseClone);
@@ -215,6 +228,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // Skip video/audio files - they use Range requests (206) which cannot be cached
+  if (/\.(mp4|webm|ogg|mp3|wav|m4a|avi|mov)$/i.test(requestUrl.pathname)) {
+    return;
+  }
+  
+  // Skip requests with Range header (partial content requests)
+  if (event.request.headers.get('Range')) {
+    return;
+  }
+  
   // Get strategy and cache name
   const strategy = getCacheStrategy(event.request.url);
   const cacheName = getCacheName(event.request.url);
@@ -222,19 +245,25 @@ self.addEventListener('fetch', (event) => {
   // Apply strategy
   event.respondWith(
     (async () => {
-      switch (strategy) {
-        case 'cacheFirst':
-          return cacheFirst(event.request, cacheName);
-        
-        case 'staleWhileRevalidate':
-          return staleWhileRevalidate(event.request, cacheName);
-        
-        case 'networkOnly':
-          return networkOnly(event.request);
-        
-        case 'networkFirst':
-        default:
-          return networkFirst(event.request, cacheName);
+      try {
+        switch (strategy) {
+          case 'cacheFirst':
+            return await cacheFirst(event.request, cacheName);
+          
+          case 'staleWhileRevalidate':
+            return await staleWhileRevalidate(event.request, cacheName);
+          
+          case 'networkOnly':
+            return await networkOnly(event.request);
+          
+          case 'networkFirst':
+          default:
+            return await networkFirst(event.request, cacheName);
+        }
+      } catch (error) {
+        console.error('[SW] Fetch handler error:', error);
+        // Return network fetch as fallback
+        return fetch(event.request);
       }
     })()
   );

@@ -146,9 +146,33 @@
         opacity: 1;
         transform: translateX(0);
       }
-      /* Mobile nav toggle - hidden on desktop */
+      /* Mobile nav toggle - hidden on desktop, shown on mobile */
       .mobile-nav-toggle {
         display: none;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+        z-index: 100000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      @media (max-width: 768px) {
+        .mobile-nav-toggle {
+          display: flex !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
       }
       .mobile-nav-overlay {
         display: none;
@@ -640,13 +664,12 @@
           flex: 1 1 100% !important;
         }
         
+        /* Hide admin-side-nav by default, show when toggled */
         .admin-side-nav {
-          display: none;
+          transform: translateY(100%);
         }
-        
-        /* Show mobile menu toggle */
-        .mobile-nav-toggle {
-          display: block !important;
+        .admin-side-nav.mobile-open {
+          transform: translateY(0);
         }
       }
 
@@ -3471,26 +3494,6 @@
           background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
           color: #fff !important;
         }
-        /* Mobile nav toggle button */
-        .mobile-nav-toggle {
-          display: flex !important;
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          width: 56px;
-          height: 56px;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-          color: #fff;
-          border: none;
-          border-radius: 50%;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-          z-index: 100000;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
         .mobile-nav-toggle:hover {
           transform: scale(1.1);
         }
@@ -5258,7 +5261,7 @@
     </nav>
 
     <!-- Mobile Nav Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" style="display: none;">
+    <button class="mobile-nav-toggle" id="mobileNavToggle">
       <i class="ri-menu-line"></i>
     </button>
     <!-- Mobile Nav Overlay -->
@@ -19733,6 +19736,7 @@ ${message.message}`;
     <script src="assets/js/advanced-cache.js"></script>
     <script src="assets/js/state-manager.js"></script>
     <script src="assets/js/performance-optimizer.js"></script>
+    <script src="assets/js/pwa-manager.js"></script>
     <!-- console-block.js disabled for admin page -->
     <!-- auto-debugger.js disabled for admin page -->
     <script src="assets/js/main.js"></script>

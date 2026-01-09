@@ -36,6 +36,11 @@ html, body {
   max-width: 100vw;
 }
 
+/* Scroll performance optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Utility classes to replace inline styles and support toasts */
 .logo-img { width: 150px; height: 50px; display: block; object-fit: contain; }
 .logo-img-lg { width: 175px; height: 50px; margin-bottom: 15px; display: block; object-fit: contain; }
@@ -935,10 +940,13 @@ a, button, .card, .input, .product__card {
   width: 100%;
   height: 100%;
   background: #ffffff;
-  z-index: 9999;
+  z-index: 99999;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease-out;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: opacity;
 }
 
 .page-transition-overlay.active {
@@ -1065,13 +1073,23 @@ transform: translate3d(0, -.25rem, 0);
   background: #000;
   border-radius: 0;
   z-index: 1;
+  /* GPU acceleration for smooth performance */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: auto;
 }
             
 .slider-track {
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* GPU acceleration */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .slider-track video,
@@ -1081,6 +1099,10 @@ transform: translate3d(0, -.25rem, 0);
   height: 100%;
   min-height: 100%;
   object-fit: cover;
+  /* Optimize rendering */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  image-rendering: -webkit-optimize-contrast;
 }
 
 /* Responsive adjustments for the hero slider */
