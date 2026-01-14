@@ -69,6 +69,22 @@ module.exports = {
       
       // Cron restart (restart every day at 4 AM to prevent memory leaks)
       cron_restart: '0 4 * * *'
+    },
+    {
+      name: 'blackonn-agent',
+      script: 'backend/ml/blackonn_agent.py',
+      interpreter: 'python3', // Path to python3 on VPS
+      args: '--mode=api --port=5050',
+      cwd: __dirname,
+      autorestart: true,
+      restart_delay: 5000,
+      max_memory_restart: '300M',
+      out_file: './backend/logs/agent_out.log',
+      error_file: './backend/logs/agent_error.log',
+      env: {
+        PYTHONUTF8: '1',
+        PYTHONIOENCODING: 'utf-8'
+      }
     }
   ]
 };
