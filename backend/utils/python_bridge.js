@@ -1,5 +1,6 @@
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 const logger = require('./logger');
 
 /**
@@ -12,8 +13,23 @@ const runPythonScript = (scriptName, args = [], timeout = 30000) => {
   return new Promise((resolve, reject) => {
     const scriptPath = path.join(__dirname, '..', 'ml', scriptName);
     
-    // Check if python or python3 is available
-    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    // Check if python or python3 is available - Prefer VENV if exists
+    let pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    
+    // Check for virtual environment in multiple places
+    const possibleVenvPaths = [
+      path.join(__dirname, '..', '..', '.venv', 'Scripts', 'python.exe'),
+      path.join(__dirname, '..', '..', '.venv', 'bin', 'python'),
+      path.join(__dirname, '..', '..', 'venv', 'Scripts', 'python.exe'),
+      path.join(__dirname, '..', '..', 'venv', 'bin', 'python')
+    ];
+
+    for (const venvPath of possibleVenvPaths) {
+      if (fs.existsSync(venvPath)) {
+        pythonCmd = venvPath;
+        break;
+      }
+    }
     
     let processArgs = [scriptPath];
     let stdinData = null;

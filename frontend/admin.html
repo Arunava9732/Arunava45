@@ -67,6 +67,23 @@
       .admin-header .header-actions .logout-btn:hover {
         background: #fecaca;
       }
+      .admin-header .header-actions .view-store-btn {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+      }
+      .admin-header .header-actions .view-store-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
       .admin-header nav {
         display: none;
       }
@@ -6237,6 +6254,7 @@
             <span class="status-dot"></span>
             <span class="status-text">Offline</span>
           </div>
+          <a href="index.html" class="view-store-btn" target="_blank"><i class="ri-external-link-line"></i> View Store</a>
           <a href="#" class="logout-btn" id="adminLogoutBtn"><i class="ri-logout-box-r-line"></i> Logout</a>
         </div>
       </div>

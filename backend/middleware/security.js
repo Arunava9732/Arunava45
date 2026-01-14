@@ -16,7 +16,13 @@ const BAN_THRESHOLD = 10; // 10 security violations = ban
 const BAN_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 const trackViolation = (req) => {
-  const ip = req.ip;
+  const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // Never ban loopback addresses
+  if (ip === '127.0.0.1' || ip === '::1' || ip.includes('127.0.0.1')) {
+    return;
+  }
+
   const current = ipViolations.get(ip) || { count: 0, banTime: 0 };
   
   current.count++;
@@ -31,7 +37,13 @@ const trackViolation = (req) => {
 };
 
 const checkBan = (req, res, next) => {
-  const ip = req.ip;
+  const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // Skip ban check for loopback
+  if (ip === '127.0.0.1' || ip === '::1' || ip.includes('127.0.0.1')) {
+    return next();
+  }
+
   const record = ipViolations.get(ip);
   
   if (record && record.banTime > Date.now()) {
@@ -43,6 +55,13 @@ const checkBan = (req, res, next) => {
 
 // ============ ADVANCED BOT PROTECTION ============
 const blockBadBots = (req, res, next) => {
+  const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // Whitelist local health check scripts from bot detection
+  if (ip === '127.0.0.1' || ip === '::1' || ip.includes('127.0.0.1')) {
+    return next();
+  }
+
   const ua = req.get('User-Agent');
   if (!ua) return next();
   

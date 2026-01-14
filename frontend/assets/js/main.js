@@ -43,9 +43,9 @@
 })();
 
 
-// Initialize Swiper only if container exists
+// Initialize Swiper only if container exists and Swiper library is loaded
 let swiperProducts;
-if (document.querySelector(".products__container")) {
+if (document.querySelector(".products__container") && typeof Swiper !== 'undefined') {
     swiperProducts = new Swiper(".products__container" , {
         spaceBetween: 32,
         grabCursor: true,

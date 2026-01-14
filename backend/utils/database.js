@@ -91,7 +91,7 @@ class Database {
       id: new Map(),
       email: new Map(),
       token: new Map(),
-      oderId: new Map(), // Order lookups
+      orderId: new Map(), // Order lookups
       userId: new Map()  // User-based lookups
     };
     
@@ -135,7 +135,7 @@ class Database {
       if (item.id) this.indexes.id.set(item.id, i);
       if (item.email) this.indexes.email.set(item.email.toLowerCase(), i);
       if (item.token) this.indexes.token.set(item.token, i);
-      if (item.orderId) this.indexes.oderId.set(item.orderId, i);
+      if (item.orderId) this.indexes.orderId.set(item.orderId, i);
       if (item.userId) {
         // Multi-value index for userId (user can have multiple records)
         if (!this.indexes.userId.has(item.userId)) {
@@ -960,6 +960,7 @@ const exportsObj = {
   exchanges: new Database('exchanges'),
   cancellations: new Database('cancellations'),
   passwordResets: new Database('passwordResets'),
+  wishlists: new Database('wishlists'),
   Database
 };
 

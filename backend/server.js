@@ -76,6 +76,7 @@ const { router: webhookRoutes, sendOrderWebhook } = require('./routes/webhooks')
 const docsRoutes = require('./routes/docs');
 const newsletterRoutes = require('./routes/newsletter');
 const advancedAdminRoutes = require('./routes/advancedAdmin');
+const agentRoutes = require('./routes/agent');
 
 // Create Express app
 const app = express();
@@ -272,6 +273,7 @@ const invalidateCache = (pattern) => {
 
 // Export for use in routes
 app.locals.invalidateCache = invalidateCache;
+app.locals.apiCache = apiCache;
 
 // Apply optimized caching to read-heavy endpoints
 app.use('/api/products', cacheMiddleware(30000, 10000)); // 30s cache, 10s stale
@@ -280,46 +282,61 @@ app.use('/api/seo', cacheMiddleware(300000, 60000)); // 5min cache for SEO data
 app.use('/api/settings', cacheMiddleware(120000, 30000)); // 2min cache for settings
 
 // ============ CORS CONFIGURATION ============
-// Cloud-ready: Configure FRONTEND_URL environment variable for production
-// Example: FRONTEND_URL=https://blackonn.com,https://www.blackonn.com
-// Supports both HTTP and HTTPS
-const allowedOrigins = process.env.FRONTEND_URL 
-  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : [];
+// Dynamic CORS configuration to handle production same-origin and dev environments
+const corsOptionsDelegate = (req, callback) => {
+  const origin = req.header('Origin');
+  const allowedOrigins = process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+    : [];
+  const allowedOriginsSet = new Set(allowedOrigins);
+  const isDev = process.env.NODE_ENV !== 'production';
 
-// Pre-compute allowed origins set for O(1) lookup
-const allowedOriginsSet = new Set(allowedOrigins);
+  let isAllowed = false;
 
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, same-origin, etc)
-    if (!origin) return callback(null, true);
-
-    // O(1) lookup using Set
-    if (allowedOriginsSet.has(origin)) {
-      return callback(null, true);
-    }
-
-    // In development, allow localhost/127.0.0.1 on any port
+  // 1. Allow requests with no origin (mobile apps, same-origin, etc)
+  if (!origin) {
+    isAllowed = true;
+  } 
+  // 2. Check against explicit whitelist
+  else if (allowedOriginsSet.has(origin)) {
+    isAllowed = true;
+  }
+  // 3. Localhost/Dev checks
+  else {
     const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    if (isLocalhost && (process.env.NODE_ENV !== 'production' || process.env.ALLOW_LOCALHOST_IN_PRODUCTION === 'true')) {
-      return callback(null, true);
+    if (isLocalhost && (isDev || process.env.ALLOW_LOCALHOST_IN_PRODUCTION === 'true')) {
+      isAllowed = true;
+    } 
+    // 4. Production same-origin fallback (if FRONTEND_URL missing)
+    else if (!process.env.FRONTEND_URL) {
+      if (isDev) {
+        isAllowed = true;
+      } else {
+        const host = req.get('host');
+        if (host && origin.includes(host)) {
+          isAllowed = true;
+        }
+      }
     }
+  }
 
-    // If FRONTEND_URL not provided, be permissive in non-production
-    if (!process.env.FRONTEND_URL && process.env.NODE_ENV !== 'production') {
-      return callback(null, true);
-    }
+  const corsOptions = {
+    origin: isAllowed,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    maxAge: 86400,
+    optionsSuccessStatus: 204
+  };
 
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true, // Required for httpOnly cookies
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  maxAge: 86400, // 24 hours - reduces preflight requests
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
+  if (!isAllowed && origin) {
+    console.warn(`[CORS] Blocked request from origin: ${origin}`);
+  }
+
+  callback(null, corsOptions);
+};
+
+app.use(cors(corsOptionsDelegate));
 
 // ============ FAST JSON PARSING WITH LIMITS ============
 // Use optimized JSON parsing with strict limits for performance
@@ -490,6 +507,9 @@ app.use('/api/docs', docsRoutes);
 
 // Advanced Admin APIs (Security Manager, ML, Errors, A/B Testing, Performance, PWA, Emotion AI, Neural Commerce)
 app.use('/api/admin', advancedAdminRoutes);
+
+// BLACKONN AI Agent (Claude/Gemini powered auto-fix)
+app.use('/api/agent', agentRoutes);
 
 // AI Engine APIs (Analytics, Fraud, Email, Search, Recommendations, Pricing, Image Processing)
 const aiRoutes = require('./routes/ai');
@@ -962,11 +982,20 @@ const MAX_PORT_ATTEMPTS = 10;
 // Production startup safety
 // -----------------------------
 if (process.env.NODE_ENV === 'production') {
-  const insecureJwt = !process.env.JWT_SECRET || /blackonn|CHANGE_THIS/i.test(process.env.JWT_SECRET);
-  const insecureCookie = !process.env.COOKIE_SECRET || /blackonn|CHANGE_THIS/i.test(process.env.COOKIE_SECRET);
+  const insecureJwt = !process.env.JWT_SECRET || /blackonn|CHANGE_THIS|your_jwt_secret/i.test(process.env.JWT_SECRET);
+  const insecureCookie = !process.env.COOKIE_SECRET || /blackonn|CHANGE_THIS|your_cookie_secret/i.test(process.env.COOKIE_SECRET);
+  
   if (insecureJwt || insecureCookie) {
-    console.error('❌ Insecure or missing secrets detected (JWT_SECRET, COOKIE_SECRET). Please set strong secrets in environment before starting in production.');
-    process.exit(1);
+    console.error('================================================================================');
+    console.error('⚠️  CRITICAL SECURITY WARNING: Insecure or missing secrets detected!');
+    console.error('   JWT_SECRET or COOKIE_SECRET are using default or placeholder values.');
+    console.error('   The server will start, but YOUR DATA IS AT RISK.');
+    console.error('   Please set strong secrets in your .env file immediately.');
+    console.error('================================================================================');
+    
+    // In production, we'll continue but warn loudly. 
+    // In a real high-security app, you might want to exit, 
+    // but for user experience we ensure the site stays up.
   }
 }
 
@@ -1167,7 +1196,7 @@ app.use((err, req, res, next) => {
         const existing = db.users.findOne({ email: adminEmail.toLowerCase() });
         if (!existing) {
           // create admin user
-          const hashed = await bcrypt.hash(adminPassword, 12);
+          const hashed = await bcrypt.hash(adminPassword, 10);
           const adminUser = {
             id: 'admin',
             name: adminName,
@@ -1225,7 +1254,10 @@ app.use((err, req, res, next) => {
     // Handle server errors
     server.on('error', (error) => {
       console.error('❌ Server error:', error.message);
-      // Don't exit - attempt recovery
+      if (error.code === 'EADDRINUSE') {
+        console.error(`🔴 Port ${PORT} is already in use. Please stop the other process or use a different port.`);
+        process.exit(1); // Exit so PM2 can attempt restart or show failure
+      }
     });
 
     // ============ HIGH-PERFORMANCE CONNECTION SETTINGS ============

@@ -1,0 +1,13 @@
+# BLACKONN AI Agent Dependencies (Self-Contained - NO EXTERNAL API)
+# ================================================================
+# Install: pip install -r agent_requirements.txt
+#
+# This agent uses 100% LOCAL INTELLIGENCE
+# NO Claude, Gemini, or OpenAI API keys required!
+
+# Optional - Only needed for API server mode
+flask>=2.0.0
+flask-cors>=3.0.0
+
+# Optional utilities
+python-dotenv>=1.0.0

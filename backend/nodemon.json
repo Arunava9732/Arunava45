@@ -1,0 +1,11 @@
+{
+  "ignore": [
+    "data/*",
+    "logs/*",
+    "uploads/*",
+    "*.sqlite3",
+    "*.sqlite3-wal",
+    "*.sqlite3-shm"
+  ],
+  "delay": "1000"
+}

@@ -11,11 +11,18 @@
 
 const API = (() => {
   // Configuration - detect environment
-  const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const isDev = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.startsWith('192.168.') || 
+                window.location.hostname === '0.0.0.0' ||
+                window.location.protocol === 'file:';
   
-  // Handle Live Server (port 5500) vs Backend (port 3000)
+  // Handle Live Server vs Backend (port 3000)
+  // If we're in dev and on a port that isn't 3000, assume we need to point to 3000
   let detectedBaseUrl = window.location.origin;
-  if (isDev && window.location.port === '5500') {
+  if (window.location.protocol === 'file:') {
+    detectedBaseUrl = 'http://localhost:3000';
+  } else if (isDev && window.location.port !== '3000' && window.location.port !== '') {
     detectedBaseUrl = window.location.protocol + '//' + window.location.hostname + ':3000';
   }
   
@@ -118,7 +125,7 @@ const API = (() => {
     
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout (better balance for VPS)
       
       const response = await fetch(`${API_URL}/health`, { 
         method: 'GET',
@@ -127,15 +134,28 @@ const API = (() => {
       });
       clearTimeout(timeoutId);
       
+      if (!response.ok) {
+        console.error(`[API] Health check failed with status: ${response.status} ${response.statusText}`);
+        if (response.status === 403) {
+          console.error('[API] This often indicates a CORS issue or an IP block by the security middleware.');
+        }
+      }
+      
       apiAvailable = response.ok;
       connectionRetries = 0;
     } catch (error) {
+      // Don't log abort errors as they are expected during navigation or slow connections
+      if (error.name !== 'AbortError') {
+        console.warn(`[API] Health check error:`, error.message);
+      }
+      
       connectionRetries++;
       apiAvailable = false;
       
-      if (connectionRetries <= MAX_RETRIES) {
-        console.warn(`[API] Connection attempt ${connectionRetries}/${MAX_RETRIES} failed, retrying in ${connectionRetries}s...`);
-        await new Promise(resolve => setTimeout(resolve, 1000 * connectionRetries));
+      // Reduce retries and delay to prevent UX lag
+      if (connectionRetries <= 2) {
+        const delay = 500 * connectionRetries;
+        await new Promise(resolve => setTimeout(resolve, delay));
         return checkApiAvailable(true);
       }
     }
@@ -230,14 +250,26 @@ const API = (() => {
 
       if (!response.ok) {
         // Handle auth errors
-        // Silently handle 401s - they are common when sessions expire or if not logged in
         if (response.status === 401) {
           clearCachedUser();
           window.dispatchEvent(new Event('auth:logout'));
           
-          if (endpoint === '/auth/me' || endpoint === '/cart' || endpoint === '/wishlist') {
-             throw new Error('NOT_AUTHENTICATED');
+          // Enhanced 401 handling: Redirect if on a protected page
+          const currentPath = window.location.pathname;
+          const isLoginPage = currentPath.includes('login.html');
+          
+          if (!isLoginPage) {
+            const protectedPages = ['profile.html', 'admin.html', 'checkout.html', 'orders.html', 'wishlist.html'];
+            const isProtectedPage = protectedPages.some(page => currentPath.includes(page));
+            
+            // Only redirect if it's a protected page and the request wasn't the initial auth check
+            if (isProtectedPage && endpoint !== '/auth/me') {
+              console.warn('[AI-AUTH] Session expired on protected route. Redirecting to login...');
+              window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}&reason=expired`;
+            }
           }
+
+          throw new Error('NOT_AUTHENTICATED');
         }
         
         // Don't log expected 401 or startup 404 errors to keep console clean
@@ -498,7 +530,7 @@ const API = (() => {
         return data;
       } catch (error) {
         // If 401 unauthorized, return login required
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -514,7 +546,7 @@ const API = (() => {
         this._setCartCache(data.cart || []);
         return data;
       } catch (error) {
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -529,7 +561,7 @@ const API = (() => {
         this._setCartCache(data.cart || []);
         return data;
       } catch (error) {
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -542,7 +574,7 @@ const API = (() => {
         this._setCartCache([]);
         return data;
       } catch (error) {
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           this._setCartCache([]);
           return { success: false, error: 'Login required', requiresLogin: true };
         }
@@ -762,7 +794,7 @@ const API = (() => {
       try {
         return await request('/wishlist');
       } catch (error) {
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           return { success: true, wishlist: [], requiresLogin: true };
         }
         throw error;
@@ -782,7 +814,7 @@ const API = (() => {
           })
         });
       } catch (error) {
-        if (error.message && error.message.includes('401')) {
+        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;

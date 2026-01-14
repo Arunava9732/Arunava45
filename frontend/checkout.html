@@ -2417,8 +2417,10 @@
           <span id="total">₹0</span>
         </div>
 
-        <button type="button" class="place-order-btn" id="placeOrderBtn">Complete Order</button>
-        <button type="button" class="cancel-btn" id="cancelOrderBtn">Cancel</button>
+        <div id="summaryButtons">
+          <button type="button" class="place-order-btn" id="placeOrderBtn">Proceed to Payment</button>
+          <button type="button" class="cancel-btn" id="cancelOrderBtn">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3012,6 +3014,11 @@
       // Hide shipping form and show payment section
       document.getElementById('checkoutForm').style.display = 'none';
       document.getElementById('paymentSection').classList.add('show');
+      
+      // Hide sidebar buttons past Step 1
+      const summaryButtons = document.getElementById('summaryButtons');
+      if (summaryButtons) summaryButtons.style.display = 'none';
+      
       updateProgressIndicator(2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
@@ -3099,6 +3106,11 @@
   function goBackToShipping() {
     document.getElementById('paymentSection').classList.remove('show');
     document.getElementById('checkoutForm').style.display = 'block';
+    
+    // Show sidebar buttons again
+    const summaryButtons = document.getElementById('summaryButtons');
+    if (summaryButtons) summaryButtons.style.display = 'block';
+    
     selectedPaymentMethod = null;
     document.querySelectorAll('.payment-option').forEach(opt => {
       opt.classList.remove('selected');

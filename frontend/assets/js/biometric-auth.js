@@ -154,7 +154,7 @@ class BiometricAuth {
     /**
      * Register new biometric credential
      */
-    async register(username) {
+    async register(username, userId = null) {
         if (!this.isSupported) {
             alert('Biometric authentication is not supported on this device.');
             return null;
@@ -213,7 +213,7 @@ class BiometricAuth {
             this.saveCredentials();
             
             // CRITICAL: Sync credential to server for backend authentication
-            const serverSynced = await this.syncCredentialToServer(credentialData);
+            const serverSynced = await this.syncCredentialToServer(credentialData, userId);
             if (!serverSynced) {
                 console.warn('[BiometricAuth] Server sync failed, credential stored locally only');
             }
@@ -243,34 +243,36 @@ class BiometricAuth {
     /**
      * Sync biometric credential to server
      */
-    async syncCredentialToServer(credentialData, retryCount = 0) {
+    async syncCredentialToServer(credentialData, userId = null, retryCount = 0) {
         const maxRetries = 3;
         const retryDelay = 1000; // 1 second
         
         try {
-            // Get current user to get user ID
-            let userId = null;
+            // Get current user to get user ID if not provided
+            let currentUserId = userId;
             let userEmail = credentialData.username; // Store email for later
             
-            if (window.blackonnAuth && window.blackonnAuth._cachedUser) {
-                userId = window.blackonnAuth._cachedUser.id;
-                userEmail = window.blackonnAuth._cachedUser.email || userEmail;
-            } else if (window.blackonnAuth) {
-                const user = await window.blackonnAuth.getCurrentUser();
-                if (user) {
-                    userId = user.id;
-                    userEmail = user.email || userEmail;
+            if (!currentUserId) {
+                if (window.blackonnAuth && window.blackonnAuth._cachedUser) {
+                    currentUserId = window.blackonnAuth._cachedUser.id;
+                    userEmail = window.blackonnAuth._cachedUser.email || userEmail;
+                } else if (window.blackonnAuth) {
+                    const user = await window.blackonnAuth.getCurrentUser();
+                    if (user) {
+                        currentUserId = user.id;
+                        userEmail = user.email || userEmail;
+                    }
                 }
             }
             
-            if (!userId) {
+            if (!currentUserId) {
                 console.log('[BiometricAuth] No authenticated user, storing for later sync');
                 // Store credential for later sync after login
                 this.storePendingCredential(credentialData);
                 return false;
             }
             
-            const response = await fetch(`/api/users/${userId}/biometric`, {
+            const response = await fetch(`/api/users/${currentUserId}/biometric`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -292,14 +294,14 @@ class BiometricAuth {
                 const errorData = await response.json().catch(() => ({}));
                 console.error('[BiometricAuth] Server sync failed:', errorData);
                 
-                // Retry if we haven't exceeded max retries and it's not a 4xx error
-                if (retryCount < maxRetries && response.status >= 500) {
+                // Retry if we haven't exceeded max retries and it's not a 4xx error (unless it's 429)
+                if (retryCount < maxRetries && (response.status >= 500 || response.status === 429)) {
                     console.log(`[BiometricAuth] Retrying sync (${retryCount + 1}/${maxRetries})...`);
                     await new Promise(r => setTimeout(r, retryDelay));
-                    return this.syncCredentialToServer(credentialData, retryCount + 1);
+                    return this.syncCredentialToServer(credentialData, currentUserId, retryCount + 1);
                 }
                 
-                // Store for later retry if sync fails
+                // Store for later retry if sync fails due to auth
                 if (response.status === 401 || response.status === 403) {
                     this.storePendingCredential(credentialData);
                 }
@@ -312,7 +314,7 @@ class BiometricAuth {
             if (retryCount < maxRetries) {
                 console.log(`[BiometricAuth] Retrying sync after error (${retryCount + 1}/${maxRetries})...`);
                 await new Promise(r => setTimeout(r, retryDelay));
-                return this.syncCredentialToServer(credentialData, retryCount + 1);
+                return this.syncCredentialToServer(credentialData, null, retryCount + 1);
             }
             
             // Store for later sync
@@ -1104,7 +1106,8 @@ class BiometricAuth {
 }
 
 // Initialize Biometric Authentication
-window.BiometricAuth = window.BiometricAuth || new BiometricAuth();
-window.biometricAuth = window.BiometricAuth;
+if (typeof window !== 'undefined') {
+    window.biometricAuth = new BiometricAuth();
+}
 
 console.log('🔐 Biometric Authentication loaded - Passwordless login with Face ID, Touch ID, Fingerprint!');

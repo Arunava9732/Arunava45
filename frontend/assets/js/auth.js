@@ -38,14 +38,19 @@ class BlackonnAuth {
 
     // Check if API is available
     async checkApi() {
+        // Reuse global API status if available from api.js
+        if (typeof API !== 'undefined' && typeof API.checkApiAvailable === 'function') {
+            return await API.checkApiAvailable();
+        }
+
         if (this.apiAvailable !== null) return this.apiAvailable;
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // Increased to 10s for slow VPS
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
             const res = await fetch(this.API_BASE + '/health', { 
                 method: 'GET', 
                 signal: controller.signal,
-                credentials: 'include' // Include cookies
+                credentials: 'include'
             });
             clearTimeout(timeoutId);
             this.apiAvailable = res.ok;

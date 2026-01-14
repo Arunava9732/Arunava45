@@ -67,9 +67,10 @@ const DEFAULT_SESSION_MS = TOKEN_EXPIRY_SECONDS * 1000;
 const getCookieOptions = (isAdmin = false, req = null) => {
   const isProduction = process.env.NODE_ENV === 'production';
   // Detect if request is over HTTPS (works with reverse proxies)
+  // Fallback to true in production if req is missing for better VPS security parity
   const isSecure = req 
     ? (req.secure || req.headers['x-forwarded-proto'] === 'https') 
-    : false; // Default to false if no req to be safe on local/HTTP
+    : isProduction; 
   
   const maxAge = DEFAULT_SESSION_MS; 
 
@@ -103,7 +104,7 @@ const authenticate = (req, res, next) => {
 
     // Basic token format check
     if (token.split('.').length !== 3) {
-      res.clearCookie(COOKIE_NAME, { path: '/' });
+      clearAuthCookie(res, req);
       return res.status(401).json({ success: false, error: 'Invalid token format', code: 'INVALID_TOKEN' });
     }
 
@@ -118,11 +119,11 @@ const authenticate = (req, res, next) => {
         try {
           decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true });
         } catch (err2) {
-          res.clearCookie(COOKIE_NAME, { path: '/' });
+          clearAuthCookie(res, req);
           return res.status(401).json({ success: false, error: 'Invalid token', code: 'INVALID_TOKEN' });
         }
       } else {
-        res.clearCookie(COOKIE_NAME, { path: '/' });
+        clearAuthCookie(res, req);
         return res.status(401).json({ success: false, error: 'Invalid token', code: 'INVALID_TOKEN' });
       }
     }
@@ -131,7 +132,7 @@ const authenticate = (req, res, next) => {
     const session = getCachedSession(token, decoded.id);
     if (!session) {
       // Token not associated with an active session
-      res.clearCookie(COOKIE_NAME, { path: '/' });
+      clearAuthCookie(res, req);
       return res.status(401).json({ success: false, error: 'Invalid session', code: 'INVALID_SESSION' });
     }
 
@@ -139,7 +140,7 @@ const authenticate = (req, res, next) => {
     if (new Date(session.expiresAt) < new Date()) {
       db.sessions.delete(session.id);
       invalidateSessionCache(token);
-      res.clearCookie(COOKIE_NAME, { path: '/' });
+      clearAuthCookie(res, req);
       return res.status(401).json({ success: false, error: 'Session expired', code: 'SESSION_EXPIRED' });
     }
 
@@ -184,7 +185,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (error) {
     // Clear cookie on any auth error
-    res.clearCookie(COOKIE_NAME, { path: '/' });
+    clearAuthCookie(res, req);
 
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ success: false, error: 'Token expired', code: 'TOKEN_EXPIRED' });
@@ -253,8 +254,12 @@ const setAuthCookie = (res, token, isAdmin = false, req = null) => {
 };
 
 // Clear auth cookie
-const clearAuthCookie = (res) => {
-  res.clearCookie(COOKIE_NAME, { path: '/' });
+const clearAuthCookie = (res, req = null) => {
+  const options = getCookieOptions(false, req);
+  // Important: remove maxAge for clearing to ensure immediate deletion
+  // Keep secure, path, and signed flags so they match the original cookie
+  delete options.maxAge;
+  res.clearCookie(COOKIE_NAME, options);
 };
 
 // Create a session with security metadata
@@ -264,7 +269,7 @@ const createSession = (user, token, req, res) => {
     userId: user.id,
     token,
     userAgent: req.get('User-Agent')?.substring(0, 200) || 'Unknown',
-    ipAddress: req.ip || req.connection.remoteAddress,
+    ipAddress: req.ip || req.socket?.remoteAddress || '127.0.0.1',
     createdAt: new Date().toISOString(),
     lastActivity: new Date().toISOString(),
     // Use DEFAULT_SESSION_MS to create a long-lived session by default

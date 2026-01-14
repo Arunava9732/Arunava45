@@ -6,12 +6,12 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
-const { Database } = require('../utils/database');
+const db = require('../utils/database');
 const { validators, validateRequest } = require('../middleware/security');
 const { body, param } = require('express-validator');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
-const wishlistDb = new Database('wishlists');
+const wishlistDb = db.wishlists;
 
 // AI Middleware
 router.use(aiRequestLogger);

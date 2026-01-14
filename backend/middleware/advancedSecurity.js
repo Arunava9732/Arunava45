@@ -263,7 +263,12 @@ const isIPTrusted = (ip) => {
  * Allows trusted IPs (authenticated users) to bypass
  */
 const checkBlockedIP = (req, res, next) => {
-  const ip = req.ip || req.connection.remoteAddress;
+  const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // Whitelist loopback addresses to prevent local/proxy lockout
+  if (ip === '127.0.0.1' || ip === '::1' || ip.includes('127.0.0.1')) {
+    return next();
+  }
   
   // Trusted IPs (authenticated users) bypass blocks
   if (isIPTrusted(ip)) {
@@ -380,7 +385,13 @@ const preventPathTraversal = (req, res, next) => {
  * Relaxed to not block legitimate browsers and tools
  */
 const advancedBotDetection = (req, res, next) => {
-  const ip = req.ip;
+  const ip = req.ip || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // Whitelist loopback addresses
+  if (ip === '127.0.0.1' || ip === '::1' || ip.includes('127.0.0.1')) {
+    return next();
+  }
+
   const ua = (req.get('User-Agent') || '').toLowerCase();
   
   // Skip for trusted IPs

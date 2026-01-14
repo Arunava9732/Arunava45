@@ -630,7 +630,7 @@
     } catch (error) {
       console.error('Error toggling wishlist:', error);
       // Check if it's an auth error
-      if (error.message && (error.message.includes('401') || error.message.includes('auth') || error.message.includes('login'))) {
+      if (error.message === 'NOT_AUTHENTICATED' || (error.message && (error.message.includes('401') || error.message.includes('auth') || error.message.includes('login')))) {
         showToast('Please login to manage your wishlist', 'warning');
         window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
       } else {
@@ -2671,7 +2671,12 @@
           }
         } catch (error) {
           console.error('Add to cart failed:', error);
-          showToast('Failed to add to cart: ' + (error.message || 'Please try again'), 'error');
+          if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+            showToast('Please login to add items to cart', 'warning');
+            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+          } else {
+            showToast('Failed to add to cart: ' + (error.message || 'Please try again'), 'error');
+          }
         }
       });
     }

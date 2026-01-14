@@ -29,28 +29,63 @@
   var CONFIG = {
     DEBUG_ENDPOINT: '/api/health/client-error',
     DIAGNOSTICS_ENDPOINT: '/api/health/diagnostics',
-    MAX_RETRIES: 2, // Reduced from 3
-    TOAST_DURATION: 3000,
-    HEALTH_CHECK_INTERVAL: 120000, // Increased to 120 seconds for low VPS load
-    MAX_EVENT_HISTORY: 50, // Reduced from 100
+    MAX_RETRIES: 3, 
+    TOAST_DURATION: 4000,
+    HEALTH_CHECK_INTERVAL: 60000, 
+    MAX_EVENT_HISTORY: 100,
     
     // Critical UI elements to monitor and heal
     CRITICAL_SELECTORS: [
       { selector: '#cartCount', type: 'span', parent: '.cart-icon', text: '0', class: 'cart-count', priority: 'high' },
+      { selector: '.nav', type: 'nav', parent: 'body', priority: 'critical' },
       { selector: '#menuBtn', type: 'button', parent: '.nav-right', html: '<span></span><span></span><span></span>', class: 'hamburger', priority: 'high' },
-      { selector: '.hero-section', type: 'section', parent: 'main', class: 'hero-section', priority: 'medium' }
+      { selector: '.footer', type: 'footer', parent: 'body', priority: 'medium' }
     ],
     
-    // Error patterns for AI categorization
-    ERROR_CATEGORIES: {
-      NETWORK: ['fetch', 'network', 'timeout', 'cors', 'xhr', '500', '502', '503', '504'],
-      SCRIPT: ['undefined', 'null', 'typeerror', 'referenceerror', 'syntaxerror'],
-      RESOURCE: ['image', 'script', 'stylesheet', 'font', '404'],
-      SECURITY: ['csp', 'cross-origin', 'blocked', 'insecure'],
-      PERFORMANCE: ['slow', 'timeout', 'memory', 'freeze'],
-      UI: ['dom', 'element', 'render', 'display', 'layout']
+    // Auto-Repair Thresholds
+    THRESHOLDS: {
+        ERROR_STORM: 5, // Errors in 10 seconds triggers Super-Heal
+        LATENCY_SPIKE: 5000, // ms
+        RECOVERY_ATTEMPTS: 3
     }
   };
+
+  // ============ AI AGENT BRAIN (STATEFUL ANALYSIS) ============
+  var agentBrain = {
+      intelligenceLevel: 'Maximum',
+      lastAction: null,
+      errorStormCounter: 0,
+      isLearning: true,
+      
+      analyzeState: function() {
+          var now = Date.now();
+          
+          // Check for "Error Storms" (similar to an AI noticing repetitive failures)
+          var recentErrors = diagnostics.errors.filter(e => (now - new Date(e.timestamp).getTime()) < 10000);
+          if (recentErrors.length >= CONFIG.THRESHOLDS.ERROR_STORM) {
+              console.log('[BLACKONN-AI-AGENT] Error storm detected! Immediate recovery required.');
+              window.BLACKONN_HEALER.superHeal();
+              this.errorStormCounter++;
+          }
+
+          // Check for "Blank Page" syndromes (CSS/Render failures)
+          if (document.body.offsetHeight === 0 || window.getComputedStyle(document.body).display === 'none') {
+              this.applyForceFix('RESTORE_BODY_VISIBILITY');
+          }
+      },
+
+      applyForceFix: function(type) {
+          showHealingToast('Detecting UI blockage... Force-fixing alignment.', 'warning');
+          if (type === 'RESTORE_BODY_VISIBILITY') {
+              document.body.style.display = 'block';
+              document.body.style.opacity = '1';
+              document.body.style.visibility = 'visible';
+          }
+          addToTimeline({ type: 'FORCE_FIX', message: type });
+      }
+  };
+
+  setInterval(function() { agentBrain.analyzeState(); }, 5000);
 
   // ============ AI-FRIENDLY DIAGNOSTICS STATE ============
   var diagnostics = {
@@ -171,58 +206,58 @@
   }
 
   // ============ 1. AI-ENHANCED UI NOTIFICATION ============
-  // Silent healing - no toast notifications to avoid user distraction
   function showHealingToast(message, type, details) {
-    // Silent mode - only log to console, no UI notification
-    console.log('[AI-HEAL] Silent fix applied:', message);
-    return; // Exit early - no toast displayed
+    // Log to console with AI-parseable tag
+    console.log('[BLACKONN-AI-AGENT] Fixing... ' + message);
     
-    // Original toast code disabled to prevent "Autofix applied restore UI" notifications
     type = type || 'info';
-    if (document.querySelector('.healing-toast')) return;
+    if (document.querySelector('.healing-toast')) {
+        document.querySelector('.healing-toast').remove();
+    }
 
     var toast = document.createElement('div');
     toast.className = 'healing-toast ' + type;
     toast.setAttribute('data-ai-component', 'healing-notification');
-    toast.innerHTML = '<div class="toast-icon"><i class="ri-magic-line"></i></div>' +
+    toast.innerHTML = '<div class="toast-icon" style="background: #000; border-radius: 50%; padding: 5px;"><i class="ri-robot-2-line" style="color: #22c55e;"></i></div>' +
       '<div class="toast-content">' +
-      '<div class="toast-title">Auto-Fix Applied</div>' +
+      '<div class="toast-title" style="font-weight: bold; color: #22c55e;">[AI AGENT HEAL]</div>' +
       '<div class="toast-msg">' + message + '</div>' +
       '</div>';
     
     Object.assign(toast.style, {
       position: 'fixed',
-      bottom: '20px',
-      left: '20px',
-      background: '#0f172a',
+      bottom: '10px',
+      right: '10px',
+      background: 'rgba(0,0,0,0.9)',
       color: '#fff',
-      padding: '12px 16px',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+      padding: '15px 20px',
+      borderRadius: '12px',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid #22c55e',
+      boxShadow: '0 0 20px rgba(34, 197, 94, 0.2)',
       zIndex: '10000',
       display: 'flex',
       alignItems: 'center',
-      gap: '12px',
-      fontSize: '13px',
-      fontFamily: 'Segoe UI, sans-serif',
-      animation: 'slideIn 0.3s ease-out forwards',
-      borderLeft: type === 'success' ? '4px solid #22c55e' : type === 'warning' ? '4px solid #eab308' : '4px solid #3b82f6'
+      gap: '15px',
+      fontSize: '14px',
+      minWidth: '300px',
+      animation: 'slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
     });
 
-    if (!document.getElementById('toast-style')) {
+    if (!document.getElementById('ai-toast-style')) {
       var style = document.createElement('style');
-      style.id = 'toast-style';
-      style.textContent = '@keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }';
+      style.id = 'ai-toast-style';
+      style.textContent = '@keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
       document.head.appendChild(style);
     }
 
     document.body.appendChild(toast);
     setTimeout(function() {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(function() { toast.remove(); }, 300);
-    }, CONFIG.TOAST_DURATION);
+      toast.style.transform = 'scale(0.9)';
+      toast.style.transition = 'all 0.5s ease';
+      setTimeout(function() { toast.remove(); }, 500);
+    }, 6000); // Longer duration for AI readability
   }
 
   // ============ 2. AI-ENHANCED ERROR INTERCEPTION ============
@@ -337,6 +372,58 @@
   }
 
   // ============ 3. INTELLIGENT AUTO-HEALING ============
+  
+  // Public healing API for AI/User interaction
+  window.BLACKONN_HEALER = {
+    diagnostics: diagnostics,
+    
+    // Explicit repair for specific issues
+    repair: function(issueType) {
+      console.log('[AI-HEAL] Manual repair triggered:', issueType);
+      var fakeError = { id: 'manual_' + Date.now(), message: issueType, category: categorizeError(issueType) };
+      attemptAutoHeal(fakeError);
+    },
+    
+    // "Super-Heal" - The ultimate fix-all action
+    superHeal: async function() {
+      addToTimeline({ type: 'SUPER_HEAL_START', message: 'Executing deep system repair...' });
+      showHealingToast('Deep System Repair Initialized...', 'warning');
+      
+      try {
+        // 1. Trigger Backend Auto-Healer
+        const backendResp = await fetch('/api/health/heal', { method: 'POST', credentials: 'include' });
+        const backendResult = await backendResp.json();
+        console.log('[AI-HEAL] Backend Repair Results:', backendResult);
+        
+        // 2. Clear common state issues
+        localStorage.removeItem('cart_backup');
+        sessionStorage.removeItem('last_error_state');
+        
+        // 3. Fix UI elements
+        healDOM();
+        
+        // 4. Reload if critical elements are still missing
+        if (diagnostics.healthScore < 50) {
+          showHealingToast('Critical issues remain. Re-building UI...', 'warning');
+          setTimeout(() => window.location.reload(true), 2000);
+        } else {
+          showHealingToast('System restored to healthy state!', 'success');
+        }
+        
+        calculateHealthScore();
+        return true;
+      } catch (e) {
+        console.error('[AI-HEAL] Super-Heal failed:', e);
+        return false;
+      }
+    },
+    
+    enableAutoHealing: function(val) {
+      diagnostics.status.autoHealingEnabled = !!val;
+      console.log('[AI-HEAL] Auto-healing:', val ? 'ENABLED' : 'DISABLED');
+    }
+  };
+
   function attemptAutoHeal(errorObj) {
     var healingAction = {
       id: 'heal_' + Date.now(),
@@ -736,14 +823,139 @@
         timestamp: new Date().toISOString()
       };
       
-      // Use sendBeacon for non-blocking send
+      // Use sendBeacon for non-blocking send with proper content-type for Express
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(CONFIG.DEBUG_ENDPOINT, JSON.stringify(payload));
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon(CONFIG.DEBUG_ENDPOINT, blob);
       }
     } catch(e) {
       // Silent fail
     }
   }
+
+  // ============ PYTHON AI AGENT INTEGRATION ============
+  window.BLACKONN_AGENT = {
+    /**
+     * Get status of the Python AI Agent
+     */
+    getStatus: async function() {
+      try {
+        const resp = await fetch('/api/agent/status');
+        return await resp.json();
+      } catch (e) {
+        return { error: e.message, running: false };
+      }
+    },
+
+    /**
+     * Start the AI Agent (Claude/Gemini powered)
+     * @param {string} mode - 'api', 'monitor', 'fix', 'rebuild'
+     * @param {string} model - 'claude', 'gemini', 'openai'
+     */
+    start: async function(mode, model) {
+      try {
+        showHealingToast('Starting BLACKONN AI Agent...', 'info');
+        const resp = await fetch('/api/agent/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: mode || 'api', model: model || 'claude' })
+        });
+        const result = await resp.json();
+        if (result.success) {
+          showHealingToast('AI Agent started: ' + (mode || 'api') + ' mode', 'success');
+        }
+        return result;
+      } catch (e) {
+        console.error('[AGENT] Failed to start:', e);
+        return { error: e.message };
+      }
+    },
+
+    /**
+     * Stop the AI Agent
+     */
+    stop: async function() {
+      try {
+        const resp = await fetch('/api/agent/stop', { method: 'POST' });
+        return await resp.json();
+      } catch (e) {
+        return { error: e.message };
+      }
+    },
+
+    /**
+     * Trigger AI-powered error scan and fix
+     */
+    fixNow: async function(model) {
+      try {
+        showHealingToast('AI Agent analyzing codebase...', 'info');
+        addToTimeline({ type: 'AI_AGENT_FIX', message: 'Triggered AI-powered fix cycle' });
+        
+        const resp = await fetch('/api/agent/fix', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: model, max_fixes: 10 })
+        });
+        const result = await resp.json();
+        
+        if (result.fixes_applied > 0) {
+          showHealingToast('AI Agent fixed ' + result.fixes_applied + ' issue(s)!', 'success');
+        } else {
+          showHealingToast('AI Agent scan complete. No issues found.', 'success');
+        }
+        
+        return result;
+      } catch (e) {
+        console.error('[AGENT] Fix failed:', e);
+        showHealingToast('AI Agent fix failed: ' + e.message, 'error');
+        return { error: e.message };
+      }
+    },
+
+    /**
+     * Full system rebuild via AI Agent
+     */
+    rebuild: async function() {
+      try {
+        showHealingToast('AI Agent rebuilding system...', 'warning');
+        const resp = await fetch('/api/agent/rebuild', { method: 'POST' });
+        const result = await resp.json();
+        
+        showHealingToast('System rebuilt: ' + (result.total_actions || 0) + ' actions', 'success');
+        return result;
+      } catch (e) {
+        return { error: e.message };
+      }
+    },
+
+    /**
+     * Analyze a specific error with AI
+     */
+    analyze: async function(message, filePath, lineNumber) {
+      try {
+        const resp = await fetch('/api/agent/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, file_path: filePath, line_number: lineNumber })
+        });
+        return await resp.json();
+      } catch (e) {
+        return { error: e.message };
+      }
+    },
+
+    /**
+     * Get fix history
+     */
+    getHistory: async function() {
+      try {
+        const resp = await fetch('/api/agent/history');
+        return await resp.json();
+      } catch (e) {
+        return { error: e.message };
+      }
+    }
+  };
 
   // ============ INITIALIZATION ============
   document.addEventListener('DOMContentLoaded', function() {
@@ -775,12 +987,15 @@
 
     addToTimeline({
       type: 'INIT',
-      message: 'Auto-Debugger v3.0 initialized'
+      message: 'Auto-Debugger v3.0 + AI Agent initialized'
     });
 
     console.log('%c🤖 BLACKONN AI Auto-Debugger v3.0 Active ', 'background: #0f172a; color: #22c55e; padding: 8px 12px; border-radius: 4px; font-weight: bold;');
     console.log('%c📊 Access diagnostics via: window.BLACKONN_DIAGNOSTICS', 'color: #3b82f6;');
     console.log('%c🔧 Access healer API via: window.BLACKONN_HEALER', 'color: #3b82f6;');
+    console.log('%c🧠 Access AI Agent via: window.BLACKONN_AGENT', 'color: #a855f7;');
+    console.log('%c   → BLACKONN_AGENT.start("api", "claude") to activate', 'color: #a855f7;');
+    console.log('%c   → BLACKONN_AGENT.fixNow() to run AI-powered repairs', 'color: #a855f7;');
   });
 
 })();

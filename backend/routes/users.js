@@ -153,8 +153,8 @@ router.post('/:id/change-password',
       return res.status(401).json({ success: false, error: 'Current password is incorrect' });
     }
 
-    // Hash new password with higher cost factor
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    // Hash new password with optimized cost factor for VPS
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     db.users.update(req.params.id, {
       password: hashedPassword,
       passwordChangedAt: new Date().toISOString()
@@ -529,8 +529,8 @@ router.post('/password-resets/direct-reset', authenticate, isAdmin, async (req, 
       return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    // Hash new password with optimized cost factor
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     
     db.users.update(userId, {
       password: hashedPassword,
@@ -1050,7 +1050,11 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
     const orders = db.orders?.findAll()?.filter(o => o.userId === user.id || o.customerEmail === user.email) || [];
     const carts = db.carts.findAll();
     const userCart = carts[user.id] || [];
-    const wishlists = db.wishlists?.findAll()?.filter(w => w.userId === user.id) || [];
+    
+    // Fix: Wishlists are stored as an object with userId as key, not an array to filter
+    const allWishlists = db.wishlists ? db.wishlists.findAll() : {};
+    const userWishlist = allWishlists[user.id] || [];
+    
     const returns = db.returns?.findAll()?.filter(r => r.userId === user.id) || [];
     const exchanges = db.exchanges?.findAll()?.filter(e => e.userId === user.id) || [];
 
@@ -1068,11 +1072,11 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
         addresses: user.addresses || []
       },
       relatedData: {
-        orders: orders.map(o => ({ id: o.id, total: o.total, status: o.status, date: o.createdAt })),
-        cartItems: userCart.length,
-        wishlistItems: wishlists.length,
-        returns: returns.map(r => ({ id: r.id, status: r.status })),
-        exchanges: exchanges.map(e => ({ id: e.id, status: e.status }))
+        orders: orders.map(o => ({ id: o.id || 'N/A', total: o.total || 0, status: o.status || 'unknown', date: o.createdAt || new Date().toISOString() })),
+        cartItems: Array.isArray(userCart) ? userCart.length : 0,
+        wishlistItems: Array.isArray(userWishlist) ? userWishlist.length : 0,
+        returns: returns.map(r => ({ id: r.id || 'N/A', status: r.status || 'unknown' })),
+        exchanges: exchanges.map(e => ({ id: e.id || 'N/A', status: e.status || 'unknown' }))
       },
       deletedAt: new Date().toISOString(),
       deletedBy: 'self',
@@ -1095,6 +1099,12 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
     // Delete user cart
     delete carts[user.id];
     db.carts.replaceAll(carts);
+
+    // Delete user wishlist
+    if (db.wishlists && allWishlists) {
+      delete allWishlists[user.id];
+      db.wishlists.replaceAll(allWishlists);
+    }
 
     // Invalidate all sessions
     const sessions = db.sessions.findAll();

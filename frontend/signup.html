@@ -1014,8 +1014,8 @@
                     password: passwordInput.value
                 };
 
-                // Check if biometric signup was selected
-                const biometricCheckbox = document.getElementById('biometricSignup');
+                // Check if biometric signup was selected - Fix: use correct ID 'enableBiometric'
+                const biometricCheckbox = document.getElementById('enableBiometric');
                 const wantsBiometric = biometricCheckbox && biometricCheckbox.checked;
 
                 // Show loading state
@@ -1037,8 +1037,8 @@
                                 // Small delay to ensure session is fully established
                                 await new Promise(r => setTimeout(r, 500));
                                 
-                                // Register biometric with the user's email
-                                const credential = await window.biometricAuth.register(userData.email);
+                                // Register biometric with the user's email and ID for faster sync
+                                const credential = await window.biometricAuth.register(userData.email, result.user.id);
                                 
                                 if (credential) {
                                     biometricSuccess = true;

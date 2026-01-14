@@ -5465,7 +5465,8 @@
                 });
                 
                 const queriesLink = document.getElementById('queriesMenuLink');
-                const mobileQueriesLink = document.querySelector('.mobile-bottom-nav .nav-item[data-section="queries"]');
+                // Check both desktop sidebar and mobile "more menu" items
+                const mobileQueriesLink = document.querySelector('.mobile-bottom-nav .nav-item[data-section="queries"], .more-menu-item[data-section="queries"]');
                 
                 // Remove existing notification dots
                 const existingDots = document.querySelectorAll('.query-notification-dot');
@@ -6360,7 +6361,8 @@
                     }
                 }
 
-                // Fetch invoice from backend (generates if not exists)
+                // Use absolute API path via global helper for environment compatibility
+                const baseApiUrl = (window.BlackonnAPI?.baseUrl || '') + '/api';
                 const response = await fetch(`/api/tax/invoice/${orderId}`, { 
                     credentials: 'include',
                     headers: {
@@ -7744,7 +7746,7 @@
             }
 
             try {
-                const user = window.blackonnAuth?.user;
+                const user = await window.blackonnAuth.getCurrentUser();
                 if (!user || !user.id) {
                     showToast('User not found. Please login again.', 'error');
                     return;
@@ -8176,13 +8178,11 @@
         // WebAuthn registration
         async function registerWithWebAuthn(user, deviceName) {
             try {
-                // Use the global biometricAuth instance if available, otherwise create new
+                // Use the global biometricAuth instance
                 const bio = window.biometricAuth || new BiometricAuth();
-                if (!window.biometricAuth) {
-                    await bio.init();
-                }
                 
-                const result = await bio.register(user.email);
+                // Pass user.id to skip redundant /auth/me call
+                const result = await bio.register(user.email, user.id);
 
                 if (result?.id) {
                     // The register() function already syncs to server via syncCredentialToServer()
@@ -8712,8 +8712,8 @@
             
             if (!item) return;
             
-            // Redirect to product page to select size and color
-            window.location.href = `products.html?product=${item.productIndex || item.productId}`;
+            // Redirect to product page to select size and color - Use 'id' parameter as expected by products.html
+            window.location.href = `products.html?id=${item.id || item.productId || item.productIndex}`;
         }
 
         // Load wishlist on page load

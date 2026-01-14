@@ -77,8 +77,8 @@ router.post('/register',
       return res.status(400).json({ success: false, error: 'You already have an account with this email. Please login instead.' });
     }
 
-    // Hash password with higher cost factor for security
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // Hash password with optimized cost factor for better VPS performance
+    const hashedPassword = await bcrypt.hash(password, 10);
     console.log(`[Register] Creating user with email: ${email.toLowerCase().trim()}`);
 
     // Create user
@@ -178,6 +178,19 @@ router.post('/login', authLimiter, async (req, res) => {
         success: false, 
         error: attemptsLeft > 0 ? `Invalid password. ${attemptsLeft} attempts remaining.` : 'Account locked for 15 minutes'
       });
+    }
+
+    // Performance Optimization: Check if password hash uses high cost factor (12)
+    // and upgrade to optimized factor (10) for better VPS performance
+    if (user.password.startsWith('$2a$12$')) {
+      try {
+        console.log(`[AUTH] Upgrading password cost factor for ${normalizedEmail} from 12 to 10 for performance`);
+        const upgradedHash = await bcrypt.hash(password, 10);
+        db.users.update(user.id, { password: upgradedHash });
+      } catch (hashError) {
+        console.warn(`[AUTH] Failed to upgrade password hash: ${hashError.message}`);
+        // Non-critical, continue login
+      }
     }
     
     console.log(`[Login] User ${normalizedEmail} logged in successfully`);
@@ -363,7 +376,7 @@ router.post('/logout', authenticate, (req, res) => {
     db.sessions.replaceAll(filtered);
 
     // Clear httpOnly cookie
-    clearAuthCookie(res);
+    clearAuthCookie(res, req);
 
     res.json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
