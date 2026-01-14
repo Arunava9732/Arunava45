@@ -74,7 +74,7 @@ module.exports = {
       name: 'blackonn-agent',
       script: 'backend/ml/blackonn_agent.py',
       interpreter: 'python3',
-      args: ['--mode=api', '--port=5050'],
+      args: '--mode=api --port=5050',
       cwd: __dirname,
       autorestart: true,
       restart_delay: 5000,
