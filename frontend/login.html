@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BLACKONN | Access Your Account</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Login to your BLACKONN account. Access your orders, wishlist, and exclusive deals. New customer? Create an account today.">
+    <meta name="keywords" content="BLACKONN login, customer account, sign in, access orders">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <style>
+        html { background: #eef3f8; }
+        body { background: #eef3f8; }
+        .nav {
+            background: #eef3f8 !important;
+        }
+        .cart-count {
+            display: none !important;
+        }
+        .cart-count.show {
+            display: flex !important;
+        }
+        .logo img {
+            width: 175px;
+            height: 50px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+        }
+
+        .login-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: #000;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        .form-group input:hover:not(:focus) {
+            border-color: #d1d5db;
+            background: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+            background: #fef2f2;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-group.error input {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+            animation: inputShakeAnim 0.4s ease-in-out;
+        }
+
+        @keyframes inputShakeAnim {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-5px); }
+            30%, 60%, 90% { transform: translateX(5px); }
+        }
+
+        .form-group .error-message {
+            display: none;
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .form-group.error .error-message {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input {
+            padding-right: 50px;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none !important;
+            border: none !important;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 20px;
+            padding: 8px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: none !important;
+            border-radius: 8px;
+            box-shadow: none !important;
+            outline: none !important;
+            z-index: 10;
+        }
+
+        .password-toggle-btn:hover,
+        .password-toggle-btn:focus,
+        .password-toggle-btn:active {
+            color: #9ca3af !important;
+            background: none !important;
+            transform: translateY(-50%) !important;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .forgot-password a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #000;
+            transition: width 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #000;
+        }
+
+        .forgot-password a:hover::after {
+            width: 100%;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .login-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: #fff;
+            padding: 0 15px;
+            position: relative;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .signup-link p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .signup-link a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #666;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            color: #000;
+            transform: translateX(-5px);
+        }
+
+        /* Social Login Buttons - Hidden by default until OAuth config loads */
+        .social-login {
+            display: none; /* Hidden by default, shown via JS if OAuth enabled */
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .social-login.oauth-enabled {
+            display: flex;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: #bbb;
+            background: #f8f8f8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .social-btn .social-icon {
+            flex-shrink: 0;
+        }
+
+        .google-btn:hover {
+            border-color: #4285F4;
+        }
+
+        .facebook-btn:hover {
+            border-color: #1877F2;
+        }
+
+        /* Biometric Authentication Button */
+        .biometric-login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .biometric-login-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .biometric-login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .biometric-login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .biometric-login-btn svg {
+            flex-shrink: 0;
+            stroke-width: 2.5;
+        }
+
+        @keyframes biometricPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .biometric-login-btn.authenticating {
+            animation: biometricPulse 1.5s ease-in-out infinite;
+        }
+
+        .biometric-success-message {
+            text-align: center;
+            padding: 12px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 15px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Glass Hamburger Navbar -->
+    <header class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN Logo" title="BLACKONN">
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <div class="nav-icons">
+                    <a href="login.html" class="nav-icon login-icon" id="loginIcon" title="Login">
+                        <i class="ri-user-line"></i>
+                    </a>
+                    <a href="profile.html" class="nav-user" id="navUser" style="display: none;" aria-label="Profile">
+                        <i class="ri-user-line" id="navUserIcon"></i>
+                        <span class="user-name" id="navUserName"></span>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart-icon" id="cartIcon" title="Shopping Cart">
+                        <i class="ri-shopping-cart-line"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+                <button class="hamburger" id="menuBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fullscreen Menu -->
+    <div class="fullscreen-menu" id="fullMenu">
+        <button class="close-menu" id="closeMenu">×</button>
+        <ul>
+            <li><a href="index.html#shop" title="Shop"><i class="ri-shopping-bag-line"></i></a></li>
+            <li id="giftCardMenuItem"><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+            <li><a href="index.html#about" title="About"><i class="ri-information-line"></i></a></li>
+            <li><a href="index.html#contact" title="Contact"><i class="ri-mail-line"></i></a></li>
+            <li><a href="cart.html" title="Cart"><i class="ri-shopping-cart-line"></i></a></li>
+            <li id="menuLoginItem"><a href="login.html" title="Login"><i class="ri-user-line"></i></a></li>
+        </ul>
+    </div>
+
+    <!-- API Client for Full-Stack Mode (Required for header scripts) -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/security.js"></script>
+
+    <script>
+    (async function() {
+      try {
+        const res = await fetch('/api/marketing/feature-visibility');
+        const data = await res.json();
+        if (data.success && !data.features.giftCardsEnabled) {
+          const el = document.getElementById('giftCardMenuItem');
+          if (el) el.style.display = 'none';
+        }
+      } catch(e) {}
+    })();
+    </script>
+
+    <script>
+        // Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const fullMenu = document.getElementById('fullMenu');
+        const closeMenu = document.getElementById('closeMenu');
+
+        menuBtn.addEventListener('click', () => {
+            fullMenu.style.display = 'flex';
+            fullMenu.classList.remove('closing');
+            fullMenu.classList.add('open');
+            menuBtn.classList.add('open');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            fullMenu.classList.remove('open');
+            fullMenu.classList.add('closing');
+            menuBtn.classList.remove('open');
+            setTimeout(() => {
+                fullMenu.style.display = 'none';
+            }, 500);
+        });
+
+        const menuLinks = document.querySelectorAll('.fullscreen-menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullMenu.classList.remove('open');
+                fullMenu.classList.add('closing');
+                menuBtn.classList.remove('open');
+                setTimeout(() => {
+                    fullMenu.style.display = 'none';
+                }, 500);
+            });
+        });
+
+        // Hide login icon in menu if user is logged in (check token)
+        async function updateMenuLoginIcon() {
+            const menuLoginItem = document.getElementById('menuLoginItem');
+            if (window.blackonnAuth && window.blackonnAuth.hasToken() && menuLoginItem) {
+                menuLoginItem.style.display = 'none';
+            }
+        }
+        updateMenuLoginIcon();
+
+        // Update cart count from API
+        async function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            
+            // Silently skip if not authenticated
+            if (!window.blackonnAuth || !window.blackonnAuth.hasToken()) {
+                if (cartCount) {
+                    cartCount.textContent = '0';
+                    cartCount.classList.remove('show');
+                }
+                return;
+            }
+
+            try {
+                const cartData = await API.cart.get();
+                const cart = cartData.cart || [];
+                const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+                if (cartCount) {
+                    cartCount.textContent = totalQuantity;
+                    if (totalQuantity > 0) {
+                        cartCount.classList.add('show');
+                    } else {
+                        cartCount.classList.remove('show');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to update cart count:', error);
+                if (cartCount) {
+                    cartCount.textContent = '0';
+                    cartCount.classList.remove('show');
+                }
+            }
+        }
+
+        // Check if user is logged in and redirect (API-based)
+        async function checkUserLogin() {
+            // Quick check for token first
+            if (!window.blackonnAuth || !window.blackonnAuth.hasToken()) {
+                return; // No token, stay on login page
+            }
+            
+            // Verify with server
+            try {
+                const auth = await window.blackonnAuth.isAuthenticated();
+                if (auth.authenticated) {
+                    if (auth.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'profile.html';
+                    }
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+            }
+        }
+        
+        checkUserLogin();
+
+        updateCartCount();
+    </script>
+
+    <main class="login-container animate-fade-up">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>Login to your BLACKONN account</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <span class="error-message">Please enter a valid email</span>
+                </div>
+
+                <div class="form-group password-toggle">
+                    <label for="password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle-btn" id="togglePassword" title="Toggle password visibility">
+                            <i class="ri-eye-line" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <span class="error-message">Password is required</span>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="forgot-password.html">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+            <!-- Biometric Login Button -->
+            <button type="button" class="biometric-login-btn" id="biometricLoginBtn" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a5 5 0 0 0-5 5v3H5v10h14V10h-2V7a5 5 0 0 0-5-5z"/>
+                    <circle cx="12" cy="15" r="1"/>
+                </svg>
+                <span id="biometricLoginText">Login with Face ID</span>
+            </button>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login Buttons -->
+            <div class="social-login">
+                <button type="button" class="social-btn google-btn" id="googleLoginBtn">
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+                <button type="button" class="social-btn facebook-btn" id="facebookLoginBtn">
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Continue with Facebook</span>
+                </button>
+            </div>
+
+            <div class="signup-link">
+                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html"><i class="ri-arrow-left-line"></i> Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- OAuth SDKs disabled for now -->
+
+    <script src="assets/js/oauth-config.js"></script>
+    <script>
+        // Check if user is already logged in (async - API based)
+        (async function() {
+            if (window.blackonnAuth && window.blackonnAuth.hasToken()) {
+                try {
+                    const user = await window.blackonnAuth.getCurrentUser();
+                    if (user) {
+                        // Redirect based on user role
+                        if (user.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'profile.html';
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    // Token invalid, continue to login page
+                }
+            }
+        })();
+
+        // Password toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('ri-eye-line');
+            eyeIcon.classList.toggle('ri-eye-off-line');
+        });
+
+        // Form validation
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+
+        // Enhanced login with auth.js integration
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous errors
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('error');
+            });
+
+            let isValid = true;
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+                emailInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+            // Password validation
+            if (!passwordInput.value.trim()) {
+                passwordInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            if (isValid) {
+                const emailValue = emailInput.value.trim().toLowerCase();
+                const passwordValue = passwordInput.value;
+
+                // Show loading state
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Signing in...';
+                submitBtn.disabled = true;
+
+                try {
+                    const result = await window.blackonnAuth.login(emailValue, passwordValue);
+
+                    if (result.success) {
+                        // Check for redirect parameter
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectTo = urlParams.get('redirect');
+                        
+                        if (redirectTo) {
+                            window.location.href = decodeURIComponent(redirectTo);
+                        } else if (result.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'profile.html';
+                        }
+                    } else {
+                        showLoginError(result.error || 'Login failed. Please try again.');
+
+                        // Add error class to appropriate field
+                        if (result.error && (result.error.includes('not found') || result.error.includes('Account'))) {
+                            emailInput.closest('.form-group').classList.add('error');
+                        } else {
+                            passwordInput.closest('.form-group').classList.add('error');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showLoginError('An error occurred. Please try again.');
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+        
+        // Helper functions
+        function showLoginError(message) {
+            if (typeof showNotification === 'function') {
+                showNotification(message, 'error');
+            } else {
+                console.error(message);
+            }
+        }
+
+        // Wait for OAuth config to load, then setup buttons
+        window.addEventListener('oauth-config-loaded', function() {
+            const googleBtn = document.getElementById('googleLoginBtn');
+            const facebookBtn = document.getElementById('facebookLoginBtn');
+            const socialLoginDiv = document.querySelector('.social-login');
+            const divider = document.querySelector('.divider');
+            
+            // Only show OAuth section if at least one provider is configured
+            if (window.GOOGLE_OAUTH_ENABLED || window.FACEBOOK_OAUTH_ENABLED) {
+                if (socialLoginDiv) socialLoginDiv.classList.add('oauth-enabled');
+                if (divider) divider.style.display = 'block';
+                
+                // Hide individual buttons if their provider is not configured
+                if (!window.GOOGLE_OAUTH_ENABLED && googleBtn) {
+                    googleBtn.style.display = 'none';
+                }
+                if (!window.FACEBOOK_OAUTH_ENABLED && facebookBtn) {
+                    facebookBtn.style.display = 'none';
+                }
+            } else {
+                // Hide divider if no OAuth is configured
+                if (divider) divider.style.display = 'none';
+            }
+        });
+
+        // Initialize Google when SDK is loaded
+        window.addEventListener('google-sdk-loaded', function() {
+            initGoogleAuth();
+        });
+
+        // Initialize Google OAuth
+        function initGoogleAuth() {
+            if (!window.GOOGLE_OAUTH_ENABLED || !window.GOOGLE_CLIENT_ID) return;
+            
+            if (typeof google === 'undefined' || !google.accounts) {
+                // Google SDK not loaded yet, retry after a short delay
+                setTimeout(initGoogleAuth, 500);
+                return;
+            }
+
+            try {
+                google.accounts.id.initialize({
+                    client_id: window.GOOGLE_CLIENT_ID,
+                    callback: handleGoogleResponse,
+                    auto_select: false
+                });
+                console.log('Google Sign-In initialized');
+            } catch (e) {
+                console.error('Google initialization error:', e);
+            }
+        }
+
+        async function handleGoogleResponse(response) {
+            const googleBtn = document.getElementById('googleLoginBtn');
+            const originalText = googleBtn.innerHTML;
+            googleBtn.innerHTML = '<span>Signing in...</span>';
+            googleBtn.disabled = true;
+
+            try {
+                const result = await window.blackonnAuth.googleLogin(response.credential);
+                if (result.success) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectTo = urlParams.get('redirect');
+                    if (redirectTo) {
+                        window.location.href = decodeURIComponent(redirectTo);
+                    } else if (result.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'profile.html';
+                    }
+                } else {
+                    showLoginError(result.error || 'Google login failed');
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                showLoginError('Google login failed. Please try again.');
+            } finally {
+                googleBtn.innerHTML = originalText;
+                googleBtn.disabled = false;
+            }
+        }
+
+        // Google login button click
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            if (!window.GOOGLE_OAUTH_ENABLED) {
+                showLoginError('Google login is not configured. Please contact support.');
+                return;
+            }
+            
+            if (typeof google === 'undefined' || !google.accounts) {
+                showLoginError('Google login is loading. Please try again in a moment.');
+                return;
+            }
+            
+            try {
+                // Try One Tap first
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        // Fallback: Use popup OAuth flow
+                        const tokenClient = google.accounts.oauth2.initTokenClient({
+                            client_id: window.GOOGLE_CLIENT_ID,
+                            scope: 'email profile openid',
+                            callback: async (tokenResponse) => {
+                                if (tokenResponse.access_token) {
+                                    // Use access token to get user info and ID token
+                                    try {
+                                        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                                            headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                                        });
+                                        const userInfo = await userInfoRes.json();
+                                        
+                                        // Send to backend - use access token since we don't have ID token
+                                        const googleBtn = document.getElementById('googleLoginBtn');
+                                        const originalText = googleBtn.innerHTML;
+                                        googleBtn.innerHTML = '<span>Signing in...</span>';
+                                        googleBtn.disabled = true;
+                                        
+                                        try {
+                                            const result = await window.blackonnAuth.apiRequest('/auth/google/token', {
+                                                method: 'POST',
+                                                body: JSON.stringify({ 
+                                                    accessToken: tokenResponse.access_token,
+                                                    userInfo: userInfo
+                                                })
+                                            });
+                                            
+                                            if (result.success) {
+                                                window.blackonnAuth._cachedUser = { ...result.user, loggedIn: true };
+                                                window.blackonnAuth._authChecked = true;
+                                                window.location.href = result.user.role === 'admin' ? 'admin.html' : 'profile.html';
+                                            } else {
+                                                showLoginError(result.error || 'Google login failed');
+                                            }
+                                        } finally {
+                                            googleBtn.innerHTML = originalText;
+                                            googleBtn.disabled = false;
+                                        }
+                                    } catch (e) {
+                                        console.error('Google userinfo error:', e);
+                                        showLoginError('Failed to get Google user info');
+                                    }
+                                }
+                            }
+                        });
+                        tokenClient.requestAccessToken();
+                    }
+                });
+            } catch (e) {
+                console.error('Google login error:', e);
+                showLoginError('Google login failed. Please try again.');
+            }
+        });
+
+        // Initialize Facebook SDK - now handled by oauth-config.js
+        function initFacebookAuth() {
+            // SDK is loaded by oauth-config.js
+            console.log('Facebook auth ready');
+        }
+
+        // Facebook login button click
+        document.getElementById('facebookLoginBtn').addEventListener('click', async () => {
+            if (!window.FACEBOOK_OAUTH_ENABLED) {
+                showLoginError('Facebook login is not configured. Please contact support.');
+                return;
+            }
+            
+            if (typeof FB === 'undefined') {
+                showLoginError('Facebook login is not available. Please try again later.');
+                return;
+            }
+
+            const fbBtn = document.getElementById('facebookLoginBtn');
+            const originalText = fbBtn.innerHTML;
+
+            FB.login(async function(response) {
+                if (response.authResponse) {
+                    fbBtn.innerHTML = '<span>Signing in...</span>';
+                    fbBtn.disabled = true;
+
+                    try {
+                        const result = await window.blackonnAuth.facebookLogin(response.authResponse.accessToken);
+                        if (result.success) {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const redirectTo = urlParams.get('redirect');
+                            if (redirectTo) {
+                                window.location.href = decodeURIComponent(redirectTo);
+                            } else if (result.role === 'admin') {
+                                window.location.href = 'admin.html';
+                            } else {
+                                window.location.href = 'profile.html';
+                            }
+                        } else {
+                            showLoginError(result.error || 'Facebook login failed');
+                        }
+                    } catch (error) {
+                        console.error('Facebook login error:', error);
+                        showLoginError('Facebook login failed. Please try again.');
+                    } finally {
+                        fbBtn.innerHTML = originalText;
+                        fbBtn.disabled = false;
+                    }
+                } else {
+                    // User cancelled login or did not authorize
+                }
+            }, { scope: 'public_profile,email' });
+        });
+    </script>
+
+<!-- Footer-->
+<footer class="footer" id="contact">
+  <div class="logo">
+    <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+    <p style="font-size:16px; line-height:1.6;">
+    Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
+  </div>
+  <div>
+    <h3>The Atelier</h3>
+    <ul>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="products.html">Category</a></li>
+      <li><a href="contact.html">Contact Info</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="size-guide.html">Size Guide</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Regimen</h3>
+    <ul>
+      <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+      <li><a href="payment-policy.html">Payment Policy</a></li>
+      <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="refund-policy.html">Refund Policy</a></li>
+      <li><a href="return-policy.html">Return Policy</a></li>
+      <li><a href="shipping.html">Shipping & Delivery</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Contact Us</h3>
+    <div class="socials">
+      <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+        <i class="ri-facebook-fill"></i>
+      </a>
+      <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="ri-instagram-fill"></i>
+      </a>
+      <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <i class="ri-whatsapp-fill"></i>
+      </a>
+    </div>
+    
+    <h3 style="margin-top: 25px;">Newsletter</h3>
+    <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+      <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+    </form>
+  </div>
+</footer>
+
+<div class="bottom">
+  © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+</div>
+
+<style>
+/* Login page specific styles */
+@media (max-width: 768px) {
+  .login-box {
+    padding: 40px 25px !important;
+  }
+  .login-header h1 {
+    font-size: 26px !important;
+  }
+}
+@media (max-width: 480px) {
+  .login-box {
+    padding: 30px 20px !important;
+  }
+  .login-header h1 {
+    font-size: 22px !important;
+  }
+}
+</style>
+
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
+
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+    
+    <script src="assets/js/console-block.js"></script>
+    <script src="assets/js/auto-debugger.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
+    <script src="assets/js/analytics.js"></script>
+
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Biometric Authentication Setup for Login -->
+    <script>
+        (async function initBiometricLogin() {
+            // Wait for BiometricAuth to be available
+            if (!window.biometricAuth) {
+                console.warn('BiometricAuth not available');
+                return;
+            }
+
+            const biometricBtn = document.getElementById('biometricLoginBtn');
+            const biometricText = document.getElementById('biometricLoginText');
+            const emailInput = document.getElementById('email');
+
+            // Check if biometric is supported
+            const isSupported = await window.biometricAuth.checkSupport();
+            if (!isSupported) {
+                console.log('Biometric authentication not supported on this device');
+                return;
+            }
+
+            // Detect available authenticators
+            await window.biometricAuth.detectAuthenticators();
+
+            // Determine the best available method and update button text
+            const supportedTypes = window.biometricAuth.supportedTypes;
+            const userAgent = navigator.userAgent.toLowerCase();
+            let biometricMethod = 'Biometric';
+            
+            if (supportedTypes.faceID?.available) {
+                biometricMethod = 'Face ID';
+            } else if (supportedTypes.touchID?.available) {
+                biometricMethod = 'Touch ID';
+            } else if (supportedTypes.fingerprint?.available) {
+                if (userAgent.includes('windows')) {
+                    biometricMethod = 'Biometric';
+                } else {
+                    biometricMethod = 'Fingerprint';
+                }
+            }
+
+            biometricText.textContent = `Login with ${biometricMethod}`;
+            biometricBtn.style.display = 'flex';
+
+            // Check if user has any stored biometric credentials
+            const hasCredentials = window.biometricAuth.registeredCredentials.size > 0;
+            
+            // Biometric login button click handler
+            biometricBtn.addEventListener('click', async () => {
+                biometricBtn.disabled = true;
+                biometricBtn.classList.add('authenticating');
+                const originalText = biometricText.textContent;
+                biometricText.textContent = `Authenticating with ${biometricMethod}...`;
+
+                try {
+                    // Get username from email input if provided
+                    const username = emailInput.value.trim() || null;
+                    
+                    // Attempt biometric authentication
+                    const result = await window.biometricAuth.authenticate(username);
+
+                    if (result && result.success) {
+                        biometricText.textContent = `✓ Authenticated!`;
+                        
+                        // Auto-login with the authenticated user
+                        if (result.username) {
+                            // Fill the email field
+                            emailInput.value = result.username;
+                            
+                            // Verify with the server and perform actual login
+                            try {
+                                // Check if user exists and get their info via API
+                                const verifyResponse = await fetch('/api/auth/biometric-login', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    credentials: 'include',
+                                    body: JSON.stringify({ 
+                                        email: result.username,
+                                        credentialId: result.credentialId,
+                                        biometricAuth: true
+                                    })
+                                });
+                                
+                                const verifyResult = await verifyResponse.json();
+                                
+                                if (verifyResult.success) {
+                                    // Store user data in auth
+                                    if (window.blackonnAuth) {
+                                        window.blackonnAuth._cachedUser = { ...verifyResult.user, loggedIn: true };
+                                        window.blackonnAuth._authChecked = true;
+                                    }
+                                    
+                                    // Redirect based on role
+                                    const urlParams = new URLSearchParams(window.location.search);
+                                    const redirectTo = urlParams.get('redirect');
+                                    
+                                    setTimeout(() => {
+                                        if (redirectTo) {
+                                            window.location.href = decodeURIComponent(redirectTo);
+                                        } else if (verifyResult.user.role === 'admin') {
+                                            window.location.href = 'admin.html';
+                                        } else {
+                                            window.location.href = 'profile.html';
+                                        }
+                                    }, 500);
+                                } else {
+                                    // Server verification failed, may need re-auth
+                                    if (verifyResult.resetByAdmin) {
+                                        if (typeof showNotification === 'function') showNotification('Your biometric was reset by admin. Please login with password to re-register.', 'warning');
+                                        // Focus on password field
+                                        const passwordInput = document.getElementById('password');
+                                        if (passwordInput) passwordInput.focus();
+                                    } else if (verifyResult.requiresReauth) {
+                                        if (typeof showNotification === 'function') showNotification('Biometric reset required. Please login with password first.', 'warning');
+                                    } else if (verifyResult.noCredentials || verifyResult.requiresPasswordLogin) {
+                                        if (typeof showNotification === 'function') showNotification('Biometric not registered on server. Please login with password first, then set up biometric in your profile.', 'warning');
+                                        // Clear the local credential as it's not on server
+                                        if (window.biometricAuth && result.username) {
+                                            window.biometricAuth.registeredCredentials.delete(result.credentialId);
+                                            window.biometricAuth.saveCredentials();
+                                        }
+                                        const passwordInput = document.getElementById('password');
+                                        if (passwordInput) passwordInput.focus();
+                                    } else {
+                                        if (typeof showNotification === 'function') showNotification(verifyResult.error || 'Biometric login failed. Please try password login.', 'error');
+                                    }
+                                    biometricText.textContent = originalText;
+                                }
+                            } catch (apiError) {
+                                console.error('Biometric login API error:', apiError);
+                                // Fallback: redirect to profile if API fails
+                                const urlParams = new URLSearchParams(window.location.search);
+                                const redirectTo = urlParams.get('redirect');
+                                
+                                setTimeout(() => {
+                                    if (redirectTo) {
+                                        window.location.href = decodeURIComponent(redirectTo);
+                                    } else {
+                                        window.location.href = 'profile.html';
+                                    }
+                                }, 500);
+                            }
+                        } else {
+                            biometricText.textContent = originalText;
+                            if (typeof showNotification === 'function') showNotification('No username associated with this biometric credential', 'warning');
+                        }
+                    } else {
+                        // Authentication failed or was cancelled
+                        biometricText.textContent = originalText;
+                    }
+                } catch (error) {
+                    console.error('Biometric authentication error:', error);
+                    biometricText.textContent = originalText;
+                } finally {
+                    setTimeout(() => {
+                        biometricBtn.disabled = false;
+                        biometricBtn.classList.remove('authenticating');
+                    }, 1000);
+                }
+            });
+
+            // Auto-trigger biometric if user has registered credentials and no email is filled
+            if (hasCredentials && !emailInput.value.trim()) {
+                // Show a subtle hint that biometric login is available
+                biometricBtn.style.animation = 'biometricPulse 2s ease-in-out 3';
+            }
+
+            console.log(`✓ Biometric login initialized with ${biometricMethod}`);
+        })();
+    </script>
+</body>
+</html>

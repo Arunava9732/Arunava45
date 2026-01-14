@@ -1,0 +1,10 @@
+{
+  "events": [],
+  "blockedIPs": [],
+  "threatLevel": "low",
+  "stats": {
+    "blocked": 0,
+    "threats": 0,
+    "requests": 0
+  }
+}

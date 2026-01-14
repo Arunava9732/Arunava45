@@ -1,0 +1,15 @@
+{
+  "profiles": [],
+  "defaultCosts": {
+    "productCost": 0,
+    "exportPrice": 0,
+    "packagingCost": 0,
+    "thankYouCardCost": 0,
+    "roundStickerCost": 0,
+    "parcelEnvelopeCost": 0,
+    "billPrintingCost": 0,
+    "miscCost": 0,
+    "shippingCharges": 0
+  },
+  "updatedAt": "2026-01-10T16:36:45.033Z"
+}

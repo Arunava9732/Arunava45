@@ -1,0 +1,378 @@
+[2026-01-06T14:58:38.315Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T14:59:39.497Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:02:40.780Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:03:42.224Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:04:43.415Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:06:16.067Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:07:17.329Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:11:18.365Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:14:20.023Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:15:21.318Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:16:04.758Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:21:05.787Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:25:06.808Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:27:07.896Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:30:09.399Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:32:10.461Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:33:11.641Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:34:12.726Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:35:13.933Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:36:14.919Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:39:15.895Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:42:17.246Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:43:18.702Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:45:20.291Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:46:22.163Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:47:23.255Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:50:24.264Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T15:51:25.298Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:45:33.912Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:45:36.954Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:45:39.906Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:46:36.422Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:46:42.098Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:46:49.525Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:51:10.828Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:51:20.753Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:54:32.208Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:55:10.266Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:56:11.350Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:57:06.940Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:57:14.676Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:57:49.757Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T16:59:58.422Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in production mode
+[2026-01-06T17:04:40.965Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T17:06:07.447Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T17:12:23.802Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:17:12.180Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:17:53.330Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:18:54.804Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:20:20.303Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:20:35.842Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:21:01.257Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:23:03.626Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-06T19:32:36.375Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.11:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode

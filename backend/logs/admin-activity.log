@@ -1,0 +1,6 @@
+[2026-01-04T12:38:54.987Z] [ADMIN] [admin] [CREATE_PRODUCT] {"productId":"prod-7ddc82b9","name":"Oversize T-shirt"}
+[2026-01-10T15:10:43.388Z] [ADMIN] [admin] [CREATE_PRODUCT] {"productId":"prod-70d951b6","name":"Oversize T-shirt"}
+[2026-01-11T14:06:09.385Z] [ADMIN] [admin] [CREATE_PRODUCT] {"productId":"prod-2400da9f","name":"Oversize T-shirt"}
+[2026-01-14T06:23:26.500Z] [ADMIN] [admin] [DELETE_PRODUCT] {"productId":"prod-7ddc82b9"}
+[2026-01-14T06:24:37.578Z] [ADMIN] [admin] [DELETE_PRODUCT] {"productId":"prod-2400da9f"}
+[2026-01-14T06:24:45.160Z] [ADMIN] [admin] [DELETE_PRODUCT] {"productId":"prod-70d951b6"}

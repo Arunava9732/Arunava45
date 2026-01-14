@@ -1,0 +1,784 @@
+[
+  {
+    "id": "traffic-2025-12-20",
+    "date": "2025-12-20",
+    "totalVisits": 52,
+    "uniqueVisitors": [
+      "OjoxTW96aWxsYS81"
+    ],
+    "pageViews": {
+      "/login.html": 26,
+      "/products.html": 1,
+      "/cart.html": 1,
+      "/index.html": 6,
+      "/contact.html": 1,
+      "/terms.html": 1,
+      "/privacy-policy.html": 1,
+      "/return-policy.html": 1,
+      "/shipping.html": 1,
+      "/refund-policy.html": 1,
+      "/cancellation-policy.html": 1,
+      "/payment-policy.html": 1,
+      "/": 7,
+      "/signup.html": 1,
+      "/api": 1,
+      "/profile.html": 1
+    },
+    "hourlyVisits": {
+      "20": 13,
+      "21": 4,
+      "22": 12,
+      "23": 9,
+      "00": 14
+    },
+    "devices": {
+      "desktop": 52,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 52
+    },
+    "referrers": {
+      "Direct": 52
+    }
+  },
+  {
+    "id": "traffic-2025-12-21",
+    "date": "2025-12-21",
+    "totalVisits": 30,
+    "uniqueVisitors": [
+      "OjoxTW96aWxsYS81"
+    ],
+    "pageViews": {
+      "/login.html": 7,
+      "/index.html": 7,
+      "/products.html": 13,
+      "/cart.html": 3
+    },
+    "hourlyVisits": {
+      "12": 2,
+      "13": 28
+    },
+    "devices": {
+      "desktop": 30,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 30
+    },
+    "referrers": {
+      "Direct": 30
+    }
+  },
+  {
+    "id": "traffic-2025-12-22",
+    "date": "2025-12-22",
+    "totalVisits": 143,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 32,
+      "/return-policy.html": 2,
+      "/login.html": 41,
+      "/contact.html": 2,
+      "/api": 1,
+      "/signup.html": 2,
+      "/index.html": 27,
+      "/products.html": 12,
+      "/profile.html": 21,
+      "/cart.html": 3
+    },
+    "hourlyVisits": {
+      "18": 5,
+      "19": 26,
+      "20": 42,
+      "21": 16,
+      "22": 54
+    },
+    "devices": {
+      "desktop": 143,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 143
+    },
+    "referrers": {
+      "Direct": 143
+    }
+  },
+  {
+    "id": "traffic-2025-12-23",
+    "date": "2025-12-23",
+    "totalVisits": 189,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 21,
+      "/login.html": 51,
+      "/profile.html": 49,
+      "/index.html": 23,
+      "/cart.html": 10,
+      "/products.html": 22,
+      "/checkout.html": 13
+    },
+    "hourlyVisits": {
+      "18": 16,
+      "19": 79,
+      "20": 60,
+      "21": 25,
+      "22": 9
+    },
+    "devices": {
+      "desktop": 189,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 189
+    },
+    "referrers": {
+      "Direct": 189
+    }
+  },
+  {
+    "id": "traffic-2025-12-24",
+    "date": "2025-12-24",
+    "totalVisits": 99,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 3,
+      "/login.html": 23,
+      "/profile.html": 21,
+      "/index.html": 20,
+      "/products.html": 7,
+      "/checkout.html": 16,
+      "/cart.html": 5,
+      "/contact.html": 2,
+      "/signup.html": 1,
+      "/return-policy.html": 1
+    },
+    "hourlyVisits": {
+      "17": 6,
+      "18": 38,
+      "19": 4,
+      "20": 10,
+      "21": 41
+    },
+    "devices": {
+      "desktop": 99,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 99
+    },
+    "referrers": {
+      "Direct": 99
+    }
+  },
+  {
+    "id": "traffic-2025-12-25",
+    "date": "2025-12-25",
+    "totalVisits": 49,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 1,
+      "/login.html": 9,
+      "/profile.html": 19,
+      "/index.html": 6,
+      "/products.html": 10,
+      "/cart.html": 1,
+      "/checkout.html": 2,
+      "/contact.html": 1
+    },
+    "hourlyVisits": {
+      "14": 46,
+      "15": 3
+    },
+    "devices": {
+      "desktop": 49,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 49
+    },
+    "referrers": {
+      "Direct": 49
+    }
+  },
+  {
+    "id": "traffic-2025-12-27",
+    "date": "2025-12-27",
+    "totalVisits": 31,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 4,
+      "/products.html": 5,
+      "/checkout.html": 2,
+      "/login.html": 7,
+      "/cart.html": 3,
+      "/index.html": 6,
+      "/profile.html": 3,
+      "/signup.html": 1
+    },
+    "hourlyVisits": {
+      "18": 28,
+      "19": 3
+    },
+    "devices": {
+      "desktop": 31,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 31
+    },
+    "referrers": {
+      "Direct": 31
+    }
+  },
+  {
+    "id": "traffic-2025-12-28",
+    "date": "2025-12-28",
+    "totalVisits": 21,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 3,
+      "/login.html": 8,
+      "/index.html": 10
+    },
+    "hourlyVisits": {
+      "11": 10,
+      "12": 10,
+      "15": 1
+    },
+    "devices": {
+      "desktop": 21,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 21
+    },
+    "referrers": {
+      "Direct": 21
+    }
+  },
+  {
+    "id": "traffic-2025-12-29",
+    "date": "2025-12-29",
+    "totalVisits": 50,
+    "uniqueVisitors": [
+      "MTkyLjE2OC4xLjRN",
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 2,
+      "/login.html": 12,
+      "/index.html": 22,
+      "/profile.html": 3,
+      "/api": 1,
+      "/cancellation-policy.html": 1,
+      "/return-policy.html": 1,
+      "/contact.html": 1,
+      "/products.html": 5,
+      "/cart.html": 2
+    },
+    "hourlyVisits": {
+      "19": 10,
+      "22": 40
+    },
+    "devices": {
+      "desktop": 50,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 50
+    },
+    "referrers": {
+      "Direct": 50
+    }
+  },
+  {
+    "id": "traffic-2025-12-30",
+    "date": "2025-12-30",
+    "totalVisits": 78,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96",
+      "MTkyLjE2OC4xLjZN"
+    ],
+    "pageViews": {
+      "/": 10,
+      "/products.html": 8,
+      "/index.html": 8,
+      "/login.html": 16,
+      "/checkout.html": 4,
+      "/profile.html": 24,
+      "/cart.html": 2,
+      "/contact.html": 1,
+      "/null": 5
+    },
+    "hourlyVisits": {
+      "18": 14,
+      "19": 3,
+      "20": 13,
+      "21": 2,
+      "22": 41,
+      "23": 5
+    },
+    "devices": {
+      "desktop": 78,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 78
+    },
+    "referrers": {
+      "Direct": 78
+    }
+  },
+  {
+    "id": "traffic-2025-12-31",
+    "date": "2025-12-31",
+    "totalVisits": 111,
+    "uniqueVisitors": [
+      "MTkyLjE2OC4xLjdN",
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 7,
+      "/login.html": 22,
+      "/index.html": 22,
+      "/profile.html": 28,
+      "/products.html": 11,
+      "/checkout.html": 9,
+      "/cart.html": 4,
+      "/null": 6,
+      "/privacy-policy.html": 1,
+      "/contact.html": 1
+    },
+    "hourlyVisits": {
+      "18": 7,
+      "19": 42,
+      "20": 30,
+      "21": 20,
+      "22": 3,
+      "23": 9
+    },
+    "devices": {
+      "desktop": 111,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 111
+    },
+    "referrers": {
+      "Direct": 111
+    }
+  },
+  {
+    "id": "traffic-2026-01-01",
+    "date": "2026-01-01",
+    "totalVisits": 25,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 3,
+      "/login.html": 4,
+      "/index.html": 16,
+      "/contact.html": 1,
+      "/cart.html": 1
+    },
+    "hourlyVisits": {
+      "18": 20,
+      "19": 4,
+      "20": 1
+    },
+    "devices": {
+      "desktop": 25,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 25
+    },
+    "referrers": {
+      "Direct": 25
+    }
+  },
+  {
+    "id": "traffic-2026-01-04",
+    "date": "2026-01-04",
+    "totalVisits": 141,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/index.html": 59,
+      "/profile.html": 17,
+      "/products.html": 30,
+      "/about.html": 6,
+      "/size-guide.html": 14,
+      "/faq.html": 1,
+      "/": 9,
+      "/cart.html": 2,
+      "/login.html": 3
+    },
+    "hourlyVisits": {
+      "18": 9,
+      "19": 38,
+      "20": 65,
+      "21": 9,
+      "22": 13,
+      "23": 7
+    },
+    "devices": {
+      "desktop": 141,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 141
+    },
+    "referrers": {
+      "Direct": 141
+    }
+  },
+  {
+    "id": "traffic-2026-01-05",
+    "date": "2026-01-05",
+    "totalVisits": 29,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/index.html": 13,
+      "/shipping.html": 3,
+      "/about.html": 1,
+      "/contact.html": 2,
+      "/login.html": 2,
+      "/": 2,
+      "/cancellation-policy.html": 4,
+      "/products.html": 2
+    },
+    "hourlyVisits": {
+      "19": 6,
+      "20": 23
+    },
+    "devices": {
+      "desktop": 29,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 29
+    },
+    "referrers": {
+      "Direct": 29
+    }
+  },
+  {
+    "id": "traffic-2026-01-06",
+    "date": "2026-01-06",
+    "totalVisits": 91,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96"
+    ],
+    "pageViews": {
+      "/": 9,
+      "/login.html": 6,
+      "/index.html": 16,
+      "/products.html": 18,
+      "/profile.html": 26,
+      "/checkout.html": 12,
+      "/cart.html": 4
+    },
+    "hourlyVisits": {
+      "20": 21,
+      "21": 21,
+      "22": 15,
+      "23": 5,
+      "00": 10,
+      "01": 19
+    },
+    "devices": {
+      "desktop": 91,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 91
+    },
+    "referrers": {
+      "Direct": 91
+    }
+  },
+  {
+    "id": "traffic-2026-01-07",
+    "date": "2026-01-07",
+    "totalVisits": 54,
+    "uniqueVisitors": [
+      "MTI3LjAuMC4xTW96",
+      "MTkyLjE2OC4xLjEx",
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 11,
+      "/products.html": 13,
+      "/index.html": 18,
+      "/checkout.html": 3,
+      "/cart.html": 5,
+      "/size-guide.html": 2,
+      "/contact.html": 2
+    },
+    "hourlyVisits": {
+      "0": 16,
+      "19": 10,
+      "20": 28
+    },
+    "devices": {
+      "desktop": 54,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {
+      "Chrome": 28
+    },
+    "referrers": {
+      "Direct": 28
+    }
+  },
+  {
+    "id": "traffic-2026-01-08",
+    "date": "2026-01-08",
+    "totalVisits": 127,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 10,
+      "/products.html": 15,
+      "/checkout.html": 7,
+      "/index.html": 39,
+      "/login.html": 35,
+      "/cart.html": 2,
+      "/cancellation-policy.html": 2,
+      "/contact.html": 1,
+      "/signup.html": 8,
+      "/faq.html": 1,
+      "/privacy-policy.html": 2,
+      "/profile.html": 3,
+      "/forgot-password.html": 1,
+      "/reset-password.html": 1
+    },
+    "hourlyVisits": {
+      "13": 8,
+      "14": 15,
+      "15": 3,
+      "16": 10,
+      "17": 2,
+      "18": 1,
+      "19": 25,
+      "20": 27,
+      "21": 26,
+      "22": 10
+    },
+    "devices": {
+      "desktop": 127,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-09",
+    "date": "2026-01-09",
+    "totalVisits": 85,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 7,
+      "/login.html": 11,
+      "/profile.html": 43,
+      "/signup.html": 1,
+      "/index.html": 12,
+      "/forgot-password.html": 1,
+      "/reset-password.html": 2,
+      "/products.html": 4,
+      "/cart.html": 3,
+      "/checkout.html": 1
+    },
+    "hourlyVisits": {
+      "18": 15,
+      "19": 44,
+      "20": 26
+    },
+    "devices": {
+      "desktop": 85,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-10",
+    "date": "2026-01-10",
+    "totalVisits": 47,
+    "uniqueVisitors": [
+      "3689d020b21d48c7",
+      "e5832c9b9ce1be98"
+    ],
+    "pageViews": {
+      "/": 11,
+      "/login.html": 18,
+      "/profile.html": 10,
+      "/index.html": 5,
+      "/products.html": 3
+    },
+    "hourlyVisits": {
+      "17": 4,
+      "18": 11,
+      "19": 17,
+      "20": 11,
+      "22": 4
+    },
+    "devices": {
+      "desktop": 47,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-11",
+    "date": "2026-01-11",
+    "totalVisits": 40,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 9,
+      "/login.html": 11,
+      "/index.html": 7,
+      "/profile.html": 3,
+      "/products.html": 6,
+      "/checkout.html": 2,
+      "/cart.html": 2
+    },
+    "hourlyVisits": {
+      "11": 6,
+      "13": 13,
+      "19": 17,
+      "23": 4
+    },
+    "devices": {
+      "desktop": 40,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-12",
+    "date": "2026-01-12",
+    "totalVisits": 62,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 5,
+      "/index.html": 19,
+      "/login.html": 3,
+      "/products.html": 33,
+      "/checkout.html": 2
+    },
+    "hourlyVisits": {
+      "19": 2,
+      "20": 19,
+      "21": 18,
+      "22": 23
+    },
+    "devices": {
+      "desktop": 62,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-13",
+    "date": "2026-01-13",
+    "totalVisits": 25,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 4,
+      "/login.html": 8,
+      "/index.html": 2,
+      "/products.html": 2,
+      "/checkout.html": 1,
+      "/cart.html": 2,
+      "/profile.html": 6
+    },
+    "hourlyVisits": {
+      "21": 19,
+      "22": 6
+    },
+    "devices": {
+      "desktop": 25,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  },
+  {
+    "id": "traffic-2026-01-14",
+    "date": "2026-01-14",
+    "totalVisits": 6,
+    "uniqueVisitors": [
+      "3689d020b21d48c7"
+    ],
+    "pageViews": {
+      "/": 3,
+      "/login.html": 1,
+      "/profile.html": 2
+    },
+    "hourlyVisits": {
+      "11": 3,
+      "12": 3
+    },
+    "devices": {
+      "desktop": 6,
+      "mobile": 0,
+      "tablet": 0
+    },
+    "browsers": {},
+    "referrers": {}
+  }
+]

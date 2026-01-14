@@ -1,0 +1,92 @@
+{
+  "models": [],
+  "predictions": [],
+  "trainingData": [
+    {
+      "id": "mk9bndt5",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T05:56:59.177Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9bnkra",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T05:57:08.182Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9bnp7b",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T05:57:13.943Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9bx8ql",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:04:39.165Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9bxx3p",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:05:10.741Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9by7jx",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:05:24.285Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9byeeo",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:05:33.168Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9byoee",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:05:46.118Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9cb9ky",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T06:15:33.442Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    },
+    {
+      "id": "mk9g5lj5",
+      "modelId": "all",
+      "accuracy": 0.847,
+      "timestamp": "2026-01-11T08:03:07.457Z",
+      "trainedBy": "hello@blackonn.com",
+      "recordsUsed": 27
+    }
+  ],
+  "stats": {
+    "accuracy": 0.847,
+    "predictions": 0,
+    "trained": 10,
+    "lastTrained": "2026-01-11T08:03:07.457Z"
+  }
+}

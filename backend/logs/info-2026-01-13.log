@@ -1,0 +1,814 @@
+[2026-01-13T15:43:05.413Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:05.423Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:05.532Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:43:05.590Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:43:05.829Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:05.825Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:11.646Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:11.658Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:11.716Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:43:11.759Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:43:11.842Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:11.846Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:25.327Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:25.374Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:25.383Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:43:25.430Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:43:25.537Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:25.563Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:28.295Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:28.302Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:28.357Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:43:28.397Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:43:28.469Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:28.471Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:33.001Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:33.131Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:43:54.524Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:43:54.568Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:43:54.598Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:43:54.660Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:18.425Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:20.865Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:44:20.948Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:44:21.007Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:44:21.112Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:21.300Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:21.562Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:24.421Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:44:24.486Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:44:24.552Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:44:24.672Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:26.054Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:26.273Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:28.752Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:44:28.809Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:44:28.855Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:44:29.115Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:29.143Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:31.348Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:44:31.397Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:44:31.438Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:44:31.543Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:39.086Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:39.301Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T15:44:41.537Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:44:41.591Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:44:41.631Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:44:41.741Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:44:49.728Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:44:50.185Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:44:50.298Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:44:51.396Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:45:05.023Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:45:05.340Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:45:05.367Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:45:06.416Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:45:11.634Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:45:34.868Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:45:34.912Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:45:34.941Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:45:35.029Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:46:04.943Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:46:29.431Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:46:29.503Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:46:29.544Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:46:29.655Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:46:59.554Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:47:20.127Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:47:20.233Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:47:20.313Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:47:20.553Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:47:50.321Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:47:58.512Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:47:58.602Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:47:58.687Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:47:58.899Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:48:05.996Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:48:06.065Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:48:06.120Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:48:06.348Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:48:36.121Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:49:08.048Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:49:08.130Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:49:08.179Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:49:08.303Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:49:12.626Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:49:12.687Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:49:12.734Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:49:12.831Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:49:17.326Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:20.068Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:49:20.206Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:49:20.297Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:49:20.451Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:20.802Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:49:21.198Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:28.666Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:49:28.776Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:49:28.863Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:49:29.049Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:49:47.479Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:48.131Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:49:48.158Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:56.092Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:49:56.154Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:49:56.208Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:49:56.325Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:49:59.297Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:49:59.608Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:49:59.684Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:50:01.009Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:50:21.025Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:50:21.081Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:50:21.135Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:50:21.271Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:50:29.319Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:50:29.505Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:50:29.815Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:50:43.521Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:50:43.578Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:50:43.655Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:50:43.797Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:50:59.318Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:50:59.342Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:50:59.827Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:13.659Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:51:29.257Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:29.316Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:51:29.826Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:43.672Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:51:59.149Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:59.354Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:51:59.654Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:59.779Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:51:59.817Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:52:13.673Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:52:29.244Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:52:29.331Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:52:29.826Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:52:43.688Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:52:59.253Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:52:59.316Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:52:59.826Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:13.689Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:53:29.249Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:29.316Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:53:29.828Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:43.691Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:53:59.146Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:59.334Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:53:59.534Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:59.650Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:53:59.817Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:54:13.691Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:54:29.274Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:54:29.316Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:54:29.812Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:54:43.706Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:54:59.262Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:54:59.316Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:54:59.828Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:55:13.707Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:55:29.269Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:55:29.318Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:55:29.827Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:55:43.531Z] [INFO] [PERF] Memory: 79MB RSS, 27MB Heap | Connections: 4 | Cache: 6 items
+[2026-01-13T15:55:43.708Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:55:59.182Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:55:59.538Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:55:59.653Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:56:00.127Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:56:00.151Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:56:13.709Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:56:29.293Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:56:30.120Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:56:31.120Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:56:43.708Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:57:13.723Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:57:43.729Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:57:45.516Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:57:59.158Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:57:59.436Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:58:13.740Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:58:21.294Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:58:21.341Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:58:21.379Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:58:21.448Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:58:45.484Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:58:45.514Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:58:46.051Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:58:51.390Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:59:18.279Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:59:18.324Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:59:18.352Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:59:18.407Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:59:45.466Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T15:59:45.485Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:59:45.872Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T15:59:48.359Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T15:59:57.636Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T15:59:57.690Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T15:59:57.739Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T15:59:57.861Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T15:59:59.572Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:00:00.049Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:00:22.140Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:00:22.181Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:00:22.204Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:00:22.260Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:00:45.508Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:00:45.548Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:00:46.251Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:00:46.384Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:00:47.138Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:00:52.207Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:01:22.209Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:01:45.441Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:01:47.809Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:01:47.859Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:01:47.890Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:01:47.959Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:01:59.555Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:00.120Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:12.396Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:02:12.443Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:02:12.479Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:02:12.533Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:02:16.079Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:02:16.130Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:16.518Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:02:16.539Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:16.849Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:17.949Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:18.188Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:02:18.234Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:19.305Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:02:31.017Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:02:31.071Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:02:31.108Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:02:31.188Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:02:36.422Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:02:36.521Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:02:37.072Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:02:39.688Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:02:39.754Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:02:39.802Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:02:39.891Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:02:39.953Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:02:42.427Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:02:42.477Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:02:42.522Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:02:42.595Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:03:12.536Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:03:42.555Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:04:12.559Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:04:41.251Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:04:41.362Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:04:42.575Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:05:12.579Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:05:37.105Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:05:37.640Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:05:40.018Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:05:40.083Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:05:40.140Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:05:40.205Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:05:40.306Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:05:41.846Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:05:41.882Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:05:41.903Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:05:41.961Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:06:11.907Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:06:41.908Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:07:11.918Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:07:41.927Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:08:11.930Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:08:41.946Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:09:11.961Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:09:41.974Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:10:11.990Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:10:41.859Z] [INFO] [PERF] Memory: 68MB RSS, 20MB Heap | Connections: 1 | Cache: 1 items
+[2026-01-13T16:10:42.004Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:10:57.889Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:10:57.931Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:10:57.967Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:10:58.026Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:11:08.406Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:11:08.449Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:11:08.477Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:11:08.546Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:11:38.485Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:12:08.494Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:12:38.509Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:13:08.514Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:13:38.530Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:14:08.533Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:14:38.538Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:15:08.546Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:15:38.547Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:16:08.413Z] [INFO] [PERF] Memory: 67MB RSS, 20MB Heap | Connections: 1 | Cache: 1 items
+[2026-01-13T16:16:08.548Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:16:14.579Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:16:14.610Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:16:14.630Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:16:14.676Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:16:44.635Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:17:14.651Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:17:44.665Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:18:14.666Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:18:44.675Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:19:12.785Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:19:12.816Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:19:12.838Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:19:12.881Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:19:38.335Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:19:38.366Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:19:38.389Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:19:38.440Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:19:57.589Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:19:57.621Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:19:57.641Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:19:57.688Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:20:27.644Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:20:54.431Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:20:54.473Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:20:54.497Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:20:54.545Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:21:48.697Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:21:48.729Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:21:48.754Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:21:48.804Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:22:18.771Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:22:48.784Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:23:18.784Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:23:48.785Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:24:18.790Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:24:48.799Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:25:50.167Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:25:50.200Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:25:50.234Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:25:50.284Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:25:55.531Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:25:55.561Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:25:55.581Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:25:55.625Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:26:05.118Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:26:05.151Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:26:05.174Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:26:05.215Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:26:06.620Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:26:06.667Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:26:06.702Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:26:06.780Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:26:36.706Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:27:06.715Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:27:36.716Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:27:41.490Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:27:41.581Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:28:06.735Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:28:36.735Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:29:06.740Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:29:36.749Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:30:06.763Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:30:32.200Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:30:32.229Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:30:32.249Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:30:32.290Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:31:02.253Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:31:32.268Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:32:02.268Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:32:32.269Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:33:02.284Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:33:32.286Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:34:00.374Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:34:01.949Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:34:01.982Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:34:02.010Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:34:02.066Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:34:22.595Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:34:22.659Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:34:22.712Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:34:22.816Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:34:52.719Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:34:53.647Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:34:55.914Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:34:55.955Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:34:55.984Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:34:56.101Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: errors/track
+[2026-01-13T16:34:56.120Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:34:58.122Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:34:58.152Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:34:58.176Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:34:58.227Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:35:03.347Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:35:03.629Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:35:03.686Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:35:09.817Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:35:28.180Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:35:34.441Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:35:35.126Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:35:36.126Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:35:58.185Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:36:04.443Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:36:05.129Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:36:05.165Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:36:28.186Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:36:34.348Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:36:35.131Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:36:35.164Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:36:58.186Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:37:04.221Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:04.817Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:04.916Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:05.131Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:37:05.178Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:28.187Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:37:34.326Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:35.129Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:37:35.161Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:37:58.188Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:38:04.579Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:38:28.202Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:38:45.143Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:38:45.160Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:38:45.580Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:38:58.213Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:39:04.182Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:39:04.657Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:39:28.222Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:39:45.132Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:39:45.148Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:39:45.507Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:39:58.129Z] [INFO] [PERF] Memory: 81MB RSS, 30MB Heap | Connections: 7 | Cache: 8 items
+[2026-01-13T16:39:58.236Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:40:08.619Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:40:08.646Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:40:09.048Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:40:09.244Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:40:09.561Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:40:28.244Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:40:58.245Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:41:28.258Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:41:58.260Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:42:28.273Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:42:58.284Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:43:28.289Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:43:58.295Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:44:28.296Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:44:58.137Z] [INFO] [PERF] Memory: 83MB RSS, 27MB Heap | Connections: 0 | Cache: 8 items
+[2026-01-13T16:44:58.300Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:45:28.315Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:45:58.321Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:46:28.328Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:46:58.332Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:47:28.332Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:47:58.346Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:48:28.360Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:48:58.372Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:49:28.380Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:49:58.147Z] [INFO] [PERF] Memory: 83MB RSS, 27MB Heap | Connections: 0 | Cache: 8 items
+[2026-01-13T16:49:58.383Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:50:28.384Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:50:58.389Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:51:28.404Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:51:58.408Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:52:28.413Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:52:58.422Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:53:28.422Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:53:58.423Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:54:28.439Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:54:58.155Z] [INFO] [PERF] Memory: 83MB RSS, 27MB Heap | Connections: 0 | Cache: 8 items
+[2026-01-13T16:54:58.439Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:55:15.165Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:55:15.291Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:55:28.439Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:55:58.455Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:56:28.952Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: health
+[2026-01-13T16:56:28.993Z] [INFO] BLACKONN E-Commerce Server Started
+Local:    http://localhost:3000
+Bound to: 0.0.0.0:3000
+External: http://192.168.1.3:3000
+API:      http://localhost:3000/api
+Health:   http://localhost:3000/api/health
+Status:   Running in development mode
+[2026-01-13T16:56:29.025Z] [INFO] 󰒄 WebSocket Server initialized and tied to HTTP server
+[2026-01-13T16:56:29.083Z] [INFO] 󰚩 AI Engines initialized and healthy
+[2026-01-13T16:56:40.687Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:56:41.093Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:56:41.144Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:56:42.374Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:56:59.025Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:57:11.475Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:57:12.154Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: security/scan
+[2026-01-13T16:57:12.217Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: analysis/insights
+[2026-01-13T16:57:29.029Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:57:59.039Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:58:29.040Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:58:59.057Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:59:29.057Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T16:59:59.064Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T17:00:29.070Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T17:00:59.074Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T17:01:28.959Z] [INFO] [PERF] Memory: 74MB RSS, 25MB Heap | Connections: 1 | Cache: 7 items
+[2026-01-13T17:01:29.077Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric
+[2026-01-13T17:01:59.089Z] [INFO] 🚀 [Python Bridge] Running ai_hub.py task: realtime/metric

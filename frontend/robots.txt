@@ -1,0 +1,37 @@
+# BLACKONN - robots.txt
+# https://blackonn.com
+
+User-agent: *
+Allow: /
+
+# Crawl-delay for rate limiting
+Crawl-delay: 1
+
+# Disallow admin and user-specific pages
+Disallow: /admin.html
+Disallow: /profile.html
+Disallow: /checkout.html
+Disallow: /cart.html
+Disallow: /login.html
+Disallow: /signup.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+
+# Disallow API routes
+Disallow: /api/
+
+# Disallow data directory
+Disallow: /data/
+
+# Sitemap location
+Sitemap: https://blackonn.com/sitemap.xml
+
+# Google-specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing-specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1

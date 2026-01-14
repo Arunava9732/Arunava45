@@ -1,0 +1,3 @@
+{"timestamp":"2026-01-07T14:06:36.477Z","type":"IP_BLOCKED","severity":"high","ip":"127.0.0.1","reason":"Suspicious activity threshold exceeded","duration":"3600s","message":"Blocked IP 127.0.0.1: Suspicious activity threshold exceeded"}
+{"timestamp":"2026-01-07T14:07:46.420Z","type":"IP_BLOCKED","severity":"high","ip":"127.0.0.1","reason":"Suspicious activity threshold exceeded","duration":"3600s","message":"Blocked IP 127.0.0.1: Suspicious activity threshold exceeded"}
+{"timestamp":"2026-01-07T14:10:56.185Z","type":"IP_BLOCKED","severity":"high","ip":"192.168.1.11","reason":"Suspicious activity threshold exceeded","duration":"3600s","message":"Blocked IP 192.168.1.11: Suspicious activity threshold exceeded"}

@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "skuManagement": {
+      "enabled": true,
+      "name": "SKU & Barcode Management"
+    },
+    "inventory": {
+      "enabled": true,
+      "name": "Inventory & Stock Management"
+    },
+    "marketing": {
+      "enabled": false,
+      "name": "Marketing & Promotions"
+    },
+    "shipping": {
+      "enabled": false,
+      "name": "Shipping & Logistics"
+    },
+    "tax": {
+      "enabled": false,
+      "name": "Tax & GST Settings"
+    },
+    "giftCards": {
+      "enabled": false,
+      "name": "Gift Cards Management"
+    },
+    "companyTax": {
+      "enabled": false,
+      "name": "Company Tax"
+    },
+    "analytics": {
+      "enabled": true,
+      "name": "Analytics & Reports"
+    },
+    "seo": {
+      "enabled": true,
+      "name": "SEO Settings"
+    },
+    "returns": {
+      "enabled": true,
+      "name": "Returns Management"
+    },
+    "exchanges": {
+      "enabled": true,
+      "name": "Exchanges Management"
+    }
+  },
+  "securitySettings": {
+    "allowDevConsole": true,
+    "rateLimitEnabled": true,
+    "csrfProtection": true,
+    "xssProtection": true
+  },
+  "updatedAt": "2026-01-14T06:27:26.956Z",
+  "storeInfo": {
+    "name": "BLACKONN",
+    "tagline": "Premium Black Streetwear",
+    "email": "hello@blackonn.com",
+    "phone": "+91 9732726750",
+    "address": "Kolkata, West Bengal, India",
+    "currency": "INR",
+    "currencySymbol": "₹",
+    "timezone": "Asia/Kolkata"
+  },
+  "orderSettings": {
+    "orderPrefix": "ORD",
+    "minOrderAmount": 0,
+    "maxOrderItems": 20,
+    "allowGuestCheckout": true,
+    "autoConfirmPayment": false,
+    "returnWindowDays": 7,
+    "exchangeWindowDays": 7
+  },
+  "notificationSettings": {
+    "emailNotifications": true,
+    "smsNotifications": false,
+    "whatsappNotifications": false,
+    "orderConfirmation": true,
+    "shipmentUpdates": true,
+    "deliveryConfirmation": true
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "settings": {
+    "freeShippingThreshold": 999,
+    "defaultShippingRate": 49,
+    "expressShippingRate": 99,
+    "codCharges": 40,
+    "estimatedDaysStandard": "5-7",
+    "estimatedDaysExpress": "2-3",
+    "codEnabled": true,
+    "prepaidEnabled": true,
+    "expressEnabled": true
+  },
+  "couriers": [
+    {
+      "id": "delhivery",
+      "name": "Delhivery",
+      "active": false,
+      "priority": 1,
+      "trackingUrl": "https://www.delhivery.com/track/package/",
+      "apiKey": "",
+      "updatedAt": "2026-01-14T06:27:06.136Z"
+    },
+    {
+      "id": "bluedart",
+      "name": "Blue Dart",
+      "active": false,
+      "priority": 2,
+      "trackingUrl": "https://www.bluedart.com/tracking/",
+      "apiKey": "",
+      "updatedAt": "2026-01-14T06:27:07.871Z"
+    },
+    {
+      "id": "dtdc",
+      "name": "DTDC",
+      "active": false,
+      "priority": 3,
+      "trackingUrl": "https://www.dtdc.in/tracking/",
+      "apiKey": "",
+      "updatedAt": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "id": "ecom",
+      "name": "Ecom Express",
+      "active": false,
+      "priority": 4,
+      "trackingUrl": "https://www.ecomexpress.in/tracking/",
+      "apiKey": "",
+      "updatedAt": "2026-01-09T00:00:00.000Z"
+    },
+    {
+      "id": "xpressbees",
+      "name": "XpressBees",
+      "active": false,
+      "priority": 5,
+      "trackingUrl": "https://www.xpressbees.com/track/",
+      "apiKey": "",
+      "updatedAt": "2026-01-09T00:00:00.000Z"
+    }
+  ],
+  "shippingRates": [
+    {
+      "id": "rate-1",
+      "name": "Standard Shipping",
+      "minWeight": 0,
+      "maxWeight": 500,
+      "rate": 49,
+      "active": true
+    },
+    {
+      "id": "rate-2",
+      "name": "Standard Shipping (500g-1kg)",
+      "minWeight": 500,
+      "maxWeight": 1000,
+      "rate": 69,
+      "active": true
+    },
+    {
+      "id": "rate-3",
+      "name": "Standard Shipping (1kg-2kg)",
+      "minWeight": 1000,
+      "maxWeight": 2000,
+      "rate": 99,
+      "active": true
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone-1",
+      "name": "Metro Cities",
+      "states": [
+        "Delhi",
+        "Maharashtra",
+        "Karnataka",
+        "Tamil Nadu",
+        "Telangana",
+        "West Bengal"
+      ],
+      "deliveryDays": "3-5",
+      "surcharge": 0,
+      "active": true
+    },
+    {
+      "id": "zone-2",
+      "name": "Tier 2 Cities",
+      "states": [
+        "Gujarat",
+        "Rajasthan",
+        "Madhya Pradesh",
+        "Uttar Pradesh",
+        "Punjab",
+        "Haryana"
+      ],
+      "deliveryDays": "5-7",
+      "surcharge": 20,
+      "active": true
+    },
+    {
+      "id": "zone-3",
+      "name": "Remote Areas",
+      "states": [
+        "Jammu & Kashmir",
+        "Himachal Pradesh",
+        "Uttarakhand",
+        "Northeast States"
+      ],
+      "deliveryDays": "7-10",
+      "surcharge": 50,
+      "active": true
+    }
+  ],
+  "pincodes": {
+    "serviceable": [
+      "700001-700156",
+      "400001-400104",
+      "110001-110096",
+      "560001-560110",
+      "500001-500100"
+    ],
+    "nonServiceable": [
+      "793001-793200",
+      "795001-795200"
+    ],
+    "codRestricted": [
+      "190001-190025"
+    ]
+  },
+  "shipments": [],
+  "rtoRecords": []
+}

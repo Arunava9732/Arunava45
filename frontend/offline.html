@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - BLACKONN</title>
+    <meta name="theme-color" content="#0b0b0b">
+    <link rel="icon" href="assets/img/favicon.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0b0b0b 0%, #1a1a2e 100%);
+            color: #fff;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        .offline-card {
+            background: rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 100%;
+        }
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #14b8a6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        p {
+            color: #94a3b8;
+            margin-bottom: 32px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+            color: #fff;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(20, 184, 166, 0.4);
+        }
+        .btn:focus {
+            outline: 2px solid #14b8a6;
+            outline-offset: 2px;
+        }
+        .tips {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tips h3 {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tips ul {
+            list-style: none;
+            text-align: left;
+        }
+        .tips li {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tips li::before {
+            content: '✓';
+            color: #14b8a6;
+            font-weight: bold;
+        }
+        .logo {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">BLACKONN</div>
+    <div class="offline-card" role="alert" aria-live="polite">
+        <div class="icon-wrapper">
+            <span class="icon" aria-hidden="true">📡</span>
+        </div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection. Don't worry, your data is safe!</p>
+        <button class="btn" onclick="location.reload()" aria-label="Retry loading the page">
+            <span>↻</span> Try Again
+        </button>
+        <div class="tips">
+            <h3>Quick Tips</h3>
+            <ul>
+                <li>Check your Wi-Fi or mobile data</li>
+                <li>Try moving to a better signal area</li>
+                <li>Restart your router if needed</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

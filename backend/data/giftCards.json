@@ -1,0 +1,31 @@
+{
+  "giftCards": [
+    {
+      "id": "gc-sample-1",
+      "code": "BLACKONN500",
+      "type": "fixed",
+      "value": 500,
+      "balance": 500,
+      "originalValue": 500,
+      "currency": "INR",
+      "status": "active",
+      "purchaserEmail": "demo@blackonn.com",
+      "recipientEmail": "",
+      "recipientName": "",
+      "message": "Welcome gift card",
+      "expiresAt": "2027-01-09T00:00:00.000Z",
+      "createdAt": "2026-01-09T00:00:00.000Z",
+      "usageHistory": []
+    }
+  ],
+  "transactions": [],
+  "settings": {
+    "enabled": true,
+    "minAmount": 100,
+    "maxAmount": 50000,
+    "defaultExpiryDays": 365,
+    "allowCustomAmount": true,
+    "denominations": [500, 1000, 2000, 5000],
+    "termsAndConditions": "Gift cards are non-refundable and cannot be exchanged for cash. Valid for 1 year from date of purchase."
+  }
+}

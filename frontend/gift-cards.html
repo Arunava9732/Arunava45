@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>Gift Cards - BLACKONN | Premium Black Clothing</title>
+  <meta name="description" content="Give the gift of style with BLACKONN gift cards. Perfect for any occasion. Available in multiple denominations. Instant delivery via email.">
+  <meta name="keywords" content="gift cards, BLACKONN gift card, fashion gift card, clothing gift voucher, buy gift card online">
+  <meta name="author" content="BLACKONN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://blackonn.com/gift-cards.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://blackonn.com/gift-cards.html">
+  <meta property="og:title" content="Gift Cards - BLACKONN | Premium Black Clothing">
+  <meta property="og:description" content="Give the gift of style with BLACKONN gift cards. Available in multiple denominations.">
+  <meta property="og:image" content="assets/img/BLACKONN 004_page-0001.png">
+  <meta property="og:locale" content="en_IN">
+  
+  <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    html, body { background: #eef3f8; }
+    .nav { background: #eef3f8 !important; }
+    .cart-count { display: none !important; }
+    .cart-count.show { display: flex !important; }
+    
+    /* Back Button */
+    .back-button {
+      position: fixed;
+      top: 100px;
+      left: 24px;
+      z-index: 100;
+      background: #fff;
+      color: #0f172a;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .back-button:hover {
+      background: #0f172a;
+      color: #fff;
+      transform: translateX(-5px);
+      box-shadow: 0 8px 30px rgba(15,23,42,0.25);
+    }
+    
+    .back-button i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .back-button:hover i {
+      transform: translateX(-4px);
+    }
+    
+    .gift-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+    
+    .gift-hero {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 30px rgba(251, 191, 36, 0.4); }
+    }
+    
+    .gift-hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+    
+    .gift-hero h1 i {
+      animation: float 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    
+    .gift-hero p {
+      font-size: 1.2rem;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+    
+    .gift-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    
+    .gift-card-item {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      border-radius: 20px;
+      padding: 32px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: fadeInScale 0.6s ease-out backwards;
+    }
+    
+    .gift-card-item:nth-child(1) { animation-delay: 0.1s; }
+    .gift-card-item:nth-child(2) { animation-delay: 0.2s; }
+    .gift-card-item:nth-child(3) { animation-delay: 0.3s; }
+    .gift-card-item:nth-child(4) { animation-delay: 0.4s; }
+    
+    .gift-card-item:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    }
+    
+    .gift-card-item:hover::after {
+      opacity: 1;
+    }
+    
+    .gift-card-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .gift-card-item.selected {
+      outline: 4px solid #fbbf24;
+      outline-offset: 4px;
+      animation: glow 2s ease-in-out infinite;
+    }
+    
+    .gift-card-item::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      pointer-events: none;
+      transition: transform 0.6s ease;
+    }
+    
+    .gift-card-item:hover::before {
+      transform: translate(20%, 20%) scale(1.5);
+    }
+    
+    .gift-card-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .gift-card-logo img {
+      width: 100px;
+      filter: brightness(0) invert(1);
+      transition: transform 0.4s ease;
+    }
+    
+    .gift-card-item:hover .gift-card-logo img {
+      transform: scale(1.1);
+    }
+    
+    .gift-card-logo span {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .gift-card-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+    
+    .gift-card-item:hover .gift-card-value {
+      transform: scale(1.05);
+    }
+    
+    .gift-card-label {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .gift-card-item:hover .gift-card-label {
+      opacity: 1;
+    }
+    
+    /* Custom Amount Section */
+    .custom-amount-section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      animation: fadeInUp 0.8s ease-out 0.3s backwards;
+      transition: all 0.3s ease;
+    }
+    
+    .custom-amount-section:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .custom-amount-section h3 {
+      font-size: 1.3rem;
+      color: #0f172a;
+      margin-bottom: 20px;
+    }
+    
+    .custom-amount-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .custom-amount-row input {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px 20px;
+      font-size: 1.2rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .custom-amount-row input:focus {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 4px rgba(15,23,42,0.15);
+      transform: scale(1.02);
+    }
+    
+    .custom-amount-row span {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    
+    /* Recipient Form */
+    .recipient-section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      transition: all 0.3s ease;
+    }
+    
+    .recipient-section:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .recipient-section h3 {
+      font-size: 1.3rem;
+      color: #0f172a;
+      margin-bottom: 24px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-group label {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    .form-group:hover label {
+      color: #0f172a;
+    }
+    
+    .form-group input, .form-group textarea {
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 4px rgba(15,23,42,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .form-group input:hover, .form-group textarea:hover {
+      border-color: #94a3b8;
+    }
+    
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    /* Purchase Button */
+    .purchase-section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+      transition: all 0.3s ease;
+    }
+    
+    .purchase-section:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    }
+    
+    .purchase-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .purchase-summary .label {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    
+    .purchase-summary .amount {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      transition: all 0.3s ease;
+    }
+    
+    .purchase-summary .amount.updated {
+      animation: pulse 0.5s ease;
+      color: #16a34a;
+    }
+    
+    .purchase-btn {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      padding: 18px 48px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .purchase-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .purchase-btn:hover::before {
+      left: 100%;
+    }
+    
+    .purchase-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 16px 50px rgba(15,23,42,0.4);
+    }
+    
+    .purchase-btn:active {
+      transform: translateY(-2px) scale(1);
+    }
+    
+    .purchase-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .purchase-btn:disabled::before {
+      display: none;
+    }
+    
+    /* Redeem Section */
+    .redeem-section {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 60px;
+      text-align: center;
+      animation: fadeInUp 0.8s ease-out 0.6s backwards;
+      transition: all 0.3s ease;
+    }
+    
+    .redeem-section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(251, 191, 36, 0.3);
+    }
+    
+    .redeem-section h3 {
+      font-size: 1.5rem;
+      color: #92400e;
+      margin-bottom: 16px;
+    }
+    
+    .redeem-section p {
+      color: #78350f;
+      margin-bottom: 24px;
+    }
+    
+    .redeem-form {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .redeem-form input {
+      flex: 1;
+      min-width: 250px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border: 2px solid #f59e0b;
+      border-radius: 10px;
+      outline: none;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .redeem-form button {
+      background: #92400e;
+      color: #fff;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .redeem-form button:hover {
+      background: #78350f;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(146, 64, 14, 0.3);
+    }
+    
+    .redeem-form input {
+      transition: all 0.3s ease;
+    }
+    
+    .redeem-form input:focus {
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+      transform: scale(1.02);
+    }
+    
+    /* Features */
+    .gift-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+    
+    .gift-feature {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+      transition: all 0.4s ease;
+      animation: fadeInUp 0.8s ease-out backwards;
+    }
+    
+    .gift-feature:nth-child(1) { animation-delay: 0.7s; }
+    .gift-feature:nth-child(2) { animation-delay: 0.8s; }
+    .gift-feature:nth-child(3) { animation-delay: 0.9s; }
+    .gift-feature:nth-child(4) { animation-delay: 1.0s; }
+    
+    .gift-feature:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    
+    .gift-feature i {
+      font-size: 2.5rem;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: all 0.4s ease;
+    }
+    
+    .gift-feature:hover i {
+      transform: scale(1.2) rotate(5deg);
+      color: #fbbf24;
+    }
+    
+    .gift-feature h4 {
+      font-size: 1.1rem;
+      color: #0f172a;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+    
+    .gift-feature:hover h4 {
+      color: #1e40af;
+    }
+    
+    .gift-feature p {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    
+    @media (max-width: 768px) {
+      .back-button { top: 80px; left: 12px; padding: 10px 16px; font-size: 0.85rem; }
+      .gift-hero h1 { font-size: 2rem; }
+      .gift-card-value { font-size: 2rem; }
+      .purchase-section { flex-direction: column; text-align: center; }
+      .purchase-btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Back Button -->
+  <a href="index.html" class="back-button">
+    <i class="ri-arrow-left-line"></i> Back to Home
+  </a>
+
+  <!-- Navigation -->
+  <header class="nav">
+    <div class="nav-container">
+      <div class="logo">
+        <a href="index.html">
+          <img src="assets/img/BLACKONN 004_page-0001.png" style="width:175px;height:50px; margin-bottom:15px;" alt="BLACKONN Logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <div class="nav-icons">
+          <a href="login.html" class="nav-icon login-icon" id="loginIcon" title="Login">
+            <i class="ri-user-line"></i>
+          </a>
+          <a href="cart.html" class="nav-icon cart-icon" id="cartIcon" title="Shopping Cart">
+            <i class="ri-shopping-cart-line"></i>
+            <span class="cart-count" id="cartCount">0</span>
+          </a>
+        </div>
+        <button class="hamburger" id="menuBtn" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fullscreen Menu -->
+  <div class="fullscreen-menu" id="fullMenu">
+    <button class="close-menu" id="closeMenu">×</button>
+    <ul>
+      <li><a href="products.html" aria-label="Shop"><i class="ri-shopping-bag-line"></i></a></li>
+      <li><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards" class="active"><i class="ri-gift-line"></i></a></li>
+      <li><a href="index.html#contact" aria-label="Contact"><i class="ri-information-line"></i></a></li>
+      <li><a href="cart.html" title="Shopping Cart"><i class="ri-shopping-cart-line"></i><span class="cart-count" id="menuCartCount">0</span></a></li>
+      <li><a href="login.html" title="Login"><i class="ri-user-line"></i></a></li>
+    </ul>
+  </div>
+
+  <main class="gift-page">
+    <section class="gift-hero">
+      <h1><i class="ri-gift-line"></i> BLACKONN Gift Cards</h1>
+      <p>Give the gift of style. Perfect for birthdays, holidays, or just because. Delivered instantly via email.</p>
+    </section>
+
+    <!-- Gift Card Options -->
+    <section class="gift-cards-grid">
+      <div class="gift-card-item" data-value="500" onclick="selectGiftCard(this, 500)">
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Gift Card</span>
+        </div>
+        <div>
+          <div class="gift-card-value">₹500</div>
+          <div class="gift-card-label">Perfect for accessories</div>
+        </div>
+      </div>
+      
+      <div class="gift-card-item" data-value="1000" onclick="selectGiftCard(this, 1000)">
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Gift Card</span>
+        </div>
+        <div>
+          <div class="gift-card-value">₹1,000</div>
+          <div class="gift-card-label">Best for t-shirts</div>
+        </div>
+      </div>
+      
+      <div class="gift-card-item" data-value="2000" onclick="selectGiftCard(this, 2000)">
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Gift Card</span>
+        </div>
+        <div>
+          <div class="gift-card-value">₹2,000</div>
+          <div class="gift-card-label">Great for hoodies</div>
+        </div>
+      </div>
+      
+      <div class="gift-card-item" data-value="5000" onclick="selectGiftCard(this, 5000)">
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Gift Card</span>
+        </div>
+        <div>
+          <div class="gift-card-value">₹5,000</div>
+          <div class="gift-card-label">Complete wardrobe refresh</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Custom Amount -->
+    <section class="custom-amount-section">
+      <h3><i class="ri-edit-line"></i> Or Enter Custom Amount</h3>
+      <div class="custom-amount-row">
+        <input type="number" id="customAmount" placeholder="Enter amount" min="100" max="50000" oninput="setCustomAmount(this.value)">
+        <span>Min ₹100 - Max ₹50,000</span>
+      </div>
+    </section>
+
+    <!-- Recipient Details -->
+    <section class="recipient-section">
+      <h3><i class="ri-mail-send-line"></i> Recipient Details</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="recipientName">Recipient Name</label>
+          <input type="text" id="recipientName" placeholder="Enter recipient's name" required>
+        </div>
+        <div class="form-group">
+          <label for="recipientEmail">Recipient Email</label>
+          <input type="email" id="recipientEmail" placeholder="Enter recipient's email" required>
+        </div>
+        <div class="form-group">
+          <label for="senderName">Your Name</label>
+          <input type="text" id="senderName" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label for="senderEmail">Your Email</label>
+          <input type="email" id="senderEmail" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group full-width">
+          <label for="giftMessage">Personal Message (Optional)</label>
+          <textarea id="giftMessage" rows="3" placeholder="Add a personal message to your gift card"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Purchase Summary -->
+    <section class="purchase-section">
+      <div class="purchase-summary">
+        <span class="label">Selected Gift Card Value</span>
+        <span class="amount" id="selectedAmount">₹0</span>
+      </div>
+      <button class="purchase-btn" id="purchaseBtn" disabled onclick="purchaseGiftCard()">
+        <i class="ri-secure-payment-line"></i> Purchase Gift Card
+      </button>
+    </section>
+
+    <!-- Redeem Section -->
+    <section class="redeem-section">
+      <h3><i class="ri-coupon-line"></i> Have a Gift Card?</h3>
+      <p>Enter your gift card code at checkout to redeem your balance.</p>
+      <div class="redeem-form">
+        <input type="text" id="redeemCode" placeholder="BLK-XXXX-XXXX">
+        <button onclick="checkBalance()">Check Balance</button>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="gift-features">
+      <div class="gift-feature">
+        <i class="ri-mail-send-line"></i>
+        <h4>Instant Delivery</h4>
+        <p>Gift cards are delivered instantly via email</p>
+      </div>
+      <div class="gift-feature">
+        <i class="ri-calendar-2-line"></i>
+        <h4>Valid for 1 Year</h4>
+        <p>Gift cards are valid for 365 days from purchase</p>
+      </div>
+      <div class="gift-feature">
+        <i class="ri-refresh-line"></i>
+        <h4>No Hidden Fees</h4>
+        <p>Full value is available to spend, no expiry fees</p>
+      </div>
+      <div class="gift-feature">
+        <i class="ri-shield-check-line"></i>
+        <h4>Secure & Safe</h4>
+        <p>Unique codes protect your gift card balance</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="logo">
+      <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+      <p style="font-size:16px; line-height:1.6;">
+      Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
+    </div>
+    <div>
+      <h3>The Atelier</h3>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="products.html">Category</a></li>
+        <li><a href="contact.html">Contact Info</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="products.html">Shop</a></li>
+        <li><a href="size-guide.html">Size Guide</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Regimen</h3>
+      <ul>
+        <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+        <li><a href="payment-policy.html">Payment Policy</a></li>
+        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+        <li><a href="refund-policy.html">Refund Policy</a></li>
+        <li><a href="return-policy.html">Return Policy</a></li>
+        <li><a href="shipping.html">Shipping & Delivery</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Contact Us</h3>
+      <div class="socials">
+        <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="ri-facebook-fill"></i>
+        </a>
+        <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+          <i class="ri-instagram-fill"></i>
+        </a>
+        <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <i class="ri-whatsapp-fill"></i>
+        </a>
+      </div>
+      
+      <h3 style="margin-top: 25px;">Newsletter</h3>
+      <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+      <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+        <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+        <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+      </form>
+    </div>
+  </footer>
+
+  <div class="bottom">
+    © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+  </div>
+
+<script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    // Menu Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const fullMenu = document.getElementById('fullMenu');
+    const closeMenuBtn = document.getElementById('closeMenu');
+
+    menuBtn.addEventListener('click', function() {
+      fullMenu.style.display = 'flex';
+      fullMenu.classList.add('open');
+      menuBtn.classList.add('open');
+    });
+
+    function closeFullMenu() {
+      fullMenu.classList.add('closing');
+      fullMenu.classList.remove('open');
+      menuBtn.classList.remove('open');
+      setTimeout(function() {
+        fullMenu.style.display = 'none';
+        fullMenu.classList.remove('closing');
+      }, 350);
+    }
+
+    closeMenuBtn.addEventListener('click', closeFullMenu);
+    fullMenu.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', closeFullMenu);
+    });
+
+    // Gift Card Selection
+    let selectedValue = 0;
+
+    function selectGiftCard(element, value) {
+      document.querySelectorAll('.gift-card-item').forEach(function(card) {
+        card.classList.remove('selected');
+      });
+      element.classList.add('selected');
+      selectedValue = value;
+      document.getElementById('customAmount').value = '';
+      updatePurchaseButton();
+    }
+
+    function setCustomAmount(value) {
+      var amount = parseInt(value) || 0;
+      if (amount >= 100 && amount <= 50000) {
+        selectedValue = amount;
+        document.querySelectorAll('.gift-card-item').forEach(function(card) {
+          card.classList.remove('selected');
+        });
+      } else {
+        selectedValue = 0;
+      }
+      updatePurchaseButton();
+    }
+
+    function updatePurchaseButton() {
+      var amountDisplay = document.getElementById('selectedAmount');
+      var purchaseBtn = document.getElementById('purchaseBtn');
+      amountDisplay.textContent = '₹' + selectedValue.toLocaleString('en-IN');
+      purchaseBtn.disabled = selectedValue < 100;
+    }
+
+    async function purchaseGiftCard() {
+      var recipientName = document.getElementById('recipientName').value.trim();
+      var recipientEmail = document.getElementById('recipientEmail').value.trim();
+      var senderName = document.getElementById('senderName').value.trim();
+      var senderEmail = document.getElementById('senderEmail').value.trim();
+      var message = document.getElementById('giftMessage').value.trim();
+
+      if (!recipientName || !recipientEmail || !senderEmail) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      if (selectedValue < 100) {
+        alert('Please select a gift card value');
+        return;
+      }
+
+      try {
+        var response = await fetch('/api/gift-cards/purchase', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            value: selectedValue,
+            recipientName: recipientName,
+            recipientEmail: recipientEmail,
+            senderName: senderName,
+            senderEmail: senderEmail,
+            message: message
+          })
+        });
+
+        var data = await response.json();
+        if (data.success) {
+          alert('Gift Card purchased successfully! The recipient will receive an email shortly.');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Failed to purchase gift card');
+        }
+      } catch (error) {
+        console.error('Error purchasing gift card:', error);
+        alert('Failed to process purchase. Please try again.');
+      }
+    }
+
+    async function checkBalance() {
+      var code = document.getElementById('redeemCode').value.trim().toUpperCase();
+      if (!code) {
+        alert('Please enter a gift card code');
+        return;
+      }
+
+      try {
+        var response = await fetch('/api/gift-cards/balance/' + encodeURIComponent(code), {
+          credentials: 'include'
+        });
+        var data = await response.json();
+        if (data.success) {
+          alert('Gift Card Balance: ₹' + data.balance.toLocaleString('en-IN') + '\nValid until: ' + new Date(data.expiresAt).toLocaleDateString('en-IN'));
+        } else {
+          alert(data.error || 'Invalid gift card code');
+        }
+      } catch (error) {
+        console.error('Error checking balance:', error);
+        alert('Failed to check balance. Please try again.');
+      }
+    }
+
+    // Update cart count
+    async function updateCartCount() {
+      try {
+        if (typeof API !== 'undefined' && API.cart) {
+          var cartData = await API.cart.get();
+          var count = cartData.items ? cartData.items.length : 0;
+          document.querySelectorAll('.cart-count').forEach(function(el) {
+            el.textContent = count;
+            el.classList.toggle('show', count > 0);
+          });
+        }
+      } catch (e) {
+        console.log('Cart count update skipped');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCount();
+    });
+  </script>
+
+  <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+  <!-- Real-time & Communication -->
+  <script src="assets/js/realtime-manager.js"></script>
+
+  <!-- Security & Error Tracking -->
+  <script src="assets/js/security-manager.js"></script>
+  <script src="assets/js/error-tracker.js"></script>
+
+  <!-- Machine Learning & Personalization -->
+  <script src="assets/js/ml-engine.js"></script>
+
+  <!-- User Experience -->
+  <script src="assets/js/form-manager.js"></script>
+  <script src="assets/js/image-optimizer.js"></script>
+  <script src="assets/js/i18n-manager.js"></script>
+
+  <!-- Experimentation -->
+  <script src="assets/js/ab-testing.js"></script>
+
+  <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+
+  <script src="assets/js/emotion-ai.js"></script>
+  <script src="assets/js/biometric-auth.js"></script>
+  
+  <!-- Future Tech -->
+  <script src="assets/js/neural-commerce.js"></script>
+
+  <script src="assets/js/advanced-cache.js"></script>
+  <script src="assets/js/state-manager.js"></script>
+  <script src="assets/js/performance-optimizer.js"></script>
+  
+  <!-- Core Scripts -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/ai-analytics.js"></script>
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/console-block.js"></script>
+  <script src="assets/js/auto-debugger.js"></script>
+</body>
+</html>

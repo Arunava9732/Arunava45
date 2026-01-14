@@ -1,0 +1,23 @@
+#===============================================================================
+# BLACKONN - Watchdog Timer (triggers watchdog every minute)
+# 
+# This timer triggers the watchdog service every minute to ensure
+# the server is always live and automatically restarts if down
+#===============================================================================
+
+[Unit]
+Description=Run Blackonn Watchdog Every Minute
+Requires=blackonn-watchdog.service
+
+[Timer]
+# Run every 10 seconds for ultra-fast recovery
+OnUnitActiveSec=10s
+# Also run 10 seconds after boot
+OnBootSec=10s
+# Catch up if timer was missed
+Persistent=true
+# High accuracy for fast response
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - BLACKONN | Our Story & Vision</title>
+    <meta name="description" content="Discover the story behind BLACKONN. Born in Kolkata, we craft premium black streetwear that embodies artistry, quality, and the power of minimalist fashion.">
+    <meta name="keywords" content="BLACKONN about, brand story, streetwear brand India, premium clothing Kolkata, black fashion, minimalist fashion">
+    <meta name="author" content="BLACKONN">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://blackonn.com/about.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://blackonn.com/about.html">
+    <meta property="og:title" content="About Us - BLACKONN | Our Story & Vision">
+    <meta property="og:description" content="Discover the story behind BLACKONN. Premium black streetwear from Kolkata, India.">
+    <meta property="og:image" content="https://blackonn.com/assets/img/BLACKONN 004_page-0001.png">
+    <meta property="og:site_name" content="BLACKONN">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About Us - BLACKONN">
+    <meta name="twitter:description" content="Discover the story behind BLACKONN. Premium black streetwear from Kolkata, India.">
+    <meta name="twitter:image" content="https://blackonn.com/assets/img/BLACKONN 004_page-0001.png">
+    
+    <style>
+        html { background: #ffffff; }
+        body { background: #ffffff; }
+    </style>
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "name": "About BLACKONN",
+        "description": "The story and vision behind BLACKONN premium streetwear brand",
+        "url": "https://blackonn.com/about.html",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "BLACKONN",
+            "description": "Premium black clothing and streetwear brand from Kolkata, India",
+            "foundingLocation": "Kolkata, India",
+            "foundingDate": "2024",
+            "logo": "https://blackonn.com/assets/img/favicon.png",
+            "slogan": "More than fabric — an embodiment of artistry",
+            "sameAs": [
+                "https://www.instagram.com/blackonnindia",
+                "https://www.facebook.com/share/1GhKYo1Bc6/"
+            ]
+        }
+    }
+    </script>
+    <style>
+        .about-page {
+            font-family: 'Lora', serif;
+        }
+
+        /* Hero Section */
+        .about-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0,0,0,0.02) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0,0,0,0.02) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .about-hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-hero h1 {
+            font-size: 4rem;
+            font-weight: 400;
+            color: #000;
+            margin-bottom: 25px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .about-hero .tagline {
+            font-size: 1.3rem;
+            color: #6b7280;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Story Section */
+        .story-section {
+            padding: 100px 8%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .story-content h2 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .story-content p {
+            font-size: 1.1rem;
+            color: #4b5563;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .story-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-image .placeholder {
+            text-align: center;
+            color: #9ca3af;
+            transition: all 0.4s ease;
+        }
+
+        .story-image .placeholder i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+            transition: all 0.4s ease;
+        }
+
+        .story-image:hover .placeholder i {
+            transform: scale(1.1);
+            color: #1a1a1a;
+        }
+
+        .story-section:nth-child(odd) .story-content {
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .story-section:nth-child(odd) .story-image {
+            animation: fadeInRight 1s ease-out;
+        }
+
+        .story-image {
+            transition: all 0.5s ease;
+        }
+
+        .story-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-hero-content {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .about-hero-content h1 {
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .about-hero-content .tagline {
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        /* Values Section - Light Theme */
+        .values-section {
+            padding: 100px 8%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1a1a1a;
+        }
+
+        .values-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .values-header h2 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .values-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #1a1a1a, #4b5563, #1a1a1a);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .value-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #374151 100%);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 1.8rem;
+            transition: all 0.4s ease;
+        }
+
+        .value-card:hover .value-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .value-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .value-card p {
+            color: #6b7280;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            padding: 100px 8%;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .mission-section h2 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+
+        .mission-section p {
+            font-size: 1.2rem;
+            color: #4b5563;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .mission-quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            color: #000;
+            padding: 40px 0;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            margin: 50px 0;
+        }
+
+        /* Vision Section */
+        .vision-section {
+            padding: 100px 8%;
+            background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+        }
+
+        .vision-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .vision-header h2 {
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: #000;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .vision-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .vision-card {
+            padding: 40px 35px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: #000;
+            transition: height 0.4s ease;
+        }
+
+        .vision-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .vision-card:hover::before {
+            height: 100%;
+        }
+
+        .vision-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .vision-card:hover .vision-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .vision-icon i {
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
+        .vision-card h3 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        .vision-card p {
+            color: #6b7280;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 8%;
+            text-align: center;
+            background: #fff;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #374151 100%);
+            color: #fff;
+        }
+
+        .cta-btn.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-btn.primary:hover::before {
+            left: 100%;
+        }
+
+        .cta-btn.primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+
+        .cta-btn.secondary {
+            background: #fff;
+            color: #000;
+            border: 2px solid #1a1a1a;
+        }
+
+        .cta-btn.secondary:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .story-section {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                padding: 60px 5%;
+            }
+
+            .story-section.reverse {
+                direction: ltr;
+            }
+
+            .story-section.reverse > * {
+                direction: ltr;
+            }
+
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-hero .tagline {
+                font-size: 1.1rem;
+            }
+
+            .story-content h2,
+            .values-header h2,
+            .mission-section h2,
+            .cta-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .mission-quote {
+                font-size: 1.3rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body class="about-page">
+    <!-- Navbar -->
+    <header class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/img/BLACKONN 004_page-0001.png" style="width:175px;height:50px;" alt="BLACKONN Logo">
+                </a>
+            </div>
+            <div class="nav-right">
+                <div class="nav-icons">
+                    <a href="login.html" class="nav-icon login-icon" title="Login">
+                        <i class="ri-user-line"></i>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart-icon" title="Shopping Cart">
+                        <i class="ri-shopping-cart-line"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+                <button class="hamburger" id="menuBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fullscreen Menu -->
+    <div class="fullscreen-menu" id="fullMenu">
+        <button class="close-menu" id="closeMenu">×</button>
+        <ul>
+            <li><a href="products.html" aria-label="Shop"><i class="ri-shopping-bag-line"></i></a></li>
+            <li><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+            <li><a href="contact.html" aria-label="Contact"><i class="ri-mail-line"></i></a></li>
+            <li><a href="cart.html" title="Shopping Cart"><i class="ri-shopping-cart-line"></i></a></li>
+            <li><a href="login.html" title="Login"><i class="ri-user-line"></i></a></li>
+        </ul>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <div class="about-hero-content">
+                <h1>More Than Fashion.<br>It's a Statement.</h1>
+                <p class="tagline">Born in the heart of Kolkata, BLACKONN is a celebration of minimalism, quality craftsmanship, and the timeless elegance of black. We believe that what you wear speaks before you do.</p>
+            </div>
+        </section>
+
+        <!-- Our Story -->
+        <section class="story-section">
+            <div class="story-content">
+                <h2>Our Story</h2>
+                <p>BLACKONN was born from a simple yet powerful idea: to create premium clothing that speaks through its simplicity. In a world of fast fashion and fleeting trends, we chose to focus on what truly matters — quality, fit, and the timeless appeal of black.</p>
+                <p>From our studio in Kolkata, we design each piece with meticulous attention to detail. Every stitch, every fabric choice, every silhouette is carefully considered to ensure that when you wear BLACKONN, you're wearing more than just clothes — you're wearing a philosophy.</p>
+            </div>
+            <div class="story-image">
+                <div class="placeholder">
+                    <i class="ri-store-3-line"></i>
+                    <p>BLACKONN Studio<br>Kolkata, India</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="values-section">
+            <div class="values-header">
+                <h2>What We Stand For</h2>
+                <p>The principles that guide everything we create</p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon"><i class="ri-award-line"></i></div>
+                    <h3>Quality First</h3>
+                    <p>We never compromise on materials. Premium fabrics, superior stitching, and finishes that last — because you deserve clothing that stands the test of time.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="ri-palette-line"></i></div>
+                    <h3>Timeless Design</h3>
+                    <p>Trends come and go, but style is eternal. Our designs are crafted to be worn season after season, transcending fleeting fashion cycles.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="ri-heart-line"></i></div>
+                    <h3>Made with Purpose</h3>
+                    <p>Each piece is created with intention and care. We produce responsibly, focusing on quality over quantity to reduce waste.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="ri-user-star-line"></i></div>
+                    <h3>Customer Obsession</h3>
+                    <p>Your satisfaction is our priority. From the moment you browse to long after your purchase, we're here to ensure an exceptional experience.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Quote -->
+        <section class="mission-section">
+            <h2>Our Mission</h2>
+            <p>To redefine streetwear by combining premium quality with accessible pricing. We believe everyone deserves to wear clothing that makes them feel confident, powerful, and authentically themselves.</p>
+            <p class="mission-quote">"Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry."</p>
+            <p>We're not just building a clothing brand. We're building a community of individuals who appreciate the art of dressing well, who understand that true style doesn't need to shout — it simply speaks.</p>
+        </section>
+
+        <!-- Vision & Approach -->
+        <section class="vision-section">
+            <div class="vision-header">
+                <h2>Our Vision & Approach</h2>
+                <p>What sets us apart is not just what we create, but how we create it</p>
+            </div>
+            <div class="vision-grid">
+                <div class="vision-card">
+                    <div class="vision-icon">
+                        <i class="ri-focus-3-line"></i>
+                    </div>
+                    <h3>Minimalist Philosophy</h3>
+                    <p>We believe in the power of less. Every design is stripped to its essence, allowing the quality of craftsmanship and fabric to speak for itself.</p>
+                </div>
+                <div class="vision-card">
+                    <div class="vision-icon">
+                        <i class="ri-hand-heart-line"></i>
+                    </div>
+                    <h3>Artisan Craftsmanship</h3>
+                    <p>Each piece is thoughtfully crafted with attention to every stitch, seam, and detail. We work with skilled artisans who share our passion for perfection.</p>
+                </div>
+                <div class="vision-card">
+                    <div class="vision-icon">
+                        <i class="ri-leaf-line"></i>
+                    </div>
+                    <h3>Sustainable Approach</h3>
+                    <p>Quality over quantity. We create pieces meant to last, reducing waste and encouraging mindful consumption in fashion.</p>
+                </div>
+                <div class="vision-card">
+                    <div class="vision-icon">
+                        <i class="ri-palette-line"></i>
+                    </div>
+                    <h3>Timeless Aesthetic</h3>
+                    <p>We don't chase trends. Our designs are created to remain relevant and stylish for years, becoming staples in your wardrobe.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <h2>Join the BLACKONN Family</h2>
+            <p>Discover why thousands choose BLACKONN for their premium streetwear needs.</p>
+            <div class="cta-buttons">
+                <a href="products.html" class="cta-btn primary">
+                    <i class="ri-shopping-bag-line"></i> Shop Collection
+                </a>
+                <a href="contact.html" class="cta-btn secondary">
+                    <i class="ri-mail-line"></i> Get in Touch
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="logo">
+            <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+            <p style="font-size:16px; line-height:1.6;">
+                Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.
+            </p>
+        </div>
+
+        <div>
+            <h3>The Atelier</h3>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="products.html">Category</a></li>
+                <li><a href="contact.html">Contact Info</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="products.html">Shop</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Regimen</h3>
+            <ul>
+                <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+                <li><a href="payment-policy.html">Payment Policy</a></li>
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="refund-policy.html">Refund Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="shipping.html">Shipping & Delivery</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Contact Us</h3>
+            <div class="socials">
+                <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="ri-facebook-fill"></i>
+                </a>
+                <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="ri-instagram-fill"></i>
+                </a>
+                <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+                    <i class="ri-whatsapp-fill"></i>
+                </a>
+            </div>
+            
+            <h3 style="margin-top: 25px;">Newsletter</h3>
+            <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+            </form>
+        </div>
+    </footer>
+
+    <div class="bottom">
+        © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+
+    <script>
+        // Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const fullMenu = document.getElementById('fullMenu');
+        const closeMenu = document.getElementById('closeMenu');
+
+        menuBtn.addEventListener('click', () => {
+            fullMenu.style.display = 'flex';
+            fullMenu.classList.add('open');
+            menuBtn.classList.add('open');
+        });
+
+        function closeFullMenu() {
+            fullMenu.classList.add('closing');
+            fullMenu.classList.remove('open');
+            menuBtn.classList.remove('open');
+            setTimeout(() => {
+                fullMenu.style.display = 'none';
+                fullMenu.classList.remove('closing');
+            }, 350);
+        }
+
+        closeMenu.addEventListener('click', closeFullMenu);
+        fullMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeFullMenu);
+        });
+    </script>
+
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
+
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+    
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
+    <script src="assets/js/analytics.js"></script>
+    <script src="assets/js/console-block.js"></script>
+    <script src="assets/js/auto-debugger.js"></script>
+</body>
+</html>

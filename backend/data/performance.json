@@ -1,0 +1,10 @@
+{
+  "metrics": [],
+  "scores": {
+    "overall": 92,
+    "lcp": 1.2,
+    "fid": 50,
+    "cls": 0.05
+  },
+  "optimizations": []
+}

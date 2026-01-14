@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - BLACKONN | Join for Exclusive Deals</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Create a BLACKONN account for exclusive deals and updates. Join our community of streetwear enthusiasts. Easy registration with quick checkout.">
+    <meta name="keywords" content="BLACKONN signup, create account, register, join BLACKONN, streetwear community">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <style>
+        html { background: #eef3f8; }
+        body { background: #eef3f8; }
+        .nav {
+            background: #eef3f8 !important;
+        }
+        .cart-count {
+            display: none !important;
+        }
+        .cart-count.show {
+            display: flex !important;
+        }
+        .logo img {
+            width: 175px;
+            height: 50px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Core API & Auth -->
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+
+    <style>
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+        }
+
+        .signup-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .signup-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .signup-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: #000;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        .form-group input:hover:not(:focus) {
+            border-color: #d1d5db;
+            background: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+            background: #fef2f2;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-group.error input {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+            animation: inputShakeAnim 0.4s ease-in-out;
+        }
+
+        .form-group.valid input {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.03) !important;
+        }
+
+        @keyframes inputShakeAnim {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-5px); }
+            30%, 60%, 90% { transform: translateX(5px); }
+        }
+
+        .form-group .error-message {
+            display: none;
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input {
+            padding-right: 50px;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none !important;
+            border: none !important;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 20px;
+            padding: 8px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: none !important;
+            border-radius: 8px;
+            box-shadow: none !important;
+            outline: none !important;
+            z-index: 10;
+        }
+
+        .password-toggle-btn:hover,
+        .password-toggle-btn:focus,
+        .password-toggle-btn:active {
+            color: #9ca3af !important;
+            background: none !important;
+            transform: translateY(-50%) !important;
+        }
+
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.4s ease;
+            border-radius: 3px;
+        }
+
+        .strength-bar-fill.weak { width: 33%; background: linear-gradient(90deg, #ef4444 0%, #f87171 100%); }
+        .strength-bar-fill.medium { width: 66%; background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%); }
+        .strength-bar-fill.strong { width: 100%; background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
+
+        .strength-text {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 6px;
+            color: #6b7280;
+            transition: color 0.3s ease;
+        }
+        .strength-text.weak { color: #ef4444; }
+        .strength-text.medium { color: #f59e0b; }
+        .strength-text.strong { color: #10b981; }
+
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .terms-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #1a1a1a;
+            transition: transform 0.2s ease;
+        }
+
+        .terms-group input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+
+        .terms-group input[type="checkbox"]:checked {
+            animation: checkBounce 0.3s ease;
+        }
+
+        @keyframes checkBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .terms-group label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .terms-group a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .terms-group a::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #000;
+            transition: width 0.3s ease;
+        }
+
+        .terms-group a:hover::after {
+            width: 100%;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .signup-btn:hover::before {
+            left: 100%;
+        }
+
+        .signup-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .signup-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .signup-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .signup-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: #fff;
+            padding: 0 15px;
+            position: relative;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .login-link p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .login-link a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #666;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .back-home a:hover {
+            color: #000;
+            transform: translateX(-5px);
+        }
+
+        /* Social Login Buttons - Hidden by default until OAuth config loads */
+        .social-login {
+            display: none; /* Hidden by default, shown via JS if OAuth enabled */
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .social-login.oauth-enabled {
+            display: flex;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: #bbb;
+            background: #f8f8f8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .social-btn .social-icon {
+            flex-shrink: 0;
+        }
+
+        .google-btn:hover {
+            border-color: #4285F4;
+        }
+
+        .facebook-btn:hover {
+            border-color: #1877F2;
+        }
+
+        /* Biometric Authentication Option */
+        .biometric-signup-option {
+            margin-top: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .biometric-signup-option:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .biometric-signup-option input[type="checkbox"] {
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .biometric-info {
+            flex: 1;
+        }
+
+        .biometric-info-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .biometric-icon {
+            font-size: 20px;
+        }
+
+        .biometric-info-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .biometric-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .biometric-success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .signup-box {
+                padding: 40px 25px;
+            }
+
+            /* Fix biometric section overflow on mobile */
+            .biometric-signup-option {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 14px;
+            }
+
+            .biometric-signup-option input[type="checkbox"] {
+                position: absolute;
+                top: 14px;
+                left: 14px;
+                margin: 0;
+            }
+
+            .biometric-info {
+                padding-left: 32px;
+            }
+
+            .biometric-info-title {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .biometric-badge {
+                margin-left: 0;
+                margin-top: 4px;
+            }
+
+            .biometric-info-desc {
+                font-size: 12px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .biometric-success-badge {
+                padding: 6px 10px;
+                font-size: 12px;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Glass Hamburger Navbar -->
+    <header class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN Logo" title="BLACKONN">
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <div class="nav-icons">
+                    <a href="login.html" class="nav-icon login-icon" id="loginIcon" title="Login">
+                        <i class="ri-user-line"></i>
+                    </a>
+                    <a href="profile.html" class="nav-user" id="navUser" style="display: none;" aria-label="Profile">
+                        <i class="ri-user-line" id="navUserIcon"></i>
+                        <span class="user-name" id="navUserName"></span>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart-icon" id="cartIcon" title="Shopping Cart">
+                        <i class="ri-shopping-cart-line"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+                <button class="hamburger" id="menuBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fullscreen Menu -->
+    <div class="fullscreen-menu" id="fullMenu">
+        <button class="close-menu" id="closeMenu">×</button>
+        <ul>
+            <li><a href="index.html#shop" title="Shop"><i class="ri-shopping-bag-line"></i></a></li>
+            <li id="giftCardMenuItem"><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+            <li><a href="index.html#about" title="About"><i class="ri-information-line"></i></a></li>
+            <li><a href="index.html#contact" title="Contact"><i class="ri-mail-line"></i></a></li>
+            <li><a href="cart.html" title="Cart"><i class="ri-shopping-cart-line"></i></a></li>
+        </ul>
+    </div>
+
+    <script>
+    (async function() {
+      try {
+        const res = await fetch('/api/marketing/feature-visibility');
+        const data = await res.json();
+        if (data.success && !data.features.giftCardsEnabled) {
+          const el = document.getElementById('giftCardMenuItem');
+          if (el) el.style.display = 'none';
+        }
+      } catch(e) {}
+    })();
+    </script>
+
+    <script src="assets/js/security.js"></script>
+    <script src="assets/js/oauth-config.js"></script>
+    <script>
+        // Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const fullMenu = document.getElementById('fullMenu');
+        const closeMenu = document.getElementById('closeMenu');
+
+        menuBtn.addEventListener('click', () => {
+            fullMenu.style.display = 'flex';
+            fullMenu.classList.remove('closing');
+            fullMenu.classList.add('open');
+            menuBtn.classList.add('open');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            fullMenu.classList.remove('open');
+            fullMenu.classList.add('closing');
+            menuBtn.classList.remove('open');
+            setTimeout(() => {
+                fullMenu.style.display = 'none';
+            }, 500);
+        });
+
+        const menuLinks = document.querySelectorAll('.fullscreen-menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullMenu.classList.remove('open');
+                fullMenu.classList.add('closing');
+                menuBtn.classList.remove('open');
+                setTimeout(() => {
+                    fullMenu.style.display = 'none';
+                }, 500);
+            });
+        });
+
+        // Update cart count from API
+        async function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+
+            // Silently skip if not authenticated
+            if (!window.blackonnAuth || !window.blackonnAuth.hasToken()) {
+                if (cartCount) {
+                    cartCount.textContent = '0';
+                    cartCount.classList.remove('show');
+                }
+                return;
+            }
+
+            try {
+                const cartData = await API.cart.get();
+                const cart = cartData.cart || [];
+                const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+                if (cartCount) {
+                    cartCount.textContent = totalQuantity;
+                    if (totalQuantity > 0) {
+                        cartCount.classList.add('show');
+                    } else {
+                        cartCount.classList.remove('show');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to update cart count:', error);
+                if (cartCount) {
+                    cartCount.textContent = '0';
+                    cartCount.classList.remove('show');
+                }
+            }
+        }
+
+        // Check if user is logged in and redirect (API-based)
+        async function checkUserLogin() {
+            if (window.blackonnAuth && window.blackonnAuth.hasToken()) {
+                try {
+                    const user = await window.blackonnAuth.getCurrentUser();
+                    if (user) {
+                        window.location.href = 'profile.html';
+                    }
+                } catch (e) {
+                    // Token invalid, continue to signup page
+                }
+            }
+        }
+        
+        checkUserLogin();
+
+        updateCartCount();
+    </script>
+
+    <main class="signup-container animate-fade-up">
+        <div class="signup-box">
+            <div class="signup-header">
+                <h1>Create Account</h1>
+                <p>Join BLACKONN for exclusive deals and updates</p>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" placeholder="First name" required>
+                        <span class="error-message">First name is required</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
+                        <span class="error-message">Last name is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <span class="error-message">Please enter a valid email</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                    <span class="error-message">Please enter a valid phone number</span>
+                </div>
+
+                <div class="form-group password-toggle">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <button type="button" class="password-toggle-btn" id="togglePassword" title="Toggle password visibility">
+                            <i class="ri-eye-line" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-bar-fill" id="strengthBar"></div>
+                        </div>
+                        <span class="strength-text" id="strengthText"></span>
+                    </div>
+                    <span class="error-message">Password must be at least 8 characters</span>
+                </div>
+
+                <div class="form-group password-toggle">
+                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        <button type="button" class="password-toggle-btn" id="toggleConfirmPassword" title="Toggle password visibility">
+                            <i class="ri-eye-line" id="eyeIcon2"></i>
+                        </button>
+                    </div>
+                    <span class="error-message">Passwords do not match</span>
+                </div>
+
+                <div class="terms-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="privacy-policy.html">Privacy Policy</a> and <a href="return-policy.html">Terms of Service</a></label>
+                </div>
+
+                <!-- Biometric Enrollment Option -->
+                <div class="biometric-signup-option" id="biometricSignupOption" style="display: none;">
+                    <input type="checkbox" id="enableBiometric" name="enableBiometric" checked>
+                    <div class="biometric-info">
+                        <div class="biometric-info-title">
+                            <span class="biometric-icon" id="biometricIcon">🔐</span>
+                            <span id="biometricTitle">Enable Biometric Authentication</span>
+                            <span class="biometric-badge">RECOMMENDED</span>
+                        </div>
+                        <div class="biometric-info-desc" id="biometricDesc">
+                            Secure your account with Face ID, Touch ID, or Fingerprint for quick and passwordless login.
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="signup-btn">Create Account</button>
+            </form>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login Buttons -->
+            <div class="social-login">
+                <button type="button" class="social-btn google-btn" id="googleSignupBtn">
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Sign up with Google</span>
+                </button>
+                <button type="button" class="social-btn facebook-btn" id="facebookSignupBtn">
+                    <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Sign up with Facebook</span>
+                </button>
+            </div>
+
+            <div class="login-link">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html"><i class="ri-arrow-left-line"></i> Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- OAuth SDKs disabled for now -->
+
+    <script>
+        // Password toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('ri-eye-line');
+            eyeIcon.classList.toggle('ri-eye-off-line');
+        });
+
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const eyeIcon2 = document.getElementById('eyeIcon2');
+
+        toggleConfirmPassword.addEventListener('click', () => {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            eyeIcon2.classList.toggle('ri-eye-line');
+            eyeIcon2.classList.toggle('ri-eye-off-line');
+        });
+
+        // Password strength checker
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+            strengthBar.className = 'strength-bar-fill';
+            
+            if (password.length === 0) {
+                strengthText.textContent = '';
+            } else if (strength <= 1) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Weak password';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Medium password';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Strong password';
+            }
+        });
+
+        // Form validation
+        const signupForm = document.getElementById('signupForm');
+        const emailInput = document.getElementById('email');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const phoneInput = document.getElementById('phone');
+        const termsCheckbox = document.getElementById('terms');
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('error');
+            });
+            document.querySelectorAll('.signup-error-message').forEach(msg => msg.remove());
+
+            let isValid = true;
+
+            // First name validation
+            if (!firstNameInput.value.trim() || firstNameInput.value.trim().length < 2) {
+                firstNameInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Last name validation
+            if (!lastNameInput.value.trim() || lastNameInput.value.trim().length < 2) {
+                lastNameInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+                emailInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Phone validation
+            const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
+            const cleanPhone = phoneInput.value.replace(/[\s\-\+\(\)]/g, '');
+            if (!phoneInput.value.trim() || !phoneRegex.test(phoneInput.value) || cleanPhone.length < 10) {
+                phoneInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Password validation - must match backend requirements
+            const password = passwordInput.value;
+            const hasLowercase = /[a-z]/.test(password);
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+            
+            if (password.length < 8 || !hasLowercase || !hasUppercase || !hasNumber || !hasSpecial) {
+                passwordInput.closest('.form-group').classList.add('error');
+                // Show specific error message
+                const errorSpan = passwordInput.closest('.form-group').querySelector('.error-message');
+                if (errorSpan) {
+                    errorSpan.textContent = 'Password must be 8+ characters with uppercase, lowercase, number, and special character';
+                }
+                isValid = false;
+            }
+
+            // Confirm password validation
+            if (confirmPasswordInput.value !== passwordInput.value) {
+                confirmPasswordInput.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            // Terms validation
+            if (!termsCheckbox.checked) {
+                termsCheckbox.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            if (isValid) {
+                const userData = {
+                    name: firstNameInput.value.trim() + ' ' + lastNameInput.value.trim(),
+                    email: emailInput.value.trim().toLowerCase(),
+                    phone: phoneInput.value.trim(),
+                    password: passwordInput.value
+                };
+
+                // Check if biometric signup was selected
+                const biometricCheckbox = document.getElementById('biometricSignup');
+                const wantsBiometric = biometricCheckbox && biometricCheckbox.checked;
+
+                // Show loading state
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Creating account...';
+                submitBtn.disabled = true;
+
+                try {
+                    const result = await window.blackonnAuth.register(userData);
+
+                    if (result.success) {
+                        // If user wants biometric, register it now (after session is created)
+                        let biometricSuccess = false;
+                        if (wantsBiometric && window.biometricAuth && window.biometricAuth.isSupported) {
+                            try {
+                                submitBtn.textContent = 'Setting up biometric...';
+                                
+                                // Small delay to ensure session is fully established
+                                await new Promise(r => setTimeout(r, 500));
+                                
+                                // Register biometric with the user's email
+                                const credential = await window.biometricAuth.register(userData.email);
+                                
+                                if (credential) {
+                                    biometricSuccess = true;
+                                    console.log('✓ Biometric registered during signup');
+                                }
+                            } catch (bioError) {
+                                console.error('Biometric registration error:', bioError);
+                                // Continue with signup success even if biometric fails
+                            }
+                        }
+                        
+                        // Show success message
+                        const signupBox = document.querySelector('.signup-box');
+                        signupBox.innerHTML = `
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="ri-checkbox-circle-fill" style="font-size: 64px; color: #10b981;"></i>
+                                <h2 style="margin-top: 20px;">Account Created!</h2>
+                                ${biometricSuccess ? '<p style="color: #667eea; margin-top: 10px;">✓ Biometric enabled!</p>' : ''}
+                                <p style="color: #666; margin-top: 10px;">Redirecting to your profile...</p>
+                            </div>
+                        `;
+
+                        // Auto redirect after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = 'profile.html';
+                        }, 2000);
+                    } else {
+                        // Check if it's a duplicate email error
+                        if (result.error && (result.error.includes('already') || result.error.includes('email'))) {
+                            showSignupError(result.error + ' <a href="login.html" style="color:#2563eb;text-decoration:underline;">Click here to login</a>');
+                            emailInput.closest('.form-group').classList.add('error');
+                        } else {
+                            showSignupError(result.error || 'Registration failed. Please try again.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    showSignupError('An error occurred. Please try again.');
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+        
+        function showSignupError(message) {
+            if (typeof showNotification === 'function') {
+                showNotification(message, 'error');
+            } else {
+                console.error(message);
+            }
+        }
+
+        // Wait for OAuth config to load, then setup buttons
+        window.addEventListener('oauth-config-loaded', function() {
+            const googleBtn = document.getElementById('googleSignupBtn');
+            const facebookBtn = document.getElementById('facebookSignupBtn');
+            const socialLoginDiv = document.querySelector('.social-login');
+            const divider = document.querySelector('.divider');
+            
+            // Only show OAuth section if at least one provider is configured
+            if (window.GOOGLE_OAUTH_ENABLED || window.FACEBOOK_OAUTH_ENABLED) {
+                if (socialLoginDiv) socialLoginDiv.classList.add('oauth-enabled');
+                if (divider) divider.style.display = 'block';
+                
+                // Hide individual buttons if their provider is not configured
+                if (!window.GOOGLE_OAUTH_ENABLED && googleBtn) {
+                    googleBtn.style.display = 'none';
+                }
+                if (!window.FACEBOOK_OAUTH_ENABLED && facebookBtn) {
+                    facebookBtn.style.display = 'none';
+                }
+            } else {
+                // Hide divider if no OAuth is configured
+                if (divider) divider.style.display = 'none';
+            }
+        });
+
+        // Initialize Google when SDK is loaded
+        window.addEventListener('google-sdk-loaded', function() {
+            initGoogleAuth();
+        });
+
+        // Initialize Google OAuth
+        function initGoogleAuth() {
+            if (!window.GOOGLE_OAUTH_ENABLED || !window.GOOGLE_CLIENT_ID) return;
+            
+            if (typeof google === 'undefined' || !google.accounts) {
+                setTimeout(initGoogleAuth, 500);
+                return;
+            }
+
+            try {
+                google.accounts.id.initialize({
+                    client_id: window.GOOGLE_CLIENT_ID,
+                    callback: handleGoogleResponse,
+                    auto_select: false
+                });
+                console.log('Google Sign-In initialized for signup');
+            } catch (e) {
+                console.error('Google initialization error:', e);
+            }
+        }
+
+        async function handleGoogleResponse(response) {
+            const googleBtn = document.getElementById('googleSignupBtn');
+            const originalText = googleBtn.innerHTML;
+            googleBtn.innerHTML = '<span>Creating account...</span>';
+            googleBtn.disabled = true;
+
+            try {
+                const result = await window.blackonnAuth.googleLogin(response.credential);
+                if (result.success) {
+                    // Show success message
+                    const signupBox = document.querySelector('.signup-box');
+                    signupBox.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="ri-checkbox-circle-fill" style="font-size: 64px; color: #10b981;"></i>
+                            <h2 style="margin-top: 20px;">Account Created!</h2>
+                            <p style="color: #666; margin-top: 10px;">Redirecting to your profile...</p>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 2000);
+                } else {
+                    showSignupError(result.error || 'Google signup failed');
+                }
+            } catch (error) {
+                console.error('Google signup error:', error);
+                showSignupError('Google signup failed. Please try again.');
+            } finally {
+                googleBtn.innerHTML = originalText;
+                googleBtn.disabled = false;
+            }
+        }
+
+        // Google signup button click
+        document.getElementById('googleSignupBtn').addEventListener('click', () => {
+            if (!window.GOOGLE_OAUTH_ENABLED) {
+                showSignupError('Google signup is not configured. Please contact support.');
+                return;
+            }
+            
+            if (typeof google === 'undefined' || !google.accounts) {
+                showSignupError('Google signup is loading. Please try again in a moment.');
+                return;
+            }
+            
+            try {
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        // Fallback: Use popup OAuth flow
+                        const tokenClient = google.accounts.oauth2.initTokenClient({
+                            client_id: window.GOOGLE_CLIENT_ID,
+                            scope: 'email profile openid',
+                            callback: async (tokenResponse) => {
+                                if (tokenResponse.access_token) {
+                                    try {
+                                        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                                            headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                                        });
+                                        const userInfo = await userInfoRes.json();
+                                        
+                                        const googleBtn = document.getElementById('googleSignupBtn');
+                                        const originalText = googleBtn.innerHTML;
+                                        googleBtn.innerHTML = '<span>Creating account...</span>';
+                                        googleBtn.disabled = true;
+                                        
+                                        try {
+                                            const result = await window.blackonnAuth.apiRequest('/auth/google/token', {
+                                                method: 'POST',
+                                                body: JSON.stringify({ 
+                                                    accessToken: tokenResponse.access_token,
+                                                    userInfo: userInfo
+                                                })
+                                            });
+                                            
+                                            if (result.success) {
+                                                window.blackonnAuth._cachedUser = { ...result.user, loggedIn: true };
+                                                window.blackonnAuth._authChecked = true;
+                                                window.location.href = 'profile.html';
+                                            } else {
+                                                showSignupError(result.error || 'Google signup failed');
+                                            }
+                                        } finally {
+                                            googleBtn.innerHTML = originalText;
+                                            googleBtn.disabled = false;
+                                        }
+                                    } catch (e) {
+                                        console.error('Google userinfo error:', e);
+                                        showSignupError('Failed to get Google user info');
+                                    }
+                                }
+                            }
+                        });
+                        tokenClient.requestAccessToken();
+                    }
+                });
+            } catch (e) {
+                console.error('Google signup error:', e);
+                showSignupError('Google signup failed. Please try again.');
+            }
+        });
+
+        // Initialize Facebook SDK - now handled by oauth-config.js
+        function initFacebookAuth() {
+            console.log('Facebook auth ready for signup');
+        }
+
+        // Facebook signup button click
+        document.getElementById('facebookSignupBtn').addEventListener('click', async () => {
+            if (!window.FACEBOOK_OAUTH_ENABLED) {
+                showSignupError('Facebook signup is not configured. Please contact support.');
+                return;
+            }
+            
+            if (typeof FB === 'undefined') {
+                showSignupError('Facebook signup is not available. Please try again later.');
+                return;
+            }
+
+            const fbBtn = document.getElementById('facebookSignupBtn');
+            const originalText = fbBtn.innerHTML;
+
+            FB.login(async function(response) {
+                if (response.authResponse) {
+                    fbBtn.innerHTML = '<span>Creating account...</span>';
+                    fbBtn.disabled = true;
+
+                    try {
+                        const result = await window.blackonnAuth.facebookLogin(response.authResponse.accessToken);
+                        if (result.success) {
+                            const signupBox = document.querySelector('.signup-box');
+                            signupBox.innerHTML = `
+                                <div style="text-align: center; padding: 40px;">
+                                    <i class="ri-checkbox-circle-fill" style="font-size: 64px; color: #10b981;"></i>
+                                    <h2 style="margin-top: 20px;">Account Created!</h2>
+                                    <p style="color: #666; margin-top: 10px;">Redirecting to your profile...</p>
+                                </div>
+                            `;
+                            setTimeout(() => {
+                                window.location.href = 'profile.html';
+                            }, 2000);
+                        } else {
+                            showSignupError(result.error || 'Facebook signup failed');
+                        }
+                    } catch (error) {
+                        console.error('Facebook signup error:', error);
+                        showSignupError('Facebook signup failed. Please try again.');
+                    } finally {
+                        fbBtn.innerHTML = originalText;
+                        fbBtn.disabled = false;
+                    }
+                }
+            }, { scope: 'public_profile,email' });
+        });
+    </script>
+
+<!-- Footer-->
+<footer class="footer" id="contact">
+  <div class="logo">
+    <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+    <p style="font-size:16px; line-height:1.6;">
+    Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.</p>
+  </div>
+  <div>
+    <h3>The Atelier</h3>
+    <ul>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="products.html">Category</a></li>
+      <li><a href="contact.html">Contact Info</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="size-guide.html">Size Guide</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Regimen</h3>
+    <ul>
+      <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+      <li><a href="payment-policy.html">Payment Policy</a></li>
+      <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="refund-policy.html">Refund Policy</a></li>
+      <li><a href="return-policy.html">Return Policy</a></li>
+      <li><a href="shipping.html">Shipping & Delivery</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Contact Us</h3>
+    <div class="socials">
+      <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+        <i class="ri-facebook-fill"></i>
+      </a>
+      <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="ri-instagram-fill"></i>
+      </a>
+      <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <i class="ri-whatsapp-fill"></i>
+      </a>
+    </div>
+    
+    <h3 style="margin-top: 25px;">Newsletter</h3>
+    <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+      <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+    </form>
+  </div>
+</footer>
+
+<div class="bottom">
+  © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+</div>
+
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
+
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+    
+    <script src="assets/js/console-block.js"></script>
+    <script src="assets/js/auto-debugger.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
+    <script src="assets/js/analytics.js"></script>
+
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Biometric Authentication Setup for Signup -->
+    <script>
+        (async function initBiometricSignup() {
+            // Wait for BiometricAuth to be available
+            if (!window.biometricAuth) {
+                console.warn('BiometricAuth not available');
+                return;
+            }
+
+            const biometricOption = document.getElementById('biometricSignupOption');
+            const biometricCheckbox = document.getElementById('enableBiometric');
+            const biometricTitle = document.getElementById('biometricTitle');
+            const biometricDesc = document.getElementById('biometricDesc');
+            const biometricIcon = document.getElementById('biometricIcon');
+            const signupForm = document.getElementById('signupForm');
+            const emailInput = document.getElementById('email');
+
+            // Check if biometric is supported
+            const isSupported = await window.biometricAuth.checkSupport();
+            if (!isSupported) {
+                console.log('Biometric authentication not supported on this device');
+                return;
+            }
+
+            // Detect available authenticators
+            await window.biometricAuth.detectAuthenticators();
+
+            // Determine the best available method and update UI
+            const supportedTypes = window.biometricAuth.supportedTypes;
+            const userAgent = navigator.userAgent.toLowerCase();
+            let biometricMethod = 'Biometric Authentication';
+            let icon = '🔐';
+            
+            if (supportedTypes.faceID?.available) {
+                biometricMethod = 'Face ID';
+                icon = '👤';
+            } else if (supportedTypes.touchID?.available) {
+                biometricMethod = 'Touch ID';
+                icon = '👆';
+            } else if (supportedTypes.fingerprint?.available) {
+                if (userAgent.includes('windows')) {
+                    biometricMethod = 'Biometric';
+                    icon = '🔐';
+                } else {
+                    biometricMethod = 'Fingerprint';
+                    icon = '🖐️';
+                }
+            }
+
+            biometricTitle.textContent = `Enable ${biometricMethod}`;
+
+            biometricDesc.textContent = `Secure your account with ${biometricMethod} for quick and passwordless login.`;
+            biometricIcon.textContent = icon;
+            biometricOption.style.display = 'flex';
+
+            // Biometric is now handled directly in the main form submit handler
+            // No additional listeners needed - the signup form handler takes care of 
+            // registering biometric AFTER the account is created and session is established
+
+            console.log(`✓ Biometric signup option initialized with ${biometricMethod}`);
+        })();
+    </script>
+</body>
+</html>

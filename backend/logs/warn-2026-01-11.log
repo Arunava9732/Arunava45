@@ -1,0 +1,1 @@
+[2026-01-11T08:16:37.675Z] [WARN] 📧 [Email Warning] SMTP credentials missing in .env. Emails will be logged but not sent.

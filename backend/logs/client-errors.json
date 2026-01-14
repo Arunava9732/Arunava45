@@ -1,0 +1,192 @@
+[
+  {
+    "receivedAt": "2026-01-09T15:24:49.032Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:35:16.649Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:35:16.884Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:53:21.141Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:53:21.239Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:53:23.966Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T12:53:26.279Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:06:35.426Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:06:35.600Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:16:48.667Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:34:28.863Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:34:29.192Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:52:25.594Z",
+    "ip": "192.168.1.10",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:52:34.310Z",
+    "ip": "192.168.1.10",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:52:39.170Z",
+    "ip": "192.168.1.10",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T13:52:39.318Z",
+    "ip": "192.168.1.10",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T14:28:47.055Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T14:28:47.342Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T14:28:50.039Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T14:29:31.085Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-10T14:29:33.961Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-11T08:14:39.355Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-11T08:14:39.829Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-11T08:14:39.926Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-11T08:29:30.339Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-11T08:29:30.763Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T15:44:21.562Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T15:44:21.299Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T15:44:29.114Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T15:44:39.082Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T15:44:39.301Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:02:36.421Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:02:36.520Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:02:39.952Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:05:37.103Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:05:40.305Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:34:00.374Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  },
+  {
+    "receivedAt": "2026-01-13T16:34:56.100Z",
+    "ip": "127.0.0.1",
+    "fixApplied": null
+  }
+]

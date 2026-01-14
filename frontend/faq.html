@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - BLACKONN | Frequently Asked Questions</title>
+    <meta name="description" content="Find answers to frequently asked questions about BLACKONN. Learn about shipping, returns, sizing, payment methods, and more.">
+    <meta name="keywords" content="BLACKONN FAQ, frequently asked questions, shipping questions, return policy, sizing help, payment methods">
+    <meta name="author" content="BLACKONN">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://blackonn.com/faq.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://blackonn.com/faq.html">
+    <meta property="og:title" content="FAQ - BLACKONN | Frequently Asked Questions">
+    <meta property="og:description" content="Find answers to common questions about shipping, returns, sizing, and more.">
+    <meta property="og:image" content="https://blackonn.com/assets/img/BLACKONN 004_page-0001.png">
+    <meta property="og:site_name" content="BLACKONN">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FAQ - BLACKONN">
+    <meta name="twitter:description" content="Find answers to common questions about shipping, returns, sizing, and more.">
+    <meta name="twitter:image" content="https://blackonn.com/assets/img/BLACKONN 004_page-0001.png">
+    
+    <style>
+        html { background: #ffffff; }
+        body { background: #ffffff; }
+    </style>
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+    
+    <!-- Structured Data - FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is the shipping time for BLACKONN orders?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We typically ship orders within 2-3 business days. Delivery takes 5-7 business days for most locations in India. Metro cities may receive orders faster in 3-5 business days."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do you offer free shipping?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! We offer free shipping on all orders above ₹999. Orders below this amount have a flat shipping fee of ₹79."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is your return policy?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We accept returns within 7 days of delivery if the product is unused with original tags attached. Items must be in their original packaging."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I choose the right size?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Check our detailed Size Guide page for measurements. Our oversized collection is designed with a relaxed fit - if you prefer a more fitted look, consider sizing down."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What payment methods do you accept?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We accept UPI payments, Credit/Debit cards, Net Banking, and Cash on Delivery (COD). COD is available for most pin codes with a small additional charge."
+                }
+            }
+        ]
+    }
+    </script>
+    <style>
+        .faq-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            min-height: calc(100vh - 200px);
+            font-family: 'Lora', serif;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .faq-header h1 {
+            font-size: 3rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .faq-subtitle {
+            font-size: 1.1rem;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .faq-search {
+            max-width: 500px;
+            margin: 0 auto 50px;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .faq-search input {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.4s ease;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .faq-search input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .faq-search i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .faq-search input:focus + i,
+        .faq-search:focus-within i {
+            color: #1a1a1a;
+        }
+
+        .faq-categories {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .category-btn {
+            padding: 12px 24px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .category-btn:hover::before {
+            left: 100%;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #1a1a1a;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #1a1a1a 0%, #374151 100%);
+            color: #fff;
+            border-color: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+        .faq-section {
+            margin-bottom: 40px;
+        }
+
+        .faq-section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-section-title i {
+            color: #000;
+        }
+
+        .faq-item {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .faq-item:nth-child(1) { animation-delay: 0.1s; }
+        .faq-item:nth-child(2) { animation-delay: 0.15s; }
+        .faq-item:nth-child(3) { animation-delay: 0.2s; }
+        .faq-item:nth-child(4) { animation-delay: 0.25s; }
+        .faq-item:nth-child(5) { animation-delay: 0.3s; }
+
+        .faq-item:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transform: translateX(5px);
+            border-color: #d1d5db;
+        }
+
+        .faq-item.active {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #1a1a1a;
+        }
+
+        .faq-question {
+            padding: 22px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: linear-gradient(90deg, #f8fafc 0%, #fff 100%);
+        }
+
+        .faq-question span {
+            flex: 1;
+            padding-right: 15px;
+            line-height: 1.5;
+        }
+
+        .faq-question i {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            transition: all 0.4s ease;
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+        }
+
+        .faq-item:hover .faq-question i {
+            background: #e5e7eb;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+            color: #fff;
+            background: #1a1a1a;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 25px 20px;
+        }
+
+        .faq-answer p {
+            color: #6b7280;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .faq-answer a {
+            color: #000;
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .help-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-top: 50px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.4s ease;
+        }
+
+        .help-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .help-box h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .help-box p {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .help-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .help-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .help-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .help-btn:hover i {
+            transform: scale(1.2);
+        }
+
+        .help-btn.primary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #374151 100%);
+            color: #fff;
+        }
+
+        .help-btn.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .help-btn.primary:hover::before {
+            left: 100%;
+        }
+
+        .help-btn.primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .help-btn.secondary {
+            background: #fff;
+            color: #1a1a1a;
+            border: 2px solid #e5e7eb;
+        }
+
+        .help-btn.secondary:hover {
+            border-color: #1a1a1a;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .faq-page {
+                padding: 80px 15px 40px;
+            }
+
+            .faq-header h1 {
+                font-size: 2rem;
+            }
+
+            .faq-question {
+                padding: 16px 18px;
+                font-size: 0.95rem;
+            }
+
+            .faq-item.active .faq-answer {
+                padding: 0 18px 18px;
+            }
+
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            .help-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/img/BLACKONN 004_page-0001.png" style="width:175px;height:50px;" alt="BLACKONN Logo">
+                </a>
+            </div>
+            <div class="nav-right">
+                <div class="nav-icons">
+                    <a href="login.html" class="nav-icon login-icon" title="Login">
+                        <i class="ri-user-line"></i>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart-icon" title="Shopping Cart">
+                        <i class="ri-shopping-cart-line"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+                <button class="hamburger" id="menuBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fullscreen Menu -->
+    <div class="fullscreen-menu" id="fullMenu">
+        <button class="close-menu" id="closeMenu">×</button>
+        <ul>
+            <li><a href="products.html" aria-label="Shop"><i class="ri-shopping-bag-line"></i></a></li>
+            <li><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+            <li><a href="contact.html" aria-label="Contact"><i class="ri-mail-line"></i></a></li>
+            <li><a href="cart.html" title="Shopping Cart"><i class="ri-shopping-cart-line"></i></a></li>
+            <li><a href="login.html" title="Login"><i class="ri-user-line"></i></a></li>
+        </ul>
+    </div>
+
+    <main class="faq-page">
+        <div class="faq-header">
+            <h1><i class="ri-questionnaire-line"></i> FAQ</h1>
+            <p class="faq-subtitle">Find answers to commonly asked questions. Can't find what you're looking for? Reach out to our support team.</p>
+        </div>
+
+        <!-- Search -->
+        <div class="faq-search">
+            <i class="ri-search-line"></i>
+            <input type="text" id="faqSearch" placeholder="Search your question...">
+        </div>
+
+        <!-- Category Filters -->
+        <div class="faq-categories">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="shipping">Shipping</button>
+            <button class="category-btn" data-category="returns">Returns</button>
+            <button class="category-btn" data-category="sizing">Sizing</button>
+            <button class="category-btn" data-category="payment">Payment</button>
+            <button class="category-btn" data-category="orders">Orders</button>
+        </div>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults">
+            <i class="ri-search-eye-line"></i>
+            <h3>No results found</h3>
+            <p>Try different keywords or browse categories above</p>
+        </div>
+
+        <!-- Shipping FAQs -->
+        <div class="faq-section" data-section="shipping">
+            <h2 class="faq-section-title"><i class="ri-truck-line"></i> Shipping & Delivery</h2>
+            
+            <div class="faq-item" data-category="shipping">
+                <div class="faq-question">
+                    <span>What is the shipping time for BLACKONN orders?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We typically ship orders within 2-3 business days after payment confirmation. Delivery takes 5-7 business days for most locations in India. Metro cities (Delhi, Mumbai, Bangalore, Chennai, Kolkata, Hyderabad) may receive orders faster in 3-5 business days.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="shipping">
+                <div class="faq-question">
+                    <span>Do you offer free shipping?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! We offer free shipping on all orders above ₹999. Orders below this amount have a flat shipping fee of ₹79. During special promotions, we may offer free shipping on all orders.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="shipping">
+                <div class="faq-question">
+                    <span>Do you ship internationally?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Currently, we only ship within India. International shipping is coming soon! Sign up for our newsletter to be notified when we launch international delivery.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="shipping">
+                <div class="faq-question">
+                    <span>How can I track my order?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Once your order is shipped, you'll receive a tracking number via email and SMS. You can also track your order by logging into your account and visiting the "My Orders" section. Our courier partners provide real-time tracking updates.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Returns FAQs -->
+        <div class="faq-section" data-section="returns">
+            <h2 class="faq-section-title"><i class="ri-arrow-go-back-line"></i> Returns & Refunds</h2>
+            
+            <div class="faq-item" data-category="returns">
+                <div class="faq-question">
+                    <span>What is your return policy?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept returns within 7 days of delivery if the product is unused with original tags attached. Items must be in their original packaging. For detailed information, please visit our <a href="return-policy.html">Return Policy</a> page.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="returns">
+                <div class="faq-question">
+                    <span>How do I initiate a return?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Log into your account, go to "My Orders," select the order you want to return, and click "Request Return." Fill in the reason and our team will process your request within 24-48 hours. You'll receive pickup scheduling details via email.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="returns">
+                <div class="faq-question">
+                    <span>How long does it take to get a refund?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Once we receive and verify your returned item, refunds are processed within 5-7 business days. The amount will be credited to your original payment method. For COD orders, refunds are processed to your bank account.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="returns">
+                <div class="faq-question">
+                    <span>Can I exchange a product instead of returning it?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! We offer exchanges for size or color changes. When requesting a return, select "Exchange" instead of "Refund" and specify your preferred size or color. Exchanges are subject to product availability.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sizing FAQs -->
+        <div class="faq-section" data-section="sizing">
+            <h2 class="faq-section-title"><i class="ri-ruler-line"></i> Sizing & Fit</h2>
+            
+            <div class="faq-item" data-category="sizing">
+                <div class="faq-question">
+                    <span>How do I choose the right size?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Check our detailed <a href="size-guide.html">Size Guide</a> page for measurements. Our oversized collection is designed with a relaxed, drop-shoulder fit - if you prefer a more fitted look, consider sizing down. When in doubt, message us on WhatsApp for personalized sizing help.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="sizing">
+                <div class="faq-question">
+                    <span>Are BLACKONN clothes true to size?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Our regular fit items are true to size. However, our signature oversized collection is intentionally designed with extra room for that streetwear aesthetic. We recommend checking the specific product description and our size chart for each item.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="sizing">
+                <div class="faq-question">
+                    <span>What if the size doesn't fit?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>No worries! You can request a size exchange within 7 days of delivery. The item must be unworn with original tags attached. We'll arrange a pickup and send you the correct size at no extra shipping cost.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment FAQs -->
+        <div class="faq-section" data-section="payment">
+            <h2 class="faq-section-title"><i class="ri-bank-card-line"></i> Payment & Pricing</h2>
+            
+            <div class="faq-item" data-category="payment">
+                <div class="faq-question">
+                    <span>What payment methods do you accept?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept UPI payments (GPay, PhonePe, Paytm, etc.), Credit/Debit cards (Visa, Mastercard, RuPay), Net Banking, and Cash on Delivery (COD). COD is available for most pin codes with a small additional handling charge of ₹49.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="payment">
+                <div class="faq-question">
+                    <span>Is online payment secure?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! All payments are processed through secure, PCI-DSS compliant payment gateways. We never store your card details on our servers. Our website uses SSL encryption to protect your data.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="payment">
+                <div class="faq-question">
+                    <span>Can I use gift cards or discount codes?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! You can apply gift cards and promo codes at checkout. Enter your code in the "Have a promo code?" section and click Apply. Gift cards can be combined with promotions but typically cannot be stacked with other gift cards.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="payment">
+                <div class="faq-question">
+                    <span>Do you offer EMI options?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Currently, we don't offer direct EMI options. However, you can use your credit card's EMI conversion feature (available with most banks) after making the purchase.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders FAQs -->
+        <div class="faq-section" data-section="orders">
+            <h2 class="faq-section-title"><i class="ri-shopping-bag-3-line"></i> Orders & Account</h2>
+            
+            <div class="faq-item" data-category="orders">
+                <div class="faq-question">
+                    <span>Can I cancel my order?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>You can cancel your order before it's shipped. Go to "My Orders" in your account, select the order, and click "Cancel Order." Once shipped, cancellation isn't possible but you can return the item after delivery. For details, see our <a href="cancellation-policy.html">Cancellation Policy</a>.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="orders">
+                <div class="faq-question">
+                    <span>Can I modify my order after placing it?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Order modifications (size, color, address changes) can be made within 2 hours of placing the order. Contact us immediately via WhatsApp at +91 8420889722 or email hello@blackonn.com with your order ID and requested changes.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="orders">
+                <div class="faq-question">
+                    <span>Do I need an account to place an order?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, you need to create an account to place orders. This helps us provide order tracking, easy returns, and personalized recommendations. Creating an account takes less than a minute and you can also sign up using Google.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="orders">
+                <div class="faq-question">
+                    <span>My payment was deducted but order wasn't placed. What do I do?</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Don't worry! In rare cases of payment gateway issues, amounts are automatically refunded within 5-7 business days. If you don't see the refund, contact us with your transaction details and we'll resolve it immediately.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Box -->
+        <div class="help-box">
+            <h2>Still have questions?</h2>
+            <p>Our support team is ready to help you with any queries. Reach out and we'll get back to you as soon as possible.</p>
+            <div class="help-buttons">
+                <a href="https://wa.me/918420889722?text=Hi%2C%20I%20have%20a%20question" class="help-btn primary" target="_blank" rel="noopener">
+                    <i class="ri-whatsapp-line"></i> Chat on WhatsApp
+                </a>
+                <a href="contact.html" class="help-btn secondary">
+                    <i class="ri-mail-line"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="logo">
+            <img src="assets/img/BLACKONN 004_page-0001.png" style="width:150px;height:50px;" alt="BLACKONN Logo">
+            <p style="font-size:16px; line-height:1.6;">
+                Each creation that bears our name is more than fabric and thread — it is an embodiment of artistry.
+            </p>
+        </div>
+
+        <div>
+            <h3>The Atelier</h3>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="products.html">Category</a></li>
+                <li><a href="contact.html">Contact Info</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="products.html">Shop</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Regimen</h3>
+            <ul>
+                <li><a href="cancellation-policy.html">Cancellation Policy</a></li>
+                <li><a href="payment-policy.html">Payment Policy</a></li>
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="refund-policy.html">Refund Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="shipping.html">Shipping & Delivery</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Contact Us</h3>
+            <div class="socials">
+                <a href="https://www.facebook.com/share/1GhKYo1Bc6/" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="ri-facebook-fill"></i>
+                </a>
+                <a href="https://www.instagram.com/blackonnindia?igsh=ZXB6azlkM2MzZW82" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="ri-instagram-fill"></i>
+                </a>
+                <a href="https://wa.me/918420889722" target="_blank" rel="noopener" aria-label="WhatsApp">
+                    <i class="ri-whatsapp-fill"></i>
+                </a>
+            </div>
+            
+            <h3 style="margin-top: 25px;">Newsletter</h3>
+            <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
+            </form>
+        </div>
+    </footer>
+
+    <div class="bottom">
+        © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+
+    <script>
+        // Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const fullMenu = document.getElementById('fullMenu');
+        const closeMenu = document.getElementById('closeMenu');
+
+        menuBtn.addEventListener('click', () => {
+            fullMenu.style.display = 'flex';
+            fullMenu.classList.add('open');
+            menuBtn.classList.add('open');
+        });
+
+        function closeFullMenu() {
+            fullMenu.classList.add('closing');
+            fullMenu.classList.remove('open');
+            menuBtn.classList.remove('open');
+            setTimeout(() => {
+                fullMenu.style.display = 'none';
+                fullMenu.classList.remove('closing');
+            }, 350);
+        }
+
+        closeMenu.addEventListener('click', closeFullMenu);
+        fullMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeFullMenu);
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                document.querySelectorAll('.faq-item.active').forEach(activeItem => {
+                    if (activeItem !== item) {
+                        activeItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active', !isActive);
+            });
+        });
+
+        // Category Filter
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const faqSections = document.querySelectorAll('.faq-section');
+        const faqItems = document.querySelectorAll('.faq-item');
+        const noResults = document.getElementById('noResults');
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.dataset.category;
+                
+                // Update active button
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Clear search
+                document.getElementById('faqSearch').value = '';
+                
+                // Filter items
+                if (category === 'all') {
+                    faqSections.forEach(section => section.style.display = 'block');
+                    faqItems.forEach(item => item.style.display = 'block');
+                    noResults.classList.remove('show');
+                } else {
+                    let hasResults = false;
+                    faqSections.forEach(section => {
+                        if (section.dataset.section === category) {
+                            section.style.display = 'block';
+                            hasResults = true;
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                    noResults.classList.toggle('show', !hasResults);
+                }
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('faqSearch');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            // Reset category buttons
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-category="all"]').classList.add('active');
+            
+            if (!searchTerm) {
+                faqSections.forEach(section => section.style.display = 'block');
+                faqItems.forEach(item => item.style.display = 'block');
+                noResults.classList.remove('show');
+                return;
+            }
+            
+            let hasResults = false;
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer p').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide sections based on visible items
+            faqSections.forEach(section => {
+                const visibleItems = section.querySelectorAll('.faq-item[style="display: block"]');
+                section.style.display = visibleItems.length > 0 ? 'block' : 'none';
+            });
+            
+            noResults.classList.toggle('show', !hasResults);
+        });
+    </script>
+
+    <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->
+    <!-- Real-time & Communication -->
+    <script src="assets/js/realtime-manager.js"></script>
+
+    <!-- Security & Error Tracking -->
+    <script src="assets/js/security-manager.js"></script>
+    <script src="assets/js/error-tracker.js"></script>
+
+    <!-- Machine Learning & Personalization -->
+    <script src="assets/js/ml-engine.js"></script>
+
+    <!-- User Experience -->
+    <script src="assets/js/form-manager.js"></script>
+    <script src="assets/js/image-optimizer.js"></script>
+    <script src="assets/js/i18n-manager.js"></script>
+
+    <!-- Experimentation -->
+    <script src="assets/js/ab-testing.js"></script>
+
+    <!-- 🌟 WORLD-FIRST CUTTING-EDGE TECHNOLOGIES -->
+    <!-- AI & Biometrics -->
+    <script src="assets/js/emotion-ai.js"></script>
+    <script src="assets/js/biometric-auth.js"></script>
+    
+    <!-- Future Tech -->
+    <script src="assets/js/neural-commerce.js"></script>
+
+    <script src="assets/js/advanced-cache.js"></script>
+    <script src="assets/js/state-manager.js"></script>
+    <script src="assets/js/performance-optimizer.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/ai-analytics.js"></script>
+    <script src="assets/js/analytics.js"></script>
+    <script src="assets/js/console-block.js"></script>
+    <script src="assets/js/auto-debugger.js"></script>
+</body>
+</html>

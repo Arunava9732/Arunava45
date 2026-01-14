@@ -1,0 +1,10 @@
+{
+  "sessions": [],
+  "stats": {
+    "happy": 68,
+    "neutral": 22,
+    "frustrated": 10,
+    "sentiment": 0.7
+  },
+  "adaptations": []
+}

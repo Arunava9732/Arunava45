@@ -1,0 +1,76 @@
+{
+  "settings": {
+    "couponsEnabled": false,
+    "salesEnabled": false,
+    "bundlesEnabled": false,
+    "giftCardsEnabled": false,
+    "popupsEnabled": false,
+    "abandonedCartEnabled": true,
+    "invoiceEnabled": true,
+    "updatedAt": "2026-01-14T06:26:43.134Z"
+  },
+  "coupons": [],
+  "sales": [
+    {
+      "id": "sale-newyear",
+      "name": "New Year Sale",
+      "type": "percentage",
+      "value": 15,
+      "productIds": [],
+      "categoryIds": [],
+      "applyToAll": true,
+      "validFrom": "2026-01-01T00:00:00.000Z",
+      "validUntil": "2026-01-31T23:59:59.000Z",
+      "active": false,
+      "description": "New Year Sale - 15% off on all products",
+      "createdAt": "2026-01-09T00:00:00.000Z"
+    }
+  ],
+  "bundles": [],
+  "giftCards": [],
+  "popups": [
+    {
+      "id": "popup-newsletter",
+      "type": "newsletter",
+      "title": "Get 10% Off!",
+      "message": "Subscribe to our newsletter and get 10% off on your first order",
+      "buttonText": "Subscribe",
+      "showOnPages": [
+        "home",
+        "products"
+      ],
+      "triggerType": "exit_intent",
+      "triggerDelay": 5000,
+      "showOnce": true,
+      "active": true,
+      "createdAt": "2026-01-09T00:00:00.000Z"
+    }
+  ],
+  "abandonedCarts": [],
+  "newsletterSubscribers": [
+    {
+      "id": "feb00126-b183-4d96-9ab0-f8fe0c459616",
+      "email": "arunava458@gmail.com",
+      "subscribedAt": "2026-01-04T14:09:20.223Z",
+      "active": true
+    },
+    {
+      "id": "be85d7c1-be5c-43c7-85e3-c7850bca6794",
+      "email": "arunav458@gmail.com",
+      "subscribedAt": "2026-01-04T14:13:54.955Z",
+      "active": true
+    },
+    {
+      "id": "fac3588e-3953-4f36-b7e1-069cd9382073",
+      "email": "ggggj@gmail.com",
+      "subscribedAt": "2026-01-04T14:19:37.010Z",
+      "active": true
+    },
+    {
+      "id": "673639d7-f2ef-4f35-9f03-089dbc81938b",
+      "email": "arunaaa458@gmail.com",
+      "subscribedAt": "2026-01-04T15:35:05.138Z",
+      "active": true
+    }
+  ]
+}
