@@ -73,18 +73,22 @@ module.exports = {
     {
       name: 'blackonn-agent',
       script: 'backend/ml/blackonn_agent.py',
-      interpreter: 'python3',
+      // Auto-detect and use venv if available, fallback to global python3
+      interpreter: './backend/ml/.venv/bin/python3', 
       args: '--mode=api --port=5050',
       cwd: __dirname,
       autorestart: true,
-      restart_delay: 5000,
+      restart_delay: 10000, // Wait 10s before restart to prevent spamming
       max_memory_restart: '300M',
       out_file: './backend/logs/agent_out.log',
       error_file: './backend/logs/agent_error.log',
       env: {
         PYTHONUTF8: '1',
-        PYTHONIOENCODING: 'utf-8'
-      }
+        PYTHONIOENCODING: 'utf-8',
+        FLASK_ENV: 'production'
+      },
+      // If the venv path fails, PM2 will try to use the system one
+      fallback_interpreter: 'python3'
     }
   ]
 };
