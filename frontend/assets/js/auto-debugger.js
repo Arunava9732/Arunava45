@@ -207,8 +207,9 @@
 
   // ============ 1. AI-ENHANCED UI NOTIFICATION ============
   function showHealingToast(message, type, details) {
-    // Log to console with AI-parseable tag
-    console.log('[BLACKONN-AI-AGENT] Fixing... ' + message);
+    // Notification disabled per user request
+    // console.log('[BLACKONN-AI-AGENT] Fixing... ' + message);
+    return;
     
     type = type || 'info';
     if (document.querySelector('.healing-toast')) {
