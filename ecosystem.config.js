@@ -73,8 +73,8 @@ module.exports = {
     {
       name: 'blackonn-agent',
       script: 'backend/ml/blackonn_agent.py',
-      interpreter: 'python3', // Path to python3 on VPS
-      args: '--mode=api --port=5050',
+      interpreter: 'python3',
+      args: ['--mode=api', '--port=5050'],
       cwd: __dirname,
       autorestart: true,
       restart_delay: 5000,
