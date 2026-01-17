@@ -48,6 +48,79 @@ function deleteUploadedFile(filePath) {
   }
 }
 
+// ==========================================
+// DELETED USERS HELPERS
+// ==========================================
+
+const DELETED_USERS_FILE = path.join(__dirname, '..', 'data', 'deletedUsers.json');
+
+function getDeletedUsers() {
+  try {
+    if (fs.existsSync(DELETED_USERS_FILE)) {
+      const data = fs.readFileSync(DELETED_USERS_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error reading deleted users:', error);
+  }
+  return [];
+}
+
+function saveDeletedUsers(users) {
+  try {
+    fs.writeFileSync(DELETED_USERS_FILE, JSON.stringify(users, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error saving deleted users:', error);
+    return false;
+  }
+}
+
+function archiveDeletedUser(user, deletedBy, reason = '') {
+  try {
+    const deletedUsers = getDeletedUsers();
+    
+    // Get all user-related data for stats
+    const orders = db.orders?.findAll()?.filter(o => o.userId === user.id || o.customerEmail === user.email) || [];
+    const carts = db.carts.findAll();
+    const userCart = carts[user.id] || [];
+    const allWishlists = db.wishlists ? db.wishlists.findAll() : {};
+    const userWishlist = allWishlists[user.id] || [];
+    const returns = db.returns?.findAll()?.filter(r => r.userId === user.id) || [];
+
+    const deletedUser = {
+      deletedId: 'deleted_' + Date.now() + '_' + user.id,
+      originalId: user.id,
+      userData: {
+        name: user.name || 'Unknown',
+        email: user.email || 'N/A',
+        phone: user.phone || 'N/A',
+        role: user.role || 'user',
+        createdAt: user.createdAt || new Date().toISOString(),
+        lastLogin: user.lastLogin || null,
+        addresses: user.addresses || [],
+        addressesCount: (user.addresses || []).length,
+        ordersCount: orders.length,
+        cartItemsCount: Array.isArray(userCart) ? userCart.length : 0,
+        wishlistItemsCount: Array.isArray(userWishlist) ? userWishlist.length : 0,
+        returnsCount: returns.length,
+        biometricCredentials: user.biometricCredentials || []
+      },
+      deletedAt: new Date().toISOString(),
+      deletedBy: deletedBy, // 'self' or 'admin'
+      deletionReason: deletedBy === 'admin' ? 'admin_deleted' : 'self_deleted',
+      notes: reason
+    };
+
+    deletedUsers.push(deletedUser);
+    saveDeletedUsers(deletedUsers);
+    return deletedUser;
+  } catch (error) {
+    console.error('Error archiving user:', error);
+    return null;
+  }
+}
+
 // Get all users (admin only)
 router.get('/', authenticate, isAdmin, (req, res) => {
   try {
@@ -168,13 +241,21 @@ router.post('/:id/change-password',
 });
 
 // Delete user (admin only)
-router.delete('/:id', authenticate, isAdmin, (req, res) => {
+router.delete('/:id', authenticate, isAdmin, async (req, res) => {
   try {
-    // Get user first to access avatar path
+    // Get user first to access data for archive and avatar path
     const user = db.users.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
+
+    // Prevent admin from deleting other admins? (Optional but safer)
+    if (user.role === 'admin' && user.id !== req.user.id) {
+       // Only super-admin or similar could do this, but for now let's just allow it if intended
+    }
+    
+    // Archive user before deletion
+    archiveDeletedUser(user, 'admin', 'Account deleted by administrator');
     
     // Delete avatar image if exists
     if (user.avatar) {
@@ -189,31 +270,26 @@ router.delete('/:id', authenticate, isAdmin, (req, res) => {
     const filtered = sessions.filter(s => s.userId !== req.params.id);
     db.sessions.replaceAll(filtered);
 
-    res.json({ success: true, message: 'User deleted' });
+    // Delete user cart
+    const carts = db.carts.findAll();
+    if (carts[req.params.id]) {
+        delete carts[req.params.id];
+        db.carts.replaceAll(carts);
+    }
+
+    // Delete user wishlist
+    if (db.wishlists) {
+        const wishlists = db.wishlists.findAll();
+        if (wishlists[req.params.id]) {
+            delete wishlists[req.params.id];
+            db.wishlists.replaceAll(wishlists);
+        }
+    }
+
+    res.json({ success: true, message: 'User deleted and archived successfully' });
   } catch (error) {
     console.error('Delete user error:', error);
     res.status(500).json({ success: false, error: 'Failed to delete user' });
-  }
-});
-
-// Delete user account (GDPR)
-router.delete('/:id', authenticate, async (req, res) => {
-  try {
-    if (req.user.role !== 'admin' && req.user.id !== req.params.id) {
-      return res.status(403).json({ success: false, error: 'Not authorized' });
-    }
-    const user = db.users.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ success: false, error: 'User not found' });
-    }
-    // Remove user from DB
-    db.users.delete(req.params.id);
-    // Optionally, anonymize or delete related data (orders, wishlists, etc.)
-    // ...existing code for related data cleanup...
-    res.json({ success: true, message: 'Account deleted successfully' });
-  } catch (error) {
-    console.error('Delete user error:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete account' });
   }
 });
 
@@ -1002,33 +1078,6 @@ router.get('/biometric/summary', authenticate, isAdmin, (req, res) => {
 // DELETED USERS MANAGEMENT
 // ==========================================
 
-// Helper to get deleted users file path
-const DELETED_USERS_FILE = path.join(__dirname, '..', 'data', 'deletedUsers.json');
-
-// Helper to read deleted users
-function getDeletedUsers() {
-  try {
-    if (fs.existsSync(DELETED_USERS_FILE)) {
-      const data = fs.readFileSync(DELETED_USERS_FILE, 'utf8');
-      return JSON.parse(data);
-    }
-  } catch (error) {
-    console.error('Error reading deleted users:', error);
-  }
-  return [];
-}
-
-// Helper to save deleted users
-function saveDeletedUsers(users) {
-  try {
-    fs.writeFileSync(DELETED_USERS_FILE, JSON.stringify(users, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error saving deleted users:', error);
-    return false;
-  }
-}
-
 // Self-delete account (with data preservation for admin)
 router.delete('/:id/self-delete', authenticate, async (req, res) => {
   try {
@@ -1046,47 +1095,8 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
       return res.status(403).json({ success: false, error: 'Admin accounts cannot be self-deleted' });
     }
 
-    // Get all user-related data
-    const orders = db.orders?.findAll()?.filter(o => o.userId === user.id || o.customerEmail === user.email) || [];
-    const carts = db.carts.findAll();
-    const userCart = carts[user.id] || [];
-    
-    // Fix: Wishlists are stored as an object with userId as key, not an array to filter
-    const allWishlists = db.wishlists ? db.wishlists.findAll() : {};
-    const userWishlist = allWishlists[user.id] || [];
-    
-    const returns = db.returns?.findAll()?.filter(r => r.userId === user.id) || [];
-    const exchanges = db.exchanges?.findAll()?.filter(e => e.userId === user.id) || [];
-
-    // Create deleted user record
-    const deletedUser = {
-      id: 'deleted_' + user.id,
-      originalId: user.id,
-      user: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        createdAt: user.createdAt,
-        lastLogin: user.lastLogin,
-        addresses: user.addresses || []
-      },
-      relatedData: {
-        orders: orders.map(o => ({ id: o.id || 'N/A', total: o.total || 0, status: o.status || 'unknown', date: o.createdAt || new Date().toISOString() })),
-        cartItems: Array.isArray(userCart) ? userCart.length : 0,
-        wishlistItems: Array.isArray(userWishlist) ? userWishlist.length : 0,
-        returns: returns.map(r => ({ id: r.id || 'N/A', status: r.status || 'unknown' })),
-        exchanges: exchanges.map(e => ({ id: e.id || 'N/A', status: e.status || 'unknown' }))
-      },
-      deletedAt: new Date().toISOString(),
-      deletedBy: 'self',
-      reason: req.body.reason || 'User requested account deletion'
-    };
-
-    // Save to deleted users archive
-    const deletedUsers = getDeletedUsers();
-    deletedUsers.push(deletedUser);
-    saveDeletedUsers(deletedUsers);
+    // Archive user before deletion
+    archiveDeletedUser(user, 'self', req.body.reason || 'User requested account deletion');
 
     // Delete user avatar if exists
     if (user.avatar) {
@@ -1097,13 +1107,19 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
     db.users.delete(req.params.id);
 
     // Delete user cart
-    delete carts[user.id];
-    db.carts.replaceAll(carts);
+    const carts = db.carts.findAll();
+    if (carts[user.id]) {
+      delete carts[user.id];
+      db.carts.replaceAll(carts);
+    }
 
     // Delete user wishlist
-    if (db.wishlists && allWishlists) {
-      delete allWishlists[user.id];
-      db.wishlists.replaceAll(allWishlists);
+    if (db.wishlists) {
+      const allWishlists = db.wishlists.findAll();
+      if (allWishlists[user.id]) {
+        delete allWishlists[user.id];
+        db.wishlists.replaceAll(allWishlists);
+      }
     }
 
     // Invalidate all sessions
@@ -1130,11 +1146,11 @@ router.get('/deleted/all', authenticate, isAdmin, (req, res) => {
     
     res.json({ 
       success: true, 
-      users: deletedUsers,
+      deletedUsers: deletedUsers,
       stats: {
         totalDeleted: deletedUsers.length,
-        selfDeleted: deletedUsers.filter(u => u.deletedBy === 'self').length,
-        adminDeleted: deletedUsers.filter(u => u.deletedBy !== 'self').length
+        selfDeleted: deletedUsers.filter(u => u.deletionReason === 'self_deleted').length,
+        adminDeleted: deletedUsers.filter(u => u.deletionReason === 'admin_deleted').length
       }
     });
   } catch (error) {
@@ -1147,13 +1163,13 @@ router.get('/deleted/all', authenticate, isAdmin, (req, res) => {
 router.get('/deleted/:deletedId', authenticate, isAdmin, (req, res) => {
   try {
     const deletedUsers = getDeletedUsers();
-    const user = deletedUsers.find(u => u.id === req.params.deletedId || u.originalId === req.params.deletedId);
+    const user = deletedUsers.find(u => u.deletedId === req.params.deletedId || u.originalId === req.params.deletedId);
     
     if (!user) {
       return res.status(404).json({ success: false, error: 'Deleted user not found' });
     }
 
-    res.json({ success: true, user });
+    res.json({ success: true, deletedUser: user });
   } catch (error) {
     console.error('Get deleted user error:', error);
     res.status(500).json({ success: false, error: 'Failed to get deleted user' });
@@ -1164,7 +1180,8 @@ router.get('/deleted/:deletedId', authenticate, isAdmin, (req, res) => {
 router.delete('/deleted/:deletedId', authenticate, isAdmin, (req, res) => {
   try {
     const deletedUsers = getDeletedUsers();
-    const index = deletedUsers.findIndex(u => u.id === req.params.deletedId);
+    // Look for both deletedId or originalId
+    const index = deletedUsers.findIndex(u => u.deletedId === req.params.deletedId || u.originalId === req.params.deletedId);
     
     if (index === -1) {
       return res.status(404).json({ success: false, error: 'Deleted user not found' });
@@ -1173,7 +1190,7 @@ router.delete('/deleted/:deletedId', authenticate, isAdmin, (req, res) => {
     const removed = deletedUsers.splice(index, 1)[0];
     saveDeletedUsers(deletedUsers);
 
-    console.log(`[Admin] Deleted user record permanently removed: ${removed.user.email}`);
+    console.log(`[Admin] Deleted user record permanently removed: ${removed.userData?.email || 'N/A'}`);
 
     res.json({ 
       success: true, 

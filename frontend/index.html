@@ -826,23 +826,11 @@
         }
       </style>
 
-      <!-- Static Store for GitHub Pages -->
-      <script src="assets/js/store.js"></script>
       <!-- API Client for Full-Stack Mode (Removed - handled in head) -->
       <script src="assets/js/security.js"></script>
       <script>
         console.log('[INIT] Home page script loaded');
         let products = [];
-
-        // Embedded products data (no fetch required - GitHub Pages compatible)
-        const EMBEDDED_PRODUCTS = [
-          { id: "prod-001", name: "Over Sized T-Shirt", price: 1499, color: "Black", size: "All", description: "Comfortable oversized t-shirt made from premium cotton. Perfect for casual wear with a relaxed fit.", position: 1, image: "/uploads/products/1766256485041_oorxuo.png", thumbImages: ["/uploads/products/1766256485041_oorxuo.png", "/uploads/products/1766300543944_lcdhiw.png"] },
-          { id: "prod-002", name: "Slim Fit T-Shirt", price: 599, color: "Red and Blue", size: "All", description: "Slim fit t-shirt available in red and blue. Made from breathable fabric for all-day comfort.", position: 2, image: "/uploads/products/1766256517720_hcxarp.png", thumbImages: ["/uploads/products/1766256517720_hcxarp.png", "/uploads/products/1766304774184_nz59z8.png"] },
-          { id: "prod-003", name: "CAP", price: 399, color: "Black", size: "All", description: "Classic black cap with adjustable strap. Made from durable materials for everyday use.", position: 3, image: "/uploads/products/1766256568248_klqmvk.png", thumbImages: ["/uploads/products/1766256568248_klqmvk.png", "/uploads/products/1766305297632_oepikm.png"] },
-          { id: "prod-004", name: "BAG", price: 1799, color: "Black", size: "One Size", description: "Stylish black bag with multiple compartments. Perfect for carrying essentials with style.", position: 4, image: "/uploads/products/1766256649355_hpnrsv.png", thumbImages: ["/uploads/products/1766256649355_hpnrsv.png", "/uploads/products/1766305433978_ro3m77.png"] },
-          { id: "prod-005", name: "Hoodie", price: 1999, color: "Black", size: "All", description: "Cozy black hoodie made from soft fleece. Ideal for layering and staying warm.", position: 5, image: "/uploads/products/1766256703180_kqw3g7.png", thumbImages: ["/uploads/products/1766256703180_kqw3g7.png", "/uploads/products/1766305203633_pi904w.png"] },
-          { id: "prod-006", name: "Pants", price: 1299, color: "All", size: "All", description: "Versatile pants available in multiple colors. Comfortable fit for various occasions.", position: 6, image: "/uploads/products/1766258492979_8sibcs.png", thumbImages: ["/uploads/products/1766258492979_8sibcs.png", "/uploads/products/1766305507705_rtn6gs.png"] }
-        ];
 
         // Load products from API
         async function fetchHomeProducts() {

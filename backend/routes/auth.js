@@ -139,7 +139,7 @@ router.post('/login', authLimiter, async (req, res) => {
     
     if (!user) {
       console.warn(`[AUTH-DEBUG] User not found: ${normalizedEmail}`);
-      return res.status(401).json({ success: false, error: 'Account not found' });
+      return res.status(401).json({ success: false, error: 'No account found with this email address. Please sign up first.' });
     }
 
     console.log(`[AUTH-DEBUG] User found: ${user.email}, Role: ${user.role}`);
@@ -249,7 +249,7 @@ router.post('/biometric-login', async (req, res) => {
     // Find user
     const user = db.users.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return res.status(401).json({ success: false, error: 'User not found' });
+      return res.status(401).json({ success: false, error: 'No account found with this email address. Please sign up first.' });
     }
 
     // Check if biometric was reset by admin

@@ -86,7 +86,7 @@ class BlackonnAuth {
                     this._authChecked = false;
                     // Clear persisted login hint
                     this._clearLoginMarker();
-                    throw new Error('NOT_AUTHENTICATED');
+                    throw new Error(data.error || 'No account found with this email address. Please sign up first.');
                 }
                 throw new Error(data.error || 'Request failed');
             }

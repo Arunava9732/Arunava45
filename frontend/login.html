@@ -790,11 +790,17 @@
                     } else {
                         showLoginError(result.error || 'Login failed. Please try again.');
 
-                        // Add error class to appropriate field
-                        if (result.error && (result.error.includes('not found') || result.error.includes('Account'))) {
-                            emailInput.closest('.form-group').classList.add('error');
+                        // Add error class and update message to appropriate field
+                        if (result.error && (result.error.toLowerCase().includes('not found') || result.error.toLowerCase().includes('account') || result.error.toLowerCase().includes('email'))) {
+                            const group = emailInput.closest('.form-group');
+                            group.classList.add('error');
+                            const errorMsg = group.querySelector('.error-message');
+                            if (errorMsg) errorMsg.textContent = result.error;
                         } else {
-                            passwordInput.closest('.form-group').classList.add('error');
+                            const group = passwordInput.closest('.form-group');
+                            group.classList.add('error');
+                            const errorMsg = group.querySelector('.error-message');
+                            if (errorMsg) errorMsg.textContent = result.error || 'Invalid password';
                         }
                     }
                 } catch (error) {

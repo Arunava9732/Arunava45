@@ -506,8 +506,11 @@ class MLEngine {
       }
 
       if (!products || products.length === 0) {
-        // Load from local data
-        products = await this.loadLocalProducts();
+        // Load from API
+        if (typeof API !== 'undefined' && API.products) {
+          const response = await API.products.getAll();
+          products = response.products || [];
+        }
       }
 
       // Ensure products is an array
@@ -1045,19 +1048,6 @@ class MLEngine {
       this.log('Models', 'Models saved');
     } catch (error) {
       console.error('Error saving models:', error);
-    }
-  }
-
-  /**
-   * Load local products data
-   */
-  async loadLocalProducts() {
-    try {
-      const response = await fetch('/data/products.json');
-      return await response.json();
-    } catch (error) {
-      console.error('Error loading local products:', error);
-      return [];
     }
   }
 

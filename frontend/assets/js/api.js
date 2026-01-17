@@ -269,7 +269,7 @@ const API = (() => {
             }
           }
 
-          throw new Error('NOT_AUTHENTICATED');
+          throw new Error(data.error || 'No account found with this email address. Please sign up first.');
         }
         
         // Don't log expected 401 or startup 404 errors to keep console clean
@@ -530,7 +530,7 @@ const API = (() => {
         return data;
       } catch (error) {
         // If 401 unauthorized, return login required
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -546,7 +546,7 @@ const API = (() => {
         this._setCartCache(data.cart || []);
         return data;
       } catch (error) {
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -561,7 +561,7 @@ const API = (() => {
         this._setCartCache(data.cart || []);
         return data;
       } catch (error) {
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;
@@ -574,7 +574,7 @@ const API = (() => {
         this._setCartCache([]);
         return data;
       } catch (error) {
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           this._setCartCache([]);
           return { success: false, error: 'Login required', requiresLogin: true };
         }
@@ -794,7 +794,7 @@ const API = (() => {
       try {
         return await request('/wishlist');
       } catch (error) {
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           return { success: true, wishlist: [], requiresLogin: true };
         }
         throw error;
@@ -814,7 +814,7 @@ const API = (() => {
           })
         });
       } catch (error) {
-        if (error.message === 'NOT_AUTHENTICATED' || (error.message && error.message.includes('401'))) {
+        if (error.message === 'No account found with this email address. Please sign up first.' || (error.message && error.message.includes('401'))) {
           return { success: false, error: 'Login required', requiresLogin: true };
         }
         throw error;

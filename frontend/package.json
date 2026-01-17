@@ -1,0 +1,10 @@
+﻿{
+  "name": "legacy-frontend-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "next": "16.1.2"
+  }
+}

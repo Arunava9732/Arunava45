@@ -88,6 +88,61 @@
         display: none;
       }
       
+      /* Admin Header Mobile Optimization */
+      @media (max-width: 768px) {
+        .admin-header .nav-container {
+          padding: 8px 3%;
+        }
+        .admin-header .nav-logo img {
+          width: 100px;
+          height: 32px;
+        }
+        .admin-header .header-actions {
+          gap: 8px;
+        }
+        .admin-header .header-actions .logout-btn,
+        .admin-header .header-actions .view-store-btn {
+          padding: 6px 10px;
+          font-size: 0.8rem;
+          gap: 4px;
+        }
+        .api-status {
+          padding: 4px 8px;
+        }
+      }
+
+      @media (max-width: 580px) {
+        .admin-header .header-actions .btn-text {
+          display: none;
+        }
+        .admin-header .header-actions .logout-btn,
+        .admin-header .header-actions .view-store-btn {
+          padding: 8px;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          justify-content: center;
+        }
+        .admin-header .header-actions .logout-btn i,
+        .admin-header .header-actions .view-store-btn i {
+          font-size: 1.1rem;
+          margin: 0;
+        }
+        .api-status .status-text {
+          display: none;
+        }
+        .api-status {
+          padding: 8px;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          justify-content: center;
+        }
+        .api-status .status-dot {
+          margin: 0;
+        }
+      }
+      
       /* ========================================
          NEW PROFILE-STYLE SIDEBAR LAYOUT
          ======================================== */
@@ -498,10 +553,6 @@
         }
       }
       
-      /* Legacy admin-page class - hide it */
-      .admin-page {
-        display: none;
-      }
       /* Dropdown for Management sections */
       .nav-dropdown {
         position: relative;
@@ -597,6 +648,7 @@
         color: #6b7280;
         font-size: 0.85rem;
       }
+
       /* ========================================
          PERFORMANCE INSIGHTS - STAT CARDS
          ======================================== */
@@ -1000,13 +1052,14 @@
         .admin-section .panel-body,
         .admin-section .panel-header {
           max-width: 100% !important;
-          overflow-x: hidden !important;
+          overflow-x: visible !important;
           box-sizing: border-box !important;
         }
         
         /* Panel body proper padding */
         .admin-section .panel-body {
           padding: 16px !important;
+          min-width: 0 !important;
         }
         
         /* Stats grid & Summary Grids - 2 columns on tablet, stacks nicely */
@@ -1026,6 +1079,22 @@
           gap: 12px !important;
           width: 100% !important;
           box-sizing: border-box !important;
+        }
+
+        @media (max-width: 580px) {
+          .stats-grid, 
+          #product-costs .default-costs-grid,
+          #tax-settings .tax-grid,
+          #gift-cards .stats-grid,
+          #inventory-management .stats-grid,
+          #sku-management .stats-grid,
+          #marketing-management .stats-grid,
+          #error-tracker .stats-grid,
+          #biometric-auth .stats-grid,
+          #messages .message-card-grid,
+          .product-costs-container {
+            grid-template-columns: 1fr !important;
+          }
         }
         
         /* Product costs container - single column on mobile */
@@ -4600,18 +4669,31 @@
           visibility: hidden !important;
           pointer-events: none !important;
         }
-        .admin-page {
-          padding: 0 4%;
-          margin-top: 20px;
-          margin-bottom: 100px; /* Space for toggle button */
+        .admin-layout {
+          padding: 0 10px !important; 
+          margin-top: 15px;
+          margin-bottom: 80px;
+          max-width: 100vw;
+          overflow-x: hidden;
+        }
+        .admin-main {
+          padding: 12px !important;
+          border-radius: 12px;
+          min-width: 0;
+          width: 100%;
+          box-sizing: border-box;
         }
         .admin-panel {
-          padding: 16px;
+          padding: 12px !important;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
         }
         .admin-panel form {
-          grid-template-columns: 1fr;
-          padding: 16px;
-          gap: 14px;
+          grid-template-columns: 1fr !important;
+          padding: 12px !important;
+          gap: 12px;
         }
         .admin-panel .form-actions {
           flex-direction: column;
@@ -4621,56 +4703,117 @@
           justify-content: center;
         }
         .section-header {
-          flex-direction: column;
-          align-items: flex-start;
+          flex-direction: column !important;
+          align-items: flex-start !important;
           gap: 12px;
+          padding: 12px 0 !important;
         }
         .insights-grid {
-          gap: 12px;
+          gap: 10px;
         }
         .insight-card {
-          flex: 1 1 150px;
+          flex: 1 1 140px;
           max-width: none;
-          padding: 12px;
+          padding: 10px;
         }
         .insight-icon {
-          width: 36px;
-          height: 36px;
-          font-size: 1rem;
-          border-radius: 8px;
+          width: 32px;
+          height: 32px;
+          font-size: 0.9rem;
+          border-radius: 6px;
         }
         .insight-label {
-          font-size: 0.65rem;
+          font-size: 0.6rem;
         }
         .insight-value {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
+        
+        /* Table to Card conversion - Forced with !important for specificity */
         table thead {
-          display: none;
+          display: none !important;
         }
         table tbody td {
-          display: block;
-          width: 100%;
-          padding: 8px 12px;
-          text-align: left;
+          display: block !important;
+          width: 100% !important;
+          padding: 10px 12px !important;
+          text-align: left !important;
+          border-bottom: 1px solid #f0f0f0 !important;
+          box-sizing: border-box !important;
         }
         table tbody td::before {
           content: attr(data-label);
-          font-weight: 600;
+          font-weight: 700;
           display: block;
           margin-bottom: 4px;
-          color: #6b7280;
-          font-size: 0.75rem;
+          color: #94a3b8;
+          font-size: 0.7rem;
           text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
         table tbody tr {
-          display: block;
-          margin-bottom: 16px;
-          background: #f9fafb;
-          border-radius: 12px;
-          padding: 8px;
-          border: 1px solid #e5e7eb;
+          display: block !important;
+          width: 100% !important;
+          margin-bottom: 20px;
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 12px;
+          border: 1px solid #e2e8f0 !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+          overflow: hidden;
+          box-sizing: border-box;
         }
+        
+        /* Search and Filter wrap - Global and Product specific */
+        #products .search-container,
+        .search-container {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+          padding: 12px !important;
+          margin: 16px 0 !important;
+        }
+        #products .search-input-wrapper,
+        .search-input-wrapper {
+          width: 100% !important;
+        }
+        .filters-bar {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 8px !important;
+          display: flex !important;
+        }
+        .filter-group {
+          flex: 1 1 auto;
+          min-width: 120px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .filter-select {
+          width: 100% !important;
+        }
+
+        .section-header-right,
+        .section-header-actions {
+          width: 100% !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 10px !important;
+        }
+        .section-header-actions button,
+        .section-header-right button {
+          width: 100% !important;
+          margin: 0 !important;
+        }
+        
+        /* Fix slide cards grid */
+        .slide-cards {
+          grid-template-columns: 1fr !important;
+          gap: 16px !important;
+        }
+
         /* Product images larger on mobile for better visibility */
         .product-table img {
           width: 80px;
@@ -4680,148 +4823,82 @@
           aspect-ratio: 1/1;
         }
         .product-label {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 8px;
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 8px !important;
         }
-        .actions-col {
-          flex-direction: column;
-        }
-        .action-btn {
-          width: 100%;
-          justify-content: center;
-        }
-        .actions {
-          justify-content: flex-start;
+        .actions-col, .actions {
+          justify-content: flex-start !important;
           margin-top: 8px;
-        }
-        .users-section .info-row {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .btn-export {
+          display: flex;
+          gap: 12px;
           width: 100%;
-          justify-content: center;
         }
+        .action-btn, .actions button {
+          flex: 1;
+          justify-content: center;
+          padding: 10px !important;
+          width: 100%;
+        }
+        
+        /* Multi-select and specialized groups */
+        .multi-select-group {
+          padding: 8px !important;
+          gap: 6px !important;
+          max-width: 100%;
+          flex-wrap: wrap;
+        }
+        .checkbox-item {
+          padding: 6px 10px !important;
+        }
+        
+        /* Image upload group fix */
+        #products .image-upload-group,
         .image-upload-group {
-          flex-direction: column;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        .product-preview-box {
+          width: 100% !important;
+          min-height: 120px;
         }
       }
       @media (max-width: 480px) {
-        .admin-page {
-          margin-bottom: 100px;
+        .admin-layout {
+          padding: 0 8px !important;
         }
-        .insights-grid {
-          flex-direction: column;
+        .admin-main, .admin-panel {
+          padding: 8px !important;
         }
         .insight-card {
-          flex: 1 1 100%;
+          flex: 1 1 100% !important;
         }
-        /* Fix admin page overflow on mobile */
-        .admin-page {
-          padding: 0 3%;
-          max-width: 100vw;
-          overflow-x: hidden;
-        }
-        .admin-panel {
-          padding: 12px;
-          border-radius: 12px;
-          max-width: 100%;
-          overflow-x: hidden;
-        }
-        .admin-panel form {
-          padding: 12px;
-          gap: 12px;
-          max-width: 100%;
-        }
-        /* Fix product management section on small screens */
-        #products .image-upload-group {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        #products .image-upload-group label {
-          width: 100%;
-          min-width: 0;
-        }
-        .product-preview-box {
-          min-height: 80px;
-          max-width: 100%;
-        }
-        .product-preview-box.thumbnails {
-          flex-wrap: wrap;
-          padding: 8px;
-          gap: 6px;
-        }
-        .product-preview-box.thumbnails img {
-          width: 50px;
-          height: 50px;
-        }
-        /* Fix multi-select group overflow */
-        .multi-select-group {
-          max-width: 100%;
-          padding: 8px;
-          gap: 6px;
-        }
-        .checkbox-item {
-          padding: 6px 10px;
-          font-size: 0.8rem;
-          flex-shrink: 0;
-        }
-        /* Fix table wrapper scroll */
-        .table-wrap {
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-          margin: 0 -12px;
-          padding: 0 12px;
-          max-width: calc(100% + 24px);
-        }
-        .product-table {
-          min-width: auto;
-          width: 100%;
-        }
-        /* Product images in mobile view */
-        .product-images {
-          flex-wrap: wrap;
-          gap: 4px;
-        }
-        .product-images > img {
+        .product-table img {
           width: 60px;
           height: 60px;
         }
-        .product-images .thumbs-container {
-          flex-wrap: wrap;
+        .admin-panel form {
+          padding: 8px !important;
         }
-        .product-images .thumb-img {
-          width: 40px;
-          height: 40px;
+        #products .image-upload-group label,
+        .image-upload-group label {
+          width: 100% !important;
+          min-width: 0 !important;
+          padding: 12px 10px !important;
         }
-        /* Fix search container */
-        .search-container {
-          padding: 12px;
-          max-width: 100%;
+        .product-preview-box {
+          min-height: 100px !important;
+          max-width: 100% !important;
         }
-        .search-input-wrapper {
-          width: 100%;
+        .product-preview-box.thumbnails {
+          flex-wrap: wrap !important;
+          padding: 8px !important;
+          gap: 6px !important;
         }
-        .search-input-wrapper .search-input {
-          width: 100%;
-          font-size: 14px;
-        }
-        /* Fix slide cards grid */
-        .slide-cards {
-          grid-template-columns: 1fr;
-        }
-        /* Fix section header on mobile */
-        .section-header-right,
-        .section-header-actions {
-          width: 100%;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .section-header-actions button,
-        .section-header-right button {
-          width: 100%;
+        .product-preview-box.thumbnails img {
+          width: 60px !important;
+          height: 60px !important;
         }
       }
 
@@ -5646,6 +5723,14 @@
         .database-files-grid, .upload-folders-grid { grid-template-columns: repeat(2, 1fr); }
         .server-info-grid { grid-template-columns: 1fr 1fr; }
       }
+      @media (max-width: 580px) {
+        .health-overview-grid,
+        .database-files-grid, 
+        .upload-folders-grid,
+        .server-info-grid { 
+          grid-template-columns: 1fr !important; 
+        }
+      }
       @media (max-width: 480px) {
         .health-overview-grid { grid-template-columns: 1fr; }
         .database-files-grid, .upload-folders-grid { grid-template-columns: 1fr; }
@@ -6254,8 +6339,14 @@
             <span class="status-dot"></span>
             <span class="status-text">Offline</span>
           </div>
-          <a href="index.html" class="view-store-btn" target="_blank"><i class="ri-external-link-line"></i> View Store</a>
-          <a href="#" class="logout-btn" id="adminLogoutBtn"><i class="ri-logout-box-r-line"></i> Logout</a>
+          <a href="index.html" class="view-store-btn" target="_blank">
+            <i class="ri-external-link-line"></i> 
+            <span class="btn-text">View Store</span>
+          </a>
+          <a href="#" class="logout-btn" id="adminLogoutBtn">
+            <i class="ri-logout-box-r-line"></i> 
+            <span class="btn-text">Logout</span>
+          </a>
         </div>
       </div>
     </header>
@@ -7701,6 +7792,16 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
+          }
+          
+          @media (max-width: 768px) {
+            .pcp-preview-grid {
+              grid-template-columns: repeat(1, 1fr);
+              gap: 12px;
+            }
+            .pcp-live-preview {
+              padding: 16px;
+            }
           }
           
           .pcp-preview-box {
@@ -23881,6 +23982,7 @@ ${message.message}`;
               <p><strong>Deleted:</strong> ${new Date(user.deletedAt).toLocaleString()}</p>
               <p><strong>Reason:</strong> ${user.deletionReason || 'Unknown'}</p>
               <p><strong>Deleted By:</strong> ${user.deletedBy || 'Self'}</p>
+              <p><strong>Admin Notes:</strong> ${user.notes || 'None'}</p>
               <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
               <p><strong>Orders:</strong> ${user.userData?.ordersCount || 0}</p>
               <p><strong>Addresses:</strong> ${user.userData?.addressesCount || 0}</p>
