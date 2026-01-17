@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 const db = require('../utils/database');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
 const { contactLimiter, validators } = require('../middleware/security');
 const { sendContactNotification } = require('../utils/email');
@@ -240,6 +241,16 @@ router.post('/',
     }
 
     db.contacts.create(contactMessage);
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'user_message',
+      title: contactMessage.isUrgent ? 'URGENT: New User Message' : 'New User Message',
+      message: `New message from ${contactMessage.name} (${contactMessage.queryNumber}): ${contactMessage.subject}`,
+      priority: contactMessage.isUrgent ? 'high' : 'medium',
+      link: '#messages',
+      data: { messageId: contactMessage.id, queryNumber: contactMessage.queryNumber }
+    });
 
     console.log(`[AI-Enhanced] Contact message created: ${contactMessage.id}, Query: ${contactMessage.queryNumber}, Sentiment: ${contactMessage.aiSentiment}`);
 

@@ -77,6 +77,7 @@ const docsRoutes = require('./routes/docs');
 const newsletterRoutes = require('./routes/newsletter');
 const advancedAdminRoutes = require('./routes/advancedAdmin');
 const agentRoutes = require('./routes/agent');
+const adminNotificationsRoutes = require('./routes/adminNotifications');
 
 // Create Express app
 const app = express();
@@ -510,6 +511,7 @@ app.use('/api/admin', advancedAdminRoutes);
 
 // BLACKONN AI Agent (Claude/Gemini powered auto-fix)
 app.use('/api/agent', agentRoutes);
+app.use('/api/admin-notifications', adminNotificationsRoutes);
 
 // AI Engine APIs (Analytics, Fraud, Email, Search, Recommendations, Pricing, Image Processing)
 const aiRoutes = require('./routes/ai');

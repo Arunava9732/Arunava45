@@ -9,6 +9,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../utils/database');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { validators, validateRequest, passwordResetLimiter } = require('../middleware/security');
 const { body, param } = require('express-validator');
@@ -256,7 +257,17 @@ router.delete('/:id', authenticate, isAdmin, async (req, res) => {
     
     // Archive user before deletion
     archiveDeletedUser(user, 'admin', 'Account deleted by administrator');
-    
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'account_deletion',
+      title: 'Account Deleted (Admin)',
+      message: `User ${user.name || user.email} was deleted by an administrator.`,
+      priority: 'medium',
+      link: '#users',
+      data: { userId: user.id, email: user.email }
+    });
+
     // Delete avatar image if exists
     if (user.avatar) {
       deleteUploadedFile(user.avatar);
@@ -512,7 +523,7 @@ router.get('/password-resets/history/:userId', authenticate, isAdmin, (req, res)
   }
 });
 
-// Admin generates password reset OTP for a user (20 minutes validity)
+// Admin generates password reset OTP for a user (30 minutes validity)
 router.post('/password-resets/generate', authenticate, isAdmin, async (req, res) => {
   try {
     const { userId, sendEmail = true } = req.body;
@@ -544,7 +555,7 @@ router.post('/password-resets/generate', authenticate, isAdmin, async (req, res)
       email: user.email.toLowerCase(),
       token: resetToken,
       otp: otp,
-      expiresAt: new Date(Date.now() + 20 * 60 * 1000).toISOString(), // 20 minutes
+      expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutes
       used: false,
       initiatedByAdmin: true,
       adminId: req.user.id,
@@ -552,6 +563,16 @@ router.post('/password-resets/generate', authenticate, isAdmin, async (req, res)
     };
 
     db.passwordResets.create(resetRequest);
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'password_reset',
+      title: 'Password Reset Initiated',
+      message: `Admin initiated password reset for ${user.email}`,
+      priority: 'medium',
+      link: '#password-resets',
+      data: { userId: user.id, email: user.email }
+    });
 
     // Optionally send email
     let emailSent = false;
@@ -1097,6 +1118,16 @@ router.delete('/:id/self-delete', authenticate, async (req, res) => {
 
     // Archive user before deletion
     archiveDeletedUser(user, 'self', req.body.reason || 'User requested account deletion');
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'account_deletion',
+      title: 'Account Deleted (Self)',
+      message: `User ${user.name || user.email} has deleted their account. Reason: ${req.body.reason || 'No reason provided'}`,
+      priority: 'high',
+      link: '#users',
+      data: { userId: user.id, email: user.email }
+    });
 
     // Delete user avatar if exists
     if (user.avatar) {

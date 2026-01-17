@@ -11,6 +11,7 @@ const { body, param } = require('express-validator');
 const { sendOrderConfirmation, sendLowStockAlert } = require('../utils/email');
 const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
 const { notifyAdmins } = require('../utils/adminNotifier');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { sendOrderWebhook } = require('../routes/webhooks');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
@@ -161,8 +162,16 @@ router.post('/',
 
       db.orders.create(order);
       
-      console.log(`[AI-Enhanced] Order created: ${order.id}, User: ${req.user.id}, Total: ₹${order.total}`);
-      
+        // Add to Admin Notification Panel
+        addNotification({
+          type: 'order',
+          title: 'New Order Received',
+          message: `Order #${order.id} for ₹${order.total.toLocaleString()} from ${req.user.name || order.userEmail}`,
+          priority: order.total > 5000 ? 'high' : 'medium',
+          link: '#orders',
+          data: { orderId: order.id }
+        });
+
       // Only send notifications for confirmed orders (COD) - online payment orders will trigger on verification
       if (paymentConfirmed) {
         sendOrderWebhook && sendOrderWebhook('order.created', order);

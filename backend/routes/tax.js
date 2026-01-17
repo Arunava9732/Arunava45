@@ -924,12 +924,16 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
         
         let cgst = 0, sgst = 0, igst = 0;
         if (data.settings.inclusiveGst) {
-          // Price includes GST, calculate backward
+          // Price includes GST, calculate backward correctly using total rate
+          const totalRate = isInterstate ? slab.igstRate : (slab.cgstRate + slab.sgstRate);
+          const totalTax = lineTotal - (lineTotal / (1 + totalRate / 100));
+          
           if (isInterstate) {
-            igst = lineTotal - (lineTotal / (1 + slab.igstRate / 100));
+            igst = totalTax;
           } else {
-            cgst = lineTotal - (lineTotal / (1 + slab.cgstRate / 100));
-            sgst = cgst;
+            // Split total tax into CGST and SGST (50/50 for intrastate)
+            cgst = totalTax / 2;
+            sgst = totalTax / 2;
           }
         } else {
           // Price excludes GST
@@ -956,43 +960,54 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
         };
       });
       
-      invoice = {
-        id: uuidv4(),
-        invoiceNumber,
-        orderId,
-        orderNumber: order.orderNumber || orderId,
-        createdAt: new Date().toISOString(),
+        // Calculate final total based on whether GST is inclusive
+        const taxTotal = isInterstate ? totalIgst : (totalCgst + totalSgst);
+        const shipping = order.shippingCharge || order.shipping || 0;
+        const discount = order.discount || 0;
         
-        // Business details
-        businessName: data.settings.businessName || 'Blackonn',
-        businessAddress: data.settings.businessAddress || '',
-        gstNumber: data.settings.gstNumber || '',
-        businessPan: data.settings.businessPan || '',
-        invoiceLogo: data.settings.invoiceLogo || '/assets/img/logo.png',
-        businessStateCode: data.settings.stateCode || '27',
-        
-        // Customer details
-        customerName: order.shippingAddress?.name || order.customerName || 'Customer',
-        customerEmail: order.email || order.customerEmail || '',
-        customerPhone: order.shippingAddress?.phone || order.phone || '',
-        
-        // Shipping address
-        shippingAddress: order.shippingAddress || {},
-        billingAddress: order.billingAddress || order.shippingAddress || {},
-        
-        // Items with tax breakdown
-        items: itemsWithTax,
-        
-        // Amounts
-        subtotal: Math.round(subtotal * 100) / 100,
-        shippingCharge: order.shippingCharge || order.shipping || 0,
-        discount: order.discount || 0,
-        cgst: Math.round(totalCgst * 100) / 100,
-        sgst: Math.round(totalSgst * 100) / 100,
-        igst: Math.round(totalIgst * 100) / 100,
-        total: order.total || order.amount || subtotal,
-        
-        isInterstate,
+        // Sum it up correctly
+        let calculatedTotal = subtotal + shipping - discount;
+        if (!data.settings.inclusiveGst) {
+          calculatedTotal += taxTotal;
+        }
+
+        invoice = {
+          id: uuidv4(),
+          invoiceNumber,
+          orderId,
+          orderNumber: order.orderNumber || orderId,
+          createdAt: new Date().toISOString(),
+          
+          // Business details
+          businessName: data.settings.businessName || 'Blackonn',
+          businessAddress: data.settings.businessAddress || '',
+          gstNumber: data.settings.gstNumber || '',
+          businessPan: data.settings.businessPan || '',
+          invoiceLogo: data.settings.invoiceLogo || '/assets/img/logo.png',
+          businessStateCode: data.settings.stateCode || '27',
+          
+          // Customer details
+          customerName: order.shippingAddress?.name || order.customerName || 'Customer',
+          customerEmail: order.email || order.customerEmail || '',
+          customerPhone: order.shippingAddress?.phone || order.phone || '',
+          
+          // Shipping address
+          shippingAddress: order.shippingAddress || {},
+          billingAddress: order.billingAddress || order.shippingAddress || {},
+          
+          // Items with tax breakdown
+          items: itemsWithTax,
+          
+          // Amounts
+          subtotal: Math.round(subtotal * 100) / 100,
+          shippingCharge: shipping,
+          discount: discount,
+          cgst: Math.round(totalCgst * 100) / 100,
+          sgst: Math.round(totalSgst * 100) / 100,
+          igst: Math.round(totalIgst * 100) / 100,
+          total: order.total || order.amount || Math.round(calculatedTotal * 100) / 100,
+          
+          isInterstate,
         
         // Invoice customization
         footer: data.settings.invoiceFooter || '',

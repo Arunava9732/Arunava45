@@ -4,6 +4,7 @@
 
 const express = require('express');
 const db = require('../utils/database');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validateRequest, returnLimiter } = require('../middleware/security');
 const { body } = require('express-validator');
@@ -162,6 +163,16 @@ router.post('/',
 
     if (db.exchanges) {
       db.exchanges.create(exchangeRequest);
+        
+        // Add To Admin Notification Panel
+        addNotification({
+          type: 'exchange',
+          title: 'Exchange Requested',
+          message: `Exchange requested for Order #${orderId} - Reason: ${reason}`,
+          priority: 'high',
+          link: '#exchanges',
+          data: { exchangeId: exchangeRequest.id, orderId }
+        });
     }
 
     console.log(`[AI-Enhanced] Exchange request created: ${exchangeRequest.id}, Order: ${orderId}`);

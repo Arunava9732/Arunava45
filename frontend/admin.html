@@ -1056,6 +1056,267 @@
           box-sizing: border-box !important;
         }
         
+      /* Notification Bell and Panel */
+      .notification-bell-wrapper {
+        position: relative;
+        margin-right: 15px;
+      }
+
+      .btn-notification {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        padding: 0;
+      }
+
+      .btn-notification:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #1e293b;
+        padding: 0 4px;
+      }
+
+      .notification-panel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        width: 350px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: none;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+      }
+
+      .notification-panel.active {
+        display: block;
+        animation: slideDown 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      }
+
+      @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .notif-header {
+        padding: 16px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fafc;
+      }
+
+      .notif-header h3 {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #1e293b;
+        font-weight: 600;
+      }
+
+      .notif-header .controls {
+        display: flex;
+        gap: 8px;
+      }
+
+      .notif-header button {
+        background: none;
+        border: none;
+        color: #64748b;
+        font-size: 0.75rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      .notif-header button:hover {
+        color: #3b82f6;
+        background: #eff6ff;
+      }
+
+      .notif-filters {
+        padding: 8px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .notif-filters::-webkit-scrollbar { display: none; }
+
+      .notif-filter-btn {
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        font-size: 11px;
+        cursor: pointer;
+        white-space: nowrap;
+        color: #64748b;
+        transition: all 0.2s;
+      }
+
+      .notif-filter-btn.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .notif-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .notif-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        gap: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+        position: relative;
+      }
+
+      .notif-item:last-child {
+        border-bottom: none;
+      }
+
+      .notif-item:hover {
+        background: #f8fafc;
+      }
+
+      .notif-item.unread {
+        background: #eff6ff;
+      }
+
+      .notif-item.unread::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: #3b82f6;
+      }
+
+      .notif-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .notif-icon.order { background: #dcfce7; color: #16a34a; }
+      .notif-icon.return { background: #fee2e2; color: #dc2626; }
+      .notif-icon.exchange { background: #fef9c3; color: #ca8a04; }
+      .notif-icon.password_reset { background: #e0f2fe; color: #0284c7; }
+      .notif-icon.user_message { background: #f3e8ff; color: #9333ea; }
+      .notif-icon.account_deletion { background: #fef2f2; color: #b91c1c; }
+
+      .notif-content {
+        flex-grow: 1;
+        min-width: 0;
+      }
+
+      .notif-title {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 2px;
+      }
+
+      .notif-message {
+        display: block;
+        font-size: 0.8rem;
+        color: #64748b;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .notif-time {
+        display: block;
+        font-size: 0.7rem;
+        color: #94a3b8;
+        margin-top: 4px;
+      }
+
+      .notif-delete-btn {
+        opacity: 0;
+        padding: 4px;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .notif-item:hover .notif-delete-btn {
+        opacity: 1;
+      }
+
+      .notif-delete-btn:hover {
+        color: #ef4444;
+      }
+
+      .notif-footer {
+        padding: 12px;
+        text-align: center;
+        border-top: 1px solid #f1f5f9;
+        background: #f8fafc;
+      }
+
+      .notif-footer a {
+        color: #3b82f6;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .notif-empty {
+        padding: 40px 20px;
+        text-align: center;
+        color: #94a3b8;
+      }
+
+      .notif-empty i {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 8px;
+        color: #cbd5e1;
+      }
+
         /* Panel body proper padding */
         .admin-section .panel-body {
           padding: 16px !important;
@@ -6324,6 +6585,551 @@
         padding: 2px 8px;
         border-radius: 8px;
       }
+
+      /* Admin Personal Assistant Styles */
+      .admin-assistant-trigger {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        z-index: 10002;
+        transition: all 0.3s ease;
+        border: none;
+      }
+
+      .admin-assistant-trigger:hover {
+        transform: scale(1.08);
+        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+      }
+
+      .admin-assistant-trigger .badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        min-width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #1e293b;
+        padding: 0 4px;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+      }
+
+      .admin-assistant-panel {
+        position: fixed;
+        bottom: 105px;
+        right: 24px;
+        width: 420px;
+        max-width: calc(100vw - 48px);
+        max-height: calc(100vh - 150px);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 24px;
+        box-shadow: 
+          0 25px 60px rgba(0, 0, 0, 0.18),
+          0 0 0 1px rgba(0, 0, 0, 0.05);
+        z-index: 10005;
+        display: none;
+        flex-direction: column;
+        overflow: visible;
+        border: none;
+        animation: slideUpAssistant 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes slideUpAssistant {
+        from { opacity: 0; transform: translateY(30px) scale(0.9); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .admin-assistant-panel.active {
+        display: flex;
+      }
+
+      body.assistant-open {
+        overflow: hidden !important;
+      }
+
+      .assistant-header {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .assistant-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .assistant-avatar {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #fff;
+        position: relative;
+      }
+
+      .assistant-avatar::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 12px;
+        height: 12px;
+        background: #10b981;
+        border-radius: 50%;
+        border: 2px solid #0f172a;
+      }
+
+      .assistant-header-content {
+        flex: 1;
+      }
+
+      .assistant-header-content h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .assistant-header-content p {
+        margin: 2px 0 0;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.7);
+      }
+
+      .assistant-close {
+        cursor: pointer;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+      }
+
+      .assistant-close:hover {
+        opacity: 1;
+      }
+
+      .assistant-tabs {
+        display: flex;
+        padding: 16px;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        gap: 10px;
+      }
+
+      .assistant-tab {
+        flex: 1;
+        padding: 10px 8px;
+        border: none;
+        background: transparent;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .assistant-tab i {
+        font-size: 1.1rem;
+      }
+
+      .assistant-tab:hover {
+        background: #f1f5f9;
+        color: #374151;
+      }
+
+      .assistant-tab.active {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+      }
+
+      .assistant-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      }
+
+      .assistant-body::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .assistant-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .assistant-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+
+      .assistant-task-card {
+        padding: 16px;
+        border-radius: 18px;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: visible;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 32px);
+        margin: 0 auto;
+      }
+
+      .assistant-task-card::before {
+        content: '';
+        position: absolute;
+        left: -1px;
+        top: -1px;
+        bottom: -1px;
+        width: 6px;
+        border-radius: 18px 0 0 18px;
+        z-index: 1;
+      }
+
+      .assistant-task-card.priority-high { 
+        border-left: none;
+      }
+      .assistant-task-card.priority-high::before { 
+        background: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%); 
+      }
+      .assistant-task-card.priority-medium { 
+        border-left: none;
+      }
+      .assistant-task-card.priority-medium::before { 
+        background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); 
+      }
+      .assistant-task-card.priority-low { 
+        border-left: none;
+      }
+      .assistant-task-card.priority-low::before { 
+        background: linear-gradient(180deg, #10b981 0%, #059669 100%); 
+      }
+
+      .assistant-task-card:hover {
+        transform: translateY(-4px) translateX(2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        border-color: transparent;
+      }
+
+      .task-content {
+          flex: 1;
+      }
+
+      .task-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 6px;
+      }
+
+      .task-type {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .task-title {
+        font-weight: 800;
+        color: #0f172a;
+        font-size: 1rem;
+        display: block;
+        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+      }
+
+      .task-desc {
+        font-size: 0.875rem;
+        color: #64748b;
+        line-height: 1.5;
+      }
+
+      .task-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid #f1f5f9;
+      }
+
+      .task-date {
+        font-size: 0.78rem;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+      }
+
+      .task-date i {
+        font-size: 1rem;
+      }
+
+      .task-actions {
+          display: flex;
+          gap: 8px;
+      }
+
+      .task-action {
+        padding: 6px 14px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .task-action:hover {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      }
+
+      .assistant-empty {
+        text-align: center;
+        padding: 60px 30px;
+        color: #94a3b8;
+      }
+
+      .assistant-empty i {
+        font-size: 4rem;
+        margin-bottom: 16px;
+        display: block;
+        background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .assistant-empty p {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+      }
+
+      /* Quick Stats Dashboard */
+      .assistant-stats {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 8px;
+        padding: 12px 16px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e5e7eb;
+        overflow: visible !important;
+        visibility: visible !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .stat-mini {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px;
+        padding: 10px 6px;
+        background: #fff;
+        border-radius: 12px;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: 1px solid transparent;
+        flex: 1 1 25% !important;
+        min-width: 0 !important;
+        visibility: visible !important;
+      }
+
+      .stat-mini:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        border-color: #e5e7eb;
+      }
+
+      .stat-mini.active {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+      }
+
+      @keyframes badgePulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70% { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      }
+
+      .admin-assistant-trigger .badge.pulse {
+        animation: badgePulse 2s infinite;
+      }
+
+      .stat-mini-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+
+      .stat-mini-icon.pending {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #d97706;
+      }
+
+      .stat-mini-icon.done {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #059669;
+      }
+
+      .stat-mini-icon.urgent {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #dc2626;
+      }
+
+      .stat-mini-icon.sales {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #2563eb;
+      }
+
+      .stat-mini-content {
+        text-align: center;
+      }
+
+      .stat-mini-value {
+        display: block !important;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+      }
+
+      .stat-mini-label {
+        display: block !important;
+        font-size: 0.6rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin-top: 1px;
+      }
+
+      .assistant-footer {
+        padding: 14px 16px !important;
+        background: #fff !important;
+        border-top: 1px solid #e5e7eb !important;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 12px !important;
+      }
+
+      .assistant-footer button {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+        border: 1px solid #e2e8f0 !important;
+        font-size: 0.78rem !important;
+        color: #475569 !important;
+        cursor: pointer !important;
+        padding: 10px 18px !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        transition: all 0.3s !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+      }
+
+      .assistant-footer button:hover {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #fff !important;
+        border-color: transparent !important;
+      }
+
+      .assistant-footer button i {
+        font-size: 1rem !important;
+      }
+
+      /* Responsive Adjustments for Mobile */
+      @media (max-width: 640px) {
+        .admin-assistant-panel {
+          bottom: 0px;
+          right: 0px;
+          left: 0px;
+          width: 100vw;
+          height: 85vh;
+          max-width: none;
+          max-height: none;
+          border-radius: 24px 24px 0 0;
+        }
+        .admin-assistant-trigger {
+          bottom: 16px;
+          left: 16px;
+          right: auto;
+          width: 60px;
+          height: 60px;
+          font-size: 1.6rem;
+        }
+        .assistant-stats {
+          flex-wrap: wrap !important;
+          gap: 10px;
+        }
+        .stat-mini {
+          flex: 1 1 calc(50% - 5px) !important;
+          min-width: calc(50% - 5px) !important;
+        }
+        .stat-mini {
+          padding: 10px 6px;
+        }
+        .stat-mini-icon {
+          width: 32px;
+          height: 32px;
+          font-size: 1rem;
+        }
+        .stat-mini-value {
+          font-size: 1rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -6339,6 +7145,7 @@
             <span class="status-dot"></span>
             <span class="status-text">Offline</span>
           </div>
+
           <a href="index.html" class="view-store-btn" target="_blank">
             <i class="ri-external-link-line"></i> 
             <span class="btn-text">View Store</span>
@@ -6590,6 +7397,266 @@
         }
         
         // Attach logout button event listener
+        // ==========================================
+        // ADMIN NOTIFICATION SYSTEM
+        // ==========================================
+        const AdminNotifications = {
+          list: [],
+          filter: 'all',
+          isOpen: false,
+
+          init() {
+            this.fetch();
+            this.setupListeners();
+            setInterval(() => this.fetch(), 60000);
+          },
+
+          async fetch() {
+            try {
+              const data = await apiRequest('/admin-notifications');
+              if (data.success) {
+                // Sort by creation date descending
+                this.list = data.notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                this.render();
+                this.updateBadge();
+              }
+            } catch (err) {
+              console.error('Failed to fetch notifications:', err);
+            }
+          },
+
+          updateBadge() {
+            const badge = document.getElementById('assistantBadge');
+            if (!badge) return; // Safety check
+            
+            const unreadCount = this.list.filter(n => !n.read).length;
+            if (unreadCount > 0) {
+              badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+              badge.style.display = 'flex';
+            } else {
+              badge.style.display = 'none';
+            }
+            
+            // Update stats dashboard
+            this.updateStats();
+          },
+
+          updateStats() {
+            const pending = this.list.filter(n => !n.read).length;
+            const done = this.list.filter(n => n.read).length;
+            const urgent = this.list.filter(n => !n.read && (n.type === 'account_deletion' || n.type === 'cancellation' || n.type === 'return')).length;
+            const todayOrders = this.list.filter(n => {
+              const created = new Date(n.createdAt);
+              const today = new Date();
+              return n.type === 'order' && created.toDateString() === today.toDateString();
+            }).length;
+
+            const pendingEl = document.querySelector('#statPending .stat-mini-value');
+            const doneEl = document.querySelector('#statDone .stat-mini-value');
+            const urgentEl = document.querySelector('#statUrgent .stat-mini-value');
+            const salesEl = document.querySelector('#statSales .stat-mini-value');
+
+            if (pendingEl) pendingEl.textContent = pending;
+            if (doneEl) doneEl.textContent = done;
+            if (urgentEl) urgentEl.textContent = urgent;
+            if (salesEl) salesEl.textContent = todayOrders;
+          },
+
+          setupListeners() {
+            // Close panel when clicking outside
+            document.addEventListener('click', (e) => {
+              const panel = document.getElementById('assistantPanel');
+              const trigger = document.getElementById('assistantTrigger');
+              if (this.isOpen && !panel.contains(e.target) && !trigger.contains(e.target)) {
+                this.togglePanel();
+              }
+            });
+          },
+
+          togglePanel() {
+            const panel = document.getElementById('assistantPanel');
+            this.isOpen = !this.isOpen;
+            panel.classList.toggle('active', this.isOpen);
+            document.body.classList.toggle('assistant-open', this.isOpen);
+            if (this.isOpen) {
+              this.render();
+            }
+          },
+
+          setFilter(filter) {
+            this.filter = filter;
+            document.querySelectorAll('.assistant-tab').forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.tab === filter);
+            });
+            this.render();
+          },
+
+          async markRead(id) {
+            try {
+              await apiRequest(`/admin-notifications/${id}/read`, { method: 'POST' });
+              const notif = this.list.find(n => n.id === id);
+              if (notif) notif.read = true;
+              this.render();
+              this.updateBadge();
+            } catch (err) {
+              console.error('Failed to mark as done:', err);
+            }
+          },
+
+          async markAllRead() {
+            try {
+              await apiRequest('/admin-notifications/read-all', { method: 'POST' });
+              this.list.forEach(n => n.read = true);
+              this.render();
+              this.updateBadge();
+              showNotification('All tasks marked as completed!', 'success');
+            } catch (err) {
+              showNotification('Failed to mark all as completed', 'error');
+            }
+          },
+
+          async clearAll() {
+            const confirmed = await window.showConfirmModal({
+              title: 'Clear History',
+              message: 'Are you sure you want to clear all completed task history?',
+              type: 'warning'
+            });
+            if (confirmed) {
+              try {
+                await apiRequest('/admin-notifications/history/clear', { method: 'DELETE' });
+                this.list = this.list.filter(n => !n.read);
+                this.render();
+                this.updateBadge();
+                showNotification('History cleared', 'info');
+              } catch (err) {
+                showNotification('Failed to clear history', 'error');
+              }
+            }
+          },
+
+          handleAction(id) {
+            const notif = this.list.find(n => n.id === id);
+            if (!notif) return;
+            
+            this.markRead(id);
+            this.togglePanel();
+
+            if (notif.link) {
+              const section = notif.link.replace('#', '');
+              if (section) {
+                const sidebarItem = document.querySelector(`.sidebar [data-section="${section}"]`) || 
+                                   document.querySelector(`.mobile-quick-menu [data-section="${section}"]`);
+                if (sidebarItem) {
+                  sidebarItem.click();
+                } else {
+                  window.location.hash = notif.link;
+                }
+              }
+            }
+          },
+
+          render() {
+            const container = document.getElementById('assistantList');
+            if (!container) return;
+
+            let filtered = this.list;
+            if (this.filter === 'urgent') {
+               filtered = this.list.filter(n => !n.read && (n.type === 'account_deletion' || n.type === 'cancellation' || n.type === 'return'));
+            } else if (this.filter === 'unread') {
+               filtered = this.list.filter(n => !n.read);
+            } else if (this.filter === 'read') {
+               filtered = this.list.filter(n => n.read);
+            } else if (this.filter !== 'all') {
+              filtered = this.list.filter(n => n.type === this.filter);
+            }
+
+            // Update stats visual active state
+            document.querySelectorAll('.stat-mini').forEach(el => el.classList.remove('active'));
+            if (this.filter === 'unread') document.getElementById('statPending')?.classList.add('active');
+            if (this.filter === 'read') document.getElementById('statDone')?.classList.add('active');
+            if (this.filter === 'urgent') document.getElementById('statUrgent')?.classList.add('active');
+            if (this.filter === 'order') document.getElementById('statSales')?.classList.add('active');
+
+            if (filtered.length === 0) {
+              container.innerHTML = `
+                <div class="assistant-empty">
+                  <i class="ri-checkbox-circle-line"></i>
+                  <p>${this.filter === 'urgent' ? 'No urgent matters right now.' : 
+                        this.filter === 'read' ? 'No completed tasks yet.' : 'All caught up!'}</p>
+                </div>
+              `;
+              return;
+            }
+
+            container.innerHTML = filtered.map(n => {
+              const timeStr = this.getTimeAgo(new Date(n.createdAt));
+              const priority = (n.type === 'order' || n.type === 'user_message') ? 'medium' : 
+                               (n.type === 'account_deletion' || n.type === 'cancellation' || n.type === 'return') ? 'high' : 'low';
+              
+              const typeLabels = {
+                  order: 'New Sale',
+                  return: 'Return Request',
+                  exchange: 'Exchange',
+                  user_message: 'Customer Inquiry',
+                  account_deletion: 'Security Alert',
+                  cancellation: 'Cancellation',
+                  biometric: 'Biometric Login',
+                  signup: 'New Account'
+              };
+
+              return `
+                <div class="assistant-task-card priority-${priority} ${n.read ? '' : 'unread'}">
+                  <div class="task-content">
+                    <div class="task-header-row">
+                      <span class="task-type" style="color: ${priority === 'high' ? '#ef4444' : priority === 'medium' ? '#f59e0b' : '#10b981'}">
+                        ${typeLabels[n.type] || 'Task'}
+                      </span>
+                    </div>
+                    <span class="task-title">${n.title}</span>
+                    <p class="task-desc">${n.message}</p>
+                    <div class="task-footer">
+                      <span class="task-date"><i class="ri-time-line"></i> ${timeStr}</span>
+                      <div class="task-actions">
+                          ${!n.read ? `<button class="task-action" onclick="AdminNotifications.handleAction('${n.id}')">View</button>` : ''}
+                          <button class="task-action" style="background:none; color:#94a3b8;" onclick="AdminNotifications.deleteNotif('${n.id}', event)">
+                              <i class="ri-delete-bin-line"></i>
+                          </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          },
+
+          async deleteNotif(id, e) {
+            e.stopPropagation();
+            try {
+              await apiRequest(`/admin-notifications/${id}`, { method: 'DELETE' });
+              this.list = this.list.filter(n => n.id !== id);
+              this.render();
+              this.updateBadge();
+            } catch (err) {
+              showNotification('Failed to remove task', 'error');
+            }
+          },
+
+          getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return "Just now";
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return minutes + "m ago";
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return hours + "h ago";
+            return Math.floor(hours / 24) + "d ago";
+          }
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+          AdminNotifications.init();
+        });
+
         document.getElementById('adminLogoutBtn')?.addEventListener('click', (e) => {
           e.preventDefault();
           showLogoutModal();
@@ -11083,7 +12150,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-shield-check-line"></i> Security Manager</h2>
-            <small>Monitor security events and threats <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Monitor security events and threats</small>
           </div>
           <div class="section-header-right">
             <button class="secondary" id="refreshSecurityBtn">
@@ -11156,7 +12223,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-brain-line"></i> ML Engine</h2>
-            <small>Machine learning models and predictions <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Machine learning models and predictions</small>
           </div>
           <div class="section-header-right">
             <button class="primary" id="trainModelsBtn">
@@ -11224,7 +12291,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-bug-line"></i> Error Tracker</h2>
-            <small>Monitor and track application errors <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Monitor and track application errors</small>
           </div>
           <div class="section-header-right">
             <button class="secondary" id="clearErrorsBtn">
@@ -11288,7 +12355,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-test-tube-line"></i> A/B Testing</h2>
-            <small>Manage and monitor A/B tests <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Manage and monitor A/B tests</small>
           </div>
           <div class="section-header-right">
             <button class="primary" id="createTestBtn">
@@ -11343,7 +12410,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-speed-line"></i> Performance Optimizer</h2>
-            <small>Monitor and optimize site performance <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Monitor and optimize site performance</small>
           </div>
           <div class="section-header-right">
             <button class="primary" onclick="window.performanceOptimizer?.analyzePerformance()">
@@ -11407,7 +12474,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-smartphone-line"></i> PWA Manager</h2>
-            <small>Progressive Web App status and settings <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Progressive Web App status and settings</small>
           </div>
         </div>
         <div class="panel-body">
@@ -11476,7 +12543,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-emotion-line"></i> Emotion AI</h2>
-            <small>Real-time emotion detection and adaptive UX <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>Real-time emotion detection and adaptive UX</small>
           </div>
           <div class="section-header-right">
             <button class="secondary" onclick="window.emotionAI?.startDetection()">
@@ -11637,7 +12704,7 @@
         <div class="section-header">
           <div class="section-header-left">
             <h2><i class="ri-brain-line"></i> Neural Commerce</h2>
-            <small>AI-powered intent prediction and BCI-ready interface <span class="badge demo-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px;">DEMO</span></small>
+            <small>AI-powered intent prediction and BCI-ready interface</small>
           </div>
           <div class="section-header-right">
             <button class="secondary" onclick="window.neuralCommerce?.init()">
@@ -12610,7 +13677,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
             return `
               <tr>
-                <td><input type="checkbox" class="return-checkbox" data-id="${ret.id}" aria-label="Select return ${ret.id}" /></td>
+                <td data-label="Select"><input type="checkbox" class="return-checkbox" data-id="${ret.id}" aria-label="Select return ${ret.id}" /></td>
                 <td data-label="Return ID">
                   <strong>${ret.id}</strong>
                   <div class="last-activity">${timeStr}</div>
@@ -13096,7 +14163,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           
           return `
             <tr>
-              <td>
+              <td data-label="User">
                 <div class="user-info">
                   <div class="user-avatar">${initials}</div>
                   <div class="user-details">
@@ -13105,7 +14172,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                   </div>
                 </div>
               </td>
-              <td>
+              <td data-label="OTP Code">
                 <span class="otp-code">
                   ${reset.otp}
                   <button class="copy-btn" onclick="copyOtpToClipboard('${reset.otp}')" title="Copy OTP">
@@ -13113,18 +14180,18 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                   </button>
                 </span>
               </td>
-              <td>
+              <td data-label="Expires In">
                 <span class="expires-badge ${expiresClass}">
-                  ${minutesLeft > 0 ? `${minutesLeft} min left` : 'Expired'}
+                  ${minutesLeft > 0 ? minutesLeft + ' min left' : 'Expired'}
                 </span>
               </td>
-              <td class="hide-mobile">
-                ${new Date(reset.createdAt).toLocaleString()}
+              <td data-label="Type">
+                <span class="type-pill">${reset.type || 'Reset'}</span>
               </td>
-              <td>
-                <div class="action-btns" style="display: flex; gap: 8px;">
-                  <button class="btn-action invalidate" onclick="invalidateOtp('${reset.id}')" title="Invalidate OTP" style="background: #fee2e2; color: #dc2626; border: 1px solid #f87171; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.85rem;">
-                    <i class="ri-close-circle-line"></i> Invalidate
+              <td data-label="Action">
+                <div class="action-btns">
+                  <button class="btn-action invalidate" onclick="invalidateOtp('${reset.id}')" title="Invalidate OTP">
+                    <i class="ri-close-circle-line"></i> <span class="hide-mobile">Invalidate</span>
                   </button>
                 </div>
               </td>
@@ -13137,44 +14204,41 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         const tbody = document.getElementById('passwordResetUsersBody');
         const countEl = document.getElementById('passwordResetUserCount');
         const searchInput = document.getElementById('passwordResetSearch');
-        const searchTerm = searchInput?.value.toLowerCase() || '';
-        
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
         if (!tbody) return;
-        
-        // Filter users
+
         let filteredUsers = passwordResetUsers.filter(user => {
           if (!searchTerm) return true;
           const name = (user.name || '').toLowerCase();
           const email = (user.email || '').toLowerCase();
           return name.includes(searchTerm) || email.includes(searchTerm);
         });
-        
-        if (countEl) {
-          countEl.textContent = filteredUsers.length;
-        }
-        
+
+        if (countEl) countEl.textContent = filteredUsers.length;
+
         if (!filteredUsers.length) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="6" class="empty-state">
-                <i class="ri-user-search-line"></i>
-                <p>${searchTerm ? 'No users found matching your search' : 'No users available'}</p>
+              <td colspan="5" class="empty-state">
+                <i class="ri-user-line"></i>
+                <p>No users found</p>
               </td>
             </tr>
           `;
           return;
         }
-        
+
         tbody.innerHTML = filteredUsers.map(user => {
           const initials = (user.name || 'U').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
           const isAdmin = user.role === 'admin';
           const statusClass = user.isBlocked ? 'blocked' : (isAdmin ? 'admin' : 'active');
           const statusText = user.isBlocked ? 'Blocked' : (isAdmin ? 'Admin' : 'Active');
           const hasPendingReset = user.hasPendingReset;
-          
+
           return `
             <tr>
-              <td>
+              <td data-label="User">
                 <div class="user-info">
                   <div class="user-avatar" style="${isAdmin ? 'background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);' : ''}">${initials}</div>
                   <div class="user-details">
@@ -13183,22 +14247,22 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                   </div>
                 </div>
               </td>
-              <td class="hide-mobile">
+              <td data-label="Status">
                 <span class="status-badge ${statusClass}">${statusText}</span>
               </td>
-              <td class="hide-mobile">
+              <td data-label="Last Reset">
                 ${user.lastResetDate ? new Date(user.lastResetDate).toLocaleDateString() : 'Never'}
               </td>
-              <td class="hide-mobile">
+              <td data-label="OTP Active">
                 ${hasPendingReset ? '<span class="expires-badge warning">OTP Active</span>' : '-'}
               </td>
-              <td>
-                <div class="action-btns" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="btn-action generate" onclick="generateOtpForUser('${user.id}')" title="Generate OTP" ${hasPendingReset ? 'disabled style="opacity:0.5; cursor: not-allowed;"' : 'style="background: #ecfdf5; color: #059669; border: 1px solid #10b981; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.85rem;"'}>
-                    <i class="ri-key-line"></i> Generate OTP
+              <td data-label="Action">
+                <div class="action-btns">
+                  <button class="btn-action generate" onclick="generateOtpForUser('${user.id}')" title="Generate OTP" ${hasPendingReset ? 'disabled' : ''}>
+                    <i class="ri-key-line"></i> <span class="hide-mobile">Generate OTP</span>
                   </button>
-                  <button class="btn-action direct" onclick="showDirectResetModal('${user.id}', '${(user.name || '').replace(/'/g, "\\'")}', '${user.email || ''}')" title="Direct Reset" style="background: #eff6ff; color: #2563eb; border: 1px solid #3b82f6; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.85rem;">
-                    <i class="ri-lock-unlock-line"></i> Direct Reset
+                  <button class="btn-action direct" onclick="showDirectResetModal('${user.id}', '${(user.name || '').replace(/'/g, "\\'")}', '${user.email || ''}')" title="Direct Reset">
+                    <i class="ri-lock-password-line"></i> <span class="hide-mobile">Direct Reset</span>
                   </button>
                 </div>
               </td>
@@ -13210,7 +14274,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
       async function generateOtpForUser(userId) {
         const confirmed = await AdminUniModal.confirm(
           'Generate OTP',
-          'This will generate a 6-digit OTP valid for 20 minutes. The user will receive it via email. Continue?',
+          'This will generate a 6-digit OTP valid for 30 minutes. The user will receive it via email. Continue?',
           { confirmText: 'Generate OTP' }
         );
         
@@ -13232,7 +14296,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                 ${data.otp}
               </div>
               <div style="color: #ef4444; font-size: 0.85rem; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                <i class="ri-time-line"></i> Valid for 20 minutes
+                <i class="ri-time-line"></i> Valid for 30 minutes
               </div>
               <button onclick="copyOtpToClipboard('${data.otp}')" class="admin-uni-modal-btn primary" style="width: auto; padding: 10px 24px;">
                 <i class="ri-file-copy-line"></i> Copy OTP
@@ -14175,7 +15239,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
             return `
               <tr>
-                <td><input type="checkbox" class="exchange-checkbox" data-id="${exc.id}" aria-label="Select exchange ${exc.id}" /></td>
+                <td data-label="Select"><input type="checkbox" class="exchange-checkbox" data-id="${exc.id}" aria-label="Select exchange ${exc.id}" /></td>
                 <td data-label="Exchange ID">
                   <strong>${exc.id}</strong>
                   <div class="last-activity">${timeStr}</div>
@@ -14359,7 +15423,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
 
             return `
               <tr>
-                <td><input type="checkbox" class="cancellation-checkbox" data-id="${canc.id}" aria-label="Select cancellation ${canc.id}" /></td>
+                <td data-label="Select"><input type="checkbox" class="cancellation-checkbox" data-id="${canc.id}" aria-label="Select cancellation ${canc.id}" /></td>
                 <td data-label="Cancel ID">
                   <strong>${canc.id}</strong>
                   <div class="last-activity">${timeStr}</div>
@@ -19309,11 +20373,11 @@ ${message.message}`;
           const escapedName = (p.name || 'Unnamed').replace(/'/g, "\\'");
           return `
             <tr>
-              <td>${p.name || 'Unnamed'}</td>
-              <td><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="editManualSku('${p.id}', '${p.sku || ''}')" title="Click to edit manually">${p.sku || '<span style="color:#9ca3af">Not Set</span>'}</code></td>
-              <td><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="editManualBarcode('${p.id}', '${p.barcode || ''}')" title="Click to edit manually">${p.barcode || '<span style="color:#9ca3af">Not Set</span>'}</code></td>
-              <td>${createdDate ? new Date(createdDate).toLocaleDateString() : '-'}</td>
-              <td class="actions">
+              <td data-label="Product">${p.name || 'Unnamed'}</td>
+              <td data-label="SKU ID"><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="editManualSku('${p.id}', '${p.sku || ''}')" title="Click to edit manually">${p.sku || '<span style="color:#9ca3af">Not Set</span>'}</code></td>
+              <td data-label="Barcode"><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="editManualBarcode('${p.id}', '${p.barcode || ''}')" title="Click to edit manually">${p.barcode || '<span style="color:#9ca3af">Not Set</span>'}</code></td>
+              <td data-label="Assigned Date">${createdDate ? new Date(createdDate).toLocaleDateString() : '-'}</td>
+              <td data-label="Actions" class="actions">
                 <button onclick="generateSku('${p.id}')" title="${p.sku ? 'Regenerate' : 'Generate'} SKU"><i class="ri-qr-code-line"></i></button>
                 <button onclick="generateBarcode('${p.id}')" title="${p.barcode ? 'Regenerate' : 'Generate'} Barcode"><i class="ri-barcode-line"></i></button>
               </td>
@@ -19475,12 +20539,12 @@ ${message.message}`;
           
           return `
             <tr>
-              <td>${p.name || 'Unnamed'}</td>
-              <td><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;">${p.sku || '-'}</code></td>
-              <td><strong>${p.stock || 0}</strong></td>
-              <td><span class="${statusClass}">${statusText}</span></td>
-              <td>${lastUpdated ? new Date(lastUpdated).toLocaleDateString() : '-'}</td>
-              <td class="actions">
+              <td data-label="Product">${p.name || 'Unnamed'}</td>
+              <td data-label="SKU ID"><code style="background:#f3f4f6;padding:4px 8px;border-radius:4px;">${p.sku || '-'}</code></td>
+              <td data-label="Current Stock"><strong>${p.stock || 0}</strong></td>
+              <td data-label="Status"><span class="${statusClass}">${statusText}</span></td>
+              <td data-label="Last Update">${lastUpdated ? new Date(lastUpdated).toLocaleDateString() : '-'}</td>
+              <td data-label="Actions" class="actions">
                 <button onclick="openStockModal('${p.id}', '${escapedName}', ${p.stock || 0})" title="Update Stock">
                   <i class="ri-edit-line"></i>
                 </button>
@@ -19670,14 +20734,14 @@ ${message.message}`;
         }
         tbody.innerHTML = coupons.map(c => `
           <tr>
-            <td><code style="font-weight:600;">${c.code}</code></td>
-            <td>${c.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}</td>
-            <td>${c.type === 'percentage' ? c.value + '%' : '₹' + c.value}</td>
-            <td>₹${c.minOrderValue || 0}</td>
-            <td>${c.usedCount || 0} / ${c.maxUses || '∞'}</td>
-            <td>${c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : 'Never'}</td>
-            <td><span class="${c.active ? 'status-active' : 'status-inactive'}">${c.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Code"><code style="font-weight:600;">${c.code}</code></td>
+            <td data-label="Type">${c.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}</td>
+            <td data-label="Value">${c.type === 'percentage' ? c.value + '%' : '₹' + c.value}</td>
+            <td data-label="Min Order">₹${c.minOrderValue || 0}</td>
+            <td data-label="Usage">${c.usedCount || 0} / ${c.maxUses || '∞'}</td>
+            <td data-label="Expires">${c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : 'Never'}</td>
+            <td data-label="Status"><span class="${c.active ? 'status-active' : 'status-inactive'}">${c.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deleteCoupon('${c.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -19714,13 +20778,13 @@ ${message.message}`;
         }
         tbody.innerHTML = sales.map(s => `
           <tr>
-            <td>${s.name}</td>
-            <td>${s.discountPercentage}%</td>
-            <td>${new Date(s.startDate).toLocaleDateString()}</td>
-            <td>${new Date(s.endDate).toLocaleDateString()}</td>
-            <td>${s.productIds?.length || 'All'}</td>
-            <td><span class="${s.active ? 'status-active' : 'status-inactive'}">${s.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Sale Name">${s.name}</td>
+            <td data-label="Discount">${s.discountPercentage}%</td>
+            <td data-label="Start">${new Date(s.startDate).toLocaleDateString()}</td>
+            <td data-label="End">${new Date(s.endDate).toLocaleDateString()}</td>
+            <td data-label="Products">${s.productIds?.length || 'All'}</td>
+            <td data-label="Status"><span class="${s.active ? 'status-active' : 'status-inactive'}">${s.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deleteSale('${s.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -19757,12 +20821,12 @@ ${message.message}`;
         }
         tbody.innerHTML = bundles.map(b => `
           <tr>
-            <td>${b.name}</td>
-            <td>${b.productIds?.length || 0} items</td>
-            <td>₹${b.bundlePrice}</td>
-            <td>₹${b.savings || 0}</td>
-            <td><span class="${b.active ? 'status-active' : 'status-inactive'}">${b.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Bundle Name">${b.name}</td>
+            <td data-label="Products">${b.productIds?.length || 0} items</td>
+            <td data-label="Bundle Price">₹${b.bundlePrice}</td>
+            <td data-label="Savings">₹${b.savings || 0}</td>
+            <td data-label="Status"><span class="${b.active ? 'status-active' : 'status-inactive'}">${b.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deleteBundle('${b.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -19842,13 +20906,13 @@ ${message.message}`;
         }
         tbody.innerHTML = popups.map(p => `
           <tr>
-            <td>${p.title}</td>
-            <td>${p.type || 'promo'}</td>
-            <td>${p.delaySeconds || 5}s</td>
-            <td>${p.startDate ? new Date(p.startDate).toLocaleDateString() : 'Now'}</td>
-            <td>${p.endDate ? new Date(p.endDate).toLocaleDateString() : 'Never'}</td>
-            <td><span class="${p.active ? 'status-active' : 'status-inactive'}">${p.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Title">${p.title}</td>
+            <td data-label="Type">${p.type || 'promo'}</td>
+            <td data-label="Delay (s)">${p.delaySeconds || 5}s</td>
+            <td data-label="Start">${p.startDate ? new Date(p.startDate).toLocaleDateString() : 'Now'}</td>
+            <td data-label="End">${p.endDate ? new Date(p.endDate).toLocaleDateString() : 'Never'}</td>
+            <td data-label="Status"><span class="${p.active ? 'status-active' : 'status-inactive'}">${p.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deletePopup('${p.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -20010,8 +21074,8 @@ ${message.message}`;
             endpoint = '/api/marketing/popups';
             payload = {
               title: document.getElementById('modalTitle').value,
-              content: document.getElementById('modalContent').value,
-              delaySeconds: parseInt(document.getElementById('modalDelay').value) || 5,
+              message: document.getElementById('modalContent').value,
+              delay: (parseInt(document.getElementById('modalDelay').value) || 5) * 1000,
               active: true
             };
             break;
@@ -20132,12 +21196,12 @@ ${message.message}`;
         }
         tbody.innerHTML = zones.map(z => `
           <tr>
-            <td>${z.name}</td>
-            <td>${z.states?.join(', ') || '-'}</td>
-            <td>₹${z.rate}</td>
-            <td>${z.estimatedDays} days</td>
-            <td><span class="${z.active ? 'status-active' : 'status-inactive'}">${z.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Zone Name">${z.name}</td>
+            <td data-label="States">${z.states?.join(', ') || '-'}</td>
+            <td data-label="Rate">₹${z.rate}</td>
+            <td data-label="Estimated">${z.estimatedDays} days</td>
+            <td data-label="Status"><span class="${z.active ? 'status-active' : 'status-inactive'}">${z.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deleteZone('${z.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -20263,12 +21327,12 @@ ${message.message}`;
         }
         tbody.innerHTML = shipments.map(s => `
           <tr>
-            <td><code>${s.trackingNumber}</code></td>
-            <td>${s.orderId}</td>
-            <td>${s.courier}</td>
-            <td><span class="status-badge status-${s.status}">${s.status}</span></td>
-            <td>${new Date(s.createdAt).toLocaleDateString()}</td>
-            <td class="actions">
+            <td data-label="Tracking"><code>${s.trackingNumber}</code></td>
+            <td data-label="Order ID">${s.orderId}</td>
+            <td data-label="Courier">${s.courier}</td>
+            <td data-label="Status"><span class="status-badge status-${s.status}">${s.status}</span></td>
+            <td data-label="Created">${new Date(s.createdAt).toLocaleDateString()}</td>
+            <td data-label="Actions" class="actions">
               <button onclick="viewShipment('${s.id}')" title="View"><i class="ri-eye-line"></i></button>
             </td>
           </tr>
@@ -20308,12 +21372,12 @@ ${message.message}`;
         }
         tbody.innerHTML = records.map(r => `
           <tr>
-            <td>${r.orderId}</td>
-            <td>${r.reason}</td>
-            <td><span class="status-badge">${r.status}</span></td>
-            <td>${new Date(r.initiatedAt).toLocaleDateString()}</td>
-            <td>${r.resolvedAt ? new Date(r.resolvedAt).toLocaleDateString() : '-'}</td>
-            <td class="actions">
+            <td data-label="Order ID">${r.orderId}</td>
+            <td data-label="Reason">${r.reason}</td>
+            <td data-label="Status"><span class="status-badge">${r.status}</span></td>
+            <td data-label="Initiated">${new Date(r.initiatedAt).toLocaleDateString()}</td>
+            <td data-label="Resolved">${r.resolvedAt ? new Date(r.resolvedAt).toLocaleDateString() : '-'}</td>
+            <td data-label="Actions" class="actions">
               ${r.status !== 'resolved' ? `<button onclick="resolveRto('${r.id}')" title="Resolve"><i class="ri-check-line"></i></button>` : ''}
             </td>
           </tr>
@@ -20724,14 +21788,14 @@ ${message.message}`;
         }
         tbody.innerHTML = slabs.map(s => `
           <tr>
-            <td>${s.name}</td>
-            <td>₹${s.minPrice} - ₹${s.maxPrice > 999999 ? '∞' : s.maxPrice}</td>
-            <td>${s.cgstRate}%</td>
-            <td>${s.sgstRate}%</td>
-            <td>${s.igstRate}%</td>
-            <td>${s.hsnCode}</td>
-            <td><span class="${s.active ? 'status-active' : 'status-inactive'}">${s.active ? 'Active' : 'Inactive'}</span></td>
-            <td class="actions">
+            <td data-label="Name">${s.name}</td>
+            <td data-label="Range">₹${s.minPrice} - ₹${s.maxPrice > 999999 ? '∞' : s.maxPrice}</td>
+            <td data-label="CGST">${s.cgstRate}%</td>
+            <td data-label="SGST">${s.sgstRate}%</td>
+            <td data-label="IGST">${s.igstRate}%</td>
+            <td data-label="HSN">${s.hsnCode}</td>
+            <td data-label="Status"><span class="${s.active ? 'status-active' : 'status-inactive'}">${s.active ? 'Active' : 'Inactive'}</span></td>
+            <td data-label="Actions" class="actions">
               <button onclick="deleteTaxSlab('${s.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
           </tr>
@@ -20866,10 +21930,10 @@ ${message.message}`;
         }
         tbody.innerHTML = codes.map(h => `
           <tr data-id="${h.id || h.code}">
-            <td><input type="text" value="${h.code}" class="hsn-code-input" data-field="code" style="width:80px;padding:6px;border:1px solid #e5e7eb;border-radius:4px;font-family:monospace;font-weight:600;"></td>
-            <td><input type="text" value="${h.description}" class="hsn-desc-input" data-field="description" style="width:100%;padding:6px;border:1px solid #e5e7eb;border-radius:4px;"></td>
-            <td><input type="text" value="${h.category}" class="hsn-cat-input" data-field="category" style="width:120px;padding:6px;border:1px solid #e5e7eb;border-radius:4px;"></td>
-            <td class="actions">
+            <td data-label="HSN Code"><input type="text" value="${h.code}" class="hsn-code-input" data-field="code" style="width:80px;padding:6px;border:1px solid #e5e7eb;border-radius:4px;font-family:monospace;font-weight:600;"></td>
+            <td data-label="Description"><input type="text" value="${h.description}" class="hsn-desc-input" data-field="description" style="width:100%;padding:6px;border:1px solid #e5e7eb;border-radius:4px;"></td>
+            <td data-label="Category"><input type="text" value="${h.category}" class="hsn-cat-input" data-field="category" style="width:120px;padding:6px;border:1px solid #e5e7eb;border-radius:4px;"></td>
+            <td data-label="Actions" class="actions">
               <button onclick="saveHsnCode('${h.id || h.code}')" title="Save"><i class="ri-save-line"></i></button>
               <button onclick="deleteHsnCode('${h.id || h.code}')" title="Delete" style="color:#dc2626;"><i class="ri-delete-bin-line"></i></button>
             </td>
@@ -20954,14 +22018,14 @@ ${message.message}`;
           
           return `
           <tr>
-            <td><code>${i.invoiceNumber || '-'}</code></td>
-            <td>${i.orderId || i.orderNumber || '-'}</td>
-            <td>${i.customerName || i.buyer?.name || '-'}</td>
-            <td>₹${(i.subtotal || 0).toLocaleString()}</td>
-            <td>₹${totalGst.toLocaleString()}</td>
-            <td>₹${grandTotal.toLocaleString()}</td>
-            <td>${dateStr}</td>
-            <td class="actions">
+            <td data-label="Invoice"><code>${i.invoiceNumber || '-'}</code></td>
+            <td data-label="Order ID">${i.orderId || i.orderNumber || '-'}</td>
+            <td data-label="Customer">${i.customerName || i.buyer?.name || '-'}</td>
+            <td data-label="Subtotal">₹${(i.subtotal || 0).toLocaleString()}</td>
+            <td data-label="GST">₹${totalGst.toLocaleString()}</td>
+            <td data-label="Total">₹${grandTotal.toLocaleString()}</td>
+            <td data-label="Date">${dateStr}</td>
+            <td data-label="Actions" class="actions">
               <button onclick="viewInvoice('${i.id}')" title="View"><i class="ri-eye-line"></i></button>
             </td>
           </tr>
@@ -21131,13 +22195,13 @@ ${message.message}`;
         }
         tbody.innerHTML = companyTaxData.income.map(item => 
           '<tr>' +
-            '<td>' + formatDate(item.date) + '</td>' +
-            '<td>' + escapeHtml(item.description) + '</td>' +
-            '<td><span class="category-badge">' + escapeHtml(item.category) + '</span></td>' +
-            '<td>₹' + formatNumber(item.amount) + '</td>' +
-            '<td>₹' + formatNumber(item.gst || 0) + '</td>' +
-            '<td><strong>₹' + formatNumber((item.amount || 0) - (item.gst || 0)) + '</strong></td>' +
-            '<td><button onclick="deleteIncomeEntry(\'' + item.id + '\')" title="Delete"><i class="ri-delete-bin-line"></i></button></td>' +
+            '<td data-label="Date">' + formatDate(item.date) + '</td>' +
+            '<td data-label="Description">' + escapeHtml(item.description) + '</td>' +
+            '<td data-label="Category"><span class="category-badge">' + escapeHtml(item.category) + '</span></td>' +
+            '<td data-label="Gross Amount">₹' + formatNumber(item.amount) + '</td>' +
+            '<td data-label="GST Part">₹' + formatNumber(item.gst || 0) + '</td>' +
+            '<td data-label="Net Amount"><strong>₹' + formatNumber((item.amount || 0) - (item.gst || 0)) + '</strong></td>' +
+            '<td data-label="Action"><button onclick="deleteIncomeEntry(\'' + item.id + '\')" title="Delete"><i class="ri-delete-bin-line"></i></button></td>' +
           '</tr>'
         ).join('');
       }
@@ -21150,13 +22214,13 @@ ${message.message}`;
         }
         tbody.innerHTML = companyTaxData.expenses.map(item =>
           '<tr>' +
-            '<td>' + formatDate(item.date) + '</td>' +
-            '<td>' + escapeHtml(item.description) + '</td>' +
-            '<td><span class="category-badge">' + escapeHtml(item.category) + '</span></td>' +
-            '<td>₹' + formatNumber(item.amount) + '</td>' +
-            '<td>₹' + formatNumber(item.gst || 0) + '</td>' +
-            '<td><strong>₹' + formatNumber((item.amount || 0) - (item.gst || 0)) + '</strong></td>' +
-            '<td><button onclick="deleteExpenseEntry(\'' + item.id + '\')" title="Delete"><i class="ri-delete-bin-line"></i></button></td>' +
+            '<td data-label="Date">' + formatDate(item.date) + '</td>' +
+            '<td data-label="Description">' + escapeHtml(item.description) + '</td>' +
+            '<td data-label="Category"><span class="category-badge">' + escapeHtml(item.category) + '</span></td>' +
+            '<td data-label="Gross Amount">₹' + formatNumber(item.amount) + '</td>' +
+            '<td data-label="GST Part">₹' + formatNumber(item.gst || 0) + '</td>' +
+            '<td data-label="Net Amount"><strong>₹' + formatNumber((item.amount || 0) - (item.gst || 0)) + '</strong></td>' +
+            '<td data-label="Action"><button onclick="deleteExpenseEntry(\'' + item.id + '\')" title="Delete"><i class="ri-delete-bin-line"></i></button></td>' +
           '</tr>'
         ).join('');
       }
@@ -21374,15 +22438,15 @@ ${message.message}`;
             '<span style="color: #9ca3af;">-</span>';
           var isPurchased = card.recipientEmail ? '<span style="background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:4px;">Purchased</span>' : '';
           return '<tr>' +
-            '<td><code style="font-weight:600;letter-spacing:1px;">' + card.code + '</code>' + isPurchased + '</td>' +
-            '<td>₹' + formatNumber(card.value) + '</td>' +
-            '<td>₹' + formatNumber(card.balance) + '</td>' +
-            '<td>' + recipientInfo + '</td>' +
-            '<td>' + senderInfo + '</td>' +
-            '<td>' + formatDate(card.createdAt) + '</td>' +
-            '<td>' + formatDate(card.expiresAt) + '</td>' +
-            '<td><span class="' + statusClass + '">' + card.status + '</span></td>' +
-            '<td class="actions">' +
+            '<td data-label="Code"><code style="font-weight:600;letter-spacing:1px;">' + card.code + '</code>' + isPurchased + '</td>' +
+            '<td data-label="Value">₹' + formatNumber(card.value) + '</td>' +
+            '<td data-label="Balance">₹' + formatNumber(card.balance) + '</td>' +
+            '<td data-label="Recipient">' + recipientInfo + '</td>' +
+            '<td data-label="Sender">' + senderInfo + '</td>' +
+            '<td data-label="Created">' + formatDate(card.createdAt) + '</td>' +
+            '<td data-label="Expires">' + formatDate(card.expiresAt) + '</td>' +
+            '<td data-label="Status"><span class="' + statusClass + '">' + card.status + '</span></td>' +
+            '<td data-label="Actions" class="actions">' +
               '<button onclick="deactivateGiftCard(\'' + card.id + '\')" title="Deactivate"><i class="ri-forbid-line"></i></button>' +
               '<button onclick="deleteGiftCard(\'' + card.id + '\')" title="Delete"><i class="ri-delete-bin-line"></i></button>' +
             '</td>' +
@@ -21661,12 +22725,12 @@ ${message.message}`;
           
           return `
             <tr>
-              <td><strong>${escapeHtml(n.subject)}</strong></td>
-              <td><span class="pill ${statusClass}">${statusText}</span></td>
-              <td>${createdDate}</td>
-              <td>${n.recipientCount || 0}</td>
-              <td>${n.openCount || 0} (${n.recipientCount > 0 ? Math.round((n.openCount / n.recipientCount) * 100) : 0}%)</td>
-              <td>
+              <td data-label="Subject"><strong>${escapeHtml(n.subject)}</strong></td>
+              <td data-label="Status"><span class="pill ${statusClass}">${statusText}</span></td>
+              <td data-label="Date">${createdDate}</td>
+              <td data-label="Recipients">${n.recipientCount || 0}</td>
+              <td data-label="Opens">${n.openCount || 0} (${n.recipientCount > 0 ? Math.round((n.openCount / n.recipientCount) * 100) : 0}%)</td>
+              <td data-label="Actions">
                 <button class="icon-btn" onclick="editNewsletter('${n.id}')" title="Edit">
                   <i class="ri-edit-line"></i>
                 </button>
@@ -21706,12 +22770,12 @@ ${message.message}`;
           
           return `
             <tr>
-              <td>${escapeHtml(s.email)}</td>
-              <td>${s.name ? escapeHtml(s.name) : '-'}</td>
-              <td><span class="pill ${statusClass}">${statusText}</span></td>
-              <td>${subscribedDate}</td>
-              <td><span class="pill">${s.source || 'website'}</span></td>
-              <td>
+              <td data-label="Email">${escapeHtml(s.email)}</td>
+              <td data-label="Name">${s.name ? escapeHtml(s.name) : '-'}</td>
+              <td data-label="Status"><span class="pill ${statusClass}">${statusText}</span></td>
+              <td data-label="Subscribed">${subscribedDate}</td>
+              <td data-label="Source"><span class="pill">${s.source || 'website'}</span></td>
+              <td data-label="Actions">
                 <button class="icon-btn danger" onclick="deleteSubscriber('${s.id}')" title="Delete">
                   <i class="ri-delete-bin-line"></i>
                 </button>
@@ -22801,16 +23865,23 @@ ${message.message}`;
       // Auto-refresh advanced systems stats every 5 seconds
       setInterval(updateAdvancedSystemsStats, 5000);
       
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          initializeNewSections();
-          initializeAutoRefresh();
-          initializeAdvancedSystems();
-        });
-      } else {
+      function runStartup() {
         initializeNewSections();
         initializeAutoRefresh();
-        initializeAdvancedSystems();
+        if (typeof initializeAdvancedSystems === 'function') {
+          initializeAdvancedSystems();
+        } else {
+          // Retry once if the next script block hasn't parsed yet
+          setTimeout(() => {
+            if (typeof initializeAdvancedSystems === 'function') initializeAdvancedSystems();
+          }, 100);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runStartup);
+      } else {
+        runStartup();
       }
     </script>
 
@@ -23199,12 +24270,12 @@ ${message.message}`;
         
         tbody.innerHTML = errors.slice(-20).reverse().map(error => `
           <tr>
-            <td>${new Date(error.timestamp).toLocaleTimeString()}</td>
-            <td><span class="pill danger">${error.type || 'Error'}</span></td>
-            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${error.message}</td>
-            <td>${error.page || '-'}</td>
-            <td>${error.userId || 'Guest'}</td>
-            <td>
+            <td data-label="Time">${new Date(error.timestamp).toLocaleTimeString()}</td>
+            <td data-label="Type"><span class="pill danger">${error.type || 'Error'}</span></td>
+            <td data-label="Message" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${error.message}</td>
+            <td data-label="Page">${error.page || '-'}</td>
+            <td data-label="User">${error.userId || 'Guest'}</td>
+            <td data-label="Actions">
               <button class="secondary" style="padding: 4px 8px; font-size: 0.85rem;" onclick="viewErrorDetails('${error.id}')">
                 <i class="ri-eye-line"></i>
               </button>
@@ -23932,19 +25003,19 @@ ${message.message}`;
 
         tbody.innerHTML = allDeletedUsers.map(user => `
           <tr data-deleted-id="${user.deletedId}">
-            <td style="font-family: monospace; font-size: 0.85rem; color: #6b7280;">${user.originalId || 'N/A'}</td>
-            <td>
+            <td data-label="Original ID" style="font-family: monospace; font-size: 0.85rem; color: #6b7280;">${user.originalId || 'N/A'}</td>
+            <td data-label="Name">
               <div style="font-weight: 600;">${user.userData?.name || user.userData?.firstName || 'Unknown'}</div>
             </td>
-            <td>${user.userData?.email || 'N/A'}</td>
-            <td>${user.userData?.phone || 'N/A'}</td>
-            <td style="white-space: nowrap;">${new Date(user.deletedAt).toLocaleDateString()}</td>
-            <td>
+            <td data-label="Email">${user.userData?.email || 'N/A'}</td>
+            <td data-label="Phone">${user.userData?.phone || 'N/A'}</td>
+            <td data-label="Deleted At" style="white-space: nowrap;">${new Date(user.deletedAt).toLocaleDateString()}</td>
+            <td data-label="Reason">
               <span style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; background: ${user.deletionReason === 'admin_deleted' ? '#fee2e2' : '#fef3c7'}; color: ${user.deletionReason === 'admin_deleted' ? '#dc2626' : '#b45309'};">
                 ${user.deletionReason === 'admin_deleted' ? 'Admin Deleted' : 'Self Deleted'}
               </span>
             </td>
-            <td>
+            <td data-label="Actions">
               <div style="display: flex; gap: 6px;">
                 <button onclick="viewDeletedUser('${user.deletedId}')" style="padding: 6px 10px; background: #eff6ff; color: #3b82f6; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
                   <i class="ri-eye-line"></i> View
@@ -24239,5 +25310,81 @@ ${message.message}`;
     <!-- console-block.js disabled for admin page -->
     <!-- auto-debugger.js disabled for admin page -->
     <script src="assets/js/main.js"></script>
+    <!-- Admin Personal Assistant -->
+    <div class="admin-assistant-trigger" id="assistantTrigger" onclick="AdminNotifications.togglePanel()">
+      <i class="ri-command-line"></i>
+      <span class="badge" id="assistantBadge" style="display: none;">0</span>
+    </div>
+
+    <div class="admin-assistant-panel" id="assistantPanel">
+      <div class="assistant-header">
+        <div class="assistant-avatar">
+          <i class="ri-command-line"></i>
+        </div>
+        <div class="assistant-header-content">
+          <h3>Command Center</h3>
+          <p>Your store at a glance</p>
+        </div>
+        <div class="assistant-close" onclick="AdminNotifications.togglePanel()">
+          <i class="ri-close-line"></i>
+        </div>
+      </div>
+
+      <!-- Quick Stats Dashboard -->
+      <div class="assistant-stats" id="assistantStats">
+        <div class="stat-mini" id="statPending" onclick="AdminNotifications.setFilter('unread')">
+          <div class="stat-mini-icon pending"><i class="ri-time-line"></i></div>
+          <div class="stat-mini-content">
+            <span class="stat-mini-value">0</span>
+            <span class="stat-mini-label">Pending</span>
+          </div>
+        </div>
+        <div class="stat-mini" id="statDone" onclick="AdminNotifications.setFilter('read')">
+          <div class="stat-mini-icon done"><i class="ri-checkbox-circle-line"></i></div>
+          <div class="stat-mini-content">
+            <span class="stat-mini-value">0</span>
+            <span class="stat-mini-label">Done</span>
+          </div>
+        </div>
+        <div class="stat-mini" id="statUrgent" onclick="AdminNotifications.setFilter('urgent')">
+          <div class="stat-mini-icon urgent"><i class="ri-fire-line"></i></div>
+          <div class="stat-mini-content">
+            <span class="stat-mini-value">0</span>
+            <span class="stat-mini-label">Urgent</span>
+          </div>
+        </div>
+        <div class="stat-mini" id="statSales" onclick="AdminNotifications.setFilter('order')">
+          <div class="stat-mini-icon sales"><i class="ri-calendar-check-line"></i></div>
+          <div class="stat-mini-content">
+            <span class="stat-mini-value">0</span>
+            <span class="stat-mini-label">Today</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="assistant-tabs">
+        <button class="assistant-tab active" data-tab="all" onclick="AdminNotifications.setFilter('all')">
+          <i class="ri-list-check-3"></i>
+          <span>All Tasks</span>
+        </button>
+        <button class="assistant-tab" data-tab="order" onclick="AdminNotifications.setFilter('order')">
+          <i class="ri-shopping-bag-3-line"></i>
+          <span>Orders</span>
+        </button>
+        <button class="assistant-tab" data-tab="urgent" onclick="AdminNotifications.setFilter('urgent')">
+          <i class="ri-alarm-warning-line"></i>
+          <span>Urgent</span>
+        </button>
+      </div>
+
+      <div class="assistant-body" id="assistantList">
+        <!-- AI Assistant will populate tasks here -->
+      </div>
+      
+      <div class="assistant-footer">
+          <button onclick="AdminNotifications.markAllRead()"><i class="ri-check-double-line"></i> Complete All</button>
+          <button onclick="AdminNotifications.clearAll()"><i class="ri-delete-bin-6-line"></i> Clear Done</button>
+      </div>
+    </div>
   </body>
 </html>

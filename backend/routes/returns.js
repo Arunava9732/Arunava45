@@ -4,8 +4,7 @@
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const db = require('../utils/database');
-const { authenticate, requireAdmin } = require('../middleware/auth');
+const db = require('../utils/database');const { addNotification } = require('../utils/adminNotificationStore');const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validators, validateRequest, returnLimiter } = require('../middleware/security');
 const { body, param } = require('express-validator');
 const { sendAdminNotification, formatReturnMessage } = require('../utils/whatsapp');
@@ -157,6 +156,16 @@ router.post('/',
     };
 
     db.returns.create(returnRequest);
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'return',
+      title: 'Return Requested',
+      message: `Return requested for Order #${orderId} - Reason: ${reason}`,
+      priority: 'high',
+      link: '#returns',
+      data: { returnId: returnRequest.id, orderId }
+    });
 
     console.log(`[AI-Enhanced] Return request created: ${returnRequest.id}, Order: ${orderId}, Refund: ₹${refundAmount}`);
 

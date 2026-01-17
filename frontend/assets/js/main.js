@@ -538,3 +538,68 @@ async function subscribeNewsletter(event) {
     }
 }
 
+/* Main Marketing Popup Logic */
+async function initMarketingPopup() {
+    // Only show on home page (where marketing-popup element exists)
+    const popupEl = document.getElementById('marketing-popup');
+    if (!popupEl) return;
+
+    // Don't show if user has seen it this session
+    if (sessionStorage.getItem('blackonn_popup_shown')) return;
+
+    try {
+        const response = await fetch('/api/marketing/popups/active');
+        const data = await response.json();
+
+        if (data.success && data.popup) {
+            const popup = data.popup;
+            const delay = popup.delay || 5000;
+
+            setTimeout(() => {
+                const body = document.getElementById('marketing-popup-body');
+                body.innerHTML = `
+                    <div class="marketing-modal-body">
+                        ${popup.image ? `<img src="${popup.image}" alt="Special Offer" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;">` : ''}
+                        <h2>${popup.title}</h2>
+                        <p>${popup.message || ''}</p>
+                        <a href="${popup.ctaLink || '/products.html'}" class="cta-button">${popup.ctaText || 'Grab Offer'}</a>
+                    </div>
+                `;
+
+                popupEl.style.display = 'flex';
+                // Trigger reflow for transition
+                popupEl.offsetHeight;
+                popupEl.classList.add('show');
+
+                // Mark as shown
+                if (popup.showOnce !== false) {
+                    sessionStorage.setItem('blackonn_popup_shown', 'true');
+                }
+
+                // Close logic
+                document.getElementById('close-marketing-popup').onclick = () => {
+                    popupEl.classList.remove('show');
+                    setTimeout(() => { popupEl.style.display = 'none'; }, 300);
+                };
+
+                // Close on outside click
+                popupEl.onclick = (e) => {
+                    if (e.target === popupEl) {
+                        popupEl.classList.remove('show');
+                        setTimeout(() => { popupEl.style.display = 'none'; }, 300);
+                    }
+                };
+            }, delay);
+        }
+    } catch (error) {
+        console.error('Failed to load marketing popup:', error);
+    }
+}
+
+// Initialize popup
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMarketingPopup);
+} else {
+    initMarketingPopup();
+}
+
