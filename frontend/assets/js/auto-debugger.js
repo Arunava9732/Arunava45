@@ -2,9 +2,9 @@
  * BLACKONN - AI-Powered Auto-Debugger & Self-Healing System (v3.0)
  * "The Intelligent Immune System for your Website"
  * 
- * AI-FRIENDLY FEATURES:
+ * AI-OPTIMIZED FEATURES:
  * =====================
- * This module is designed to work seamlessly with AI systems (GPT, Claude, Copilot)
+ * This module is designed to work seamlessly with the BLACKONN Local AI Agent
  * by providing structured, parseable diagnostic data and intelligent context.
  * 
  * Core Capabilities:
@@ -849,17 +849,16 @@
     },
 
     /**
-     * Start the AI Agent (Claude/Gemini powered)
+     * Start the AI Agent (Local Intelligence)
      * @param {string} mode - 'api', 'monitor', 'fix', 'rebuild'
-     * @param {string} model - 'claude', 'gemini', 'openai'
      */
-    start: async function(mode, model) {
+    start: async function(mode) {
       try {
         showHealingToast('Starting BLACKONN AI Agent...', 'info');
         const resp = await fetch('/api/agent/start', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: mode || 'api', model: model || 'claude' })
+          body: JSON.stringify({ mode: mode || 'api' })
         });
         const result = await resp.json();
         if (result.success) {
@@ -887,7 +886,7 @@
     /**
      * Trigger AI-powered error scan and fix
      */
-    fixNow: async function(model) {
+    fixNow: async function() {
       try {
         showHealingToast('AI Agent analyzing codebase...', 'info');
         addToTimeline({ type: 'AI_AGENT_FIX', message: 'Triggered AI-powered fix cycle' });
@@ -895,7 +894,7 @@
         const resp = await fetch('/api/agent/fix', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: model, max_fixes: 10 })
+          body: JSON.stringify({ max_fixes: 10 })
         });
         const result = await resp.json();
         
@@ -995,7 +994,7 @@
     console.log('%c📊 Access diagnostics via: window.BLACKONN_DIAGNOSTICS', 'color: #3b82f6;');
     console.log('%c🔧 Access healer API via: window.BLACKONN_HEALER', 'color: #3b82f6;');
     console.log('%c🧠 Access AI Agent via: window.BLACKONN_AGENT', 'color: #a855f7;');
-    console.log('%c   → BLACKONN_AGENT.start("api", "claude") to activate', 'color: #a855f7;');
+    console.log('%c   → BLACKONN_AGENT.start() to activate local intelligence', 'color: #a855f7;');
     console.log('%c   → BLACKONN_AGENT.fixNow() to run AI-powered repairs', 'color: #a855f7;');
   });
 

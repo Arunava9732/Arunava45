@@ -19,6 +19,14 @@ const pythonBridge = require('../utils/python_bridge');
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all contact messages
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -115,6 +123,7 @@ router.get('/', authenticate, requireAdmin, (req, res) => {
       new Date(b.createdAt) - new Date(a.createdAt)
     );
 
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, messages: sorted });
   } catch (error) {
     console.error('Get messages error:', error);

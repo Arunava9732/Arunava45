@@ -32,6 +32,15 @@
 
 const express = require('express');
 const router = express.Router();
+
+// AI-OPTIMIZED: Disable caching for all analytics data (real-time insights)
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');

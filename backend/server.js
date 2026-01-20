@@ -78,6 +78,7 @@ const newsletterRoutes = require('./routes/newsletter');
 const advancedAdminRoutes = require('./routes/advancedAdmin');
 const agentRoutes = require('./routes/agent');
 const adminNotificationsRoutes = require('./routes/adminNotifications');
+const reviewsPageRoutes = require('./routes/reviewsPage');
 
 // Create Express app
 const app = express();
@@ -277,10 +278,10 @@ app.locals.invalidateCache = invalidateCache;
 app.locals.apiCache = apiCache;
 
 // Apply optimized caching to read-heavy endpoints
-app.use('/api/products', cacheMiddleware(30000, 10000)); // 30s cache, 10s stale
-app.use('/api/slides', cacheMiddleware(60000, 30000)); // 60s cache, 30s stale
+// DISABLED for truly real-time updates as per user request
+// app.use('/api/products', cacheMiddleware(30000, 10000)); 
+// app.use('/api/slides', cacheMiddleware(60000, 30000)); 
 app.use('/api/seo', cacheMiddleware(300000, 60000)); // 5min cache for SEO data
-app.use('/api/settings', cacheMiddleware(120000, 30000)); // 2min cache for settings
 
 // ============ CORS CONFIGURATION ============
 // Dynamic CORS configuration to handle production same-origin and dev environments
@@ -509,9 +510,12 @@ app.use('/api/docs', docsRoutes);
 // Advanced Admin APIs (Security Manager, ML, Errors, A/B Testing, Performance, PWA, Emotion AI, Neural Commerce)
 app.use('/api/admin', advancedAdminRoutes);
 
-// BLACKONN AI Agent (Claude/Gemini powered auto-fix)
+// BLACKONN AI Agent (Local Intelligence auto-fix)
 app.use('/api/agent', agentRoutes);
 app.use('/api/admin-notifications', adminNotificationsRoutes);
+
+// Reviews Page Management API
+app.use('/api/reviews-page', reviewsPageRoutes);
 
 // AI Engine APIs (Analytics, Fraud, Email, Search, Recommendations, Pricing, Image Processing)
 const aiRoutes = require('./routes/ai');
@@ -684,15 +688,22 @@ app.use(express.static(frontendRoot, {
       res.setHeader('Expires', '0');
     } else if (filePath.endsWith('.css')) {
       res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      // Allow browser caching with short revalidation for faster page loads
-      res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+      // AI-OPTIMIZED: Disable caching for real-time CSS updates
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     } else if (filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-      // Allow browser caching with short revalidation for faster page loads
-      res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+      // AI-OPTIMIZED: Disable caching for real-time JS updates
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     } else if (filePath.endsWith('.json')) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+      // AI-OPTIMIZED: Disable caching for real-time JSON/Manifest updates
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     } else if (filePath.endsWith('.png')) {
       res.setHeader('Content-Type', 'image/png');
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year for static assets

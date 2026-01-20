@@ -10,6 +10,7 @@ const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 const { sendGiftCardEmail } = require('../utils/email');
+const { addNotification } = require('../utils/adminNotificationStore');
 
 const router = express.Router();
 
@@ -172,6 +173,19 @@ router.post('/purchase', optionalAuth, async (req, res) => {
     writeData(data);
     
     console.log(`[AI-Enhanced] Gift card purchased: Code ${giftCard.code}, Value ₹${amount}, Recipient ${recipientEmail}`);
+    
+    // Add to Admin Notification Panel
+    try {
+      addNotification({
+        type: 'marketing',
+        title: 'Gift Card Purchased',
+        message: `New gift card for ₹${amount} purchased for ${recipientEmail}`,
+        priority: amount > 5000 ? 'high' : 'medium',
+        link: '#marketing-management'
+      });
+    } catch (e) {
+      console.error('Failed to add gift card notification:', e);
+    }
     
     // Send email to recipient with gift card code
     try {

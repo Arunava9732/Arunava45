@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+
+// AI-OPTIMIZED: Disable caching for all AI routes to ensure real-time intelligence
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 const { 
   runAIHub,
   getAIHealth, 

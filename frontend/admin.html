@@ -148,7 +148,7 @@
          ======================================== */
       .admin-layout {
         display: grid;
-        grid-template-columns: 280px 1fr;
+        grid-template-columns: 280px minmax(0, 1fr);
         gap: 30px;
         max-width: 1800px;
         margin: 32px auto 80px;
@@ -301,7 +301,7 @@
       /* Mobile Responsive */
       @media (max-width: 1024px) {
         .admin-layout {
-          grid-template-columns: 240px 1fr;
+          grid-template-columns: 240px minmax(0, 1fr);
           gap: 20px;
         }
         
@@ -2622,27 +2622,25 @@
       }
 
       /* Enhanced Table */
-      .orders-table th:first-child,
-      .orders-table td:first-child {
+      .orders-table th:nth-child(1),
+      .orders-table td:nth-child(1) {
         width: 40px;
         text-align: center;
         padding: 12px 8px;
+        vertical-align: middle;
       }
       .orders-table th:nth-child(2),
       .orders-table td:nth-child(2) {
-        width: 100px;
-        word-break: break-word;
+        width: 140px;
       }
       .orders-table th:nth-child(3),
       .orders-table td:nth-child(3) {
-        width: 120px;
-        word-break: break-word;
+        width: 200px;
       }
       .orders-table th:nth-child(4),
       .orders-table td:nth-child(4) {
-        width: 90px;
-        text-align: right;
-        padding-right: 24px;
+        width: 100px;
+        text-align: left;
       }
       .orders-table th:nth-child(5),
       .orders-table td:nth-child(5) {
@@ -2650,20 +2648,101 @@
       }
       .orders-table th:nth-child(6),
       .orders-table td:nth-child(6) {
-        width: 100px;
+        width: 140px;
       }
       .orders-table th:nth-child(7),
       .orders-table td:nth-child(7) {
-        width: 100px;
+        width: 160px;
       }
       .orders-table th:nth-child(8),
       .orders-table td:nth-child(8) {
-        width: 120px;
+        width: 250px;
       }
       .orders-table th:nth-child(9),
       .orders-table td:nth-child(9) {
-        width: 80px;
+        width: 200px;
+      }
+      .orders-table th:nth-child(10),
+      .orders-table td:nth-child(10) {
+        width: 100px;
         text-align: center;
+        vertical-align: middle;
+      }
+
+      .orders-table select {
+        width: 100%;
+        max-width: 130px;
+        padding: 6px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .order-items-detail {
+        max-height: 120px;
+        overflow-y: auto;
+      }
+
+      .order-items-detail .item {
+        border-radius: 4px;
+        padding: 4px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        margin-bottom: 6px !important;
+      }
+
+      .orders-table td strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .last-activity {
+        font-size: 0.7rem;
+        color: #9ca3af;
+      }
+
+      /* Returns, Exchanges, Cancellations */
+      .returns-table {
+        min-width: 1100px;
+      }
+
+      .returns-table td {
+        vertical-align: middle !important;
+      }
+
+      .returns-table th:first-child,
+      .returns-table td:first-child {
+        width: 40px;
+        text-align: center;
+      }
+
+      .returns-table th:nth-child(2),
+      .returns-table td:nth-child(2) {
+        width: 120px;
+      }
+
+      .returns-table th:nth-child(3),
+      .returns-table td:nth-child(3) {
+        width: 120px;
+      }
+
+      .returns-table th:last-child,
+      .returns-table td:last-child {
+        width: 100px;
+        text-align: center;
+      }
+
+      .order-address {
+        max-width: 250px;
+        font-size: 0.75rem;
+        color: #64748b;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       .orders-table th:first-child input[type="checkbox"] {
         margin: 0;
@@ -3096,13 +3175,16 @@
 
       .table-wrap {
         overflow-x: auto;
+        max-width: 100%;
         margin-top: 16px;
+        position: relative;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
       }
       table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.875rem;
-        table-layout: fixed;
+        table-layout: fixed; /* Reverted to fixed for global stability */
       }
       table thead th {
         text-align: left;
@@ -3113,6 +3195,23 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         background: #f9fafb;
+        white-space: nowrap; /* Prevent header wrapping */
+      }
+      .table-wrap {
+        overflow-x: auto;
+        margin-top: 16px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: #fff;
+        max-width: 100%; /* Ensure it stays within parent bounds */
+      }
+      .table-wrap table {
+        min-width: unset; /* Removed global min-width */
+      }
+      .table-wrap tbody td {
+        vertical-align: top; /* Standard across admin tables */
+        padding: 12px 16px;
+      }
         border-bottom: 2px solid #e5e7eb;
       }
       table thead th:first-child {
@@ -3461,12 +3560,24 @@
         margin-top: 0;
       }
 
-      #products .product-table {
-        border-collapse: separate;
+      /* Multi-column tables that need horizontal scroll to prevent squashing */
+      .product-table,
+      .orders-table,
+      .returns-table,
+      .exchanges-table,
+      .cancellations-table {
+        width: 100%;
+        border-collapse: separate !important;
         border-spacing: 0;
+        table-layout: auto !important;
+        min-width: 1000px; /* Ensures columns have enough room */
       }
 
-      #products .product-table thead th {
+      .product-table thead th,
+      .orders-table thead th,
+      .returns-table thead th,
+      .exchanges-table thead th,
+      .cancellations-table thead th {
         background: #f8f8f8;
         color: #555;
         font-weight: 600;
@@ -3474,8 +3585,28 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 14px 12px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 2px solid #eee;
+        text-align: left;
+        white-space: nowrap;
       }
+
+      .product-table td,
+      .orders-table td,
+      .returns-table td,
+      .exchanges-table td,
+      .cancellations-table td {
+        padding: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+      }
+
+      #products .product-table thead th:nth-child(1) { width: 80px; text-align: center; }
+      #products .product-table thead th:nth-child(2) { min-width: 300px; }
+      #products .product-table thead th:nth-child(3) { width: 120px; }
+      #products .product-table thead th:nth-child(4) { width: 140px; }
+      #products .product-table thead th:nth-child(6) { width: 120px; }
+      #products .product-table thead th:nth-child(7) { width: 100px; text-align: center; }
 
       #products .product-table thead th:first-child {
         border-radius: 8px 0 0 0;
@@ -3490,6 +3621,12 @@
         border-bottom: 1px solid #f5f5f5;
         color: #333;
         font-size: 0.875rem;
+        vertical-align: middle;
+      }
+
+      #products .product-table tbody td:nth-child(1),
+      #products .product-table tbody td:nth-child(7) {
+        text-align: center;
       }
 
       #products .product-table tbody tr {
@@ -3515,13 +3652,25 @@
       #products .product-table .product-label {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
+        min-width: 0; /* Allow text truncation if needed */
+      }
+
+      #products .product-table .product-label > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        overflow: hidden;
       }
 
       #products .product-table .product-label strong {
         color: #111;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       #products .product-table .product-label small {
@@ -4327,25 +4476,30 @@
       }
       .product-images {
         display: flex;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
+        flex-shrink: 0;
+        min-width: 90px;
       }
       .product-images > img {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         object-fit: cover;
-        border-radius: 6px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
       }
       .product-images .thumbs-container {
         display: flex;
         align-items: center;
+        margin-left: 2px;
       }
       .product-images .thumb-img {
-        width: 28px;
-        height: 28px;
-        border: 1px dashed #d1d5db;
-        border-radius: 4px;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
         object-fit: cover;
+        background: #fff;
       }
       .product-images .more-thumbs {
         display: inline-flex;
@@ -5400,6 +5554,8 @@
         transition: color 0.3s ease;
       }
       .status-active { background: #d1fae5; color: #065f46; }
+      .status-redeemed { background: #fee2e2; color: #991b1b; }
+      .status-expired { background: #f3f4f6; color: #374151; }
       .status-draft { background: #fef3c7; color: #92400e; }
       .status-inactive { background: #fee2e2; color: #991b1b; }
 
@@ -7130,6 +7286,732 @@
           font-size: 1rem;
         }
       }
+
+      /* ============ REVIEWS PAGE MANAGEMENT STYLES ============ */
+      .reviews-page-management {
+        margin-bottom: 24px;
+      }
+      
+      .reviews-admin-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 20px 0;
+        padding: 8px;
+        background: #f3f4f6;
+        border-radius: 12px;
+      }
+      
+      .reviews-tab-btn {
+        padding: 12px 20px;
+        border: none;
+        background: transparent;
+        color: #6b7280;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .reviews-tab-btn:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+      }
+      
+      .reviews-tab-btn.active {
+        background: #1f2937;
+        color: #fff;
+      }
+      
+      .reviews-tab-content {
+        display: none;
+      }
+      
+      .reviews-tab-content.active {
+        display: block;
+        padding-bottom: 100px;
+      }
+      
+      .rp-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .rp-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .rp-card h3 i {
+        color: #3b82f6;
+      }
+      
+      .rp-card-desc {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin: 0 0 20px;
+      }
+      
+      .rp-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .rp-form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .rating-breakdown-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      
+      .rp-form-group {
+        margin-bottom: 16px;
+      }
+      
+      .rp-form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #374151;
+        font-size: 0.85rem;
+      }
+      
+      .rp-form-group input,
+      .rp-form-group select,
+      .rp-form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        box-sizing: border-box;
+      }
+      
+      .rp-form-group input:focus,
+      .rp-form-group select:focus,
+      .rp-form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      
+      .rp-items-list {
+        margin-bottom: 20px;
+      }
+      
+      .rp-item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .rp-item-row input,
+      .rp-item-row select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+      }
+
+      .rp-row-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        flex: 1;
+      }
+      
+      .rp-item-row .rp-btn-remove {
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      
+      .rp-item-row .rp-btn-remove:hover {
+        background: #fecaca;
+      }
+      
+      /* Reviews List */
+      .rp-reviews-filters {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      
+      .rp-search-input {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 16px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.95rem;
+      }
+      
+      .rp-reviews-filters select {
+        padding: 12px 16px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        min-width: 160px;
+      }
+      
+      .rp-reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .rp-review-card {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        position: relative;
+      }
+      
+      .rp-review-card.hidden-review {
+        opacity: 0.6;
+        background: #fef3c7;
+      }
+      
+      .rp-review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      
+      .rp-review-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .rp-review-avatar {
+        width: 48px;
+        height: 48px;
+        background: #1f2937;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      
+      .rp-review-author-info {
+        flex: 1;
+        min-width: 0;
+      }
+      
+      .rp-review-author-info h4 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        word-break: break-word;
+      }
+      
+      .rp-review-author-info .rp-review-meta {
+        font-size: 0.85rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      
+      .rp-review-stars {
+        color: #fbbf24;
+      }
+      
+      .rp-review-status-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      
+      .rp-review-status-badge.visible {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      
+      .rp-review-status-badge.hidden {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      
+      .rp-review-content {
+        color: #374151;
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+      
+      .rp-review-product {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #e5e7eb;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #374151;
+        margin-bottom: 12px;
+      }
+      
+      .rp-review-brand-reply {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 1px solid #bae6fd;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-top: 16px;
+        position: relative;
+      }
+      
+      .rp-review-brand-reply::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 20px;
+        width: 16px;
+        height: 16px;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-left: 1px solid #bae6fd;
+        border-top: 1px solid #bae6fd;
+        transform: rotate(45deg);
+      }
+      
+      .rp-review-brand-reply strong {
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+      
+      .rp-review-brand-reply strong::after {
+        content: 'Official';
+        background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+        color: #fff;
+        font-size: 0.6rem;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .rp-review-brand-reply p {
+        margin: 0;
+        color: #334155;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      
+      .rp-review-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      
+      .rp-review-actions button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      
+      .rp-btn-edit {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      
+      .rp-btn-edit:hover {
+        background: #bfdbfe;
+      }
+      
+      .rp-btn-reply {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      
+      .rp-btn-reply:hover {
+        background: #a7f3d0;
+      }
+      
+      .rp-btn-toggle {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      
+      .rp-btn-toggle:hover {
+        background: #fde68a;
+      }
+      
+      .rp-btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+      
+      .rp-btn-delete:hover {
+        background: #fecaca;
+      }
+      
+      /* Photos Grid */
+      .rp-photos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .rp-photo-card {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+      }
+      
+      .rp-photo-preview {
+        width: 100%;
+        height: 120px;
+        background: #1f2937;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        color: #fff;
+        font-size: 2.5rem;
+        overflow: hidden;
+      }
+      
+      .rp-photo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .rp-photo-card input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        font-size: 0.85rem;
+      }
+      
+      /* Partners List */
+      .rp-partners-list {
+        margin-bottom: 20px;
+      }
+      
+      .rp-partner-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+      }
+      
+      /* Milestones List */
+      .rp-milestones-list {
+        margin-bottom: 20px;
+      }
+      
+      .rp-milestone-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 2fr 100px 100px auto;
+        gap: 12px;
+        align-items: center;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .rp-milestone-row input,
+      .rp-partner-row input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+      }
+      
+      .rp-milestone-row .rp-btn-remove,
+      .rp-partner-row .rp-btn-remove {
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      
+      /* Platform Row */
+      .rp-platform-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 15px;
+        background: #f9fafb;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 12px;
+      }
+      
+      .rp-platform-row input,
+      .rp-platform-row select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+      }
+      
+      .rp-platform-row .rp-btn-remove {
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .rp-platform-info {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .rp-platform-stats {
+        display: grid;
+        grid-template-columns: 80px 100px 90px;
+        gap: 10px;
+        align-items: flex-end;
+      }
+
+      .rp-icon-preview {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .rp-icon-preview i {
+        font-size: 1.4rem;
+        color: #fff;
+      }
+      
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .rp-platform-stats {
+          grid-template-columns: 1fr 1fr 1fr;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .reviews-admin-tabs {
+          flex-direction: column;
+        }
+        
+        .reviews-tab-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        
+        .rp-card {
+          padding: 16px;
+        }
+
+        .rp-form-grid,
+        .rating-breakdown-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .rp-item-row {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+
+        .rp-row-grid {
+          grid-template-columns: 1fr !important;
+        }
+        
+        .rp-platform-row,
+        .rp-partner-row,
+        .rp-milestone-row {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 16px !important;
+        }
+
+        .rp-platform-stats,
+        .rp-platform-info {
+          grid-template-columns: 1fr !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+
+        .rp-platform-row .rp-icon-preview {
+          align-self: center;
+          margin-bottom: 10px;
+        }
+        
+        .rp-card-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .rp-reviews-filters {
+          flex-direction: column;
+        }
+
+        .rp-search-input,
+        .rp-reviews-filters select {
+          min-width: 0;
+          width: 100%;
+        }
+
+        .rp-review-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .rp-review-avatar {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+
+        .rp-card h3 {
+          font-size: 1rem;
+        }
+        
+        .rp-card > button {
+          width: 100%;
+          margin-left: 0 !important;
+          margin-bottom: 10px;
+        }
+
+        .admin-main {
+          margin-bottom: 200px !important; /* Final space for bottom menu */
+          overflow-x: hidden !important;
+        }
+
+        /* Ensure modals don't overflow */
+        .modal-content {
+          width: 95% !important;
+          padding: 16px !important;
+          margin: 10px !important;
+        }
+      }
+      /* Upload Box Styles */
+      .rp-upload-box {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #f9fafb;
+      }
+      
+      .rp-upload-box:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+      }
+      
+      .rp-upload-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: #6b7280;
+      }
+      
+      .rp-upload-preview i {
+        font-size: 2.5rem;
+        color: #9ca3af;
+      }
+      
+      .rp-upload-preview img {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 8px;
+        object-fit: contain;
+      }
+      
+      .rp-upload-preview span {
+        font-size: 0.9rem;
+      }
+      
+      .rp-upload-box.has-image .rp-upload-preview i,
+      .rp-upload-box.has-image .rp-upload-preview span {
+        display: none;
+      }
+      /* ============ END REVIEWS PAGE MANAGEMENT STYLES ============ */
     </style>
   </head>
   <body>
@@ -7169,7 +8051,11 @@
         if (typeof AdminUniModal !== 'undefined' && AdminUniModal.show) {
           // If no toast system, we can't show anything here safely without recursion
         } else {
-          alert(m);
+          window.showStatusModal({
+            title: t ? (t.charAt(0).toUpperCase() + t.slice(1)) : 'Notification',
+            message: m,
+            type: t === 'error' ? 'error' : (t === 'success' ? 'success' : 'info')
+          });
         }
       };
 
@@ -7283,6 +8169,61 @@
           
           // Focus confirm button
           confirmBtn.focus();
+        });
+      };
+
+      // Add showStatusModal helper for admin panel
+      window.showStatusModal = function(options) {
+        const { title = 'Message', message = '', type = 'info', icon = 'ri-information-line' } = 
+          typeof options === 'string' ? { message: options } : options;
+        
+        const colorMap = {
+          success: { bg: '#ecfdf5', text: '#065f46', icon: '#10b981' },
+          error: { bg: '#fef2f2', text: '#991b1b', icon: '#ef4444' },
+          warning: { bg: '#fffbeb', text: '#92400e', icon: '#f59e0b' },
+          info: { bg: '#f0f9ff', text: '#075985', icon: '#0ea5e9' }
+        };
+        
+        let displayIcon = icon;
+        if (type === 'success' && icon === 'ri-information-line') displayIcon = 'ri-checkbox-circle-line';
+        if (type === 'error' && icon === 'ri-information-line') displayIcon = 'ri-error-warning-line';
+        if (type === 'warning' && icon === 'ri-information-line') displayIcon = 'ri-alert-line';
+
+        const colors = colorMap[type] || colorMap.info;
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay status-modal-overlay';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999999;animation:fadeIn 0.2s ease;';
+        modal.innerHTML = `
+          <div style="background:#fff;border-radius:16px;max-width:400px;width:90%;padding:32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease;">
+            <div style="width:64px;height:64px;background:${colors.bg};border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+              <i class="${displayIcon}" style="font-size:32px;color:${colors.icon};"></i>
+            </div>
+            <h3 style="margin:0 0 12px;font-size:1.25rem;color:#111827;font-weight:600;">${title}</h3>
+            <p style="color:#4b5563;margin:0 0 24px;font-size:0.95rem;line-height:1.5;">${message}</p>
+            <button id="closeAdminStatusModal" style="width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:12px;font-weight:600;cursor:pointer;transition:all 0.2s ease;">
+              OK
+            </button>
+            <style>
+              @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+              #closeAdminStatusModal:hover { background: #333; transform: translateY(-2px); }
+            </style>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        
+        return new Promise((resolve) => {
+          const closeBtn = modal.querySelector('#closeAdminStatusModal');
+          const close = () => {
+            modal.remove();
+            resolve();
+          };
+          closeBtn.onclick = close;
+          modal.onclick = (e) => { if (e.target === modal) close(); };
+          
+          // Focus button
+          closeBtn.focus();
         });
       };
     </script>
@@ -7676,6 +8617,7 @@
           <button class="mobile-menu-item" data-section="orders"><i class="ri-file-list-3-line"></i> Orders</button>
           <button class="mobile-menu-item" data-section="product-costs"><i class="ri-coins-line"></i> Product Costs</button>
           <button class="mobile-menu-item" data-section="slider"><i class="ri-slideshow-line"></i> Slider</button>
+          <button class="mobile-menu-item" data-section="reviews-page"><i class="ri-star-smile-line"></i> Reviews Page</button>
         </div>
         <div class="mobile-menu-group">
           <div class="mobile-menu-group-title">RMA</div>
@@ -7750,6 +8692,7 @@
             <li><a href="#" data-section="orders"><i class="ri-file-list-3-line"></i><span class="menu-text">Orders</span></a></li>
             <li><a href="#" data-section="product-costs"><i class="ri-coins-line"></i><span class="menu-text">Product Costs</span></a></li>
             <li><a href="#" data-section="slider"><i class="ri-slideshow-line"></i><span class="menu-text">Slider</span></a></li>
+            <li><a href="#" data-section="reviews-page"><i class="ri-star-smile-line"></i><span class="menu-text">Reviews Page</span></a></li>
           </div>
           
           <!-- RMA Group -->
@@ -9417,6 +10360,464 @@
         </div>
       </div>
 
+      <!-- ============ REVIEWS PAGE MANAGEMENT SECTION ============ -->
+      <section id="reviews-page" class="admin-section admin-panel reviews-page-management">
+        <div class="section-header">
+          <div class="section-header-left">
+            <h2><i class="ri-star-smile-line"></i> Reviews Page Management</h2>
+            <small>Manage all content on the Reviews page including stats, reviews, partnerships & milestones</small>
+          </div>
+          <div class="section-header-right">
+            <label class="toggle-switch-label master-toggle" title="Enable/Disable this section">
+              <input type="checkbox" id="masterToggleReviewsPage" class="master-section-toggle" data-section="reviewsPage" checked>
+              <span class="toggle-switch"></span>
+              <span>Section Enabled</span>
+            </label>
+            <span class="refresh-indicator" id="reviewsPageRefreshIndicator">
+              <i class="ri-refresh-line"></i>
+              <span id="reviewsPageLastUpdate">--</span>
+            </span>
+            <button class="secondary" id="refreshReviewsPageBtn" title="Refresh data">
+              <i class="ri-refresh-line"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-body" id="reviewsPageSectionBody">
+          <!-- Reviews Feature Toggles -->
+          <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+            <h4 style="margin: 0 0 16px 0; font-size: 0.95rem; color: #0f172a;"><i class="ri-toggle-line"></i> Feature Toggles</h4>
+            <div class="responsive-grid" style="gap: 16px;">
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpStats" class="reviews-toggle" data-feature="statsEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Stats & Numbers</span>
+              </label>
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpReviews" class="reviews-toggle" data-feature="reviewsEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Reviews</span>
+              </label>
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpPlatforms" class="reviews-toggle" data-feature="platformsEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Platforms</span>
+              </label>
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpPhotos" class="reviews-toggle" data-feature="photosEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Photos</span>
+              </label>
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpPartners" class="reviews-toggle" data-feature="partnershipsEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Partnerships</span>
+              </label>
+              <label class="toggle-switch-label">
+                <input type="checkbox" id="toggleRpMilestones" class="reviews-toggle" data-feature="milestonesEnabled" checked>
+                <span class="toggle-switch"></span>
+                <span>Milestones</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="reviews-admin-tabs">
+          <button class="reviews-tab-btn active" data-tab="rp-stats"><i class="ri-bar-chart-line"></i> Stats & Numbers</button>
+          <button class="reviews-tab-btn" data-tab="rp-reviews"><i class="ri-chat-quote-line"></i> Reviews</button>
+          <button class="reviews-tab-btn" data-tab="rp-platforms"><i class="ri-global-line"></i> Platforms</button>
+          <button class="reviews-tab-btn" data-tab="rp-photos"><i class="ri-image-line"></i> Photos</button>
+          <button class="reviews-tab-btn" data-tab="rp-partners"><i class="ri-building-line"></i> Partnerships</button>
+          <button class="reviews-tab-btn" data-tab="rp-milestones"><i class="ri-flag-line"></i> Milestones</button>
+        </div>
+
+        <!-- TAB 1: Stats & Numbers -->
+        <div class="reviews-tab-content active" id="rp-stats">
+          <div class="rp-card">
+            <h3><i class="ri-award-line"></i> Header Stats</h3>
+            <p class="rp-card-desc">Edit the main stats displayed in the review page header</p>
+            <div class="rp-form-grid">
+              <div class="rp-form-group">
+                <label for="rpAvgRating">Average Rating</label>
+                <input type="number" id="rpAvgRating" step="0.1" min="0" max="5" placeholder="4.8">
+              </div>
+              <div class="rp-form-group">
+                <label for="rpHappyCustomers">Happy Customers</label>
+                <input type="text" id="rpHappyCustomers" placeholder="500+">
+              </div>
+              <div class="rp-form-group">
+                <label for="rpRecommendUs">Recommend Us</label>
+                <input type="text" id="rpRecommendUs" placeholder="98%">
+              </div>
+              <div class="rp-form-group">
+                <label for="rpTotalReviews">Total Reviews Text</label>
+                <input type="text" id="rpTotalReviews" placeholder="Based on 500+ reviews">
+              </div>
+            </div>
+            <button class="primary" id="saveHeaderStats"><i class="ri-save-line"></i> Save Header Stats</button>
+          </div>
+
+          <div class="rp-card">
+            <h3><i class="ri-bar-chart-grouped-line"></i> Rating Breakdown (%)</h3>
+            <p class="rp-card-desc">Set the percentage for each star rating</p>
+            <div class="rp-form-grid rating-breakdown-grid">
+              <div class="rp-form-group">
+                <label><i class="ri-star-fill" style="color:#fbbf24"></i> 5 Star</label>
+                <input type="number" id="rp5Star" min="0" max="100" placeholder="78">
+              </div>
+              <div class="rp-form-group">
+                <label><i class="ri-star-fill" style="color:#fbbf24"></i> 4 Star</label>
+                <input type="number" id="rp4Star" min="0" max="100" placeholder="15">
+              </div>
+              <div class="rp-form-group">
+                <label><i class="ri-star-fill" style="color:#fbbf24"></i> 3 Star</label>
+                <input type="number" id="rp3Star" min="0" max="100" placeholder="5">
+              </div>
+              <div class="rp-form-group">
+                <label><i class="ri-star-fill" style="color:#fbbf24"></i> 2 Star</label>
+                <input type="number" id="rp2Star" min="0" max="100" placeholder="1">
+              </div>
+              <div class="rp-form-group">
+                <label><i class="ri-star-fill" style="color:#fbbf24"></i> 1 Star</label>
+                <input type="number" id="rp1Star" min="0" max="100" placeholder="1">
+              </div>
+            </div>
+            <button class="primary" id="saveRatingBreakdown"><i class="ri-save-line"></i> Save Rating Breakdown</button>
+          </div>
+
+          <div class="rp-card">
+            <h3><i class="ri-numbers-line"></i> BLACKONN in Numbers (Mega Stats)</h3>
+            <p class="rp-card-desc">Edit the big statistics displayed in the "BLACKONN in Numbers" section. Use icon classes from <a href="https://remixicon.com/" target="_blank" style="color:#3b82f6;">RemixIcon</a></p>
+            <div style="background:#f0f9ff; border:1px solid #bae6fd; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.85rem;">
+              <strong><i class="ri-lightbulb-line"></i> Common Icons:</strong>
+              <span style="display:inline-flex; gap:16px; flex-wrap:wrap; margin-top:6px;">
+                <span><i class="ri-google-fill" style="color:#ea4335;"></i> ri-google-fill</span>
+                <span><i class="ri-facebook-fill" style="color:#1877f2;"></i> ri-facebook-fill</span>
+                <span><i class="ri-instagram-fill" style="color:#e4405f;"></i> ri-instagram-fill</span>
+                <span><i class="ri-user-line"></i> ri-user-line</span>
+                <span><i class="ri-shopping-bag-line"></i> ri-shopping-bag-line</span>
+                <span><i class="ri-star-line"></i> ri-star-line</span>
+              </span>
+            </div>
+            <div id="megaStatsContainer" class="rp-items-list">
+              <!-- Mega stats will be loaded here -->
+            </div>
+            <button class="secondary" id="addMegaStat"><i class="ri-add-line"></i> Add New Stat</button>
+            <button class="primary" id="saveMegaStats"><i class="ri-save-line"></i> Save All Mega Stats</button>
+          </div>
+        </div>
+
+        <!-- TAB 2: Reviews Management -->
+        <div class="reviews-tab-content" id="rp-reviews">
+          <div class="rp-card">
+            <div class="rp-card-header">
+              <div>
+                <h3><i class="ri-chat-quote-line"></i> Customer Reviews</h3>
+                <p class="rp-card-desc">Manage reviews, add brand replies, hide or delete reviews</p>
+              </div>
+              <button class="primary" id="addNewReview"><i class="ri-add-line"></i> Add Review</button>
+            </div>
+            
+            <div class="rp-reviews-filters">
+              <input type="text" id="rpReviewSearch" placeholder="Search reviews by name or content..." class="rp-search-input">
+              <select id="rpReviewFilter">
+                <option value="all">All Reviews</option>
+                <option value="pending">Pending Approval</option>
+                <option value="visible">Visible</option>
+                <option value="hidden">Hidden</option>
+                <option value="with-reply">With Reply</option>
+                <option value="no-reply">No Reply</option>
+              </select>
+            </div>
+
+            <div id="reviewsListContainer" class="rp-reviews-list">
+              <!-- Reviews will be loaded here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Platforms -->
+        <div class="reviews-tab-content" id="rp-platforms">
+          <div class="rp-card">
+            <h3><i class="ri-global-line"></i> "Also Reviewed On" Platforms</h3>
+            <p class="rp-card-desc">Manage the platforms displayed in the "Also Reviewed On" section. Icons only - no images needed.</p>
+            <div style="background:#f0fdf4; border:1px solid #86efac; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.85rem;">
+              <strong><i class="ri-lightbulb-line"></i> Platform Icons:</strong>
+              <span style="display:inline-flex; gap:16px; flex-wrap:wrap; margin-top:6px;">
+                <span><i class="ri-google-fill" style="color:#ea4335;"></i> ri-google-fill</span>
+                <span><i class="ri-facebook-fill" style="color:#1877f2;"></i> ri-facebook-fill</span>
+                <span><i class="ri-instagram-fill" style="color:#e4405f;"></i> ri-instagram-fill</span>
+                <span><i class="ri-amazon-fill" style="color:#ff9900;"></i> ri-amazon-fill</span>
+                <span><i class="ri-twitter-x-fill"></i> ri-twitter-x-fill</span>
+              </span>
+            </div>
+            <div id="platformsContainer" class="rp-items-list">
+              <!-- Platforms will be loaded here -->
+            </div>
+            <button class="secondary" id="addPlatform"><i class="ri-add-line"></i> Add Platform</button>
+            <button class="primary" id="savePlatforms"><i class="ri-save-line"></i> Save All Platforms</button>
+          </div>
+        </div>
+
+        <!-- TAB 4: Customer Photos -->
+        <div class="reviews-tab-content" id="rp-photos">
+          <div class="rp-card">
+            <h3><i class="ri-image-line"></i> Customer Photos Section</h3>
+            <p class="rp-card-desc">Manage photos displayed in the "Customer Photos" section</p>
+            <div id="photosContainer" class="rp-photos-grid">
+              <!-- Photos will be loaded here -->
+            </div>
+            <button class="secondary" id="addPhoto"><i class="ri-add-line"></i> Add Photo</button>
+            <button class="primary" id="savePhotos"><i class="ri-save-line"></i> Save All Photos</button>
+          </div>
+        </div>
+
+        <!-- TAB 5: Partnerships -->
+        <div class="reviews-tab-content" id="rp-partners">
+          <div class="rp-card">
+            <h3><i class="ri-building-line"></i> Trusted Partnerships</h3>
+            <p class="rp-card-desc">Manage partner logos and descriptions</p>
+            <div id="partnersContainer" class="rp-partners-list">
+              <!-- Partners will be loaded here -->
+            </div>
+            <button class="secondary" id="addPartner"><i class="ri-add-line"></i> Add Partner</button>
+            <button class="primary" id="savePartners"><i class="ri-save-line"></i> Save All Partners</button>
+          </div>
+        </div>
+
+        <!-- TAB 6: Milestones -->
+        <div class="reviews-tab-content" id="rp-milestones">
+          <div class="rp-card">
+            <h3><i class="ri-flag-line"></i> Journey & Milestones</h3>
+            <p class="rp-card-desc">Manage the "Our Journey & Milestones" timeline</p>
+            <div id="milestonesContainer" class="rp-milestones-list">
+              <!-- Milestones will be loaded here -->
+            </div>
+            <button class="secondary" id="addMilestone"><i class="ri-add-line"></i> Add Milestone</button>
+            <button class="primary" id="saveMilestones"><i class="ri-save-line"></i> Save All Milestones</button>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- Reviews Page Modals -->
+      <!-- Add/Edit Review Modal -->
+      <div class="modal" id="rpReviewModal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+          <div class="modal-header">
+            <h3 id="rpReviewModalTitle"><i class="ri-add-line"></i> Add Review</h3>
+            <button class="modal-close" id="rpReviewModalCloseBtn">&times;</button>
+          </div>
+          <form id="rpReviewForm" class="modal-body">
+            <input type="hidden" id="rpReviewId" />
+            
+            <div class="rp-form-grid">
+              <div class="rp-form-group">
+                <label for="rpReviewName">Customer Name *</label>
+                <input type="text" id="rpReviewName" required placeholder="John Doe">
+              </div>
+              <div class="rp-form-group">
+                <label for="rpReviewAvatar">Avatar (Initial)</label>
+                <input type="text" id="rpReviewAvatar" maxlength="2" placeholder="JD">
+              </div>
+            </div>
+
+            <div class="rp-form-grid">
+              <div class="rp-form-group">
+                <label for="rpReviewRating">Rating *</label>
+                <select id="rpReviewRating" required>
+                  <option value="5">5 Stars</option>
+                  <option value="4">4 Stars</option>
+                  <option value="3">3 Stars</option>
+                  <option value="2">2 Stars</option>
+                  <option value="1">1 Star</option>
+                </select>
+              </div>
+              <div class="rp-form-group">
+                <label for="rpReviewDate">Date</label>
+                <input type="text" id="rpReviewDate" placeholder="January 15, 2025">
+              </div>
+            </div>
+
+            <div class="rp-form-grid">
+              <div class="rp-form-group">
+                <label for="rpReviewProduct">Product Name</label>
+                <input type="text" id="rpReviewProduct" placeholder="Classic Black T-Shirt">
+              </div>
+              <div class="rp-form-group">
+                <label for="rpReviewProductIcon">Product Icon</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <div id="rpReviewIconPreview" style="width:36px; height:36px; background:#1f2937; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <i class="ri-t-shirt-line" style="font-size:1.1rem; color:#fff;"></i>
+                  </div>
+                  <input type="text" id="rpReviewProductIcon" placeholder="ri-t-shirt-line" oninput="document.querySelector('#rpReviewIconPreview i').className = this.value || 'ri-t-shirt-line'" style="flex:1;">
+                </div>
+                <small style="color:#6b7280; font-size:0.75rem;">Common: ri-t-shirt-line, ri-shirt-line, ri-shopping-bag-line</small>
+              </div>
+            </div>
+
+            <div class="rp-form-group">
+              <label for="rpReviewContent">Review Content *</label>
+              <textarea id="rpReviewContent" rows="4" required placeholder="Write the review content..."></textarea>
+            </div>
+
+            <div class="rp-form-grid">
+              <div class="rp-form-group">
+                <label for="rpReviewVerified">Verified Purchase</label>
+                <select id="rpReviewVerified">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
+              <div class="rp-form-group">
+                <label for="rpReviewStatus">Status</label>
+                <select id="rpReviewStatus">
+                  <option value="visible">Visible</option>
+                  <option value="hidden">Hidden</option>
+                </select>
+              </div>
+              <div class="rp-form-group">
+                <label for="rpReviewHelpful">Helpful Votes</label>
+                <input type="number" id="rpReviewHelpful" min="0" placeholder="0">
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="submit" class="primary" id="rpReviewSubmitBtn">Add Review</button>
+              <button type="button" class="secondary" id="rpReviewCancelBtn">Cancel</button>
+              <button type="button" class="delete-btn" id="rpReviewDeleteBtn" style="display: none; margin-left: auto;">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Brand Reply Modal -->
+      <div class="modal" id="rpReplyModal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+          <div class="modal-header">
+            <h3><i class="ri-reply-line"></i> Brand Reply</h3>
+            <button class="modal-close" id="rpReplyModalCloseBtn">&times;</button>
+          </div>
+          <form id="rpReplyForm" class="modal-body">
+            <input type="hidden" id="rpReplyReviewId" />
+            <div class="rp-form-group">
+              <label>Replying to: <strong id="rpReplyingTo"></strong></label>
+            </div>
+            <div class="rp-form-group">
+              <label for="rpReplyContent">Your Reply</label>
+              <textarea id="rpReplyContent" rows="4" placeholder="Thank you for your feedback..."></textarea>
+              <small style="color: #6b7280;">Leave empty to remove the existing reply</small>
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="primary"><i class="ri-send-plane-line"></i> Save Reply</button>
+              <button type="button" class="secondary" id="rpReplyCancelBtn">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Customer Photo Modal -->
+      <div class="modal" id="rpPhotoModal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+          <div class="modal-header">
+            <h3 id="rpPhotoModalTitle"><i class="ri-image-add-line"></i> Add Customer Photo</h3>
+            <button class="modal-close" id="rpPhotoModalCloseBtn">&times;</button>
+          </div>
+          <form id="rpPhotoForm" class="modal-body">
+            <input type="hidden" id="rpPhotoIdx" value="-1" />
+            
+            <div class="rp-form-group">
+              <label for="rpPhotoUsername">Instagram Username</label>
+              <input type="text" id="rpPhotoUsername" placeholder="@username">
+            </div>
+            
+            <div class="rp-form-group">
+              <label>Photo</label>
+              <div class="rp-upload-box" id="rpPhotoUploadBox">
+                <input type="file" id="rpPhotoFile" accept="image/*" style="display:none;">
+                <div class="rp-upload-preview" id="rpPhotoPreview">
+                  <i class="ri-image-add-line"></i>
+                  <span>Click to upload photo</span>
+                </div>
+              </div>
+              <small style="color:#6b7280;">Or use an icon class instead:</small>
+              <input type="text" id="rpPhotoIcon" placeholder="ri-t-shirt-line" style="margin-top:8px;">
+            </div>
+            
+            <div class="rp-form-group">
+              <label for="rpPhotoActive">Status</label>
+              <select id="rpPhotoActive">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+            
+            <div class="modal-actions">
+              <button type="submit" class="primary" id="rpPhotoSubmitBtn"><i class="ri-save-line"></i> Save Photo</button>
+              <button type="button" class="secondary" id="rpPhotoCancelBtn">Cancel</button>
+              <button type="button" class="delete-btn" id="rpPhotoDeleteBtn" style="display:none; margin-left:auto;">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Partner Modal -->
+      <div class="modal" id="rpPartnerModal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+          <div class="modal-header">
+            <h3 id="rpPartnerModalTitle"><i class="ri-building-line"></i> Add Partner</h3>
+            <button class="modal-close" id="rpPartnerModalCloseBtn">&times;</button>
+          </div>
+          <form id="rpPartnerForm" class="modal-body">
+            <input type="hidden" id="rpPartnerIdx" value="-1" />
+            
+            <div class="rp-form-group">
+              <label for="rpPartnerName">Partner Name *</label>
+              <input type="text" id="rpPartnerName" required placeholder="Company Name">
+            </div>
+            
+            <div class="rp-form-group">
+              <label for="rpPartnerDesc">Description</label>
+              <input type="text" id="rpPartnerDesc" placeholder="Partner description">
+            </div>
+            
+            <div class="rp-form-group">
+              <label>Logo</label>
+              <div class="rp-upload-box" id="rpPartnerUploadBox">
+                <input type="file" id="rpPartnerFile" accept="image/*" style="display:none;">
+                <div class="rp-upload-preview" id="rpPartnerPreview">
+                  <i class="ri-upload-cloud-line"></i>
+                  <span>Click to upload logo</span>
+                </div>
+              </div>
+              <small style="color:#6b7280;">Or use an icon class instead:</small>
+              <input type="text" id="rpPartnerIcon" placeholder="ri-building-line" style="margin-top:8px;">
+            </div>
+            
+            <div class="rp-form-group">
+              <label for="rpPartnerActive">Status</label>
+              <select id="rpPartnerActive">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+            
+            <div class="modal-actions">
+              <button type="submit" class="primary" id="rpPartnerSubmitBtn"><i class="ri-save-line"></i> Save Partner</button>
+              <button type="button" class="secondary" id="rpPartnerCancelBtn">Cancel</button>
+              <button type="button" class="delete-btn" id="rpPartnerDeleteBtn" style="display:none; margin-left:auto;">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- ============ END REVIEWS PAGE MANAGEMENT ============ -->
+
       <section id="products" class="admin-section admin-panel">
         <div class="section-header">
           <div class="section-header-left">
@@ -9452,6 +10853,18 @@
           <label>
             Price (₹)
             <input type="number" id="productPrice" min="0" required placeholder="1499" />
+          </label>
+          <label>
+            Category
+            <select id="productCategory" required>
+              <option value="T-Shirts">T-Shirts</option>
+              <option value="Hoodies">Hoodies</option>
+              <option value="Sweatshirts">Sweatshirts</option>
+              <option value="Bottoms">Bottoms</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Footwear">Footwear</option>
+              <option value="Outerwear">Outerwear</option>
+            </select>
           </label>
           <label>
             Available Colors
@@ -9553,6 +10966,20 @@
               <option value="4">4 - Fourth Position</option>
               <option value="5">5 - Fifth Position</option>
               <option value="6">6 - Sixth Position</option>
+              <option value="7">7 - Seventh Position</option>
+              <option value="8">8 - Eighth Position</option>
+              <option value="9">9 - Ninth Position</option>
+              <option value="10">10 - Tenth Position</option>
+              <option value="11">11 - Eleventh Position</option>
+              <option value="12">12 - Twelfth Position</option>
+              <option value="13">13 - Thirteenth Position</option>
+              <option value="14">14 - Fourteenth Position</option>
+              <option value="15">15 - Fifteenth Position</option>
+              <option value="16">16 - Sixteenth Position</option>
+              <option value="17">17 - Seventeenth Position</option>
+              <option value="18">18 - Eighteenth Position</option>
+              <option value="19">19 - Nineteenth Position</option>
+              <option value="20">20 - Twentieth Position</option>
             </select>
             <span class="image-upload-hint">Select position to show on home page</span>
           </label>
@@ -9657,11 +11084,22 @@
             <label for="statusFilter">Status:</label>
             <select id="statusFilter">
               <option value="">All Statuses</option>
+              <option value="Awaiting Payment">Awaiting Payment</option>
               <option value="Pending">Pending</option>
               <option value="Processing">Processing</option>
               <option value="Shipped">Shipped</option>
               <option value="Delivered">Delivered</option>
               <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="paymentFilter">Payment:</label>
+            <select id="paymentFilter">
+              <option value="">All Payments</option>
+              <option value="Completed">Completed/Paid</option>
+              <option value="Awaiting Payment">Awaiting Payment</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
             </select>
           </div>
           <div class="filter-group">
@@ -9690,6 +11128,7 @@
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th>Payment</th>
                 <th>Items</th>
                 <th>Address</th>
                 <th>Actions</th>
@@ -13126,7 +14565,10 @@
                   </div>
                   <div>
                     <strong>${product.name}</strong>
-                    <span class="product-id">ID: ${product.id.slice(0, 8)}...</span>
+                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                      <span class="product-id">ID: ${product.id.slice(0, 8)}...</span>
+                      <span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:500;">${product.category || 'General'}</span>
+                    </div>
                     ${stockStatusBadge}
                   </div>
                 </div>
@@ -13449,6 +14891,1080 @@
       // END SLIDER MANAGEMENT
       // ===============================
 
+      // ===============================
+      // REVIEWS PAGE MANAGEMENT FUNCTIONS
+      // ===============================
+      
+      let reviewsPageData = null;
+      
+      // Ensure showToast points to showNotification if available
+      const showToast = (msg, type) => {
+        if (typeof showNotification === 'function') {
+          showNotification(msg, type);
+        } else {
+          window.showStatusModal({
+            title: type ? (type.charAt(0).toUpperCase() + type.slice(1)) : 'Notification',
+            message: msg,
+            type: type === 'error' ? 'error' : (type === 'success' ? 'success' : 'info')
+          });
+        }
+      };
+      
+      // Tab switching
+      document.querySelectorAll('.reviews-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.reviews-tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.reviews-tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const tabId = btn.getAttribute('data-tab');
+          const tabContent = document.getElementById(tabId);
+          if (tabContent) tabContent.classList.add('active');
+        });
+      });
+      
+      // Load Reviews Page Data
+      async function loadReviewsSettings() {
+        try {
+          const response = await fetch(getApiUrl('/api/reviews-page/settings'), { credentials: 'include' });
+          const data = await response.json();
+          if (data.success && data.settings) {
+            const settings = data.settings;
+            if (document.getElementById('toggleRpStats')) document.getElementById('toggleRpStats').checked = settings.statsEnabled !== false;
+            if (document.getElementById('toggleRpReviews')) document.getElementById('toggleRpReviews').checked = settings.reviewsEnabled !== false;
+            if (document.getElementById('toggleRpPlatforms')) document.getElementById('toggleRpPlatforms').checked = settings.platformsEnabled !== false;
+            if (document.getElementById('toggleRpPhotos')) document.getElementById('toggleRpPhotos').checked = settings.photosEnabled !== false;
+            if (document.getElementById('toggleRpPartners')) document.getElementById('toggleRpPartners').checked = settings.partnershipsEnabled !== false;
+            if (document.getElementById('toggleRpMilestones')) document.getElementById('toggleRpMilestones').checked = settings.milestonesEnabled !== false;
+          }
+        } catch (error) {
+          console.error('Error loading reviews settings:', error);
+        }
+      }
+
+      // Handle individual reviews feature toggles
+      document.addEventListener('change', async (e) => {
+        if (e.target.classList.contains('reviews-toggle')) {
+          const feature = e.target.dataset.feature;
+          const enabled = e.target.checked;
+          
+          try {
+            const response = await fetch(getApiUrl('/api/reviews-page/settings'), {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ [feature]: enabled })
+            });
+            const data = await response.json();
+            if (data.success) {
+              showToast(`${feature.replace('Enabled', '')} setting updated`, 'success');
+            } else {
+              e.target.checked = !enabled;
+              showToast('Failed to update setting', 'error');
+            }
+          } catch (error) {
+            e.target.checked = !enabled;
+            showToast('Error updating setting', 'error');
+          }
+        }
+      });
+
+      async function loadReviewsPageData() {
+        // Load settings first
+        loadReviewsSettings();
+
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/admin', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const result = await res.json();
+          if (result.success) {
+            reviewsPageData = result.data;
+            renderAllReviewsPageSections();
+            document.getElementById('reviewsPageLastUpdate').textContent = 'Just now';
+          } else {
+            showToast('Failed to load reviews page data', 'error');
+          }
+        } catch (err) {
+          console.error('Error loading reviews page data:', err);
+          showToast('Error loading data', 'error');
+        }
+      }
+      
+      function renderAllReviewsPageSections() {
+        if (!reviewsPageData) return;
+        
+        // Stats
+        document.getElementById('rpAvgRating').value = reviewsPageData.stats?.averageRating || '';
+        document.getElementById('rpHappyCustomers').value = reviewsPageData.stats?.happyCustomers || '';
+        document.getElementById('rpRecommendUs').value = reviewsPageData.stats?.recommendUs || '';
+        document.getElementById('rpTotalReviews').value = reviewsPageData.stats?.totalReviewsText || 'Based on 500+ reviews';
+        
+        // Rating Breakdown
+        document.getElementById('rp5Star').value = reviewsPageData.ratingBreakdown?.['5star'] || '';
+        document.getElementById('rp4Star').value = reviewsPageData.ratingBreakdown?.['4star'] || '';
+        document.getElementById('rp3Star').value = reviewsPageData.ratingBreakdown?.['3star'] || '';
+        document.getElementById('rp2Star').value = reviewsPageData.ratingBreakdown?.['2star'] || '';
+        document.getElementById('rp1Star').value = reviewsPageData.ratingBreakdown?.['1star'] || '';
+        
+        renderMegaStats();
+        renderPlatforms();
+        renderReviewsList();
+        renderPhotos();
+        renderPartners();
+        renderMilestones();
+      }
+      
+      // ========== MEGA STATS ==========
+      function renderMegaStats() {
+        const container = document.getElementById('megaStatsContainer');
+        const stats = reviewsPageData?.megaStats || [];
+        container.innerHTML = stats.map((stat, idx) => `
+          <div class="rp-item-row" data-idx="${idx}">
+            <div class="rp-icon-preview" style="width:40px; height:40px; background:#1f2937;">
+              <i class="${stat.icon || 'ri-bar-chart-line'}"></i>
+            </div>
+            <div class="rp-row-grid">
+              <input type="text" value="${stat.icon || ''}" placeholder="Icon class" onchange="updateIconPreview(this)">
+              <input type="text" value="${stat.number || ''}" placeholder="Number (e.g., 500+)">
+              <input type="text" value="${stat.label || ''}" placeholder="Label">
+            </div>
+            <button type="button" class="rp-btn-remove" onclick="removeMegaStat(${idx})"><i class="ri-delete-bin-line"></i></button>
+          </div>
+        `).join('');
+        
+        if (stats.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:30px; color:#6b7280;">No stats added yet. Click "Add New Stat" to get started.</div>';
+        }
+      }
+      
+      function updateIconPreview(input) {
+        const row = input.closest('.rp-item-row, .rp-platform-row, .rp-milestone-row');
+        const preview = row ? row.querySelector('.rp-icon-preview i') : null;
+        if (preview) {
+          preview.className = input.value.trim() || (row.classList.contains('rp-milestone-row') ? 'ri-award-line' : (row.classList.contains('rp-platform-row') ? 'ri-star-line' : 'ri-bar-chart-line'));
+        }
+      }
+      
+      function addMegaStat() {
+        if (!reviewsPageData.megaStats) reviewsPageData.megaStats = [];
+        reviewsPageData.megaStats.push({ id: `mega-${Date.now()}`, icon: 'ri-bar-chart-line', number: '0', label: 'New Stat' });
+        renderMegaStats();
+      }
+      
+      async function removeMegaStat(idx) {
+        const confirmed = await showConfirmModal({
+          title: 'Remove Stat',
+          message: 'Are you sure you want to remove this mega stat?',
+          type: 'warning'
+        });
+        if (!confirmed) return;
+        reviewsPageData.megaStats.splice(idx, 1);
+        renderMegaStats();
+      }
+      
+      async function saveMegaStats() {
+        try {
+          const rows = document.querySelectorAll('#megaStatsContainer .rp-item-row');
+          const megaStats = Array.from(rows).map((row, idx) => {
+            const inputs = row.querySelectorAll('input');
+            return {
+              id: `mega-${idx + 1}`,
+              icon: inputs[0].value.trim(),
+              number: inputs[1].value.trim(),
+              label: inputs[2].value.trim()
+            };
+          });
+          
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/mega-stats', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ megaStats })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Mega stats saved!', 'success');
+            reviewsPageData.megaStats = result.megaStats;
+            renderMegaStats();
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving mega stats', 'error');
+        }
+      }
+      
+      // ========== PLATFORMS ==========
+      function renderPlatforms() {
+        const container = document.getElementById('platformsContainer');
+        const platforms = reviewsPageData?.platforms || [];
+        container.innerHTML = platforms.map((p, idx) => `
+          <div class="rp-platform-row" data-idx="${idx}">
+            <div class="rp-icon-preview">
+              <i class="${p.icon || 'ri-star-line'}"></i>
+            </div>
+            <div class="rp-platform-info">
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Name</label>
+                <input type="text" value="${p.name || ''}" placeholder="Platform name">
+              </div>
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Icon Class</label>
+                <input type="text" value="${p.icon || ''}" placeholder="Icon (e.g., ri-google-fill)" onchange="updateIconPreview(this)">
+              </div>
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Color Class</label>
+                <input type="text" value="${p.colorClass || ''}" placeholder="google, instagram, etc.">
+              </div>
+            </div>
+            <div class="rp-platform-stats">
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Rating</label>
+                <input type="number" value="${p.rating || 5}" step="0.1" min="0" max="5">
+              </div>
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Count</label>
+                <input type="text" value="${p.count || ''}" placeholder="500 reviews">
+              </div>
+              <div class="rp-form-group" style="margin:0;">
+                <label style="font-size:0.75rem; margin-bottom:2px;">Status</label>
+                <select>
+                  <option value="true" ${p.active !== false ? 'selected' : ''}>Active</option>
+                  <option value="false" ${p.active === false ? 'selected' : ''}>Inactive</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="rp-btn-remove" onclick="removePlatform(${idx})"><i class="ri-delete-bin-line"></i></button>
+          </div>
+        `).join('');
+        
+        if (platforms.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:30px; color:#6b7280;">No platforms added yet. Click "Add Platform" to get started.</div>';
+        }
+      }
+      
+      function addPlatform() {
+        if (!reviewsPageData.platforms) reviewsPageData.platforms = [];
+        reviewsPageData.platforms.push({ id: `platform-${Date.now()}`, name: 'New Platform', icon: 'ri-star-line', colorClass: '', rating: 5.0, count: '0 reviews', active: true });
+        renderPlatforms();
+      }
+      
+      async function removePlatform(idx) {
+        const confirmed = await showConfirmModal({
+          title: 'Remove Platform',
+          message: 'Are you sure you want to remove this review platform?',
+          type: 'warning'
+        });
+        if (!confirmed) return;
+        reviewsPageData.platforms.splice(idx, 1);
+        renderPlatforms();
+      }
+      
+      async function savePlatforms() {
+        try {
+          const rows = document.querySelectorAll('#platformsContainer .rp-platform-row');
+          const platforms = Array.from(rows).map((row, idx) => {
+            const inputs = row.querySelectorAll('input');
+            const select = row.querySelector('select');
+            return {
+              id: `platform-${idx + 1}`,
+              name: inputs[0].value.trim(),
+              icon: inputs[1].value.trim(),
+              colorClass: inputs[2].value.trim(),
+              rating: parseFloat(inputs[3].value) || 5.0,
+              count: inputs[4].value.trim(),
+              active: select.value === 'true'
+            };
+          });
+          
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/platforms', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ platforms })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Platforms saved!', 'success');
+            reviewsPageData.platforms = result.platforms;
+            renderPlatforms();
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving platforms', 'error');
+        }
+      }
+      
+      // ========== REVIEWS ==========
+      function renderReviewsList() {
+        const container = document.getElementById('reviewsListContainer');
+        let reviews = reviewsPageData?.reviews || [];
+        
+        // Apply filters
+        const searchTerm = document.getElementById('rpReviewSearch')?.value?.toLowerCase() || '';
+        const filterType = document.getElementById('rpReviewFilter')?.value || 'all';
+        
+        reviews = reviews.filter(r => {
+          if (searchTerm && !r.name.toLowerCase().includes(searchTerm) && !r.content.toLowerCase().includes(searchTerm)) return false;
+          if (filterType === 'visible' && r.status !== 'visible') return false;
+          if (filterType === 'hidden' && r.status !== 'hidden') return false;
+          if (filterType === 'pending' && r.status !== 'pending') return false;
+          if (filterType === 'with-reply' && !r.brandReply) return false;
+          if (filterType === 'no-reply' && r.brandReply) return false;
+          return true;
+        });
+        
+        if (reviews.length === 0) {
+          container.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;">No reviews found</div>';
+          return;
+        }
+        
+        container.innerHTML = reviews.map(r => `
+          <div class="rp-review-card ${r.status === 'hidden' ? 'hidden-review' : ''}" data-id="${r.id}">
+            <div class="rp-review-header">
+              <div class="rp-review-author">
+                <div class="rp-review-avatar">${r.avatar || r.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+                <div class="rp-review-author-info">
+                  <h4>${escapeHtml(r.name)} ${r.verified ? '<i class="ri-verified-badge-fill" style="color:#3b82f6;font-size:0.9rem;"></i>' : ''}</h4>
+                  <div class="rp-review-meta">
+                    <span class="rp-review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                    <span>• ${r.date || 'Unknown date'}</span>
+                    <span>• ${r.helpful || 0} helpful votes</span>
+                  </div>
+                </div>
+              </div>
+              <span class="rp-review-status-badge ${r.status}">${r.status}</span>
+            </div>
+            ${r.product ? `<div class="rp-review-product"><i class="${r.productIcon || 'ri-t-shirt-line'}"></i> ${escapeHtml(r.product)}</div>` : ''}
+            <div class="rp-review-content">${escapeHtml(r.content)}</div>
+            ${r.brandReply ? `
+              <div class="rp-review-brand-reply">
+                <strong><i class="ri-reply-line"></i> BLACKONN Response:</strong>
+                <p>${escapeHtml(r.brandReply)}</p>
+              </div>
+            ` : ''}
+            <div class="rp-review-actions">
+              <button class="rp-btn-edit" onclick="editReview('${r.id}')"><i class="ri-edit-line"></i> Edit</button>
+              <button class="rp-btn-reply" onclick="openReplyModal('${r.id}')"><i class="ri-reply-line"></i> ${r.brandReply ? 'Edit Reply' : 'Reply'}</button>
+              <button class="rp-btn-toggle" onclick="toggleReviewStatus('${r.id}')">${r.status === 'visible' ? '<i class="ri-eye-off-line"></i> Hide' : '<i class="ri-eye-line"></i> Show'}</button>
+              <button class="rp-btn-delete" onclick="deleteReview('${r.id}')"><i class="ri-delete-bin-line"></i> Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // Review Modal
+      function openAddReviewModal() {
+        document.getElementById('rpReviewModalTitle').innerHTML = '<i class="ri-add-line"></i> Add Review';
+        document.getElementById('rpReviewForm').reset();
+        document.getElementById('rpReviewId').value = '';
+        
+        // Reset product icon preview
+        const iconPreview = document.querySelector('#rpReviewIconPreview i');
+        if (iconPreview) {
+          iconPreview.className = 'ri-t-shirt-line';
+        }
+
+        document.getElementById('rpReviewDeleteBtn').style.display = 'none';
+        document.getElementById('rpReviewSubmitBtn').textContent = 'Add Review';
+        document.getElementById('rpReviewModal').style.display = 'flex';
+      }
+      
+      function editReview(id) {
+        const review = reviewsPageData.reviews?.find(r => r.id === id);
+        if (!review) return;
+        
+        document.getElementById('rpReviewModalTitle').innerHTML = '<i class="ri-edit-line"></i> Edit Review';
+        document.getElementById('rpReviewId').value = id;
+        document.getElementById('rpReviewName').value = review.name || '';
+        document.getElementById('rpReviewAvatar').value = review.avatar || '';
+        document.getElementById('rpReviewRating').value = review.rating || 5;
+        document.getElementById('rpReviewDate').value = review.date || '';
+        document.getElementById('rpReviewProduct').value = review.product || '';
+        document.getElementById('rpReviewProductIcon').value = review.productIcon || '';
+        
+        // Update product icon preview
+        const iconPreview = document.querySelector('#rpReviewIconPreview i');
+        if (iconPreview) {
+          iconPreview.className = review.productIcon || 'ri-t-shirt-line';
+        }
+
+        document.getElementById('rpReviewContent').value = review.content || '';
+        document.getElementById('rpReviewVerified').value = review.verified ? 'true' : 'false';
+        document.getElementById('rpReviewStatus').value = review.status || 'visible';
+        document.getElementById('rpReviewHelpful').value = review.helpful || 0;
+        document.getElementById('rpReviewDeleteBtn').style.display = 'block';
+        document.getElementById('rpReviewSubmitBtn').textContent = 'Update Review';
+        document.getElementById('rpReviewModal').style.display = 'flex';
+      }
+      
+      async function submitReviewForm(e) {
+        e.preventDefault();
+        const id = document.getElementById('rpReviewId').value;
+        const token = localStorage.getItem('token');
+        
+        const reviewData = {
+          name: document.getElementById('rpReviewName').value.trim(),
+          avatar: document.getElementById('rpReviewAvatar').value.trim() || document.getElementById('rpReviewName').value.trim().charAt(0).toUpperCase(),
+          rating: parseInt(document.getElementById('rpReviewRating').value),
+          date: document.getElementById('rpReviewDate').value.trim(),
+          product: document.getElementById('rpReviewProduct').value.trim(),
+          productIcon: document.getElementById('rpReviewProductIcon').value.trim() || 'ri-t-shirt-line',
+          content: document.getElementById('rpReviewContent').value.trim(),
+          verified: document.getElementById('rpReviewVerified').value === 'true',
+          status: document.getElementById('rpReviewStatus').value,
+          helpful: parseInt(document.getElementById('rpReviewHelpful').value) || 0
+        };
+        
+        try {
+          const url = id ? `/api/reviews-page/reviews/${id}` : '/api/reviews-page/reviews';
+          const method = id ? 'PUT' : 'POST';
+          
+          const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(reviewData)
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast(id ? 'Review updated!' : 'Review added!', 'success');
+            closeReviewModal();
+            loadReviewsPageData();
+          } else {
+            showToast(result.error || 'Failed to save review', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving review', 'error');
+        }
+      }
+      
+      function closeReviewModal() {
+        document.getElementById('rpReviewModal').style.display = 'none';
+      }
+      
+      async function toggleReviewStatus(id) {
+        const review = reviewsPageData.reviews?.find(r => r.id === id);
+        if (!review) return;
+        
+        let newStatus = 'visible';
+        if (review.status === 'visible') {
+          newStatus = 'hidden';
+        } else if (review.status === 'hidden') {
+          newStatus = 'visible';
+        } else if (review.status === 'pending') {
+          newStatus = 'visible';
+        }
+        
+        const token = localStorage.getItem('token');
+        
+        try {
+          const res = await fetch(`/api/reviews-page/reviews/${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ status: newStatus })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast(`Review ${newStatus}`, 'success');
+            loadReviewsPageData();
+          } else {
+            showToast(result.error || 'Failed to update status', 'error');
+          }
+        } catch (err) {
+          showToast('Error updating status', 'error');
+        }
+      }
+      
+      async function deleteReview(id) {
+        const confirmed = await showConfirmModal({
+          title: 'Delete Review',
+          message: 'Are you sure you want to permanently delete this review? This action cannot be undone.',
+          type: 'danger',
+          confirmText: 'Yes, Delete'
+        });
+        
+        if (!confirmed) return;
+        
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`/api/reviews-page/reviews/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Review deleted', 'success');
+            closeReviewModal();
+            loadReviewsPageData();
+          } else {
+             showToast(result.error || 'Failed to delete', 'error');
+          }
+        } catch (err) {
+          showToast('Error deleting review', 'error');
+        }
+      }
+      
+      // Brand Reply Modal
+      function openReplyModal(id) {
+        const review = reviewsPageData.reviews?.find(r => r.id === id);
+        if (!review) return;
+        
+        document.getElementById('rpReplyReviewId').value = id;
+        document.getElementById('rpReplyingTo').textContent = review.name;
+        document.getElementById('rpReplyContent').value = review.brandReply || '';
+        document.getElementById('rpReplyModal').style.display = 'flex';
+      }
+      
+      async function submitReplyForm(e) {
+        e.preventDefault();
+        const id = document.getElementById('rpReplyReviewId').value;
+        const reply = document.getElementById('rpReplyContent').value.trim();
+        const token = localStorage.getItem('token');
+        
+        try {
+          const res = await fetch(`/api/reviews-page/reviews/${id}/reply`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ reply: reply || null })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast(reply ? 'Reply saved!' : 'Reply removed', 'success');
+            closeReplyModal();
+            loadReviewsPageData();
+          } else {
+            showToast(result.error || 'Failed to save reply', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving reply', 'error');
+        }
+      }
+      
+      function closeReplyModal() {
+        document.getElementById('rpReplyModal').style.display = 'none';
+      }
+      
+      // ========== PHOTOS ==========
+      function renderPhotos() {
+        const container = document.getElementById('photosContainer');
+        const photos = reviewsPageData?.customerPhotos || [];
+        container.innerHTML = photos.map((p, idx) => `
+          <div class="rp-photo-card" data-idx="${idx}">
+            <div class="rp-photo-preview">
+              ${p.imageUrl ? `<img src="${p.imageUrl}" alt="Customer photo">` : `<i class="${p.icon || 'ri-image-line'}"></i>`}
+            </div>
+            <div style="font-weight:600; margin-bottom:4px;">${p.username || '@user'}</div>
+            <div style="font-size:0.8rem; color:#6b7280; margin-bottom:8px;">${p.active !== false ? 'Active' : 'Inactive'}</div>
+            <button type="button" class="rp-btn-edit" onclick="openPhotoModal(${idx})" style="width:100%; margin-bottom:6px;"><i class="ri-edit-line"></i> Edit</button>
+            <button type="button" class="rp-btn-delete" onclick="removePhoto(${idx})" style="width:100%;"><i class="ri-delete-bin-line"></i> Remove</button>
+          </div>
+        `).join('');
+        
+        if (photos.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:40px; color:#6b7280; grid-column:1/-1;">No photos added yet. Click "Add Photo" to get started.</div>';
+        }
+      }
+      
+      function openPhotoModal(idx = -1) {
+        const isEdit = idx >= 0 && reviewsPageData?.customerPhotos?.[idx];
+        const photo = isEdit ? reviewsPageData.customerPhotos[idx] : {};
+        
+        document.getElementById('rpPhotoModalTitle').innerHTML = isEdit ? '<i class="ri-edit-line"></i> Edit Photo' : '<i class="ri-image-add-line"></i> Add Photo';
+        document.getElementById('rpPhotoIdx').value = idx;
+        document.getElementById('rpPhotoUsername').value = photo.username || '@';
+        document.getElementById('rpPhotoIcon').value = photo.icon || '';
+        document.getElementById('rpPhotoActive').value = photo.active !== false ? 'true' : 'false';
+        document.getElementById('rpPhotoDeleteBtn').style.display = isEdit ? 'block' : 'none';
+        document.getElementById('rpPhotoSubmitBtn').innerHTML = isEdit ? '<i class="ri-save-line"></i> Update Photo' : '<i class="ri-save-line"></i> Add Photo';
+        
+        // Reset preview
+        const previewBox = document.getElementById('rpPhotoPreview');
+        const uploadBox = document.getElementById('rpPhotoUploadBox');
+        if (photo.imageUrl) {
+          previewBox.innerHTML = `<img src="${photo.imageUrl}" alt="Preview">`;
+          uploadBox.classList.add('has-image');
+        } else {
+          previewBox.innerHTML = '<i class="ri-image-add-line"></i><span>Click to upload photo</span>';
+          uploadBox.classList.remove('has-image');
+        }
+        document.getElementById('rpPhotoFile').value = '';
+        
+        document.getElementById('rpPhotoModal').style.display = 'flex';
+      }
+      
+      function closePhotoModal() {
+        document.getElementById('rpPhotoModal').style.display = 'none';
+      }
+      
+      async function submitPhotoForm(e) {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('rpPhotoIdx').value);
+        const isEdit = idx >= 0;
+        
+        const photoData = {
+          id: isEdit ? reviewsPageData.customerPhotos[idx].id : `photo-${Date.now()}`,
+          username: document.getElementById('rpPhotoUsername').value.trim() || '@user',
+          icon: document.getElementById('rpPhotoIcon').value.trim() || 'ri-t-shirt-line',
+          imageUrl: isEdit ? reviewsPageData.customerPhotos[idx].imageUrl : null,
+          active: document.getElementById('rpPhotoActive').value === 'true'
+        };
+        
+        // Handle file upload
+        const fileInput = document.getElementById('rpPhotoFile');
+        if (fileInput.files && fileInput.files[0]) {
+          try {
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            const token = localStorage.getItem('token');
+            const uploadRes = await fetch('/api/reviews-page/upload', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            });
+            const uploadResult = await uploadRes.json();
+            if (uploadResult.success && uploadResult.url) {
+              photoData.imageUrl = uploadResult.url;
+            }
+          } catch (err) {
+            console.error('Upload failed:', err);
+          }
+        }
+        
+        if (!reviewsPageData.customerPhotos) reviewsPageData.customerPhotos = [];
+        
+        if (isEdit) {
+          reviewsPageData.customerPhotos[idx] = photoData;
+        } else {
+          reviewsPageData.customerPhotos.push(photoData);
+        }
+        
+        await savePhotos();
+        closePhotoModal();
+        renderPhotos();
+      }
+      
+      function addPhoto() {
+        openPhotoModal(-1);
+      }
+      
+      async function removePhoto(idx) {
+        const confirmed = await showConfirmModal({
+          title: 'Remove Photo',
+          message: 'Are you sure you want to remove this customer photo?',
+          type: 'danger'
+        });
+        if (!confirmed) return;
+        reviewsPageData.customerPhotos.splice(idx, 1);
+        savePhotos();
+        renderPhotos();
+      }
+      
+      async function savePhotos() {
+        try {
+          const customerPhotos = reviewsPageData?.customerPhotos || [];
+          
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/customer-photos', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ customerPhotos })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Photos saved!', 'success');
+            reviewsPageData.customerPhotos = result.customerPhotos;
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving photos', 'error');
+        }
+      }
+      
+      // ========== PARTNERS ==========
+      function renderPartners() {
+        const container = document.getElementById('partnersContainer');
+        const partners = reviewsPageData?.partnerships || [];
+        container.innerHTML = partners.map((p, idx) => `
+          <div class="rp-partner-row" data-idx="${idx}">
+            <div style="width:60px; height:60px; background:#f3f4f6; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              ${p.logoUrl ? `<img src="${p.logoUrl}" alt="${p.name}" style="max-width:50px; max-height:50px; object-fit:contain;">` : `<i class="${p.icon || 'ri-building-line'}" style="font-size:1.5rem; color:#6b7280;"></i>`}
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:600;">${p.name || 'Partner'}</div>
+              <div style="font-size:0.85rem; color:#6b7280;">${p.description || ''}</div>
+              <div style="font-size:0.75rem; color:${p.active !== false ? '#10b981' : '#f59e0b'};">${p.active !== false ? 'Active' : 'Inactive'}</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="rp-btn-edit" onclick="openPartnerModal(${idx})"><i class="ri-edit-line"></i></button>
+              <button type="button" class="rp-btn-remove" onclick="removePartner(${idx})"><i class="ri-delete-bin-line"></i></button>
+            </div>
+          </div>
+        `).join('');
+        
+        if (partners.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:40px; color:#6b7280;">No partners added yet. Click "Add Partner" to get started.</div>';
+        }
+      }
+      
+      function openPartnerModal(idx = -1) {
+        const isEdit = idx >= 0 && reviewsPageData?.partnerships?.[idx];
+        const partner = isEdit ? reviewsPageData.partnerships[idx] : {};
+        
+        document.getElementById('rpPartnerModalTitle').innerHTML = isEdit ? '<i class="ri-edit-line"></i> Edit Partner' : '<i class="ri-building-line"></i> Add Partner';
+        document.getElementById('rpPartnerIdx').value = idx;
+        document.getElementById('rpPartnerName').value = partner.name || '';
+        document.getElementById('rpPartnerDesc').value = partner.description || '';
+        document.getElementById('rpPartnerIcon').value = partner.icon || '';
+        document.getElementById('rpPartnerActive').value = partner.active !== false ? 'true' : 'false';
+        document.getElementById('rpPartnerDeleteBtn').style.display = isEdit ? 'block' : 'none';
+        document.getElementById('rpPartnerSubmitBtn').innerHTML = isEdit ? '<i class="ri-save-line"></i> Update Partner' : '<i class="ri-save-line"></i> Add Partner';
+        
+        // Reset preview
+        const previewBox = document.getElementById('rpPartnerPreview');
+        const uploadBox = document.getElementById('rpPartnerUploadBox');
+        if (partner.logoUrl) {
+          previewBox.innerHTML = `<img src="${partner.logoUrl}" alt="Logo">`;
+          uploadBox.classList.add('has-image');
+        } else {
+          previewBox.innerHTML = '<i class="ri-upload-cloud-line"></i><span>Click to upload logo</span>';
+          uploadBox.classList.remove('has-image');
+        }
+        document.getElementById('rpPartnerFile').value = '';
+        
+        document.getElementById('rpPartnerModal').style.display = 'flex';
+      }
+      
+      function closePartnerModal() {
+        document.getElementById('rpPartnerModal').style.display = 'none';
+      }
+      
+      async function submitPartnerForm(e) {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('rpPartnerIdx').value);
+        const isEdit = idx >= 0;
+        
+        const partnerData = {
+          id: isEdit ? reviewsPageData.partnerships[idx].id : `partner-${Date.now()}`,
+          name: document.getElementById('rpPartnerName').value.trim() || 'Partner',
+          description: document.getElementById('rpPartnerDesc').value.trim(),
+          icon: document.getElementById('rpPartnerIcon').value.trim() || 'ri-building-line',
+          logoUrl: isEdit ? reviewsPageData.partnerships[idx].logoUrl : null,
+          active: document.getElementById('rpPartnerActive').value === 'true'
+        };
+        
+        // Handle file upload
+        const fileInput = document.getElementById('rpPartnerFile');
+        if (fileInput.files && fileInput.files[0]) {
+          try {
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            const token = localStorage.getItem('token');
+            const uploadRes = await fetch('/api/reviews-page/upload', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            });
+            const uploadResult = await uploadRes.json();
+            if (uploadResult.success && uploadResult.url) {
+              partnerData.logoUrl = uploadResult.url;
+            }
+          } catch (err) {
+            console.error('Upload failed:', err);
+          }
+        }
+        
+        if (!reviewsPageData.partnerships) reviewsPageData.partnerships = [];
+        
+        if (isEdit) {
+          reviewsPageData.partnerships[idx] = partnerData;
+        } else {
+          reviewsPageData.partnerships.push(partnerData);
+        }
+        
+        await savePartners();
+        closePartnerModal();
+        renderPartners();
+      }
+      
+      function addPartner() {
+        openPartnerModal(-1);
+      }
+      
+      async function removePartner(idx) {
+        const confirmed = await showConfirmModal({
+          title: 'Remove Partner',
+          message: 'Are you sure you want to remove this partner?',
+          type: 'danger'
+        });
+        if (!confirmed) return;
+        reviewsPageData.partnerships.splice(idx, 1);
+        savePartners();
+        renderPartners();
+      }
+      
+      async function savePartners() {
+        try {
+          const partnerships = reviewsPageData?.partnerships || [];
+          
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/partnerships', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ partnerships })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Partners saved!', 'success');
+            reviewsPageData.partnerships = result.partnerships;
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving partners', 'error');
+        }
+      }
+      
+      // ========== MILESTONES ==========
+      function renderMilestones() {
+        const container = document.getElementById('milestonesContainer');
+        const milestones = reviewsPageData?.milestones || [];
+        container.innerHTML = milestones.map((m, idx) => `
+          <div class="rp-milestone-row" data-idx="${idx}">
+            <input type="text" value="${m.year || ''}" placeholder="Year" style="width:100%;">
+            <input type="text" value="${m.title || ''}" placeholder="Title" style="width:100%;">
+            <input type="text" value="${m.description || ''}" placeholder="Description" style="width:100%;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="rp-icon-preview" style="width:32px; height:32px; background:${m.color || '#10b981'}; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <i class="${m.icon || 'ri-award-line'}" style="color:#fff; font-size:1rem;"></i>
+              </div>
+              <input type="text" value="${m.icon || ''}" placeholder="Icon" onchange="updateIconPreview(this)" style="width:100%; font-size:0.8rem;">
+            </div>
+            <input type="color" value="${m.color || '#10b981'}" onchange="updateMilestoneColor(this, ${idx})" style="width:100%; height:34px; padding:2px; cursor:pointer; border:1px solid #ddd; border-radius:4px;">
+            <button type="button" class="rp-btn-remove" onclick="removeMilestone(${idx})"><i class="ri-delete-bin-line"></i></button>
+          </div>
+        `).join('');
+        
+        if (milestones.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:40px; color:#6b7280;">No milestones added yet. Click "Add Milestone" to get started.</div>';
+        }
+      }
+
+      function updateMilestoneColor(input, idx) {
+        const row = input.closest('.rp-milestone-row');
+        const preview = row.querySelector('.rp-icon-preview');
+        if (preview) {
+          preview.style.backgroundColor = input.value;
+        }
+      }
+      
+      function addMilestone() {
+        if (!reviewsPageData.milestones) reviewsPageData.milestones = [];
+        reviewsPageData.milestones.push({ 
+          id: `milestone-${Date.now()}`, 
+          year: new Date().getFullYear().toString(), 
+          title: 'New Milestone', 
+          description: '', 
+          icon: 'ri-award-line', 
+          color: '#10b981' 
+        });
+        renderMilestones();
+      }
+      
+      async function removeMilestone(idx) {
+        const confirmed = await showConfirmModal({
+          title: 'Remove Milestone',
+          message: 'Are you sure you want to remove this milestone?',
+          type: 'warning'
+        });
+        if (!confirmed) return;
+        reviewsPageData.milestones.splice(idx, 1);
+        renderMilestones();
+      }
+      
+      async function saveMilestones() {
+        try {
+          const rows = document.querySelectorAll('#milestonesContainer .rp-milestone-row');
+          const milestones = Array.from(rows).map((row, idx) => {
+            const inputs = row.querySelectorAll('input');
+            return {
+              id: `milestone-${idx + 1}`,
+              year: inputs[0].value.trim(),
+              title: inputs[1].value.trim(),
+              description: inputs[2].value.trim(),
+              icon: inputs[3].value.trim(),
+              color: inputs[4].value
+            };
+          });
+          
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/milestones', {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json', 
+              'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ milestones })
+          });
+          
+          const result = await res.json();
+          if (result.success) {
+            showToast('Milestones saved!', 'success');
+            reviewsPageData.milestones = result.milestones;
+            renderMilestones(); // Refresh to ensure IDs are updated
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Error saving milestones', 'error');
+        }
+      }
+      
+      // ========== SAVE HEADER STATS ==========
+      async function saveHeaderStats() {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/stats', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+              averageRating: parseFloat(document.getElementById('rpAvgRating').value) || 4.8,
+              happyCustomers: document.getElementById('rpHappyCustomers').value.trim() || '500+',
+              recommendUs: document.getElementById('rpRecommendUs').value.trim() || '98%',
+              totalReviewsText: document.getElementById('rpTotalReviews').value.trim() || 'Based on 500+ reviews'
+            })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Header stats saved!', 'success');
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving header stats', 'error');
+        }
+      }
+      
+      // ========== SAVE RATING BREAKDOWN ==========
+      async function saveRatingBreakdown() {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch('/api/reviews-page/rating-breakdown', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+              '5star': parseInt(document.getElementById('rp5Star').value) || 0,
+              '4star': parseInt(document.getElementById('rp4Star').value) || 0,
+              '3star': parseInt(document.getElementById('rp3Star').value) || 0,
+              '2star': parseInt(document.getElementById('rp2Star').value) || 0,
+              '1star': parseInt(document.getElementById('rp1Star').value) || 0
+            })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showToast('Rating breakdown saved!', 'success');
+          } else {
+            showToast(result.error || 'Failed to save', 'error');
+          }
+        } catch (err) {
+          showToast('Error saving rating breakdown', 'error');
+        }
+      }
+      
+      // ========== EVENT LISTENERS ==========
+      document.getElementById('refreshReviewsPageBtn')?.addEventListener('click', loadReviewsPageData);
+      document.getElementById('saveHeaderStats')?.addEventListener('click', saveHeaderStats);
+      document.getElementById('saveRatingBreakdown')?.addEventListener('click', saveRatingBreakdown);
+      document.getElementById('addMegaStat')?.addEventListener('click', addMegaStat);
+      document.getElementById('saveMegaStats')?.addEventListener('click', saveMegaStats);
+      document.getElementById('addPlatform')?.addEventListener('click', addPlatform);
+      document.getElementById('savePlatforms')?.addEventListener('click', savePlatforms);
+      document.getElementById('addNewReview')?.addEventListener('click', openAddReviewModal);
+      document.getElementById('rpReviewForm')?.addEventListener('submit', submitReviewForm);
+      document.getElementById('rpReviewModalCloseBtn')?.addEventListener('click', closeReviewModal);
+      document.getElementById('rpReviewCancelBtn')?.addEventListener('click', closeReviewModal);
+      document.getElementById('rpReviewDeleteBtn')?.addEventListener('click', () => {
+        const id = document.getElementById('rpReviewId').value;
+        if (id) deleteReview(id);
+      });
+      document.getElementById('rpReplyForm')?.addEventListener('submit', submitReplyForm);
+      document.getElementById('rpReplyModalCloseBtn')?.addEventListener('click', closeReplyModal);
+      document.getElementById('rpReplyCancelBtn')?.addEventListener('click', closeReplyModal);
+      document.getElementById('rpReviewSearch')?.addEventListener('input', renderReviewsList);
+      document.getElementById('rpReviewFilter')?.addEventListener('change', renderReviewsList);
+      document.getElementById('addPhoto')?.addEventListener('click', addPhoto);
+      document.getElementById('savePhotos')?.addEventListener('click', savePhotos);
+      document.getElementById('addPartner')?.addEventListener('click', addPartner);
+      document.getElementById('savePartners')?.addEventListener('click', savePartners);
+      document.getElementById('addMilestone')?.addEventListener('click', addMilestone);
+      document.getElementById('saveMilestones')?.addEventListener('click', saveMilestones);
+      
+      // Photo Modal Event Listeners
+      document.getElementById('rpPhotoForm')?.addEventListener('submit', submitPhotoForm);
+      document.getElementById('rpPhotoModalCloseBtn')?.addEventListener('click', closePhotoModal);
+      document.getElementById('rpPhotoCancelBtn')?.addEventListener('click', closePhotoModal);
+      document.getElementById('rpPhotoDeleteBtn')?.addEventListener('click', () => {
+        const idx = parseInt(document.getElementById('rpPhotoIdx').value);
+        if (idx >= 0) removePhoto(idx);
+        closePhotoModal();
+      });
+      document.getElementById('rpPhotoUploadBox')?.addEventListener('click', () => {
+        document.getElementById('rpPhotoFile')?.click();
+      });
+      document.getElementById('rpPhotoFile')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const preview = document.getElementById('rpPhotoPreview');
+        const uploadBox = document.getElementById('rpPhotoUploadBox');
+        if (file && preview) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            preview.innerHTML = `<img src="${ev.target.result}" alt="Preview">`;
+            uploadBox.classList.add('has-image');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // Partner Modal Event Listeners
+      document.getElementById('rpPartnerForm')?.addEventListener('submit', submitPartnerForm);
+      document.getElementById('rpPartnerModalCloseBtn')?.addEventListener('click', closePartnerModal);
+      document.getElementById('rpPartnerCancelBtn')?.addEventListener('click', closePartnerModal);
+      document.getElementById('rpPartnerDeleteBtn')?.addEventListener('click', () => {
+        const idx = parseInt(document.getElementById('rpPartnerIdx').value);
+        if (idx >= 0) removePartner(idx);
+        closePartnerModal();
+      });
+      document.getElementById('rpPartnerUploadBox')?.addEventListener('click', () => {
+        document.getElementById('rpPartnerFile')?.click();
+      });
+      document.getElementById('rpPartnerFile')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const preview = document.getElementById('rpPartnerPreview');
+        const uploadBox = document.getElementById('rpPartnerUploadBox');
+        if (file && preview) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            preview.innerHTML = `<img src="${ev.target.result}" alt="Preview">`;
+            uploadBox.classList.add('has-image');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // ===============================
+      // END REVIEWS PAGE MANAGEMENT
+      // ===============================
+
       // Orders - Real-time tracking
       let ordersAutoRefreshInterval = null;
       let usersAutoRefreshInterval = null;
@@ -13542,6 +16058,24 @@
                     <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
                   </select>
                 </td>
+                <td data-label="Payment">
+                  <div style="display: flex; align-items:center; gap:6px; margin-bottom:4px;">
+                    <div style="font-size:0.65rem; text-transform:uppercase; font-weight:700; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px; width:fit-content;">
+                      ${order.paymentMethod || 'COD'}
+                    </div>
+                    ${!order.paymentConfirmed && order.paymentMethod !== 'cod' ? `
+                      <button type="button" class="verify-payment-row-btn" data-id="${order.id}" title="Quick Verify Payment" style="padding: 2px 6px; font-size: 0.65rem; background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 2px;">
+                        <i class="ri-check-line"></i> Verify
+                      </button>
+                    ` : ''}
+                  </div>
+                  <select class="payment-status" data-id="${order.id}" aria-label="Order ${order.id} payment status" style="font-size:0.8rem; padding:4px; border-radius:4px; border:1px solid #e2e8f0; background:#fff; cursor:pointer;">
+                    <option value="Awaiting Payment" ${order.paymentStatus === 'Awaiting Payment' ? 'selected' : ''}>⏳ Awaiting Pay</option>
+                    <option value="Pending" ${order.paymentStatus === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+                    <option value="Completed" ${order.paymentStatus === 'Completed' || order.paymentStatus === 'Paid' ? 'selected' : ''}>✅ Completed/Paid</option>
+                    <option value="Failed" ${order.paymentStatus === 'Failed' ? 'selected' : ''}>❌ Failed</option>
+                  </select>
+                </td>
                 <td data-label="Items">
                   <div class="order-items-detail">${itemsHtml}</div>
                 </td>
@@ -13565,26 +16099,62 @@
           })
           .join('');
 
-        // Attach status change handlers - track pending changes
-        document.querySelectorAll('.order-status').forEach(select => {
-          // Store original value for comparison
-          select.dataset.originalStatus = select.value;
+        // Attach change handlers for status and payment
+        const handleOrderChange = (orderId) => {
+          const statusSelect = document.querySelector(`.order-status[data-id="${orderId}"]`);
+          const paymentSelect = document.querySelector(`.payment-status[data-id="${orderId}"]`);
+          const order = orders.find(o => o.id === orderId);
           
+          if (!statusSelect || !paymentSelect || !order) return;
+          
+          const newStatus = statusSelect.value;
+          const newPaymentStatus = paymentSelect.value;
+          
+          const isStatusChanged = newStatus !== order.status;
+          const isPaymentChanged = newPaymentStatus !== order.paymentStatus;
+          
+          if (isStatusChanged || isPaymentChanged) {
+            pendingOrderChanges.set(orderId, { status: newStatus, paymentStatus: newPaymentStatus });
+            statusSelect.classList.toggle('status-changed', isStatusChanged);
+            paymentSelect.classList.toggle('status-changed', isPaymentChanged);
+          } else {
+            pendingOrderChanges.delete(orderId);
+            statusSelect.classList.remove('status-changed');
+            paymentSelect.classList.remove('status-changed');
+          }
+          updatePendingOrderUI();
+        };
+
+        document.querySelectorAll('.order-status, .payment-status').forEach(select => {
           select.addEventListener('change', (e) => {
-            const orderId = e.target.dataset.id;
-            const newStatus = e.target.value;
-            const originalStatus = e.target.dataset.originalStatus;
+            handleOrderChange(e.target.dataset.id);
+          });
+        });
+
+        // Attach quick verify handlers
+        document.querySelectorAll('.verify-payment-row-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const orderId = btn.dataset.id;
+            const confirmed = await AdminUniModal.confirm('Verify Payment', `Are you sure you want to verify payment for order ${orderId}? This will mark it as paid and update inventory.`);
+            if (!confirmed) return;
             
-            if (newStatus !== originalStatus) {
-              // Add to pending changes
-              pendingOrderChanges.set(orderId, newStatus);
-              e.target.classList.add('status-changed');
-            } else {
-              // Remove from pending if reverted to original
-              pendingOrderChanges.delete(orderId);
-              e.target.classList.remove('status-changed');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>';
+            
+            try {
+              const success = await updateOrderStatus(orderId, 'Confirmed', 'Completed');
+              if (success) {
+                showNotification(`Order ${orderId} verified successfully`, 'success');
+                await fetchOrders();
+              } else {
+                throw new Error('Update failed');
+              }
+            } catch (err) {
+              console.error('Quick verify failed:', err);
+              showNotification('Failed to verify payment', 'error');
+              btn.disabled = false;
+              btn.innerHTML = '<i class="ri-check-line"></i> Verify';
             }
-            updatePendingOrderUI();
           });
         });
 
@@ -13604,6 +16174,14 @@
               const addressPostal = order.shippingInfo?.pincode || order.shippingInfo?.postal || order.address?.postal || '';
               const orderTotal = order.total || order.amount || 0;
               
+              const paymentInfo = [
+                `Method: ${order.paymentMethod || 'COD'}`,
+                `Status: ${order.paymentStatus || 'Pending'}`,
+                order.razorpayOrderId ? `Razorpay Order: ${order.razorpayOrderId}` : null,
+                order.razorpayPaymentId ? `Razorpay Payment: ${order.razorpayPaymentId}` : null,
+                order.paymentConfirmed ? `Confirmed: Yes` : `Confirmed: No`
+              ].filter(Boolean).join('\n  ');
+
               const details = `
 Order ID: ${order.id}
 Status: ${order.status}
@@ -13622,7 +16200,9 @@ Shipping Address:
   ${addressCity} ${addressState} ${addressPostal}
 
 Amount: ₹${orderTotal.toLocaleString()}
-Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Paid)' : '(Pending)'}
+
+Payment Information:
+  ${paymentInfo}
               `;
               // Show details in modal instead of blocking alert
               showModal('Order Details', '<pre style="white-space:pre-wrap;">' + details.replace(/</g, '&lt;') + '</pre>', null, e);
@@ -14754,6 +17334,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           
           const name = document.getElementById('productName').value.trim();
           const price = Number(document.getElementById('productPrice').value);
+          const category = document.getElementById('productCategory').value;
           
           // Get selected colors from checkboxes
           const colorCheckboxes = document.querySelectorAll('input[name="productColors"]:checked');
@@ -14818,7 +17399,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
             }
 
             const productData = {
-              name, price, color, size, description, stock,
+              name, price, category, color, size, description, stock,
               sku, barcode,
               availableColors: availableColors,
               availableSizes: availableSizes,
@@ -14854,6 +17435,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
               submit.disabled = false;
               submit.textContent = 'Add Product';
               form.reset();
+              clearProductImagePreviews();
               await fetchProducts();
               await renderStats();
               
@@ -14890,7 +17472,10 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                 body: JSON.stringify(productData)
               });
               showNotification(`${name} added successfully! SKU: ${autoSku}`, 'success');
+              submit.disabled = false;
+              submit.textContent = 'Add Product';
               form.reset();
+              clearProductImagePreviews();
               await fetchProducts();
               await renderStats();
               
@@ -14961,6 +17546,11 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
             try {
               await apiRequest(`/products/${id}`, { method: 'DELETE' });
               showNotification('Product deleted successfully', 'success');
+              
+              if (editingProductId === id) {
+                reset.click();
+              }
+              
               await fetchProducts();
               await renderStats();
             } catch (e) {
@@ -14976,6 +17566,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
             editingProductId = product.id;
             document.getElementById('productName').value = product.name || '';
             document.getElementById('productPrice').value = product.price || '';
+            document.getElementById('productCategory').value = product.category || 'T-Shirts';
             
             showNotification(`Editing ${product.name}. Upload new images to replace existing ones.`, 'info');
             
@@ -15588,11 +18179,15 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
       }
 
       // Update order status via API
-      async function updateOrderStatus(orderId, newStatus) {
+      async function updateOrderStatus(orderId, newStatus, newPaymentStatus) {
         try {
+          const body = {};
+          if (newStatus) body.status = newStatus;
+          if (newPaymentStatus) body.paymentStatus = newPaymentStatus;
+          
           await apiRequest(`/orders/${orderId}/status`, {
             method: 'PATCH',
-            body: JSON.stringify({ status: newStatus })
+            body: JSON.stringify(body)
           });
           return true;
         } catch (e) {
@@ -15628,16 +18223,18 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         let successCount = 0;
         let failCount = 0;
         
-        for (const [orderId, newStatus] of pendingOrderChanges) {
-          const success = await updateOrderStatus(orderId, newStatus);
+        for (const [orderId, changes] of pendingOrderChanges) {
+          const success = await updateOrderStatus(orderId, changes.status, changes.paymentStatus);
           if (success) {
             successCount++;
             // Update local state
             const idx = orders.findIndex(o => o.id === orderId);
-            if (idx !== -1) orders[idx].status = newStatus;
+            if (idx !== -1) {
+              orders[idx].status = changes.status;
+              orders[idx].paymentStatus = changes.paymentStatus;
+            }
             // Remove highlight
-            const select = document.querySelector(`.order-status[data-id="${orderId}"]`);
-            if (select) select.classList.remove('status-changed');
+            document.querySelectorAll(`[data-id="${orderId}"]`).forEach(el => el.classList.remove('status-changed'));
           } else {
             failCount++;
           }
@@ -16206,6 +18803,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
       let currentFilters = {
         search: '',
         status: '',
+        payment: '',
         date: ''
       };
 
@@ -16213,6 +18811,7 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
         const searchInput = document.getElementById('orderSearch');
         const clearSearchBtn = document.getElementById('clearSearch');
         const statusFilter = document.getElementById('statusFilter');
+        const paymentFilter = document.getElementById('paymentFilter');
         const dateFilter = document.getElementById('dateFilter');
 
         // Search functionality
@@ -16233,6 +18832,11 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
           renderFilteredOrders();
         });
 
+        paymentFilter.addEventListener('change', () => {
+          currentFilters.payment = paymentFilter.value;
+          renderFilteredOrders();
+        });
+
         dateFilter.addEventListener('change', () => {
           currentFilters.date = dateFilter.value;
           renderFilteredOrders();
@@ -16248,13 +18852,27 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
               order.id.toLowerCase().includes(searchTerm) ||
               (order.customer?.name || '').toLowerCase().includes(searchTerm) ||
               (order.customer?.email || '').toLowerCase().includes(searchTerm) ||
-              (order.status || '').toLowerCase().includes(searchTerm);
+              (order.status || '').toLowerCase().includes(searchTerm) ||
+              (order.paymentStatus || '').toLowerCase().includes(searchTerm) ||
+              (order.paymentMethod || '').toLowerCase().includes(searchTerm);
             if (!matchesSearch) return false;
           }
 
           // Status filter
           if (currentFilters.status && order.status !== currentFilters.status) {
             return false;
+          }
+
+          // Payment filter
+          if (currentFilters.payment) {
+            const pStatus = (order.paymentStatus || '').toLowerCase();
+            const filterValue = currentFilters.payment.toLowerCase();
+            
+            if (filterValue === 'completed') {
+              if (pStatus !== 'completed' && pStatus !== 'paid') return false;
+            } else {
+              if (pStatus !== filterValue) return false;
+            }
           }
 
           // Date filter
@@ -16905,25 +19523,16 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
             const matchesSearch =
               (product.name || '').toLowerCase().includes(searchTerm) ||
               (product.description || '').toLowerCase().includes(searchTerm) ||
+              (product.category || '').toLowerCase().includes(searchTerm) ||
+              (product.sku || '').toLowerCase().includes(searchTerm) ||
               (product.color || '').toLowerCase().includes(searchTerm) ||
               (product.id || '').toLowerCase().includes(searchTerm);
             if (!matchesSearch) return false;
           }
 
-          // Category filter - match against product name for category-like filtering
+          // Category filter
           if (productFilters.category) {
-            const category = productFilters.category.toLowerCase();
-            const productName = (product.name || '').toLowerCase();
-            const productDesc = (product.description || '').toLowerCase();
-            
-            // Check if product belongs to category
-            if (category === 't-shirts' && !productName.includes('t-shirt') && !productName.includes('tee') && !productName.includes('shirt')) {
-              return false;
-            }
-            if (category === 'hoodies' && !productName.includes('hoodie') && !productName.includes('sweatshirt')) {
-              return false;
-            }
-            if (category === 'accessories' && !productName.includes('cap') && !productName.includes('bag') && !productName.includes('hat') && !productName.includes('accessory')) {
+            if (product.category !== productFilters.category) {
               return false;
             }
           }
@@ -16976,7 +19585,10 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
                   </div>
                   <div>
                     <strong>${product.name}</strong>
-                    <span class="product-id">ID: ${(product.id || '').slice(0, 8)}...</span>
+                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                      <span class="product-id">ID: ${(product.id || '').slice(0, 8)}...</span>
+                      <span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:500;">${product.category || 'General'}</span>
+                    </div>
                     ${stockStatusBadge}
                   </div>
                 </div>
@@ -18582,6 +21194,9 @@ Payment: ${order.paymentMethod || 'COD'} ${order.paymentStatus === 'paid' ? '(Pa
               break;
             case 'slider':
               if (typeof loadSlides === 'function') loadSlides();
+              break;
+            case 'reviews-page':
+              if (typeof loadReviewsPageData === 'function') loadReviewsPageData();
               break;
           }
         }
@@ -20847,7 +23462,7 @@ ${message.message}`;
       
       async function loadMarketingGiftCards() {
         try {
-          const response = await fetch('/api/marketing/giftcards', { credentials: 'include' });
+          const response = await fetch('/api/gift-cards', { credentials: 'include' });
           const data = await response.json();
           renderMarketingGiftCardsTable(data.giftCards || []);
         } catch (error) {
@@ -20866,9 +23481,9 @@ ${message.message}`;
             <td><code style="font-weight:600;">${c.code}</code></td>
             <td>₹${c.value}</td>
             <td>₹${c.balance}</td>
-            <td>${c.recipientEmail || '-'}</td>
+            <td>${c.recipientEmail || c.senderEmail || '-'}</td>
             <td>${c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : 'Never'}</td>
-            <td><span class="${c.active ? 'status-active' : 'status-inactive'}">${c.active ? 'Active' : 'Used'}</span></td>
+            <td><span class="status-${(c.status || 'inactive').toLowerCase()}">${c.status || 'Inactive'}</span></td>
             <td class="actions">
               <button onclick="deleteMarketingGiftCard('${c.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
             </td>
@@ -20880,7 +23495,7 @@ ${message.message}`;
         const confirmed = await AdminUniModal.danger('Delete Gift Card', 'Are you sure you want to delete this gift card?', 'Yes, Delete');
         if (!confirmed) return;
         try {
-          await fetch(`/api/marketing/giftcards/${id}`, { method: 'DELETE', credentials: 'include' });
+          await fetch(`/api/gift-cards/${id}`, { method: 'DELETE', credentials: 'include' });
           showNotification('Gift card deleted', 'success');
           loadMarketingGiftCards();
         } catch (error) {
@@ -22564,7 +25179,8 @@ ${message.message}`;
         shipping: 'shippingSectionBody',
         tax: 'taxSectionBody',
         giftCards: 'giftCardsSectionBody',
-        companyTax: 'companyTaxSectionBody'
+        companyTax: 'companyTaxSectionBody',
+        reviewsPage: 'reviewsPageSectionBody'
       };
       
       // Load section enabled states from server

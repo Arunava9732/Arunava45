@@ -15,6 +15,14 @@ const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhan
 
 const slidesDb = new Database('slides');
 
+// AI-OPTIMIZED: Disable caching for all slider data
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -55,8 +63,8 @@ router.get('/', (req, res) => {
       .filter(slide => slide.active !== false)
       .sort((a, b) => (a.position || 0) - (b.position || 0));
     
-    // Cache for 10 minutes (600 seconds) since slides change infrequently
-    res.set('Cache-Control', 'public, max-age=600');
+    // AI-OPTIMIZED: Use shorter cache or no-cache for admin real-time visibility
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, slides: activeSlides });
   } catch (error) {
     console.error('Error fetching slides:', error);

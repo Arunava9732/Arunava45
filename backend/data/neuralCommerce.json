@@ -1,9 +1,0 @@
-{
-  "predictions": [],
-  "intents": [],
-  "stats": {
-    "intentPredictions": 0,
-    "purchaseIntents": 0,
-    "accuracy": 89
-  }
-}

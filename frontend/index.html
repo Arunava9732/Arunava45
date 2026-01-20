@@ -435,6 +435,7 @@
       <ul>
         <li><a href="#shop" aria-label="Shop"><i class="ri-shopping-bag-line"></i></a></li>
         <li id="giftCardMenuItem"><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+        <li id="reviewsMenuItem"><a href="reviews.html" aria-label="Customer Reviews" title="Customer Reviews"><i class="ri-star-smile-line"></i></a></li>
         <li><a href="#contact" aria-label="Contact information"><i class="ri-information-line"></i></a></li>
         <li><a href="#contact" aria-label="Email"><i class="ri-mail-line"></i></a></li>
         <li><a href="cart.html" title="Shopping Cart" aria-label="Shopping Cart"><i class="ri-shopping-cart-line"></i><span class="cart-count" id="menuCartCount">0</span></a></li>
@@ -447,9 +448,15 @@
       try {
         const res = await fetch('/api/marketing/feature-visibility?_=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
-        if (data.success && !data.features.giftCardsEnabled) {
-          const el = document.getElementById('giftCardMenuItem');
-          if (el) el.style.display = 'none';
+        if (data.success) {
+          if (!data.features.giftCardsEnabled) {
+            const el = document.getElementById('giftCardMenuItem');
+            if (el) el.style.display = 'none';
+          }
+          if (!data.features.reviewsPageEnabled) {
+            const el = document.getElementById('reviewsMenuItem');
+            if (el) el.style.display = 'none';
+          }
         }
       } catch(e) {}
     })();
@@ -942,11 +949,11 @@
             }
 
             if (apiProducts && apiProducts.length > 0) {
-              // Filter products with positions 1-6 and sort by position
+              // Filter products with positions 1-20 and sort by position
               const positionedProducts = [];
-              
-              // Create slots for positions 1-6
-              for (let pos = 1; pos <= 6; pos++) {
+
+              // Create slots for positions 1-20
+              for (let pos = 1; pos <= 20; pos++) {
                 const productAtPos = apiProducts.find(p => Number(p.position) === pos);
                 console.log(`[HOME] Position ${pos}: ${productAtPos ? productAtPos.name : 'empty'}`);
                 if (productAtPos) {

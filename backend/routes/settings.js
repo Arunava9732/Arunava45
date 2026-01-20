@@ -11,6 +11,14 @@ const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhan
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all administrative settings
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -46,13 +54,27 @@ const defaultSettings = {
     shipping: { enabled: true, name: 'Shipping & Logistics' },
     tax: { enabled: true, name: 'Tax & GST Settings' },
     giftCards: { enabled: true, name: 'Gift Cards Management' },
-    companyTax: { enabled: true, name: 'Company Tax' }
+    companyTax: { enabled: true, name: 'Company Tax' },
+    reviewsPage: { enabled: true, name: 'Reviews Page Management' }
   },
   securitySettings: {
     allowDevConsole: false,
     rateLimitEnabled: true,
     csrfProtection: true,
     xssProtection: true
+  },
+  trustSettings: {
+    showBadges: true,
+    badges: [
+      { id: 'ssl', title: '256-bit SSL', subtitle: 'Encrypted', icon: 'ri-lock-password-line' },
+      { id: 'secure', title: '100% Safe', subtitle: 'Transactions', icon: 'ri-shield-star-line' },
+      { id: 'returns', title: 'Easy Returns', subtitle: '7 Day Policy', icon: 'ri-refund-2-line' }
+    ],
+    showIndicators: true,
+    indicators: [
+      { id: 'secure-checkout', text: 'Secure Checkout', icon: 'ri-shield-check-fill' },
+      { id: 'ssl-protected', text: 'SSL Protected', icon: 'ri-lock-line' }
+    ]
   },
   updatedAt: null
 };
@@ -76,7 +98,8 @@ function readSettings() {
       ...defaultSettings,
       ...data,
       sections: { ...defaultSettings.sections, ...data.sections },
-      securitySettings: { ...defaultSettings.securitySettings, ...data.securitySettings }
+      securitySettings: { ...defaultSettings.securitySettings, ...data.securitySettings },
+      trustSettings: { ...defaultSettings.trustSettings, ...data.trustSettings }
     };
   } catch (e) {
     console.error('Error reading settings:', e);
@@ -93,6 +116,7 @@ function writeSettings(data) {
 // Get all admin settings (admin only)
 router.get('/', authenticate, requireAdmin, (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const settings = readSettings();
     res.json({ success: true, settings });
   } catch (error) {
@@ -101,9 +125,27 @@ router.get('/', authenticate, requireAdmin, (req, res) => {
   }
 });
 
+/**
+ * GET /api/settings/public
+ * Public settings for frontend (no auth required)
+ */
+router.get('/public', (req, res) => {
+  try {
+    const settings = readSettings();
+    res.json({
+      success: true,
+      trustSettings: settings.trustSettings || defaultSettings.trustSettings
+    });
+  } catch (error) {
+    console.error('Get public settings error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get public settings' });
+  }
+});
+
 // Get public section visibility (no auth - for frontend to check which sections are enabled)
 router.get('/sections/visibility', (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const settings = readSettings();
     const visibility = {};
     Object.entries(settings.sections).forEach(([key, value]) => {

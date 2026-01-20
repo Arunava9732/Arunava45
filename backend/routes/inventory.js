@@ -12,6 +12,14 @@ const pythonBridge = require('../utils/python_bridge');
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all inventory and SKU data
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -69,6 +77,7 @@ router.get('/sku', authenticate, requireAdmin, (req, res) => {
       updatedAt: p.updatedAt
     }));
     
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, products: skuData });
   } catch (error) {
     console.error('Get SKU data error:', error);

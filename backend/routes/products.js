@@ -83,8 +83,8 @@ router.get('/', (req, res) => {
     }
 
     console.log(`[AI-PRODUCTS] Retrieved ${products.length} products (Filtered: ${!!(category || search)})`);
-    // Cache for 5 minutes (300 seconds)
-    res.set('Cache-Control', 'public, max-age=300');
+    // AI RECOMMENDED: Disable public caching for real-time admin updates
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, products, count: products.length });
   } catch (error) {
     console.error('Get products error:', error);
@@ -99,8 +99,7 @@ router.get('/:id', (req, res) => {
     if (!product) {
       return res.status(404).json({ success: false, error: 'Product not found' });
     }
-    // Cache for 5 minutes (300 seconds)
-    res.set('Cache-Control', 'public, max-age=300');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, product });
   } catch (error) {
     console.error('Get product error:', error);
@@ -154,8 +153,7 @@ router.get('/position/:positions', (req, res) => {
       .filter(p => positions.includes(Number(p.position)))
       .sort((a, b) => a.position - b.position);
     
-    // Cache for 5 minutes (300 seconds)
-    res.set('Cache-Control', 'public, max-age=300');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, products: filtered });
   } catch (error) {
     console.error('Get products by position error:', error);
@@ -178,7 +176,12 @@ router.post('/',
   ]),
   (req, res) => {
   try {
-    const { name, price, color, size, description, stock, stockStatus, isOutOfStock, position, image, thumbImages, availableColors, availableSizes } = req.body;
+    const { 
+      name, price, color, size, description, stock, stockStatus, 
+      isOutOfStock, position, image, thumbImages, availableColors, 
+      availableSizes, sku, barcode, skuCreatedAt, barcodeCreatedAt,
+      category
+    } = req.body;
 
     // Auto-assign position if not provided
     let assignedPosition = position ? Number(position) : null;
@@ -195,6 +198,7 @@ router.post('/',
       price: Number(price),
       color: color ? color.trim() : '',
       size: size ? size.trim() : 'All',
+      category: category || 'General',
       description: description ? description.trim() : '',
       stock: Number(stock) || 0,
       stockStatus: stockStatus || 'in-stock',
@@ -204,6 +208,10 @@ router.post('/',
       position: assignedPosition,
       image: image || '',
       thumbImages: thumbImages || [],
+      sku: sku || '',
+      barcode: barcode || '',
+      skuCreatedAt: skuCreatedAt || null,
+      barcodeCreatedAt: barcodeCreatedAt || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -237,7 +245,12 @@ router.put('/:id', authenticate, isAdmin, validateRequest([
   body('position').optional().isInt({ min: 1 }).withMessage('Position must be a positive integer')
 ]), (req, res) => {
   try {
-    const { name, price, color, size, description, stock, stockStatus, isOutOfStock, position, image, thumbImages, availableColors, availableSizes } = req.body;
+    const { 
+      name, price, color, size, description, stock, stockStatus, 
+      isOutOfStock, position, image, thumbImages, availableColors, 
+      availableSizes, sku, barcode, skuCreatedAt, barcodeCreatedAt,
+      category
+    } = req.body;
 
     const existing = db.products.findById(req.params.id);
     if (!existing) {
@@ -253,6 +266,7 @@ router.put('/:id', authenticate, isAdmin, validateRequest([
       price: price !== undefined ? Number(price) : existing.price,
       color: color !== undefined ? color : existing.color,
       size: size !== undefined ? size : existing.size,
+      category: category !== undefined ? category : existing.category,
       description: description !== undefined ? description : existing.description,
       stock: stock !== undefined ? Number(stock) : existing.stock,
       stockStatus: newStockStatus || 'in-stock',
@@ -262,6 +276,10 @@ router.put('/:id', authenticate, isAdmin, validateRequest([
       position: position !== undefined ? (position ? Number(position) : null) : existing.position,
       image: image || existing.image,
       thumbImages: thumbImages && thumbImages.length > 0 ? thumbImages : existing.thumbImages,
+      sku: sku !== undefined ? sku : existing.sku,
+      barcode: barcode !== undefined ? barcode : existing.barcode,
+      skuCreatedAt: skuCreatedAt !== undefined ? skuCreatedAt : existing.skuCreatedAt,
+      barcodeCreatedAt: barcodeCreatedAt !== undefined ? barcodeCreatedAt : existing.barcodeCreatedAt,
       updatedAt: new Date().toISOString()
     };
 

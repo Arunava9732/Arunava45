@@ -4,6 +4,8 @@
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const path = require('path');
 const db = require('../utils/database');
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { validators, validateRequest, orderLimiter, returnLimiter } = require('../middleware/security');
@@ -17,6 +19,14 @@ const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhan
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all orders data
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -25,21 +35,12 @@ router.use(aiPerformanceMonitor(500));
 router.get('/', authenticate, isAdmin, (req, res) => {
   try {
     const allOrders = db.orders.findAll();
-    // Filter out orders that are awaiting payment confirmation (online payment not yet confirmed)
-    // Show all orders to admin, but mark unconfirmed ones
-    const orders = allOrders.filter(order => {
-      // Show COD orders always
-      if (order.paymentMethod === 'cod') return true;
-      // Show orders where payment is confirmed
-      if (order.paymentConfirmed === true) return true;
-      // Show orders that are already marked as paid/completed
-      const paymentStatus = (order.paymentStatus || '').toLowerCase();
-      if (paymentStatus === 'completed' || paymentStatus === 'paid') return true;
-      // Hide unconfirmed online payment orders (user cancelled or didn't pay)
-      return false;
-    });
+    // Show all orders to admin, including unconfirmed ones
+    const orders = [...allOrders];
+    
     // Sort by date descending
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, orders });
   } catch (error) {
     console.error('Get orders error:', error);
@@ -114,7 +115,49 @@ router.post('/',
   ]),
   (req, res) => {
     try {
-      const { items, shippingInfo, paymentMethod, subtotal, shipping, total } = req.body;
+      const { items, shippingInfo, paymentMethod, subtotal, shipping, discount, promoCode, promoType, total } = req.body;
+
+      // Handle Gift Card Redemption if present
+      if (promoType === 'giftcard' && promoCode) {
+        try {
+          const giftCardsPath = path.join(__dirname, '..', 'data', 'giftCards.json');
+          if (fs.existsSync(giftCardsPath)) {
+            const gcData = JSON.parse(fs.readFileSync(giftCardsPath, 'utf8'));
+            const cardIndex = gcData.giftCards.findIndex(c => c.code.toUpperCase() === promoCode.toUpperCase());
+            
+            if (cardIndex !== -1) {
+              const card = gcData.giftCards[cardIndex];
+              const redeemAmount = Number(discount) || 0;
+              
+              if (card.status === 'active' && card.balance >= redeemAmount) {
+                // Deduct balance
+                card.balance -= redeemAmount;
+                if (card.balance <= 0) {
+                  card.balance = 0;
+                  card.status = 'redeemed';
+                }
+                card.lastUsedAt = new Date().toISOString();
+                
+                // Record transaction
+                gcData.transactions.push({
+                  id: 'tx_' + uuidv4(),
+                  giftCardId: card.id,
+                  type: 'redeem',
+                  amount: redeemAmount,
+                  userId: req.user.id,
+                  date: new Date().toISOString(),
+                  details: `Redeemed for Order creation`
+                });
+                
+                fs.writeFileSync(giftCardsPath, JSON.stringify(gcData, null, 2));
+                console.log(`[GiftCard] Redeemed ₹${redeemAmount} from ${promoCode} for new order`);
+              }
+            }
+          }
+        } catch (gcErr) {
+          console.error('Error processing gift card during order creation:', gcErr);
+        }
+      }
 
       // Additional validation for item structure
       for (const item of items) {
@@ -231,11 +274,58 @@ router.patch('/:id/status', authenticate, isAdmin, (req, res) => {
 
     const updates = { updatedAt: new Date().toISOString() };
     if (status) updates.status = status;
-    if (paymentStatus) updates.paymentStatus = paymentStatus;
+
+    // Check if we are marking it as paid now
+    const isBecomingPaid = (paymentStatus === 'Completed' || paymentStatus === 'Paid') && 
+                          !order.paymentConfirmed && 
+                          order.paymentStatus !== 'Completed' && 
+                          order.paymentStatus !== 'Paid';
+
+    if (paymentStatus) {
+      updates.paymentStatus = paymentStatus;
+      if (paymentStatus === 'Completed' || paymentStatus === 'Paid') {
+        updates.paymentConfirmed = true;
+        // If it was awaiting payment, also update main status to Confirmed
+        if (order.status === 'Awaiting Payment' || order.status === 'Pending') {
+          updates.status = 'Confirmed';
+        }
+      }
+    }
 
     const updated = db.orders.update(req.params.id, updates);
 
-    console.log(`[AI-Enhanced] Order status updated: ${req.params.id}, Status: ${status || 'N/A'}, Payment: ${paymentStatus || 'N/A'}`);
+    // If transitions to paid, trigger side effects (stock, emails, etc.)
+    if (isBecomingPaid) {
+      console.log(`[Admin] Order ${req.params.id} manually verified as PAID.`);
+      
+      // Trigger side effects
+      sendOrderWebhook && sendOrderWebhook('order.created', updated);
+      
+      const userEmail = updated.userEmail || (updated.shippingInfo && updated.shippingInfo.email);
+      if (userEmail) {
+        sendOrderConfirmation(updated, userEmail).catch(err => console.error('Order email failed:', err));
+      }
+      
+      sendAdminNotification(formatOrderMessage(updated)).catch(err => console.error('WhatsApp notification failed:', err));
+      
+      // Deduct stock
+      if (updated.items && Array.isArray(updated.items)) {
+        updated.items.forEach(item => {
+          const productId = item.id || item.productId;
+          const product = db.products.findById(productId);
+          if (product) {
+            const newStock = Math.max(0, (product.stock || 0) - (item.quantity || 1));
+            db.products.update(productId, { stock: newStock });
+            if (newStock <= 5) {
+              notifyAdmins(`Low Stock Alert: ${product.name}`, formatLowStockMessage({ ...product, stock: newStock }))
+                .catch(err => console.error('Low stock alert failed:', err));
+            }
+          }
+        });
+      }
+    }
+
+    console.log(`[AI-Enhanced] Order status updated: ${req.params.id}, Status: ${updates.status || 'N/A'}, Payment: ${paymentStatus || 'N/A'}`);
 
     res.json({ success: true, order: updated });
   } catch (error) {

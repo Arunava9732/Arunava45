@@ -13,6 +13,14 @@ const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhan
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all marketing and promotion data
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -70,6 +78,7 @@ function writeData(data) {
 // Get all marketing settings
 router.get('/settings', authenticate, requireAdmin, (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     const data = readData();
     res.json({ success: true, settings: data.settings });
   } catch (error) {
@@ -115,11 +124,43 @@ router.get('/feature-visibility', (req, res) => {
     res.set('Expires', '0');
     
     const data = readData();
+    
+    // Check if gift cards are enabled in the dedicated giftCards.json settings
+    let giftCardsEnabled = data.settings.giftCardsEnabled;
+    
+    // If it's already disabled in marketing settings, keep it disabled
+    // If it's enabled in marketing, check if it's also enabled in dedicated settings
+    if (giftCardsEnabled) {
+      try {
+        const gcPath = path.join(__dirname, '..', 'data', 'giftCards.json');
+        if (fs.existsSync(gcPath)) {
+          const gcSettings = JSON.parse(fs.readFileSync(gcPath, 'utf8'));
+          if (gcSettings.settings && gcSettings.settings.enabled !== undefined) {
+             // Only if both are enabled do we show the icon
+             giftCardsEnabled = gcSettings.settings.enabled;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Check if reviews page is enabled in admin settings
+    let reviewsPageEnabled = true;
+    try {
+      const settingsPath = path.join(__dirname, '..', 'data', 'adminSettings.json');
+      if (fs.existsSync(settingsPath)) {
+        const adminSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+        if (adminSettings.sections && adminSettings.sections.reviewsPage) {
+          reviewsPageEnabled = adminSettings.sections.reviewsPage.enabled !== false;
+        }
+      }
+    } catch (e) {}
+
     // Only expose visibility settings, not sensitive data
     res.json({
       success: true,
       features: {
-        giftCardsEnabled: data.settings.giftCardsEnabled || false,
+        giftCardsEnabled: giftCardsEnabled,
+        reviewsPageEnabled: reviewsPageEnabled,
         invoiceEnabled: data.settings.invoiceEnabled !== false // default true
       }
     });
@@ -130,6 +171,7 @@ router.get('/feature-visibility', (req, res) => {
       success: true,
       features: {
         giftCardsEnabled: false,
+        reviewsPageEnabled: true,
         invoiceEnabled: true
       }
     });
@@ -145,10 +187,23 @@ router.get('/status', (req, res) => {
     res.set('Expires', '0');
     
     const data = readData();
+    
+    // Check if gift cards are enabled in the dedicated giftCards.json settings
+    let giftCardsAvailable = data.settings.giftCardsEnabled || false;
+    try {
+      const gcPath = path.join(__dirname, '..', 'data', 'giftCards.json');
+      if (fs.existsSync(gcPath)) {
+        const gcData = JSON.parse(fs.readFileSync(gcPath, 'utf8'));
+        if (gcData.settings && gcData.settings.enabled !== undefined) {
+          giftCardsAvailable = gcData.settings.enabled;
+        }
+      }
+    } catch (e) {}
+
     res.json({
       success: true,
       couponsEnabled: data.settings.couponsEnabled || false,
-      giftCardsEnabled: data.settings.giftCardsEnabled || false
+      giftCardsEnabled: giftCardsAvailable
     });
   } catch (error) {
     console.error('Get marketing status error:', error);

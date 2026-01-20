@@ -633,8 +633,11 @@ const API = (() => {
           country: orderData.address?.country || 'India'
         },
         paymentMethod: orderData.paymentMethod || 'upi',
-        subtotal: orderData.total || 0,
+        subtotal: orderData.subtotal || orderData.total || 0,
         shipping: 0,
+        discount: orderData.discount || 0,
+        promoCode: orderData.promoCode || null,
+        promoType: orderData.promoType || null,
         total: orderData.total || 0
       };
       

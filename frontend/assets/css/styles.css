@@ -1511,9 +1511,13 @@ transform: translate3d(0, -.25rem, 0);
 }
 
 .fullscreen-menu.open ul li { opacity: 1; transform: translate3d(0, 0, 0); }
-.fullscreen-menu.open ul li:nth-child(1){ transition-delay: 180ms; }
-.fullscreen-menu.open ul li:nth-child(2){ transition-delay: 320ms; }
-.fullscreen-menu.open ul li:nth-child(3){ transition-delay: 460ms; }
+.fullscreen-menu.open ul li:nth-child(1){ transition-delay: 80ms; }
+.fullscreen-menu.open ul li:nth-child(2){ transition-delay: 140ms; }
+.fullscreen-menu.open ul li:nth-child(3){ transition-delay: 200ms; }
+.fullscreen-menu.open ul li:nth-child(4){ transition-delay: 260ms; }
+.fullscreen-menu.open ul li:nth-child(5){ transition-delay: 320ms; }
+.fullscreen-menu.open ul li:nth-child(6){ transition-delay: 380ms; }
+.fullscreen-menu.open ul li:nth-child(7){ transition-delay: 440ms; }
 
 .fullscreen-menu.closing ul li { opacity: 0; transform: translate3d(0, 8px, 0); transition-delay: 0ms; }
 
@@ -1580,10 +1584,11 @@ transform: translate3d(0, -.25rem, 0);
 /* Individual icon hover colors */
 .fullscreen-menu ul li:nth-child(1) a:hover i { color: #ff6b6b; } /* Shop - coral */
 .fullscreen-menu ul li:nth-child(2) a:hover i { color: #a855f7; } /* Gift Cards - purple */
-.fullscreen-menu ul li:nth-child(3) a:hover i { color: #4ecdc4; } /* Contact - teal */
-.fullscreen-menu ul li:nth-child(4) a:hover i { color: #3b82f6; } /* Email - blue */
-.fullscreen-menu ul li:nth-child(5) a:hover i { color: #f59e0b; } /* Cart - amber */
-.fullscreen-menu ul li:nth-child(6) a:hover i { color: #10b981; } /* Login - emerald */
+.fullscreen-menu ul li:nth-child(3) a:hover i { color: #fbbf24; } /* Reviews - gold/star */
+.fullscreen-menu ul li:nth-child(4) a:hover i { color: #4ecdc4; } /* Contact - teal */
+.fullscreen-menu ul li:nth-child(5) a:hover i { color: #3b82f6; } /* Email - blue */
+.fullscreen-menu ul li:nth-child(6) a:hover i { color: #f59e0b; } /* Cart - amber */
+.fullscreen-menu ul li:nth-child(7) a:hover i { color: #10b981; } /* Login - emerald */
 
 .fullscreen-menu ul li a:hover {
   transform: translateY(-8px) scale(1.1) !important;

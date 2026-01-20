@@ -18,6 +18,14 @@ const { sendPasswordResetOTP } = require('../utils/email');
 
 const router = express.Router();
 
+// AI-OPTIMIZED: Disable caching for all users/profile data
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
 // AI Middleware
 router.use(aiRequestLogger);
 router.use(aiPerformanceMonitor(500));
@@ -128,6 +136,7 @@ router.get('/', authenticate, isAdmin, (req, res) => {
     const users = db.users.findAll();
     // Remove passwords from response
     const sanitized = users.map(({ password, ...user }) => user);
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.json({ success: true, users: sanitized });
   } catch (error) {
     console.error('Get users error:', error);

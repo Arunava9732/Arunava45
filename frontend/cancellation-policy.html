@@ -350,6 +350,7 @@
             <li><a href="index.html" title="Home"><i class="ri-home-line"></i></a></li>
             <li><a href="products.html" title="Shop"><i class="ri-shopping-bag-line"></i></a></li>
             <li id="giftCardMenuItem"><a href="gift-cards.html" aria-label="Gift Cards" title="Gift Cards"><i class="ri-gift-line"></i></a></li>
+            <li id="reviewsMenuItem"><a href="reviews.html" aria-label="Reviews" title="Customer Reviews"><i class="ri-star-smile-line"></i></a></li>
             <li><a href="cart.html" title="Cart"><i class="ri-shopping-cart-line"></i></a></li>
             <li id="menuLoginItem"><a href="login.html" title="Login"><i class="ri-user-line"></i></a></li>
         </ul>
@@ -358,11 +359,17 @@
     <script>
     (async function() {
       try {
-        const res = await fetch('/api/marketing/feature-visibility');
+        const res = await fetch('/api/marketing/feature-visibility?_=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
-        if (data.success && !data.features.giftCardsEnabled) {
-          const el = document.getElementById('giftCardMenuItem');
-          if (el) el.style.display = 'none';
+        if (data.success) {
+          if (!data.features.giftCardsEnabled) {
+            const el = document.getElementById('giftCardMenuItem');
+            if (el) el.style.display = 'none';
+          }
+          if (!data.features.reviewsPageEnabled) {
+            const el = document.getElementById('reviewsMenuItem');
+            if (el) el.style.display = 'none';
+          }
         }
       } catch(e) {}
     })();
@@ -718,3 +725,4 @@
 
 </body>
 </html>
+
