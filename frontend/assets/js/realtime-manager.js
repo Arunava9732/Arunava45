@@ -68,10 +68,11 @@ class RealtimeManager {
         }
         
         // Build WS URL - simplify for production
+        // Removed /ws path as the backend WebSocket server listens on all paths by default
         if (!port || port === '80' || port === '443') {
-          wsUrl = `${protocol}//${hostname}/ws`;
+          wsUrl = `${protocol}//${hostname}`;
         } else {
-          wsUrl = `${protocol}//${hostname}:${port}/ws`;
+          wsUrl = `${protocol}//${hostname}:${port}`;
         }
       }
 

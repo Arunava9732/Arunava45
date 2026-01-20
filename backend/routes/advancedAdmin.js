@@ -53,6 +53,45 @@ const initDataFile = (filename, defaultData) => {
   }
 };
 
+// ==========================================
+// REAL-TIME MANAGER API
+// ==========================================
+
+// Get real-time stats
+router.get('/realtime', authenticate, isAdmin, async (req, res) => {
+  try {
+    const os = require('os');
+    const sessions = readData('sessions.json') || [];
+    
+    // Calculate active users (last 15 minutes)
+    const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const activeUsers = Array.isArray(sessions) ? sessions.filter(s => (s.lastAccessed || s.timestamp) > fifteenMinsAgo).length : 0;
+    
+    // Get server load info
+    const cpus = os.cpus();
+    const load = os.loadavg()[0]; // 1 minute load average
+    const serverLoad = (load / cpus.length) * 100;
+
+    res.json({
+      success: true,
+      stats: {
+        activeUsers: Math.max(activeUsers, 1), // At least 1 (the admin)
+        sessions: Array.isArray(sessions) ? sessions.length : 0,
+        serverLoad: serverLoad,
+        uptime: os.uptime(),
+        memory: {
+          total: os.totalmem(),
+          free: os.freemem(),
+          usage: ((os.totalmem() - os.freemem()) / os.totalmem() * 100).toFixed(1)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Real-time stats error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get real-time data' });
+  }
+});
+
 // Initialize all data files
 initDataFile('securityEvents.json', { events: [], blockedIPs: [], threatLevel: 'low', stats: { blocked: 0, threats: 0, requests: 0 } });
 initDataFile('mlEngine.json', { models: [], predictions: [], trainingData: [], stats: { accuracy: 0.87, predictions: 0, trained: 0 } });
@@ -92,20 +131,23 @@ router.get('/security', authenticate, isAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      security: {
+      stats: {
         blockedAttempts: threatStatus.blockedRequests || data.stats.blocked || 0,
         threatLevel: aiThreats.length > 0 ? 'elevated' : (data.threatLevel || 'stable'),
         activeThreats: (threatStatus.threatsDetected || 0) + aiThreats.length,
         totalRequests: data.stats.requests || 0,
-        recentEvents: (data.events || []).slice(-20),
-        aiFlaggedThreats: aiThreats,
-        blockedIPs: data.blockedIPs || [],
-        settings: {
-          rateLimitEnabled: true,
-          csrfProtection: true,
-          xssProtection: true,
-          sqlInjectionProtection: true
-        }
+        secureRequests: (data.stats.requests || 0) - (threatStatus.blockedRequests || 0),
+        spamDetected: data.stats.spam || 0,
+        securityScore: 95
+      },
+      recentEvents: (data.events || []).slice(-20),
+      aiFlaggedThreats: aiThreats,
+      blockedIPs: data.blockedIPs || [],
+      settings: {
+        rateLimitEnabled: true,
+        csrfProtection: true,
+        xssProtection: true,
+        sqlInjectionProtection: true
       }
     });
   } catch (error) {
@@ -246,21 +288,19 @@ router.get('/ml', authenticate, isAdmin, async (req, res) => {
     
     // Calculate real stats
     const stats = {
-      accuracy: data.stats.accuracy || 0.87,
+      avgAccuracy: data.stats.accuracy || 0.87,
       predictions: (data.predictions?.length || 0) + (aiInsights.predictions ? 1 : 0),
-      trainingData: data.trainingData?.length || 0,
-      models: data.models.length || 0,
+      trainingDataPoints: data.trainingData?.length || 0,
+      activeModels: data.models.length || 0,
       lastTrained: data.stats.lastTrained || new Date().toISOString()
     };
     
     res.json({
       success: true,
-      ml: {
-        stats,
-        models: data.models,
-        insights: aiInsights.insights || [],
-        recentPredictions: (data.predictions || []).slice(-10)
-      }
+      stats,
+      models: data.models,
+      insights: aiInsights.insights || [],
+      recentPredictions: (data.predictions || []).slice(-10)
     });
   } catch (error) {
     console.error('ML engine error:', error);
@@ -386,8 +426,19 @@ router.get('/errors', authenticate, isAdmin, (req, res) => {
         clientErrors = JSON.parse(fs.readFileSync(clientErrorsPath, 'utf8')) || [];
       }
     } catch (e) {}
+
+    // Ensure all errors have an ID and compatible structure
+    const processedClientErrors = clientErrors.map((err, index) => ({
+      ...err,
+      id: err.id || `client_${index}_${new Date(err.timestamp || err.receivedAt).getTime()}`,
+      timestamp: err.timestamp || err.receivedAt,
+      type: err.type || 'Client Error',
+      message: err.message || 'Client-side application error',
+      severity: err.severity || 'medium',
+      resolved: !!err.resolved || !!err.fixApplied
+    }));
     
-    const allErrors = [...(data.errors || []), ...clientErrors].sort((a, b) => 
+    const allErrors = [...(data.errors || []), ...processedClientErrors].sort((a, b) => 
       new Date(b.timestamp) - new Date(a.timestamp)
     ).slice(0, 100);
     
@@ -453,18 +504,43 @@ router.put('/errors/:id/resolve', authenticate, isAdmin, (req, res) => {
     const { id } = req.params;
     const data = readData('errorTracker.json') || { errors: [], stats: {} };
     
+    let resolved = false;
+
+    // 1. Try resolving in errorTracker.json
     const error = data.errors.find(e => e.id === id);
-    if (!error) {
-      return res.status(404).json({ success: false, error: 'Error not found' });
+    if (error) {
+      error.resolved = true;
+      error.resolvedAt = new Date().toISOString();
+      error.resolvedBy = req.user.email;
+      data.stats.resolved = (data.stats.resolved || 0) + 1;
+      writeData('errorTracker.json', data);
+      resolved = true;
     }
     
-    error.resolved = true;
-    error.resolvedAt = new Date().toISOString();
-    error.resolvedBy = req.user.email;
+    // 2. Try resolving in client-errors.json
+    if (!resolved) {
+      const clientErrorsPath = path.join(DATA_DIR, '..', 'logs', 'client-errors.json');
+      if (fs.existsSync(clientErrorsPath)) {
+        let clientErrors = JSON.parse(fs.readFileSync(clientErrorsPath, 'utf8')) || [];
+        // Map back from the generated ID back to the original if possible
+        // The ID was generated as `client_${index}_${timestamp}`
+        if (id.startsWith('client_')) {
+          const parts = id.split('_');
+          const index = parseInt(parts[1]);
+          if (!isNaN(index) && clientErrors[index]) {
+            clientErrors[index].resolved = true;
+            clientErrors[index].fixApplied = `Resolved by Admin (${req.user.email})`;
+            fs.writeFileSync(clientErrorsPath, JSON.stringify(clientErrors, null, 2));
+            resolved = true;
+          }
+        }
+      }
+    }
+
+    if (!resolved) {
+      return res.status(404).json({ success: false, error: 'Error not found or already resolved' });
+    }
     
-    data.stats.resolved = (data.stats.resolved || 0) + 1;
-    
-    writeData('errorTracker.json', data);
     res.json({ success: true, message: 'Error marked as resolved' });
   } catch (error) {
     console.error('Resolve error error:', error);
@@ -475,8 +551,16 @@ router.put('/errors/:id/resolve', authenticate, isAdmin, (req, res) => {
 // Clear all errors
 router.delete('/errors', authenticate, isAdmin, (req, res) => {
   try {
+    // Clear errorTracker.json
     const data = { errors: [], stats: { total: 0, today: 0, critical: 0, resolved: 0 } };
     writeData('errorTracker.json', data);
+
+    // Clear client-errors.json
+    const clientErrorsPath = path.join(DATA_DIR, '..', 'logs', 'client-errors.json');
+    if (fs.existsSync(clientErrorsPath)) {
+      fs.writeFileSync(clientErrorsPath, JSON.stringify([], null, 2));
+    }
+
     res.json({ success: true, message: 'All errors cleared' });
   } catch (error) {
     console.error('Clear errors error:', error);

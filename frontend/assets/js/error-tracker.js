@@ -133,9 +133,16 @@ class ErrorTracker {
       // Also capture warnings
       const originalWarn = console.warn;
       console.warn = (...args) => {
+        const message = args.join(' ');
+        
+        // Ignore noise from performance metrics in console
+        if (message.includes('[PERF]') || message.includes('Cumulative Layout Shift') || message.includes('CLS')) {
+          return;
+        }
+
         this.captureWarning({
           type: 'console_warn',
-          message: args.join(' '),
+          message: message,
           args: args
         });
         originalWarn.apply(console, args);
@@ -342,7 +349,8 @@ class ErrorTracker {
     if (this._isCapturing) return;
     
     // Ignore performance metrics to reduce noise in the error tracker
-    if (warningData.message && warningData.message.includes('[PERF]')) {
+    const msg = (warningData.message || '').toString();
+    if (msg.includes('[PERF]') || msg.includes('Cumulative Layout Shift') || msg.includes('CLS')) {
       return;
     }
 

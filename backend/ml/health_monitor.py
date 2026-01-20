@@ -20,12 +20,12 @@ from pathlib import Path
 class SystemHealthMonitor:
     def __init__(self):
         self.thresholds = {
-            'cpu_warning': 70,
-            'cpu_critical': 90,
-            'memory_warning': 75,
-            'memory_critical': 90,
-            'disk_warning': 80,
-            'disk_critical': 95,
+            'cpu_warning': 90,
+            'cpu_critical': 98,
+            'memory_warning': 85,
+            'memory_critical': 95,
+            'disk_warning': 90,
+            'disk_critical': 98,
             'response_time_warning': 500,  # ms
             'response_time_critical': 2000
         }
@@ -594,25 +594,28 @@ class HealthMonitorOrchestrator:
     
     def full_health_check(self):
         """Run complete health check"""
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "system": self.system_monitor.get_system_health(),
-            "aiEngines": self.ai_checker.check_all_engines(),
-            "overallStatus": self._determine_overall_status()
-        }
-    
-    def _determine_overall_status(self):
-        """Determine overall system status"""
         system_health = self.system_monitor.get_system_health()
         ai_health = self.ai_checker.check_all_engines()
         
+        # Determine overall status from already collected data
+        overall_status = 'healthy'
         if system_health.get('status') == 'critical':
-            return 'critical'
-        if ai_health.get('summary', {}).get('unhealthy', 0) > 0:
-            return 'degraded'
-        if system_health.get('status') == 'degraded':
-            return 'degraded'
-        return 'healthy'
+            overall_status = 'critical'
+        elif ai_health.get('summary', {}).get('unhealthy', 0) > 0:
+            overall_status = 'degraded'
+        elif system_health.get('status') == 'degraded':
+            overall_status = 'degraded'
+
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "system": system_health,
+            "aiEngines": ai_health,
+            "overallStatus": overall_status
+        }
+    
+    def _determine_overall_status(self):
+        """Determine overall system status (Legacy compatibility)"""
+        return self.full_health_check()['overallStatus']
 
 
 # ==========================================

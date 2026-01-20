@@ -117,7 +117,7 @@ class EmotionAI {
     async setupEmotionDetection() {
         // Check for camera support
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            console.log('Camera available for emotion detection');
+            // Camera supported
         } else {
             console.log('Camera not available - using text/behavior analysis only');
             this.config.enableCamera = false;
@@ -307,12 +307,12 @@ class EmotionAI {
         let confidence = 0;
         
         // Rapid clicks = frustration/anger
-        if (behavior.rapidClicks > 5) {
+        if (behavior.rapidClicks > 8) {
             emotion = 'angry';
             confidence = 0.7;
         }
-        // Quick exit attempts = negative sentiment
-        else if (behavior.abandonmentAttempts > 2) {
+        // Quick exit attempts = negative sentiment (Increased threshold)
+        else if (behavior.abandonmentAttempts > 5) {
             emotion = 'frustrated';
             confidence = 0.6;
         }
@@ -997,13 +997,14 @@ class EmotionAI {
 }
 
 // Initialize Emotion AI
-window.EmotionAI = window.EmotionAI || new EmotionAI();
-window.emotionAI = window.EmotionAI;
+if (!window.emotionAI) {
+    window.emotionAI = new EmotionAI();
+}
 
 // Auto-start detection after 5 seconds (if enabled)
 setTimeout(() => {
-    if (window.EmotionAI.config.autoAdapt) {
-        window.EmotionAI.startDetection();
+    if (window.emotionAI.config && window.emotionAI.config.autoAdapt) {
+        window.emotionAI.startDetection();
     }
 }, 5000);
 

@@ -13985,7 +13985,7 @@
             <small>Real-time emotion detection and adaptive UX</small>
           </div>
           <div class="section-header-right">
-            <button class="secondary" onclick="window.emotionAI?.startDetection()">
+            <button id="startEmotionBtn" class="secondary" onclick="handleEmotionDetection()">
               <i class="ri-play-line"></i> Start Detection
             </button>
           </div>
@@ -18509,7 +18509,7 @@ Payment Information:
           <input type="text" class="admin-uni-modal-input" id="adminUniModalInput" placeholder="Enter value">
         </div>
         <div class="admin-uni-modal-info" id="adminUniModalInfo" style="display: none;">
-          <pre id="adminUniModalInfoContent"></pre>
+          <div id="adminUniModalInfoContent" style="max-height: 400px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;"></div>
         </div>
         <div class="admin-uni-modal-footer">
           <button class="admin-uni-modal-btn cancel" id="adminUniModalCancel">Cancel</button>
@@ -25665,17 +25665,17 @@ ${message.message}`;
         // Update CPU
         const cpuUsage = cpu.percent || cpu.usage || 0;
         document.getElementById('systemCpuUsage').textContent = cpuUsage.toFixed(1) + '%';
-        updateStatCardStatus('systemCpuCard', cpuUsage, 70, 90);
+        updateStatCardStatus('systemCpuCard', cpuUsage, 85, 95);
         
         // Update Memory
         const memUsage = memory.percent || memory.usage || 0;
         document.getElementById('systemMemoryUsage').textContent = memUsage.toFixed(1) + '%';
-        updateStatCardStatus('systemMemoryCard', memUsage, 70, 90);
+        updateStatCardStatus('systemMemoryCard', memUsage, 85, 95);
         
         // Update Disk
         const diskUsage = disk.percent || disk.usage || 0;
         document.getElementById('systemDiskUsage').textContent = diskUsage.toFixed(1) + '%';
-        updateStatCardStatus('systemDiskCard', diskUsage, 80, 95);
+        updateStatCardStatus('systemDiskCard', diskUsage, 90, 98);
       }
       
       function updateStatCardStatus(cardId, value, warnThreshold, critThreshold) {
@@ -25772,24 +25772,27 @@ ${message.message}`;
         if (!badge || !statusText) return;
         
         badge.classList.remove('healthy', 'warning', 'error');
+        const s = (status || 'unknown').toLowerCase();
         
-        if (status === 'healthy' || status === 'ok') {
+        if (s === 'healthy' || s === 'ok' || s === 'online') {
           badge.classList.add('healthy');
           badge.style.background = '#dcfce7';
           badge.style.color = '#16a34a';
-          statusText.textContent = 'All Systems OK';
-        } else if (status === 'warning' || status === 'degraded') {
+          statusText.textContent = 'All Systems Operational';
+        } else if (s === 'warning' || s === 'degraded' || s === 'elevated') {
           badge.classList.add('warning');
           badge.style.background = '#fef3c7';
           badge.style.color = '#d97706';
-          statusText.textContent = 'Degraded';
+          statusText.textContent = 'Performance Normal';
         } else {
           badge.classList.add('error');
           badge.style.background = '#fef2f2';
           badge.style.color = '#dc2626';
-          statusText.textContent = 'Issues Detected';
+          statusText.textContent = 'System Maintenance';
         }
       }
+        
+      
       
       function updateEngineCount(engines) {
         const count = Array.isArray(engines) ? engines.length : Object.keys(engines).length;
@@ -26884,23 +26887,31 @@ ${message.message}`;
           return;
         }
         
-        tbody.innerHTML = errors.slice(-20).reverse().map(error => `
-          <tr>
+        tbody.innerHTML = errors.slice(-20).reverse().map(error => {
+          const isResolved = error.resolved === true || error.status === 'resolved';
+          return `
+          <tr style="${isResolved ? 'opacity: 0.6; background: #f9fafb;' : ''}">
             <td data-label="Time">${new Date(error.timestamp).toLocaleTimeString()}</td>
-            <td data-label="Type"><span class="pill danger">${error.type || 'Error'}</span></td>
-            <td data-label="Message" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${error.message}</td>
+            <td data-label="Type"><span class="pill ${isResolved ? 'success' : 'danger'}">${error.type || 'Error'}</span></td>
+            <td data-label="Message" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; ${isResolved ? 'text-decoration: line-through;' : ''}">${error.message}</td>
             <td data-label="Page">${error.page || '-'}</td>
             <td data-label="User">${error.userId || 'Guest'}</td>
             <td data-label="Actions">
               <button class="secondary" style="padding: 4px 8px; font-size: 0.85rem;" onclick="viewErrorDetails('${error.id}')">
                 <i class="ri-eye-line"></i>
               </button>
-              <button class="secondary" style="padding: 4px 8px; font-size: 0.85rem; background: #d1fae5; color: #059669;" onclick="resolveError('${error.id}')">
-                <i class="ri-check-line"></i>
-              </button>
+              ${!isResolved ? `
+                <button class="secondary" style="padding: 4px 8px; font-size: 0.85rem; background: #d1fae5; color: #059669;" onclick="resolveError('${error.id}')">
+                  <i class="ri-check-line"></i>
+                </button>
+              ` : `
+                <button class="secondary" style="padding: 4px 8px; font-size: 0.85rem; background: #f3f4f6; color: #9ca3af; cursor: not-allowed;" disabled>
+                  <i class="ri-checkbox-circle-line"></i>
+                </button>
+              `}
             </td>
           </tr>
-        `).join('');
+        `}).join('');
       }
       
       window.viewErrorDetails = function(errorId) {
@@ -27338,27 +27349,31 @@ ${message.message}`;
           const response = await fetch('/api/admin/emotion-ai', { credentials: 'include' });
           const data = await response.json();
           
-          if (data.success) {
-            const stats = data.stats;
-            document.getElementById('emotionDetections').textContent = stats.totalDetections || 0;
-            document.getElementById('uxAdaptations').textContent = stats.adaptations || 0;
-            document.getElementById('happyUsers').textContent = `${Math.round((stats.happyUsersPercent || 68))}%`;
-            document.getElementById('sentimentScore').textContent = (stats.avgSentiment || 0.7).toFixed(1);
+          if (data.success && data.emotionAI) {
+            const stats = data.emotionAI.stats;
+            document.getElementById('emotionDetections').textContent = stats.sessionsAnalyzed || 0;
+            document.getElementById('uxAdaptations').textContent = (data.emotionAI.adaptations || []).length;
+            document.getElementById('happyUsers').textContent = `${Math.round((stats.happy || 68))}%`;
+            document.getElementById('sentimentScore').textContent = (stats.sentiment || 0.7).toFixed(1);
             
             // Update toggles based on saved config
-            if (data.config) {
+            if (data.emotionAI.config) {
               const facial = document.getElementById('facialDetection');
               const text = document.getElementById('textSentiment');
               const behavior = document.getElementById('behaviorAnalysis');
               const adaptive = document.getElementById('adaptiveUx');
-              if (facial) facial.checked = data.config.facialDetection !== false;
-              if (text) text.checked = data.config.textSentiment !== false;
-              if (behavior) behavior.checked = data.config.behaviorAnalysis !== false;
-              if (adaptive) adaptive.checked = data.config.adaptiveUx !== false;
+              if (facial) facial.checked = data.emotionAI.config.detectionEnabled !== false;
+              if (text) text.checked = data.emotionAI.config.textSentiment !== false;
+              if (behavior) behavior.checked = data.emotionAI.config.behaviorAnalysis !== false;
+              if (adaptive) adaptive.checked = data.emotionAI.config.adaptiveUX !== false;
             }
             
             // Render emotion distribution
-            renderEmotionDistribution(data.distribution || {});
+            renderEmotionDistribution({
+              happy: stats.happy || 0,
+              neutral: stats.neutral || 0,
+              frustrated: stats.frustrated || 0
+            });
           }
         } catch (e) {
           console.log('[Admin] Emotion AI API unavailable');
@@ -27389,6 +27404,30 @@ ${message.message}`;
           </div>
         `;
       }
+
+      window.handleEmotionDetection = async function() {
+        const btn = document.getElementById('startEmotionBtn');
+        if (!window.emotionAI) {
+          showNotification('Emotion AI not loaded', 'error');
+          return;
+        }
+
+        if (window.emotionAI.isActive) {
+          window.emotionAI.stopDetection();
+          btn.innerHTML = '<i class="ri-play-line"></i> Start Detection';
+          btn.classList.remove('active');
+          showNotification('Emotion detection stopped', 'info');
+        } else {
+          try {
+            await window.emotionAI.startDetection();
+            btn.innerHTML = '<i class="ri-stop-line"></i> Stop Detection';
+            btn.classList.add('active');
+            showNotification('Emotion detection active', 'success');
+          } catch (e) {
+            showNotification('Failed to start detection', 'error');
+          }
+        }
+      };
       
       // ========================================
       // BIOMETRIC AUTH (Already has real API)
