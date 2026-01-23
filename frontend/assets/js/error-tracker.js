@@ -19,8 +19,8 @@ class ErrorTracker {
       captureUnhandledRejections: true,
       captureResourceErrors: true,
       maxErrors: 100,
-      sendToServer: false,
-      serverEndpoint: '/api/errors',
+      sendToServer: true,
+      serverEndpoint: '/api/admin/errors',
       sampleRate: 1.0, // 100% of errors
       enableSourceMaps: true,
       enableBreadcrumbs: true,

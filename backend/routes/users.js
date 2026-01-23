@@ -707,6 +707,7 @@ router.get('/password-resets/users-summary', authenticate, isAdmin, (req, res) =
         id: user.id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar || null,
         phone: user.phone || '',
         role: user.role,
         createdAt: user.createdAt,

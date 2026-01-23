@@ -344,11 +344,11 @@ class AIHub:
             engine = module.MLEngine()
             
             if task == 'predict':
-                return engine.predict(data.get('modelType', 'sales'), data)
+                return engine.predict(data.get('modelId', data.get('modelType', 'sales_predictor')), data)
             elif task == 'train':
-                return engine.train(data.get('modelType', 'sales'), data)
+                return engine.train(data.get('modelId', data.get('modelType', 'all')), data)
             elif task == 'info':
-                return engine.get_model_info(data.get('modelType'))
+                return engine.get_model_info(data.get('modelId', data.get('modelType')))
             elif task == 'sales':
                 return engine.predict('sales_predictor', data)
             elif task == 'segment':

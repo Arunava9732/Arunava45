@@ -321,7 +321,7 @@ router.post('/ml/train', authenticate, isAdmin, async (req, res) => {
     try {
       const trafficData = readData('traffic.json') || [];
       const orderData = readData('orders.json') || [];
-      trainResult = await pythonBridge.runPythonScript('ai_hub.py', ['ml/train', JSON.stringify({ traffic: trafficData, orders: orderData })]);
+      trainResult = await pythonBridge.runPythonScript('ai_hub.py', ['ml/train', JSON.stringify({ modelId, traffic: trafficData, orders: orderData })]);
       if (trainResult.error) {
         console.error('[ML Engine] Python error during training:', trainResult.error);
         success = false;
@@ -446,6 +446,7 @@ router.get('/errors', authenticate, isAdmin, (req, res) => {
     const today = new Date().toDateString();
     const errorsToday = allErrors.filter(e => new Date(e.timestamp).toDateString() === today);
     const criticalErrors = allErrors.filter(e => e.severity === 'critical' || e.level === 'error');
+    const uniqueUsers = new Set(allErrors.map(e => e.userId || e.sessionId)).size;
     
     res.json({
       success: true,
@@ -454,6 +455,7 @@ router.get('/errors', authenticate, isAdmin, (req, res) => {
         total: allErrors.length,
         today: errorsToday.length,
         critical: criticalErrors.length,
+        uniqueUsers: uniqueUsers,
         resolved: data.stats.resolved || 0,
         errorRate: errorsToday.length > 0 ? (errorsToday.length / 1000 * 100).toFixed(2) : '0.0'
       }
@@ -467,7 +469,7 @@ router.get('/errors', authenticate, isAdmin, (req, res) => {
 // Log error
 router.post('/errors', (req, res) => {
   try {
-    const { message, stack, type, url, userAgent, userId, sessionId, severity } = req.body;
+    const { message, stack, type, url, page, userAgent, userId, sessionId, severity } = req.body;
     const data = readData('errorTracker.json') || { errors: [], stats: {} };
     
     const error = {
@@ -476,6 +478,7 @@ router.post('/errors', (req, res) => {
       stack: stack || null,
       type: type || 'unknown',
       url: url || req.headers.referer,
+      page: page || (url ? new URL(url, 'http://localhost').pathname : null),
       userAgent: userAgent || req.headers['user-agent'],
       userId: userId || null,
       sessionId: sessionId || null,
