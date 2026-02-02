@@ -422,6 +422,54 @@ router.post('/misc', uploadLimiter, authenticate, isAdmin, multerFor('misc', 'fi
   }
 });
 
+// Upload invoice logo (for tax invoices)
+router.post('/invoice-logo', uploadLimiter, authenticate, isAdmin, multerFor('misc', 'logo', 1, ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'], 2 * 1024 * 1024), async (req, res) => {
+  try {
+    // If multipart used
+    if (req.file) {
+      // Ensure permissions
+      try { await fs.promises.chmod(req.file.path, 0o644); } catch (e) {}
+      const filename = path.basename(req.file.path);
+      const fileUrl = `/uploads/misc/${filename}`;
+      console.log('[Upload] Invoice logo uploaded:', fileUrl);
+      return res.json({ success: true, url: fileUrl, filename });
+    }
+
+    const { logo } = req.body;
+    
+    if (!logo) {
+      return res.status(400).json({ success: false, error: 'No logo file provided' });
+    }
+    
+    // Validate file type (only images for invoice logo)
+    if (!validateFileType(logo, ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'])) {
+      return res.status(400).json({ success: false, error: 'Invalid file type. Use PNG, JPG, SVG or WebP' });
+    }
+    
+    // Check file size (max 2MB for logo)
+    const base64Data = logo.replace(/^data:([A-Za-z-+\/]+);base64,/, '');
+    const fileSize = Buffer.from(base64Data, 'base64').length;
+    if (fileSize > 2 * 1024 * 1024) {
+      return res.status(400).json({ success: false, error: 'Logo too large. Maximum size: 2MB' });
+    }
+    
+    const filename = generateFilename('invoice-logo.png', 'inv_logo_');
+    await saveBase64File(logo, UPLOAD_DIRS.misc, filename);
+    
+    const fileUrl = `/uploads/misc/${filename}`;
+    console.log('[Upload] Invoice logo saved:', fileUrl);
+    
+    res.json({ 
+      success: true, 
+      url: fileUrl,
+      filename: filename
+    });
+  } catch (error) {
+    console.error('Upload invoice logo error:', error);
+    res.status(500).json({ success: false, error: 'Failed to upload invoice logo' });
+  }
+});
+
 // Serve uploaded files with proper MIME types and video streaming support
 router.get('/products/:filename', async (req, res) => {
   try {

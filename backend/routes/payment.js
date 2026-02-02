@@ -12,6 +12,7 @@ const { authenticate, optionalAuth } = require('../middleware/auth');
 const db = require('../utils/database');
 const { sendOrderConfirmation, sendLowStockAlert } = require('../utils/email');
 const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { sendOrderWebhook } = require('./webhooks');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 const { payment: paymentAI, health: healthAI } = require('../utils/python_bridge');
@@ -298,6 +299,28 @@ router.post('/verify', authenticate, async (req, res) => {
 
         const updatedOrder = db.orders.update(orderId, updates);
 
+        // Add to Admin Notification Panel
+        addNotification({
+          type: 'payment',
+          title: 'Payment Confirmed',
+          message: `Payment of ₹${updatedOrder.total.toLocaleString()} received for Order #${orderId}`,
+          priority: 'medium',
+          link: '#orders',
+          data: { orderId: orderId, paymentId: razorpay_payment_id }
+        });
+
+        // Add fraud alert notification if risk is high
+        if (aiVerification && (aiVerification.riskLevel === 'High' || aiVerification.riskLevel === 'Critical')) {
+          addNotification({
+            type: 'security_alert',
+            title: 'CRITICAL: High Risk Payment Detected',
+            message: `Order #${orderId} has a high fraud risk score (${aiVerification.riskScore}). Verification required.`,
+            priority: 'high',
+            link: '#orders',
+            data: { orderId: orderId, riskScore: aiVerification.riskScore }
+          });
+        }
+
         console.log(`[AI-Enhanced] Payment verified: Order ${orderId}, Payment ID ${razorpay_payment_id}, AI Risk: ${aiVerification ? aiVerification.riskLevel : 'N/A'}`);
 
         // Send notifications for confirmed payment
@@ -327,6 +350,16 @@ router.post('/verify', authenticate, async (req, res) => {
 
               // Trigger low stock alert
               if (newStock <= 5) {
+                // Add to Admin Notification Panel
+                addNotification({
+                  type: 'low_stock',
+                  title: 'Low Stock Alert',
+                  message: `Product "${product.name}" is low on stock (${newStock} remaining)`,
+                  priority: 'high',
+                  link: '#products',
+                  data: { productId: product.id, stock: newStock }
+                });
+
                 sendLowStockAlert({ ...product, stock: newStock }).catch(err => 
                   console.error('Low stock alert failed:', err)
                 );

@@ -298,6 +298,42 @@ const sendGiftCardEmail = async (giftCard, recipientEmail, senderName) => {
 };
 
 /**
+ * Send Gift Card Purchase Confirmation to Sender
+ */
+const sendGiftCardPurchaseConfirmation = async (giftCard, senderEmail, recipientEmail) => {
+  const subject = `Your BLACKONN Gift Card purchase was successful`;
+  
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px; border-top: 5px solid #000;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h1 style="color: #000; margin: 0;">BLACKONN</h1>
+        <p style="color: #059669; font-size: 18px; font-weight: bold;">Purchase Successful!</p>
+      </div>
+      
+      <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <p>Thank you for purchasing a BLACKONN Digital Gift Card. It has been sent to <strong>${recipientEmail}</strong>.</p>
+        <div style="margin: 20px 0; padding: 15px; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
+          <p style="margin: 5px 0;"><strong>Gift Card Value:</strong> ₹${giftCard.amount}</p>
+          <p style="margin: 5px 0;"><strong>Card Code:</strong> ${giftCard.code}</p>
+          <p style="margin: 5px 0;"><strong>Recipient:</strong> ${recipientEmail}</p>
+        </div>
+      </div>
+      
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #999; font-size: 12px;">
+        <p>© ${new Date().getFullYear()} BLACKONN. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  return sendEmail({
+    to: senderEmail,
+    subject,
+    html,
+    text: `Your BLACKONN Gift Card purchase for ₹${giftCard.amount} was successful. Code: ${giftCard.code} has been sent to ${recipientEmail}.`
+  });
+};
+
+/**
  * Send Low Stock Alert to Admin
  */
 const sendLowStockAlert = async (product) => {
@@ -966,6 +1002,8 @@ module.exports = {
   sendReturnApprovedEmail,
   sendPromotionalEmail,
   sendNewsletter,
+  sendGiftCardEmail,
+  sendGiftCardPurchaseConfirmation,
   
   // Admin Emails
   sendLowStockAlert,

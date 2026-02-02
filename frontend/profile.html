@@ -2400,7 +2400,7 @@
             gap: 10px;
         }
 
-        .btn-track, .btn-reorder, .btn-return {
+        .btn-track, .btn-reorder, .btn-return, .btn-exchange, .btn-invoice, .btn-cancel-order {
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 14px;
@@ -4796,10 +4796,10 @@
                 <input type="file" id="avatarInput" accept="image/*">
             </div>
             <div class="profile-info">
-                <h1 id="userName">John Doe</h1>
-                <p id="userEmail">johndoe@example.com</p>
-                <p id="userPhone">+91 98765 43210</p>
-                <span class="member-since" id="memberSince">Member since December 2024</span>
+                <h1 id="userName">User</h1>
+                <p id="userEmail">Loading...</p>
+                <p id="userPhone"></p>
+                <span class="member-since" id="memberSince">Member since ...</span>
             </div>
             <div class="profile-actions" id="profileActions">
                 <button class="btn-edit" data-action="edit-profile">Edit Profile</button>
@@ -4958,6 +4958,7 @@
                     <li><a href="#" data-section="addresses"><i class="ri-map-pin-line"></i> Addresses</a></li>
                     <li><a href="#" data-section="queries" id="queriesMenuLink"><i class="ri-question-line"></i> Raised Queries</a></li>
                     <li><a href="#" data-section="wishlist"><i class="ri-heart-line"></i> Wishlist</a></li>
+                    <li><a href="#" data-section="giftcards"><i class="ri-gift-line"></i> Gift Cards</a></li>
                     <li><a href="#" data-section="biometric"><i class="ri-fingerprint-line"></i> Biometric Login</a></li>
                     <li><a href="#" data-section="password"><i class="ri-lock-password-line"></i> Change Password</a></li>
                 </ul>
@@ -4972,20 +4973,20 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" value="John">
+                                <input type="text" id="firstName" value="">
                             </div>
                             <div class="form-group">
                                 <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" value="Doe">
+                                <input type="text" id="lastName" value="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="profileEmail">Email Address</label>
-                            <input type="email" id="profileEmail" value="johndoe@example.com" disabled>
+                            <input type="email" id="profileEmail" value="" disabled>
                         </div>
                         <div class="form-group">
                             <label for="profilePhone">Phone Number</label>
-                            <input type="tel" id="profilePhone" value="+91 98765 43210">
+                            <input type="tel" id="profilePhone" value="">
                         </div>
                         <div class="form-group">
                             <label for="dob">Date of Birth</label>
@@ -5132,6 +5133,76 @@
                         <h3>Your wishlist is empty</h3>
                         <p>Save your favorite items here to buy them later</p>
                         <a href="index.html#shop">Start Shopping</a>
+                    </div>
+                </section>
+
+                <!-- Gift Cards Section -->
+                <section class="profile-section" id="section-giftcards">
+                    <h2 class="section-title"><i class="ri-gift-line"></i> My Gift Cards</h2>
+                    
+                    <!-- Summary Cards -->
+                    <div class="giftcard-summary" id="giftcardSummary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                        <div class="giftcard-stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Available Balance</div>
+                            <div id="gcTotalBalance" style="font-size: 1.75rem; font-weight: 700; margin-top: 4px;">₹0</div>
+                        </div>
+                        <div class="giftcard-stat-card" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Total Purchased</div>
+                            <div id="gcTotalPurchased" style="font-size: 1.75rem; font-weight: 700; margin-top: 4px;">₹0</div>
+                        </div>
+                        <div class="giftcard-stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Received as Gift</div>
+                            <div id="gcTotalReceived" style="font-size: 1.75rem; font-weight: 700; margin-top: 4px;">₹0</div>
+                        </div>
+                        <div class="giftcard-stat-card" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;">Total Used</div>
+                            <div id="gcTotalUsed" style="font-size: 1.75rem; font-weight: 700; margin-top: 4px;">₹0</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <button onclick="showBuyGiftCardModal()" class="btn-primary" style="padding: 12px 24px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="ri-shopping-cart-line"></i> Buy Gift Card
+                        </button>
+                        <button onclick="showRedeemGiftCardModal()" class="btn-secondary" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="ri-add-circle-line"></i> Add Gift Card
+                        </button>
+                        <button onclick="showCheckBalanceModal()" class="btn-secondary" style="padding: 12px 24px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="ri-search-line"></i> Check Balance
+                        </button>
+                    </div>
+
+                    <!-- Gift Cards List -->
+                    <div class="giftcards-tabs" style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px;">
+                        <button class="gc-tab active" data-filter="all" onclick="filterGiftCards('all', this)" style="padding: 8px 16px; border: none; background: #000; color: white; border-radius: 20px; cursor: pointer; font-size: 0.875rem;">All Cards</button>
+                        <button class="gc-tab" data-filter="active" onclick="filterGiftCards('active', this)" style="padding: 8px 16px; border: none; background: #f3f4f6; color: #374151; border-radius: 20px; cursor: pointer; font-size: 0.875rem;">Active</button>
+                        <button class="gc-tab" data-filter="used" onclick="filterGiftCards('used', this)" style="padding: 8px 16px; border: none; background: #f3f4f6; color: #374151; border-radius: 20px; cursor: pointer; font-size: 0.875rem;">Used</button>
+                    </div>
+
+                    <div id="giftcardsList" class="giftcards-list">
+                        <!-- Gift cards will be loaded here -->
+                        <div class="loading-orders" style="text-align:center;padding:40px;color:#666;">
+                            <i class="ri-loader-4-line" style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block;"></i>
+                            <p style="margin-top:16px;">Loading your gift cards...</p>
+                        </div>
+                    </div>
+
+                    <!-- Usage History -->
+                    <div id="giftcardHistory" style="margin-top: 32px; display: none;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="ri-history-line"></i> Usage History
+                        </h3>
+                        <div id="giftcardTransactions" class="transactions-list">
+                            <!-- Transactions will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="empty-state" id="emptyGiftcards" style="display: none;">
+                        <i class="ri-gift-line"></i>
+                        <h3>No gift cards yet</h3>
+                        <p>Purchase a gift card for yourself or share one with a friend!</p>
+                        <a href="gift-cards.html">Buy Gift Card</a>
                     </div>
                 </section>
 
@@ -5326,6 +5397,10 @@
                     <i class="ri-question-answer-line"></i>
                     <span>Raised Queries</span>
                 </a>
+                <a href="#" class="more-menu-item" data-section="giftcards">
+                    <i class="ri-gift-line"></i>
+                    <span>Gift Cards</span>
+                </a>
                 <a href="#" class="more-menu-item" data-section="biometric">
                     <i class="ri-fingerprint-line"></i>
                     <span>Biometric Login</span>
@@ -5352,7 +5427,12 @@
         }
 
         // Feature visibility settings (fetched from server)
-        let featureVisibility = { invoiceEnabled: true, giftCardsEnabled: false };
+        let featureVisibility = { 
+            invoiceEnabled: false, 
+            giftCardsEnabled: false,
+            returnsEnabled: true,
+            exchangesEnabled: true
+        };
         let featureVisibilityLoaded = false;
         
         async function loadFeatureVisibility(forceReload = false) {
@@ -5367,11 +5447,12 @@
                 if (marketingContentType && marketingContentType.includes('application/json')) {
                     const marketingData = await marketingResponse.json();
                     if (marketingData.success && marketingData.features) {
-                        featureVisibility = { ...featureVisibility, ...marketingData.features };
+                        // Merge marketing features
+                        Object.assign(featureVisibility, marketingData.features);
                     }
                 }
                 
-                // Load tax settings for invoice visibility (with cache busting)
+                // Load tax settings for invoice visibility - THIS IS THE AUTHORITATIVE SOURCE
                 const taxResponse = await fetch('/api/tax/feature-visibility?_=' + Date.now(), { 
                     cache: 'no-store',
                     credentials: 'include'
@@ -5379,21 +5460,16 @@
                 const taxContentType = taxResponse.headers.get('content-type');
                 if (taxContentType && taxContentType.includes('application/json')) {
                     const taxData = await taxResponse.json();
-                    console.log('[Profile] Feature visibility response:', taxData);
+                    console.log('[Profile] Tax feature visibility:', taxData);
                     if (taxData.success && taxData.features) {
-                        // Use the exact boolean value from server
+                        // Authoritatively set invoiceEnabled from tax data
                         featureVisibility.invoiceEnabled = taxData.features.invoiceEnabled === true;
-                        console.log('[Profile] invoiceEnabled set to:', featureVisibility.invoiceEnabled);
+                        console.log('[Profile] Resulting invoiceEnabled status:', featureVisibility.invoiceEnabled);
                     }
-                } else {
-                    // If not JSON, default to disabled (server not reachable properly)
-                    console.warn('Tax feature-visibility did not return JSON, defaulting invoiceEnabled to false');
-                    featureVisibility.invoiceEnabled = false;
                 }
                 featureVisibilityLoaded = true;
             } catch (e) {
-                console.warn('Could not load feature visibility, using defaults:', e);
-                featureVisibility.invoiceEnabled = false; // Default to disabled on error
+                console.warn('Could not load feature visibility:', e);
                 featureVisibilityLoaded = true;
             }
         }
@@ -5607,6 +5683,15 @@
         }
 
         function showSection(sectionName) {
+            // Check visibility based on admin settings
+            if (sectionName === 'giftcards' && sectionVisibility.giftCards === false) {
+                sectionName = 'profile';
+            } else if (sectionName === 'returns' && sectionVisibility.returns === false) {
+                sectionName = 'profile';
+            } else if (sectionName === 'exchanges' && sectionVisibility.exchanges === false) {
+                sectionName = 'profile';
+            }
+
             document.querySelectorAll('.profile-section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -5625,6 +5710,8 @@
                 markQueriesAsRead();
             } else if (sectionName === 'wishlist') {
                 loadWishlist();
+            } else if (sectionName === 'giftcards') {
+                loadUserGiftCards();
             }
             
             // Update active state for both desktop and mobile navigation
@@ -6408,28 +6495,35 @@
         
         // Generate Professional Invoice PDF (Amazon-style)
         function generateProfessionalInvoice(invoice, settings) {
-            const logo = invoice.invoiceLogo || settings?.logo || '/assets/img/logo.png';
+            // Fix logo path for printable window - handle both absolute and relative paths
+            let logo = invoice.invoiceLogo || settings?.logo || '/assets/img/logo.png';
+            if (logo.startsWith('/') && !logo.startsWith('//')) {
+                logo = window.location.origin + logo;
+            } else if (!logo.startsWith('http')) {
+                // If it's a relative path without leading slash
+                logo = window.location.origin + '/' + logo;
+            }
+
             const showGst = settings?.showGst !== false;
             const businessPan = invoice.businessPan || settings?.businessPan || '';
+            const gstin = invoice.gstNumber || settings?.gstNumber || '';
             
-            const invoiceDate = new Date(invoice.createdAt).toLocaleDateString('en-IN', { 
+            const invoiceDate = new Date(invoice.createdAt || invoice.invoiceDate).toLocaleDateString('en-IN', { 
                 day: 'numeric', month: 'long', year: 'numeric' 
-            });
-            const invoiceTime = new Date(invoice.createdAt).toLocaleTimeString('en-IN', { 
-                hour: '2-digit', minute: '2-digit' 
             });
             
             const shipping = invoice.shippingAddress || {};
             const billing = invoice.billingAddress || shipping;
             const items = invoice.items || [];
+            const baseSubtotal = invoice.subtotal || 0;
             
             // Format address helper
             const formatAddress = (addr) => {
+                if (!addr) return '';
                 const parts = [
-                    addr.name || '',
-                    addr.address || addr.street || '',
+                    addr.address || addr.street || addr.streetAddress || '',
                     addr.landmark ? `Near: ${addr.landmark}` : '',
-                    `${addr.city || ''}, ${addr.state || ''} ${addr.pincode || addr.zip || ''}`,
+                    [addr.city, addr.state, addr.pincode || addr.zip].filter(Boolean).join(', '),
                     addr.phone ? `Phone: ${addr.phone}` : ''
                 ].filter(Boolean);
                 return parts.join('<br>');
@@ -6444,16 +6538,58 @@
                         <div style="color: #6b7280; font-size: 11px; margin-top: 2px;">
                             ${item.size ? `Size: ${item.size}` : ''} ${item.color ? `| Color: ${item.color}` : ''}
                         </div>
-                        ${item.hsnCode ? `<div style="color: #9ca3af; font-size: 10px;">HSN: ${item.hsnCode}</div>` : ''}
+                        <div style="color: #6b7280; font-size: 10px; margin-top: 2px;">
+                            HSN: ${item.hsnCode || '6109'}
+                        </div>
                     </td>
                     <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 13px;">${item.quantity || 1}</td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 13px;">₹${(item.price || 0).toLocaleString('en-IN')}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 13px;">₹${(item.unitPrice || item.price || 0).toLocaleString('en-IN')}</td>
                     ${showGst ? `
                     <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 12px; color: #6b7280;">${item.taxRate || 0}%</td>
                     ` : ''}
-                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 13px; font-weight: 500;">₹${(item.lineTotal || 0).toLocaleString('en-IN')}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 13px; font-weight: 500;">₹${(item.totalAmount || item.lineTotal || 0).toLocaleString('en-IN')}</td>
                 </tr>
             `).join('');
+            
+            // Build payment details HTML
+            let paymentModeHtml = '';
+            const pm = (invoice.paymentMethod || '').toLowerCase();
+            
+            let paymentValue = 'Paid';
+
+            if (pm === 'upi') {
+                paymentValue = 'UPI Transfer';
+            } else if (pm === 'card') {
+                paymentValue = 'Credit/Debit Card';
+            } else if (pm === 'wallet') {
+                paymentValue = 'Digital Wallet';
+            } else if (pm === 'bank' || pm === 'bank_transfer' || pm === 'netbanking') {
+                paymentValue = 'Bank Transfer';
+            } else if (pm === 'cod') {
+                paymentValue = 'Cash on Delivery';
+            }
+
+            if (invoice.razorpayPaymentId) {
+                paymentValue = 'Online Payment (Razorpay)';
+            }
+
+            paymentModeHtml = `
+                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Payment Details</div>
+                    <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+                        <div>
+                            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Payment Method</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #1e293b;">${paymentValue}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Status</div>
+                            <div style="font-size: 10px; padding: 2px 8px; background: ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#dcfce7' : '#fef9c3'}; color: ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#15803d' : '#92400e'}; border-radius: 4px; display: inline-block; font-weight: 700; border: 1px solid ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#bbf7d0' : '#fef08a'};">
+                                ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? 'DONE' : (invoice.paymentStatus || 'PENDING')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
             
             const invoiceHTML = `
 <!DOCTYPE html>
@@ -6467,7 +6603,7 @@
         .invoice-container { max-width: 800px; margin: 0 auto; background: #fff; border: 1px solid #e5e7eb; padding: 40px; }
         .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 2px solid #f3f4f6; margin-bottom: 25px; }
         .logo-section { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-        .logo-section img { height: 60px; width: auto; object-fit: contain; }
+        .logo-section img { height: 60px; width: auto; max-width: 200px; object-fit: contain; }
         .logo-text { font-size: 24px; font-weight: 800; letter-spacing: -1px; color: #000; }
         .invoice-meta { text-align: right; }
         .invoice-meta h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #111827; }
@@ -6501,12 +6637,8 @@
         .footer-message { font-size: 14px; color: #111827; font-weight: 500; text-align: center; margin-bottom: 20px; }
         .terms { font-size: 11px; color: #6b7280; margin-top: 20px; padding: 20px; background: #f9fafb; border-radius: 8px; line-height: 1.8; }
         
-        .signature-section { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; }
-        .qr-code { width: 80px; height: 80px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9ca3af; border: 1px solid #e5e7eb; }
-        .signature-box { text-align: right; }
-        .signature-box p { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
-        .signature-name { font-weight: 700; font-size: 14px; color: #000; border-top: 1px solid #000; padding-top: 8px; min-width: 200px; display: inline-block; }
-        
+        .signature-section { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid #f3f4f6; }
+
         .print-btn { position: fixed; bottom: 30px; right: 30px; background: #000; color: #fff; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; z-index: 100; }
         .print-btn:hover { background: #333; transform: translateY(-2px); }
 
@@ -6526,16 +6658,17 @@
     <div class="invoice-container">
         <div class="header">
             <div class="logo-section">
-                ${logo ? `<img src="${logo}" alt="Logo">` : `<div class="logo-text">BLACKONN</div>`}
-                <p style="font-size: 12px; color: #6b7280; max-width: 250px;">${invoice.businessAddress || 'Premium Black Clothing'}</p>
+                ${logo ? `<img src="${logo}" alt="Logo" style="display: block; max-height: 80px; width: auto;" onerror="this.onerror=null; this.src='/assets/img/logo.png';">` : `<div class="logo-text">BLACKONN</div>`}
+                <div style="font-size: 13px; font-weight: 700; color: #000; margin-top: 12px;">${invoice.businessName || settings?.businessName || 'BLACKONN'}</div>
+                <div style="font-size: 11px; color: #4b5563; max-width: 250px; white-space: pre-line; line-height: 1.4;">${invoice.businessAddress || settings?.businessAddress || ''}</div>
             </div>
             <div class="invoice-meta">
                 <h1>TAX INVOICE</h1>
                 <p class="invoice-number">${invoice.invoiceNumber}</p>
                 <p>Date: ${invoiceDate}</p>
                 <p>Order ID: #${invoice.orderNumber || invoice.orderId}</p>
-                ${invoice.gstNumber ? `<p style="font-weight: 600; color: #000; margin-top: 5px;">GSTIN: ${invoice.gstNumber}</p>` : ''}
-                ${businessPan ? `<p style="font-weight: 600; color: #000;">PAN: ${businessPan}</p>` : ''}
+                ${gstin ? `<p style="font-weight: 700; color: #000; margin-top: 5px;">GSTIN: ${gstin}</p>` : ''}
+                ${businessPan ? `<p style="font-weight: 700; color: #000;">PAN: ${businessPan}</p>` : ''}
             </div>
         </div>
         
@@ -6544,6 +6677,7 @@
                 <h4>Billing Address</h4>
                 <p class="company-name">${billing.name || 'Customer'}</p>
                 <p>${formatAddress(billing)}</p>
+                ${invoice.buyer?.gstin ? `<p style="margin-top: 5px;"><strong>GSTIN:</strong> ${invoice.buyer.gstin}</p>` : ''}
             </div>
             <div class="address-box">
                 <h4>Shipping Address</h4>
@@ -6551,6 +6685,8 @@
                 <p>${formatAddress(shipping)}</p>
             </div>
         </div>
+
+        ${paymentModeHtml}
         
         <table class="items-table">
             <thead>
@@ -6559,7 +6695,7 @@
                     <th>Description</th>
                     <th style="width: 60px; text-align: center;">Qty</th>
                     <th style="width: 100px; text-align: right;">Unit Price</th>
-                    ${showGst ? '<th style="width: 70px; text-align: right;">Tax</th>' : ''}
+                    ${showGst ? '<th style="width: 70px; text-align: right;">Tax Rate</th>' : ''}
                     <th style="width: 100px; text-align: right;">Total</th>
                 </tr>
             </thead>
@@ -6572,67 +6708,82 @@
             <div class="gst-breakdown">
                 <h4>Tax Summary</h4>
                 ${invoice.isInterstate ? `
-                <div class="gst-row"><span>IGST (Integrated Tax)</span><span>₹${(invoice.igst || 0).toFixed(2)}</span></div>
+                <div class="gst-row"><span>IGST (Integrated Tax)</span><span>₹${(invoice.igst || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
                 ` : `
-                <div class="gst-row"><span>CGST (Central Tax)</span><span>₹${(invoice.cgst || 0).toFixed(2)}</span></div>
-                <div class="gst-row"><span>SGST (State Tax)</span><span>₹${(invoice.sgst || 0).toFixed(2)}</span></div>
+                <div class="gst-row"><span>CGST (Central Tax)</span><span>₹${(invoice.cgst || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                <div class="gst-row"><span>SGST (State Tax)</span><span>₹${(invoice.sgst || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
                 `}
-                <div class="gst-row total-tax">
+                <div class="gst-row total-tax" style="border-top: 2px solid #e5e7eb; margin-top: 10px; padding-top: 10px;">
                     <span>Total Tax Amount</span>
-                    <span>₹${(invoice.isInterstate ? (invoice.igst || 0) : ((invoice.cgst || 0) + (invoice.sgst || 0))).toFixed(2)}</span>
+                    <span>₹${(invoice.isInterstate ? (invoice.igst || 0) : ((invoice.cgst || 0) + (invoice.sgst || 0))).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
                 </div>
-                <p style="font-size: 10px; color: #9ca3af; margin-top: 15px; font-style: italic;">
-                    Tax is calculated as per Indian GST laws for apparel.
+                <p style="font-size: 10px; color: #6b7280; margin-top: 15px; font-style: italic; line-height: 1.4;">
+                    * All rates are inclusive of GST as per Indian laws.<br>
+                    * This is a computer generated invoice and does not require a physical signature.
                 </p>
             </div>
             
             <div class="totals-box">
-                <div class="total-row"><span>Subtotal</span><span>₹${(invoice.subtotal || 0).toLocaleString('en-IN')}</span></div>
-                ${(invoice.shippingCharge || 0) > 0 ? `<div class="total-row"><span>Shipping & Handling</span><span>₹${invoice.shippingCharge.toLocaleString('en-IN')}</span></div>` : ''}
-                ${(invoice.discount || 0) > 0 ? `<div class="total-row"><span>Discount</span><span>-₹${invoice.discount.toLocaleString('en-IN')}</span></div>` : ''}
+                <div class="total-row"><span>Subtotal (Exc. Tax)</span><span>₹${(baseSubtotal).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                <div class="total-row"><span>Taxable Value</span><span>₹${(baseSubtotal).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                <div class="total-row"><span>Total GST</span><span>₹${(invoice.totalTax || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>
+                ${(invoice.shippingCharge || 0) > 0 ? `<div class="total-row"><span>Shipping</span><span>₹${(invoice.shippingCharge).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>` : ''}
+                ${(invoice.discount || 0) > 0 ? `
+                <div class="total-row" style="color: #059669; font-weight: 500;">
+                    <span>Discount ${invoice.promoCode ? `(${invoice.promoCode})` : ''}</span>
+                    <span>-₹${(invoice.discount).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                </div>` : ''}
                 <div class="total-row grand-total">
                     <span>Grand Total</span>
-                    <span>₹${(invoice.total || 0).toLocaleString('en-IN')}</span>
+                    <span>₹${(invoice.total || invoice.grandTotal || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
                 </div>
                 <p style="text-align: right; font-size: 11px; color: #6b7280; margin-top: 10px;">
-                    Amount in words: <strong>${numberToWords(invoice.total)} Rupees Only</strong>
+                    Amount in words: <strong>${numberToWords(invoice.total || invoice.grandTotal)} Rupees Only</strong>
                 </p>
             </div>
         </div>
-        
-        ${invoice.bankDetails && invoice.bankDetails.bankName ? `
-        <div class="bank-details">
-            <h4>Bank Transfer Details</h4>
-            <p><strong>Bank:</strong> ${invoice.bankDetails.bankName}</p>
-            <p><strong>A/C No:</strong> ${invoice.bankDetails.accountNumber}</p>
-            <p><strong>IFSC:</strong> ${invoice.bankDetails.ifscCode}</p>
-            <p><strong>Holder:</strong> ${invoice.bankDetails.accountHolder}</p>
+
+        <div class="signature-section">
+            <!-- Minimal Verified Badge -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 20px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fafafa;">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="15" stroke="#10b981" stroke-width="1.5"/>
+                    <path d="M10 16.5L14 20.5L22 12.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div>
+                    <div style="font-size: 11px; font-weight: 600; color: #111827; letter-spacing: 0.5px;">VERIFIED</div>
+                    <div style="font-size: 9px; color: #6b7280;">Authentic Invoice</div>
+                </div>
+            </div>
+            
+            <!-- Digital Signature Electronic (DSE) - Minimalist -->
+            <div style="text-align: right;">
+                <p style="font-size: 10px; margin-bottom: 8px; color: #9ca3af;">For ${invoice.businessName || 'BLACKONN'}</p>
+                <div style="border-top: 1px solid #e5e7eb; width: 180px; margin-left: auto; padding-top: 8px;">
+                    <div style="font-size: 11px; font-weight: 500; color: #374151; margin-bottom: 4px;">${invoice.dseSignature?.signedBy || invoice.signature || 'Authorized Signatory'}</div>
+                    ${invoice.dseSignature ? `
+                    <div style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 3px; margin-top: 4px;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="#22c55e"/><path d="M9 12L11 14L15 10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span style="font-size: 8px; font-weight: 600; color: #15803d; letter-spacing: 0.3px;">DSE VERIFIED</span>
+                    </div>
+                    <div style="font-size: 7px; color: #9ca3af; margin-top: 4px; font-family: monospace;">${invoice.dseSignature.verificationCode}</div>
+                    ` : ''}
+                </div>
+            </div>
         </div>
-        ` : ''}
         
         <div class="footer">
-            <p class="footer-message">${invoice.footer || 'Thank you for shopping with Blackonn!'}</p>
-            
-            <div class="signature-section">
-                <div class="qr-code">
-                    ORDER #${invoice.orderNumber || invoice.orderId}
-                </div>
-                <div class="signature-box">
-                    <p>For ${invoice.businessName || 'Blackonn'}</p>
-                    <div style="height: 50px;"></div>
-                    <span class="signature-name">${invoice.signature || 'Authorized Signatory'}</span>
-                </div>
-            </div>
-            
+            <p class="footer-message">Thank you for shopping with BLACKONN!</p>
+            ${settings?.invoiceTerms ? `<div class="terms"><strong>Terms & Conditions:</strong><br>${settings.invoiceTerms}</div>` : `
             <div class="terms">
-                <strong>Terms & Conditions:</strong><br>
-                ${invoice.terms || '1. All products are subject to our return policy. 2. Returns accepted within 7 days of delivery. 3. This is a computer generated invoice.'}
-            </div>
+                1. This is a computer generated invoice.<br>
+                2. Goods once sold cannot be returned without original packaging.<br>
+                3. All disputes are subject to the jurisdiction of the company's registered state.
+            </div>`}
         </div>
     </div>
 </body>
-</html>
-            `;
+</html>`;
             
             const win = window.open('', '_blank');
             win.document.write(invoiceHTML);
@@ -7976,6 +8127,11 @@
                     if (window.biometricAuth && typeof window.biometricAuth.syncWithServer === 'function') {
                         await window.biometricAuth.syncWithServer(user.id);
                     }
+
+                    // Also try to sync any pending credentials that failed during signup
+                    if (window.biometricAuth && typeof window.biometricAuth.syncPendingCredentials === 'function') {
+                        await window.biometricAuth.syncPendingCredentials();
+                    }
                     
                     renderBiometricUI();
                 }
@@ -8170,7 +8326,8 @@
             if (hasWebAuthn) {
                 try {
                     const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-                    if (available && window.BiometricAuth) {
+                    // Fix: Check for both instance and class
+                    if (available && (window.biometricAuth || window.BiometricAuth)) {
                         await registerWithWebAuthn(user, deviceName);
                         return;
                     }
@@ -8726,6 +8883,526 @@
 
         // Load wishlist on page load
         loadWishlist();
+
+        // ===== GIFT CARDS FUNCTIONS =====
+        
+        let userGiftCards = [];
+        let giftCardTransactions = [];
+
+        async function loadUserGiftCards() {
+            const giftcardsList = document.getElementById('giftcardsList');
+            const emptyGiftcards = document.getElementById('emptyGiftcards');
+            const giftcardHistory = document.getElementById('giftcardHistory');
+            
+            try {
+                const response = await fetch('/api/gift-cards/my-cards', { credentials: 'include' });
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load gift cards');
+                }
+
+                userGiftCards = data.cards || [];
+                giftCardTransactions = data.transactions || [];
+                const summary = data.summary || {};
+
+                // Update summary stats
+                document.getElementById('gcTotalBalance').textContent = '₹' + (summary.totalBalance || 0).toLocaleString();
+                document.getElementById('gcTotalPurchased').textContent = '₹' + (summary.totalPurchased || 0).toLocaleString();
+                document.getElementById('gcTotalReceived').textContent = '₹' + (summary.totalReceived || 0).toLocaleString();
+                document.getElementById('gcTotalUsed').textContent = '₹' + (summary.totalUsed || 0).toLocaleString();
+
+                if (userGiftCards.length === 0) {
+                    giftcardsList.innerHTML = '';
+                    emptyGiftcards.style.display = 'flex';
+                    document.getElementById('giftcardSummary').style.display = 'none';
+                    giftcardHistory.style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('giftcardSummary').style.display = 'grid';
+                emptyGiftcards.style.display = 'none';
+                
+                renderGiftCards(userGiftCards);
+                renderGiftCardTransactions(giftCardTransactions);
+                
+            } catch (error) {
+                console.error('Error loading gift cards:', error);
+                giftcardsList.innerHTML = '<p style="color:#e74c3c;text-align:center;padding:40px;">Failed to load gift cards. Please try again.</p>';
+            }
+        }
+
+        function renderGiftCards(cards) {
+            const giftcardsList = document.getElementById('giftcardsList');
+            
+            if (cards.length === 0) {
+                giftcardsList.innerHTML = '<p style="text-align:center;padding:40px;color:#6b7280;">No gift cards match this filter.</p>';
+                return;
+            }
+
+            giftcardsList.innerHTML = cards.map(card => {
+                const isExpired = new Date(card.expiresAt) < new Date();
+                const isFullyUsed = card.balance <= 0;
+                const statusClass = isExpired ? 'expired' : (isFullyUsed ? 'redeemed' : 'active');
+                const statusText = isExpired ? 'Expired' : (isFullyUsed ? 'Fully Used' : 'Active');
+                const statusColor = isExpired ? '#ef4444' : (isFullyUsed ? '#6b7280' : '#10b981');
+                
+                const cardType = card.isReceived && !card.isPurchased ? 'Received as Gift' : (card.isPurchased ? 'Purchased' : 'Gift Card');
+                const typeColor = card.isReceived && !card.isPurchased ? '#f59e0b' : '#3b82f6';
+
+                return `
+                    <div class="giftcard-item" data-status="${card.status}" data-balance="${card.balance}" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 24px; border-radius: 16px; margin-bottom: 16px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                        <div style="position: absolute; bottom: -40px; left: -40px; width: 100px; height: 100px; background: rgba(255,255,255,0.03); border-radius: 50%;"></div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; position: relative;">
+                            <div>
+                                <span style="font-size: 0.7rem; background: ${typeColor}; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px;">${cardType}</span>
+                                <div style="font-size: 1.5rem; font-weight: 700; margin-top: 12px; font-family: monospace; letter-spacing: 2px;">${card.code}</div>
+                            </div>
+                            <span style="font-size: 0.75rem; background: ${statusColor}; padding: 4px 12px; border-radius: 12px;">${statusText}</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                            <div>
+                                <div style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase;">Original Value</div>
+                                <div style="font-size: 1.1rem; font-weight: 600;">₹${(card.value || 0).toLocaleString()}</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase;">Remaining Balance</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: ${card.balance > 0 ? '#4ade80' : '#f87171'};">₹${(card.balance || 0).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 0.75rem; opacity: 0.7;">
+                                <i class="ri-calendar-line"></i> Expires: ${new Date(card.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                            ${card.balance > 0 && !isExpired ? `
+                                <button onclick="copyGiftCardCode('${card.code}')" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                                    <i class="ri-file-copy-line"></i> Copy Code
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        ${card.senderName && card.isReceived && !card.isPurchased ? `
+                            <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <i class="ri-gift-line"></i> From: ${card.senderName}
+                                ${card.message ? `<div style="font-style: italic; margin-top: 4px;">"${card.message}"</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderGiftCardTransactions(transactions) {
+            const historyContainer = document.getElementById('giftcardHistory');
+            const transactionsList = document.getElementById('giftcardTransactions');
+            
+            if (!transactions || transactions.length === 0) {
+                historyContainer.style.display = 'none';
+                return;
+            }
+
+            historyContainer.style.display = 'block';
+            
+            transactionsList.innerHTML = transactions.map(tx => {
+                const isRedeem = tx.type === 'redeem';
+                const icon = isRedeem ? 'ri-arrow-right-up-line' : 'ri-add-line';
+                const color = isRedeem ? '#ef4444' : '#10b981';
+                const sign = isRedeem ? '-' : '+';
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px; border: 1px solid #f3f4f6;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: ${color}15; display: flex; align-items: center; justify-content: center;">
+                                <i class="${icon}" style="color: ${color};"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 500; font-size: 0.9rem;">${tx.type === 'redeem' ? 'Redeemed' : 'Purchased'}</div>
+                                <div style="font-size: 0.75rem; color: #6b7280;">${tx.details || ''}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600; color: ${color};">${sign}₹${(tx.amount || 0).toLocaleString()}</div>
+                            <div style="font-size: 0.7rem; color: #9ca3af;">${new Date(tx.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterGiftCards(filter, btn) {
+            // Update tab styles
+            document.querySelectorAll('.gc-tab').forEach(tab => {
+                tab.style.background = '#f3f4f6';
+                tab.style.color = '#374151';
+                tab.classList.remove('active');
+            });
+            btn.style.background = '#000';
+            btn.style.color = 'white';
+            btn.classList.add('active');
+            
+            // Filter cards
+            let filteredCards = userGiftCards;
+            if (filter === 'active') {
+                filteredCards = userGiftCards.filter(c => c.status === 'active' && c.balance > 0 && new Date(c.expiresAt) >= new Date());
+            } else if (filter === 'used') {
+                filteredCards = userGiftCards.filter(c => c.balance <= 0 || c.status === 'redeemed');
+            }
+            
+            renderGiftCards(filteredCards);
+        }
+
+        function copyGiftCardCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                showSuccessPopup('Code Copied!', 'Gift card code has been copied to clipboard.');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showSuccessPopup('Code Copied!', 'Gift card code has been copied to clipboard.');
+            });
+        }
+
+        function showBuyGiftCardModal() {
+            const modalHtml = `
+                <div id="buyGiftCardModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100000; overflow-y: auto; padding: 20px;">
+                    <div style="background: white; padding: 32px; border-radius: 16px; max-width: 500px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); margin: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3 style="margin: 0; font-size: 1.25rem;"><i class="ri-gift-line"></i> Buy Gift Card</h3>
+                            <button onclick="document.getElementById('buyGiftCardModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+                        </div>
+                        
+                        <!-- Amount Selection -->
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 12px;">Select Amount</label>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="gcAmountGrid">
+                                <button type="button" class="gc-amount-btn" data-amount="500" onclick="selectGiftCardAmount(500, this)" style="padding: 16px 8px; border: 2px solid #e5e7eb; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">₹500</button>
+                                <button type="button" class="gc-amount-btn" data-amount="1000" onclick="selectGiftCardAmount(1000, this)" style="padding: 16px 8px; border: 2px solid #e5e7eb; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">₹1,000</button>
+                                <button type="button" class="gc-amount-btn" data-amount="2000" onclick="selectGiftCardAmount(2000, this)" style="padding: 16px 8px; border: 2px solid #e5e7eb; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">₹2,000</button>
+                                <button type="button" class="gc-amount-btn" data-amount="5000" onclick="selectGiftCardAmount(5000, this)" style="padding: 16px 8px; border: 2px solid #e5e7eb; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">₹5,000</button>
+                                <button type="button" class="gc-amount-btn" data-amount="10000" onclick="selectGiftCardAmount(10000, this)" style="padding: 16px 8px; border: 2px solid #e5e7eb; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;">₹10,000</button>
+                                <input type="number" id="gcCustomAmount" placeholder="Custom" min="100" max="50000" style="padding: 16px 8px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center; font-weight: 600;" onchange="selectGiftCardAmount(this.value, null)" />
+                            </div>
+                            <input type="hidden" id="selectedGcAmount" value="" />
+                        </div>
+                        
+                        <!-- Gift For -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Gift For</label>
+                            <div style="display: flex; gap: 12px;">
+                                <label style="flex: 1; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" id="gcForSelfLabel">
+                                    <input type="radio" name="gcFor" value="self" style="display: none;" onchange="toggleGiftRecipient(false)" />
+                                    <i class="ri-user-line" style="font-size: 1.25rem; display: block; margin-bottom: 4px;"></i>
+                                    <span style="font-size: 0.875rem; font-weight: 500;">For Myself</span>
+                                </label>
+                                <label style="flex: 1; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;" id="gcForOtherLabel">
+                                    <input type="radio" name="gcFor" value="other" style="display: none;" onchange="toggleGiftRecipient(true)" />
+                                    <i class="ri-gift-2-line" style="font-size: 1.25rem; display: block; margin-bottom: 4px;"></i>
+                                    <span style="font-size: 0.875rem; font-weight: 500;">Gift Someone</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Recipient Details (hidden by default) -->
+                        <div id="gcRecipientDetails" style="display: none;">
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Recipient's Name</label>
+                                <input type="text" id="gcRecipientName" placeholder="Enter recipient's name" style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem;" />
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Recipient's Email</label>
+                                <input type="email" id="gcRecipientEmail" placeholder="Enter recipient's email" style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem;" />
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Personal Message (Optional)</label>
+                                <textarea id="gcMessage" placeholder="Write a personal message..." rows="3" style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; resize: vertical;"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="gcPurchaseError" style="display: none; padding: 12px; background: #fef2f2; color: #dc2626; border-radius: 8px; margin-bottom: 16px; font-size: 0.875rem;"></div>
+                        
+                        <button onclick="purchaseGiftCard()" id="gcPurchaseBtn" style="width: 100%; padding: 16px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                            <i class="ri-shopping-cart-line"></i> Add to Cart
+                        </button>
+                        
+                        <p style="text-align: center; margin-top: 12px; font-size: 0.75rem; color: #6b7280;">Gift cards are valid for 1 year from purchase date</p>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        let selectedGiftCardAmount = 0;
+
+        function selectGiftCardAmount(amount, btn) {
+            selectedGiftCardAmount = parseInt(amount) || 0;
+            document.getElementById('selectedGcAmount').value = selectedGiftCardAmount;
+            
+            // Update button styles
+            document.querySelectorAll('.gc-amount-btn').forEach(b => {
+                b.style.borderColor = '#e5e7eb';
+                b.style.background = 'white';
+            });
+            
+            if (btn) {
+                btn.style.borderColor = '#000';
+                btn.style.background = '#f0f0f0';
+                document.getElementById('gcCustomAmount').value = '';
+            }
+        }
+
+        function toggleGiftRecipient(showRecipient) {
+            const recipientDetails = document.getElementById('gcRecipientDetails');
+            const selfLabel = document.getElementById('gcForSelfLabel');
+            const otherLabel = document.getElementById('gcForOtherLabel');
+            
+            if (showRecipient) {
+                recipientDetails.style.display = 'block';
+                otherLabel.style.borderColor = '#000';
+                otherLabel.style.background = '#f0f0f0';
+                selfLabel.style.borderColor = '#e5e7eb';
+                selfLabel.style.background = 'white';
+            } else {
+                recipientDetails.style.display = 'none';
+                selfLabel.style.borderColor = '#000';
+                selfLabel.style.background = '#f0f0f0';
+                otherLabel.style.borderColor = '#e5e7eb';
+                otherLabel.style.background = 'white';
+            }
+        }
+
+        async function purchaseGiftCard() {
+            const amount = selectedGiftCardAmount || parseInt(document.getElementById('gcCustomAmount').value) || 0;
+            const errorDiv = document.getElementById('gcPurchaseError');
+            const purchaseBtn = document.getElementById('gcPurchaseBtn');
+            
+            // Validate amount
+            if (!amount || amount < 100 || amount > 50000) {
+                errorDiv.textContent = 'Please select an amount between ₹100 and ₹50,000';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            const isForOther = document.querySelector('input[name="gcFor"][value="other"]')?.checked;
+            let recipientEmail = '';
+            let recipientName = '';
+            let message = '';
+            
+            if (isForOther) {
+                recipientName = document.getElementById('gcRecipientName').value.trim();
+                recipientEmail = document.getElementById('gcRecipientEmail').value.trim();
+                message = document.getElementById('gcMessage').value.trim();
+                
+                if (!recipientEmail) {
+                    errorDiv.textContent = 'Please enter recipient\'s email address';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                
+                if (!isValidEmail(recipientEmail)) {
+                    errorDiv.textContent = 'Please enter a valid email address';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+            }
+            
+            errorDiv.style.display = 'none';
+            purchaseBtn.disabled = true;
+            purchaseBtn.innerHTML = '<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Processing...';
+            
+            try {
+                // Add to cart as gift card item
+                const cartItem = {
+                    type: 'gift-card',
+                    name: 'BLACKONN Gift Card',
+                    value: amount,
+                    recipientName: recipientName || 'Self',
+                    recipientEmail: recipientEmail || '',
+                    message: message,
+                    isGift: isForOther
+                };
+                
+                const response = await fetch('/api/cart/add-gift-card', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(cartItem)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('buyGiftCardModal').remove();
+                    showSuccessPopup('Added to Cart!', `₹${amount.toLocaleString()} Gift Card added to your cart.`);
+                    // Update cart count if available
+                    if (typeof updateCartCount === 'function') updateCartCount();
+                } else {
+                    throw new Error(result.error || 'Failed to add gift card to cart');
+                }
+            } catch (error) {
+                console.error('Error adding gift card to cart:', error);
+                errorDiv.textContent = error.message || 'Failed to add gift card. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                purchaseBtn.disabled = false;
+                purchaseBtn.innerHTML = '<i class="ri-shopping-cart-line"></i> Add to Cart';
+            }
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showRedeemGiftCardModal() {
+            const modalHtml = `
+                <div id="redeemGiftCardModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100000;">
+                    <div style="background: white; padding: 32px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3 style="margin: 0; font-size: 1.25rem;"><i class="ri-add-circle-line"></i> Add Gift Card</h3>
+                            <button onclick="document.getElementById('redeemGiftCardModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+                        </div>
+                        
+                        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 20px;">Enter your gift card code to add it to your account. You can use it during checkout.</p>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Gift Card Code</label>
+                            <input type="text" id="redeemGcCode" placeholder="e.g., BLK-XXXX-XXXX" style="width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; text-transform: uppercase; font-family: monospace; letter-spacing: 1px;" oninput="this.value = this.value.toUpperCase()" />
+                        </div>
+                        
+                        <div id="redeemResult" style="display: none; padding: 16px; border-radius: 8px; margin-bottom: 16px;"></div>
+                        
+                        <button onclick="addGiftCardToAccount()" id="redeemBtn" style="width: 100%; padding: 14px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Add Gift Card
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            setTimeout(() => document.getElementById('redeemGcCode')?.focus(), 100);
+        }
+
+        async function addGiftCardToAccount() {
+            const code = document.getElementById('redeemGcCode').value.trim();
+            const resultDiv = document.getElementById('redeemResult');
+            const redeemBtn = document.getElementById('redeemBtn');
+            
+            if (!code) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = '#fef2f2';
+                resultDiv.innerHTML = '<p style="color: #dc2626; margin: 0;"><i class="ri-error-warning-line"></i> Please enter a gift card code</p>';
+                return;
+            }
+            
+            redeemBtn.disabled = true;
+            redeemBtn.innerHTML = '<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Verifying...';
+            
+            try {
+                const response = await fetch('/api/gift-cards/add-to-account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ code })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.style.display = 'block';
+                
+                if (data.success) {
+                    resultDiv.style.background = '#f0fdf4';
+                    resultDiv.innerHTML = `
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 8px;">🎉</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 4px;">₹${(data.balance || 0).toLocaleString()}</div>
+                            <div style="font-size: 0.875rem; color: #059669;">Gift card added successfully!</div>
+                        </div>
+                    `;
+                    // Refresh the gift cards list
+                    setTimeout(() => {
+                        document.getElementById('redeemGiftCardModal').remove();
+                        loadUserGiftCards();
+                    }, 2000);
+                } else {
+                    resultDiv.style.background = '#fef2f2';
+                    resultDiv.innerHTML = `<p style="color: #dc2626; margin: 0;"><i class="ri-error-warning-line"></i> ${data.error || 'Gift card not found or already used'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error adding gift card:', error);
+                resultDiv.style.background = '#fef2f2';
+                resultDiv.innerHTML = '<p style="color: #dc2626; margin: 0;"><i class="ri-error-warning-line"></i> Failed to add gift card. Please try again.</p>';
+            } finally {
+                redeemBtn.disabled = false;
+                redeemBtn.innerHTML = 'Add Gift Card';
+            }
+        }
+
+        function showCheckBalanceModal() {
+            const modalHtml = `
+                <div id="checkBalanceModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100000;">
+                    <div style="background: white; padding: 32px; border-radius: 16px; max-width: 400px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3 style="margin: 0; font-size: 1.25rem;"><i class="ri-search-line"></i> Check Gift Card Balance</h3>
+                            <button onclick="document.getElementById('checkBalanceModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">Gift Card Code</label>
+                            <input type="text" id="balanceCheckCode" placeholder="e.g., BLK-XXXX-XXXX" style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 1rem; text-transform: uppercase;" />
+                        </div>
+                        <div id="balanceResult" style="display: none; padding: 16px; background: #f9fafb; border-radius: 8px; margin-bottom: 16px;"></div>
+                        <button onclick="checkGiftCardBalance()" style="width: 100%; padding: 14px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Check Balance
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            setTimeout(() => document.getElementById('balanceCheckCode')?.focus(), 100);
+        }
+
+        async function checkGiftCardBalance() {
+            const code = document.getElementById('balanceCheckCode').value.trim();
+            const resultDiv = document.getElementById('balanceResult');
+            
+            if (!code) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<p style="color: #ef4444; margin: 0;"><i class="ri-error-warning-line"></i> Please enter a gift card code</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/gift-cards/balance/${encodeURIComponent(code)}`, { credentials: 'include' });
+                const data = await response.json();
+                
+                resultDiv.style.display = 'block';
+                
+                if (data.success) {
+                    const statusColor = data.status === 'active' ? '#10b981' : (data.status === 'expired' ? '#ef4444' : '#6b7280');
+                    resultDiv.innerHTML = `
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 8px;">₹${(data.balance || 0).toLocaleString()}</div>
+                            <div style="font-size: 0.875rem; color: #6b7280;">Available Balance</div>
+                            <div style="margin-top: 12px; display: flex; justify-content: center; gap: 16px; font-size: 0.75rem; color: #9ca3af;">
+                                <span>Original: ₹${(data.originalValue || 0).toLocaleString()}</span>
+                                <span style="color: ${statusColor}; font-weight: 600; text-transform: uppercase;">${data.status}</span>
+                            </div>
+                            ${data.expiresAt ? `<div style="margin-top: 8px; font-size: 0.75rem; color: #9ca3af;">Expires: ${new Date(data.expiresAt).toLocaleDateString('en-IN')}</div>` : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: #ef4444; margin: 0; text-align: center;"><i class="ri-error-warning-line"></i> ${data.error || 'Gift card not found'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error checking balance:', error);
+                resultDiv.innerHTML = '<p style="color: #ef4444; margin: 0; text-align: center;"><i class="ri-error-warning-line"></i> Failed to check balance. Please try again.</p>';
+            }
+        }
 
         // ===== ADDRESS FUNCTIONS =====
         
@@ -9333,7 +10010,60 @@
             
             // Check for biometric reset notification from admin
             checkBiometricResetNotification();
+
+            // Initialize section visibility based on admin settings
+            initSectionsVisibility();
         });
+
+        // Initialize section visibility based on admin settings
+        let sectionVisibility = {};
+
+        async function initSectionsVisibility() {
+            try {
+                const response = await fetch('/api/settings/sections/visibility');
+                const data = await response.json();
+                
+                if (data && data.success && data.sections) {
+                    sectionVisibility = data.sections;
+                    
+                    // Sections to check (match with data-section attributes and admin settings keys)
+                    const sectionCheckList = [
+                        { key: 'giftCards', dataSection: 'giftcards' },
+                        { key: 'returns', dataSection: 'returns' },
+                        { key: 'exchanges', dataSection: 'exchanges' }
+                    ];
+                    
+                    sectionCheckList.forEach(item => {
+                        const isEnabled = sectionVisibility[item.key] !== false;
+                        
+                        if (!isEnabled) {
+                            // Hide sidebar link
+                            const sidebarLinks = document.querySelectorAll(`.sidebar-menu a[data-section="${item.dataSection}"]`);
+                            sidebarLinks.forEach(link => {
+                                const parentLi = link.closest('li');
+                                if (parentLi) parentLi.style.display = 'none';
+                            });
+
+                            // Hide mobile menu items
+                            const mobileLinks = document.querySelectorAll(`[data-section="${item.dataSection}"]`);
+                            mobileLinks.forEach(link => {
+                                if (link.classList.contains('more-menu-item') || link.classList.contains('nav-item')) {
+                                    link.style.display = 'none';
+                                }
+                            });
+
+                            // If user is currently on a disabled section, redirect to profile
+                            const currentUrl = new URLSearchParams(window.location.search);
+                            if (currentUrl.get('section') === item.dataSection) {
+                                showSection('profile');
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error initializing section visibility:', error);
+            }
+        }
         
         // Check and display biometric reset notification
         function checkBiometricResetNotification() {

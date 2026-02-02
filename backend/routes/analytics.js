@@ -82,7 +82,7 @@ class AIAnalyticsEngine {
 
     const now = new Date();
     
-    // Fallback/Supplemental JS rule-based insights
+    // JS rule-based insights (production logic)
     if (data.traffic) {
       const recentTraffic = this.getRecentTraffic(data.traffic, 7);
       const avgVisits = recentTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0) / Math.max(recentTraffic.length, 1);
@@ -222,6 +222,7 @@ class AIAnalyticsEngine {
         metric: metric,
         predicted: Math.max(0, Math.round(predictedValue)),
         confidence: Math.max(0.5, 0.95 - (i * 0.05)), // Confidence decreases for further predictions
+        isPrediction: true,
         range: {
           low: Math.max(0, Math.round(predictedValue * 0.8)),
           high: Math.round(predictedValue * 1.2)
@@ -770,12 +771,30 @@ router.get('/stats', async (req, res) => {
     const traffic = loadTrafficData();
     const analytics = loadAnalyticsData();
     
-    // Calculate date range
+    // Calculate date range - set to beginning of day for accurate filtering
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
+    cutoffDate.setHours(0, 0, 0, 0);
+    cutoffDate.setDate(cutoffDate.getDate() - days + 1);
     
+    // 1. Filter existing traffic
     const filteredTraffic = traffic.filter(d => new Date(d.date) >= cutoffDate);
     
+    // 2. Fill in missing days so chart is always full
+    const dailyVisits = [];
+    const now = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      
+      const existing = traffic.find(r => r.date === dateStr);
+      dailyVisits.push({
+        date: dateStr,
+        visits: existing ? (existing.totalVisits || 0) : 0,
+        uniqueVisitors: existing ? (existing.uniqueVisitors?.length || 0) : 0
+      });
+    }
+
     // Get today and yesterday
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
@@ -814,16 +833,10 @@ router.get('/stats', async (req, res) => {
         visits: yesterdayData.totalVisits || 0,
         uniqueVisitors: yesterdayData.uniqueVisitors?.length || 0
       },
-      totalVisits: filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0),
+      totalVisits: dailyVisits.reduce((sum, d) => sum + d.visits, 0),
       uniqueVisitors: new Set(filteredTraffic.flatMap(d => d.uniqueVisitors || [])).size,
-      avgVisitsPerDay: filteredTraffic.length > 0 
-        ? Math.round(filteredTraffic.reduce((sum, d) => sum + (d.totalVisits || 0), 0) / filteredTraffic.length)
-        : 0,
-      dailyVisits: filteredTraffic.map(d => ({
-        date: d.date,
-        visits: d.totalVisits || 0,
-        uniqueVisitors: d.uniqueVisitors?.length || 0
-      })),
+      avgVisitsPerDay: Math.round(dailyVisits.reduce((sum, d) => sum + d.visits, 0) / days),
+      dailyVisits: dailyVisits,
       topPages: Object.entries(pageViews)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
@@ -843,6 +856,7 @@ router.get('/stats', async (req, res) => {
       _aiPowered: true
     });
   } catch (error) {
+    console.error('[AI-ANALYTICS] Stats Error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -862,12 +876,13 @@ router.get('/realtime', (req, res) => {
     };
 
     const currentHour = new Date().getHours().toString();
+    const activeNow = sqliteDb.getActiveVisitors(5); // Last 5 minutes from DB
     
     res.json({
       success: true,
       realtime: {
         timestamp: new Date().toISOString(),
-        activeNow: todayData.hourlyVisits?.[currentHour] || 0,
+        activeNow: activeNow || 0,
         today: {
           visits: todayData.totalVisits,
           uniqueVisitors: todayData.uniqueVisitors?.length || 0,
@@ -947,9 +962,28 @@ router.post('/track', (req, res) => {
       } else {
         todayRecord.devices.desktop++;
       }
+
+      // Browser detection
+      let browser = 'Other';
+      if (ua.includes('edg/')) browser = 'Edge';
+      else if (ua.includes('chrome')) browser = 'Chrome';
+      else if (ua.includes('firefox')) browser = 'Firefox';
+      else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+      else if (ua.includes('opr/') || ua.includes('opera')) browser = 'Opera';
+      todayRecord.browsers[browser] = (todayRecord.browsers[browser] || 0) + 1;
       
       if (referrer) {
-        todayRecord.referrers[referrer] = (todayRecord.referrers[referrer] || 0) + 1;
+        let source = 'Direct';
+        try {
+          const refUrl = new URL(referrer);
+          source = refUrl.hostname.replace('www.', '');
+          if (source === req.hostname) source = 'Internal';
+        } catch (e) {
+          source = referrer || 'Direct';
+        }
+        todayRecord.referrers[source] = (todayRecord.referrers[source] || 0) + 1;
+      } else {
+        todayRecord.referrers['Direct'] = (todayRecord.referrers['Direct'] || 0) + 1;
       }
       
       saveTrafficData(traffic);

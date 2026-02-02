@@ -281,7 +281,8 @@ app.locals.apiCache = apiCache;
 // DISABLED for truly real-time updates as per user request
 // app.use('/api/products', cacheMiddleware(30000, 10000)); 
 // app.use('/api/slides', cacheMiddleware(60000, 30000)); 
-app.use('/api/seo', cacheMiddleware(300000, 60000)); // 5min cache for SEO data
+// DISABLED: Users want real-time SEO data
+// app.use('/api/seo', cacheMiddleware(300000, 60000)); 
 
 // ============ CORS CONFIGURATION ============
 // Dynamic CORS configuration to handle production same-origin and dev environments
@@ -393,42 +394,6 @@ app.use(cookieParser(process.env.COOKIE_SECRET || 'blackonn_cookie_secret_2025')
 
 // Input sanitization
 app.use(sanitizationMiddleware);
-
-// ============ AI-FRIENDLY API ENHANCEMENTS ============
-// Add comprehensive metadata to all API responses for AI consumption
-app.use((req, res, next) => {
-  const originalJson = res.json.bind(res);
-  res.json = (data) => {
-    // Only enhance API responses
-    if (req.path.startsWith('/api/')) {
-      const enhanced = {
-        ...data,
-        _metadata: {
-          timestamp: new Date().toISOString(),
-          endpoint: req.path,
-          method: req.method,
-          version: 'v1',
-          requestId: req.id || Math.random().toString(36).substr(2, 9),
-          processingTime: Date.now() - (req._startTime || Date.now()),
-          ai: {
-            friendly: true,
-            structured: true,
-            machineReadable: true,
-            semantic: true
-          }
-        },
-        _links: {
-          self: req.originalUrl,
-          documentation: '/api/docs'
-        }
-      };
-      return originalJson(enhanced);
-    }
-    return originalJson(data);
-  };
-  req._startTime = Date.now();
-  next();
-});
 
 // Advanced request logging for AI analysis
 app.use((req, res, next) => {
@@ -954,8 +919,10 @@ const asyncHandler = (fn) => (req, res, next) => {
 // Global error handler
 app.use((err, req, res, next) => {
   // Log error securely
-  console.error('Server Error:', {
+  const logger = require('./utils/logger');
+  logger.error('Global Server Error:', {
     message: err.message,
+    stack: err.stack,
     path: req.path,
     method: req.method,
     timestamp: new Date().toISOString()

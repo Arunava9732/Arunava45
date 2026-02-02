@@ -20,9 +20,13 @@ class NeuralCommerce {
   }
 
   init() {
-    console.log('[Neural Commerce] Initializing real-time intent prediction...');
     this.setupTracking();
     this.loadState();
+    
+    // Refresh stats if in admin
+    if (typeof updateNeuralStats === 'function') {
+      updateNeuralStats();
+    }
     
     // Initial prediction after 10 seconds of activity
     setTimeout(() => this.predictIntent(), 10000);
@@ -96,7 +100,6 @@ class NeuralCommerce {
       const data = await response.json();
       if (data.success) {
         this.prediction = data.prediction;
-        console.log('[Neural Commerce] Predicted Intent:', this.prediction.intent, `(${Math.round(this.prediction.confidence * 100)}%)`);
         this.applyTactics(this.prediction);
       }
     } catch (error) {

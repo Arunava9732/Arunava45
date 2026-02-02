@@ -994,11 +994,11 @@ class BlackonnAgent:
         # 2. Repair JSON databases
         db_defaults = {
             "users.json": [],
-            "products.json": [{"id": "prod-001", "name": "Sample Product", "price": 999}],
+            "products.json": [],
             "orders.json": [],
             "carts.json": {},
             "sessions.json": {},
-            "slides.json": [{"id": "slide-001", "type": "video", "src": "BG_VIDEO.mp4"}],
+            "slides.json": [],
             "wishlists.json": {},
             "contacts.json": [],
             "adminSettings.json": {"siteName": "BLACKONN", "maintenance": False}
@@ -1107,9 +1107,9 @@ class BlackonnAgent:
             errors = agent.scan()
             fixes = []
             for error in errors[:5]:
-                fix = agent.fix(error)
-                if fix:
-                    fixes.append(asdict(fix))
+                applied_fix = agent.fix(error)
+                if applied_fix:
+                    fixes.append(asdict(applied_fix))
             return jsonify({'fixes_applied': len(fixes), 'fixes': fixes})
         
         @app.route('/agent/rebuild', methods=['POST'])

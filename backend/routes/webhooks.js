@@ -5,19 +5,22 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('../utils/database');
+const { Database } = require('../utils/database');
 const logger = require('../utils/logger');
 
-// Registered webhook URLs (in-memory for demo, use DB in production)
-const webhookUrls = [
-  // 'https://your-service.com/webhook-endpoint'
-];
+// Registered webhook URLs (loaded from database)
+const webhookDb = new Database('webhooks');
 
 const fetch = require('node-fetch');
 
 // Helper to send webhook
 async function sendOrderWebhook(event, order) {
-  for (const url of webhookUrls) {
+  const webhookUrls = await webhookDb.findAll();
+  
+  for (const webhook of webhookUrls) {
+    const url = typeof webhook === 'string' ? webhook : webhook.url;
+    if (!url) continue;
+    
     try {
       await fetch(url, {
         method: 'POST',

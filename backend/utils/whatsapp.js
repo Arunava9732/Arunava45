@@ -4,7 +4,7 @@ const logger = require('./logger');
 // Configuration
 const ADMIN_PHONE_NUMBERS = process.env.ADMIN_PHONES ? 
   process.env.ADMIN_PHONES.split(',') : 
-  ['919732726750', '918670328717'];
+  []; // Empty by default for security
 
 // WhatsApp Provider Configuration
 // Options: 'meta', 'msg91', 'both' (try meta first, fallback to msg91)
@@ -87,12 +87,13 @@ const sendViaMeta = async (to, messageData) => {
  */
 const sendWhatsAppMessage = async (to, messageData) => {
   try {
-    // If no configuration is found, just log it (Development mode)
+    // If no configuration is found, log it for debugging
     if (!isMetaConfigured && !isMSG91Configured) {
-      logger.info(`📱 [WhatsApp Mock] No provider configured. To: ${to}`);
-      logger.info(`   Message:`, messageData);
-      logger.info(`   To enable: Set WHATSAPP_TOKEN + WHATSAPP_PHONE_NUMBER_ID (Meta) or MSG91_AUTH_KEY + MSG91_WHATSAPP_SENDER (MSG91)`);
-      return { success: true, mock: true };
+      if (process.env.NODE_ENV === 'development') {
+        logger.info(`📱 [WhatsApp Debug] No provider configured. To: ${to}`);
+        logger.debug(`   Message:`, messageData);
+      }
+      return { success: false, error: 'WhatsApp provider not configured' };
     }
 
     const provider = WHATSAPP_PROVIDER.toLowerCase();

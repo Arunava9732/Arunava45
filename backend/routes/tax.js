@@ -6,9 +6,11 @@
 
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
+const db = require('../utils/database');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
@@ -21,117 +23,128 @@ router.use(aiPerformanceMonitor(500));
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const TAX_FILE = path.join(DATA_DIR, 'tax.json');
 
+// Default Data Schema
+const defaultData = {
+  settings: {
+    gstEnabled: true,
+    gstNumber: '',
+    businessName: 'Blackonn',
+    businessAddress: '',
+    stateCode: '19', // West Bengal default
+    inclusiveGst: true, // Prices include GST
+    showGstOnInvoice: true,
+    invoiceEnabled: true,
+    // Invoice customization settings
+    invoicePrefix: 'INV',
+    invoiceStartNumber: 1,
+    lastInvoiceNumber: 0,
+    invoiceLogo: '/assets/img/logo.png',
+    invoiceFooter: 'Thank you for shopping with Blackonn! For any queries, contact support@blackonn.com',
+    invoiceTerms: 'All products are subject to our return policy. Returns accepted within 7 days of delivery.',
+    invoiceSignature: 'Authorized Signatory',
+    bankDetails: {
+      bankName: '',
+      accountNumber: '',
+      ifscCode: '',
+      accountHolder: ''
+    },
+    // Digital Signature Electronic (DSE) Settings
+    dseEnabled: true,
+    dseSignerName: '',
+    dseSignerDesignation: 'Authorized Signatory',
+    dseSignerPAN: '',
+    dseOrganization: 'BLACKONN',
+    dseLocation: '',
+    dseReason: 'Invoice Authentication',
+    dseSecretKey: '' // Will be auto-generated
+  },
+  // Indian GST slab rates for fashion/apparel
+  taxSlabs: [
+    {
+      id: 'slab-1',
+      name: 'Lower Slab (Under ₹1000)',
+      hsnCode: '6109', // T-shirts, singlets and other vests
+      minPrice: 0,
+      maxPrice: 999.99,
+      cgstRate: 2.5,
+      sgstRate: 2.5,
+      igstRate: 5,
+      description: 'Apparel priced below ₹1000',
+      active: true
+    },
+    {
+      id: 'slab-2',
+      name: 'Higher Slab (₹1000 and above)',
+      hsnCode: '6109',
+      minPrice: 1000,
+      maxPrice: 999999999,
+      cgstRate: 6,
+      sgstRate: 6,
+      igstRate: 12,
+      description: 'Apparel priced ₹1000 and above',
+      active: true
+    }
+  ],
+  // HSN codes for different product categories
+  hsnCodes: [
+    { code: '6109', description: 'T-shirts, singlets and other vests, knitted or crocheted', category: 'T-Shirts' },
+    { code: '6105', description: 'Men\'s or boys\' shirts, knitted or crocheted', category: 'Shirts' },
+    { code: '6106', description: 'Women\'s or girls\' blouses, shirts, knitted or crocheted', category: 'Blouses' },
+    { code: '6203', description: 'Men\'s or boys\' suits, ensembles, jackets, trousers', category: 'Pants' },
+    { code: '6204', description: 'Women\'s or girls\' suits, ensembles, jackets, dresses, skirts', category: 'Dresses' },
+    { code: '6110', description: 'Jerseys, pullovers, cardigans, waistcoats, knitted or crocheted', category: 'Sweaters' },
+    { code: '6115', description: 'Pantyhose, tights, stockings, socks, hosiery', category: 'Socks' },
+    { code: '6211', description: 'Track suits, ski suits, swimwear, other garments', category: 'Activewear' }
+  ],
+  // State codes for GST
+  stateCodes: [
+    { code: '01', name: 'Jammu & Kashmir' },
+    { code: '02', name: 'Himachal Pradesh' },
+    { code: '03', name: 'Punjab' },
+    { code: '04', name: 'Chandigarh' },
+    { code: '05', name: 'Uttarakhand' },
+    { code: '06', name: 'Haryana' },
+    { code: '07', name: 'Delhi' },
+    { code: '08', name: 'Rajasthan' },
+    { code: '09', name: 'Uttar Pradesh' },
+    { code: '10', name: 'Bihar' },
+    { code: '11', name: 'Sikkim' },
+    { code: '12', name: 'Arunachal Pradesh' },
+    { code: '13', name: 'Nagaland' },
+    { code: '14', name: 'Manipur' },
+    { code: '15', name: 'Mizoram' },
+    { code: '16', name: 'Tripura' },
+    { code: '17', name: 'Meghalaya' },
+    { code: '18', name: 'Assam' },
+    { code: '19', name: 'West Bengal' },
+    { code: '20', name: 'Jharkhand' },
+    { code: '21', name: 'Odisha' },
+    { code: '22', name: 'Chhattisgarh' },
+    { code: '23', name: 'Madhya Pradesh' },
+    { code: '24', name: 'Gujarat' },
+    { code: '26', name: 'Dadra and Nagar Haveli and Daman & Diu' },
+    { code: '27', name: 'Maharashtra' },
+    { code: '28', name: 'Andhra Pradesh (Old)' },
+    { code: '29', name: 'Karnataka' },
+    { code: '30', name: 'Goa' },
+    { code: '31', name: 'Lakshadweep' },
+    { code: '32', name: 'Kerala' },
+    { code: '33', name: 'Tamil Nadu' },
+    { code: '34', name: 'Puducherry' },
+    { code: '35', name: 'Andaman and Nicobar Islands' },
+    { code: '36', name: 'Telangana' },
+    { code: '37', name: 'Andhra Pradesh (New)' },
+    { code: '38', name: 'Ladakh' }
+  ],
+  invoices: []
+};
+
 // Ensure data file exists
 function ensureDataFile() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   if (!fs.existsSync(TAX_FILE)) {
-    const defaultData = {
-      settings: {
-        gstEnabled: true,
-        gstNumber: '',
-        businessName: 'Blackonn',
-        businessAddress: '',
-        stateCode: '19', // West Bengal default
-        inclusiveGst: true, // Prices include GST
-        showGstOnInvoice: true,
-        invoiceEnabled: true,
-        // Invoice customization settings
-        invoicePrefix: 'INV',
-        invoiceStartNumber: 1,
-        lastInvoiceNumber: 0,
-        invoiceLogo: '/assets/img/logo.png',
-        invoiceFooter: 'Thank you for shopping with Blackonn! For any queries, contact support@blackonn.com',
-        invoiceTerms: 'All products are subject to our return policy. Returns accepted within 7 days of delivery.',
-        invoiceSignature: 'Authorized Signatory',
-        bankDetails: {
-          bankName: '',
-          accountNumber: '',
-          ifscCode: '',
-          accountHolder: ''
-        }
-      },
-      // Indian GST slab rates for fashion/apparel
-      taxSlabs: [
-        {
-          id: 'slab-1',
-          name: 'Lower Slab (Under ₹1000)',
-          hsnCode: '6109', // T-shirts, singlets and other vests
-          minPrice: 0,
-          maxPrice: 999.99,
-          cgstRate: 2.5,
-          sgstRate: 2.5,
-          igstRate: 5,
-          description: 'Apparel priced below ₹1000',
-          active: true
-        },
-        {
-          id: 'slab-2',
-          name: 'Higher Slab (₹1000 and above)',
-          hsnCode: '6109',
-          minPrice: 1000,
-          maxPrice: 999999999,
-          cgstRate: 6,
-          sgstRate: 6,
-          igstRate: 12,
-          description: 'Apparel priced ₹1000 and above',
-          active: true
-        }
-      ],
-      // HSN codes for different product categories
-      hsnCodes: [
-        { code: '6109', description: 'T-shirts, singlets and other vests, knitted or crocheted', category: 'T-Shirts' },
-        { code: '6105', description: 'Men\'s or boys\' shirts, knitted or crocheted', category: 'Shirts' },
-        { code: '6106', description: 'Women\'s or girls\' blouses, shirts, knitted or crocheted', category: 'Blouses' },
-        { code: '6203', description: 'Men\'s or boys\' suits, ensembles, jackets, trousers', category: 'Pants' },
-        { code: '6204', description: 'Women\'s or girls\' suits, ensembles, jackets, dresses, skirts', category: 'Dresses' },
-        { code: '6110', description: 'Jerseys, pullovers, cardigans, waistcoats, knitted or crocheted', category: 'Sweaters' },
-        { code: '6115', description: 'Pantyhose, tights, stockings, socks, hosiery', category: 'Socks' },
-        { code: '6211', description: 'Track suits, ski suits, swimwear, other garments', category: 'Activewear' }
-      ],
-      // State codes for GST
-      stateCodes: [
-        { code: '01', name: 'Jammu & Kashmir' },
-        { code: '02', name: 'Himachal Pradesh' },
-        { code: '03', name: 'Punjab' },
-        { code: '04', name: 'Chandigarh' },
-        { code: '05', name: 'Uttarakhand' },
-        { code: '06', name: 'Haryana' },
-        { code: '07', name: 'Delhi' },
-        { code: '08', name: 'Rajasthan' },
-        { code: '09', name: 'Uttar Pradesh' },
-        { code: '10', name: 'Bihar' },
-        { code: '11', name: 'Sikkim' },
-        { code: '12', name: 'Arunachal Pradesh' },
-        { code: '13', name: 'Nagaland' },
-        { code: '14', name: 'Manipur' },
-        { code: '15', name: 'Mizoram' },
-        { code: '16', name: 'Tripura' },
-        { code: '17', name: 'Meghalaya' },
-        { code: '18', name: 'Assam' },
-        { code: '19', name: 'West Bengal' },
-        { code: '20', name: 'Jharkhand' },
-        { code: '21', name: 'Odisha' },
-        { code: '22', name: 'Chhattisgarh' },
-        { code: '23', name: 'Madhya Pradesh' },
-        { code: '24', name: 'Gujarat' },
-        { code: '26', name: 'Dadra and Nagar Haveli and Daman & Diu' },
-        { code: '27', name: 'Maharashtra' },
-        { code: '28', name: 'Andhra Pradesh (Old)' },
-        { code: '29', name: 'Karnataka' },
-        { code: '30', name: 'Goa' },
-        { code: '31', name: 'Lakshadweep' },
-        { code: '32', name: 'Kerala' },
-        { code: '33', name: 'Tamil Nadu' },
-        { code: '34', name: 'Puducherry' },
-        { code: '35', name: 'Andaman and Nicobar Islands' },
-        { code: '36', name: 'Telangana' },
-        { code: '37', name: 'Andhra Pradesh (New)' },
-        { code: '38', name: 'Ladakh' }
-      ],
-      invoices: []
-    };
     fs.writeFileSync(TAX_FILE, JSON.stringify(defaultData, null, 2));
   }
 }
@@ -139,16 +152,113 @@ function ensureDataFile() {
 function readData() {
   ensureDataFile();
   try {
-    return JSON.parse(fs.readFileSync(TAX_FILE, 'utf8'));
+    const content = fs.readFileSync(TAX_FILE, 'utf8');
+    const data = content ? JSON.parse(content) : {};
+    
+    // Ensure all required fields exist by merging with defaultData
+    return {
+      ...defaultData,
+      ...data,
+      settings: { ...defaultData.settings, ...(data.settings || {}) }
+    };
   } catch (e) {
     console.error('Error reading tax data:', e);
-    return { settings: {}, taxSlabs: [], hsnCodes: [], stateCodes: [], invoices: [] };
+    return { ...defaultData };
   }
 }
 
 function writeData(data) {
   ensureDataFile();
   fs.writeFileSync(TAX_FILE, JSON.stringify(data, null, 2));
+}
+
+// ===============================
+// DIGITAL SIGNATURE ELECTRONIC (DSE) FUNCTIONS
+// ===============================
+
+// Generate or get DSE secret key
+function getDSESecretKey(settings) {
+  if (!settings.dseSecretKey) {
+    // Generate a new secret key for this business
+    settings.dseSecretKey = crypto.randomBytes(32).toString('hex');
+  }
+  return settings.dseSecretKey;
+}
+
+// Generate digital signature hash for invoice
+function generateDSESignature(invoice, settings) {
+  const secretKey = getDSESecretKey(settings);
+  const timestamp = new Date().toISOString();
+  
+  // Create a canonical string of invoice data to sign
+  const dataToSign = [
+    invoice.invoiceNumber,
+    invoice.orderId,
+    invoice.total || invoice.grandTotal,
+    invoice.customerName,
+    invoice.businessName || settings.businessName,
+    settings.gstNumber,
+    timestamp
+  ].join('|');
+  
+  // Create HMAC-SHA256 signature
+  const signature = crypto
+    .createHmac('sha256', secretKey)
+    .update(dataToSign)
+    .digest('hex');
+  
+  // Create verification code (shortened)
+  const verificationCode = signature.substring(0, 16).toUpperCase();
+  
+  return {
+    signedAt: timestamp,
+    signedBy: settings.dseSignerName || settings.businessName || 'BLACKONN',
+    designation: settings.dseSignerDesignation || 'Authorized Signatory',
+    organization: settings.dseOrganization || settings.businessName || 'BLACKONN',
+    location: settings.dseLocation || '',
+    reason: settings.dseReason || 'Invoice Authentication',
+    signatureHash: signature,
+    verificationCode: verificationCode,
+    algorithm: 'HMAC-SHA256',
+    certificateId: `DSE-${settings.gstNumber || 'BLKN'}-${Date.now().toString(36).toUpperCase()}`,
+    isValid: true
+  };
+}
+
+// Verify DSE signature
+function verifyDSESignature(invoice, settings) {
+  if (!invoice.dseSignature || !invoice.dseSignature.signatureHash) {
+    return { valid: false, error: 'No digital signature found' };
+  }
+  
+  const secretKey = getDSESecretKey(settings);
+  
+  // Recreate the data string
+  const dataToSign = [
+    invoice.invoiceNumber,
+    invoice.orderId,
+    invoice.total || invoice.grandTotal,
+    invoice.customerName,
+    invoice.businessName || settings.businessName,
+    settings.gstNumber,
+    invoice.dseSignature.signedAt
+  ].join('|');
+  
+  // Recalculate signature
+  const expectedSignature = crypto
+    .createHmac('sha256', secretKey)
+    .update(dataToSign)
+    .digest('hex');
+  
+  const isValid = expectedSignature === invoice.dseSignature.signatureHash;
+  
+  return {
+    valid: isValid,
+    signedAt: invoice.dseSignature.signedAt,
+    signedBy: invoice.dseSignature.signedBy,
+    verificationCode: invoice.dseSignature.verificationCode,
+    certificateId: invoice.dseSignature.certificateId
+  };
 }
 
 // ===============================
@@ -621,7 +731,7 @@ function generateLegacyInvoiceNumber(stateCode) {
 router.post('/invoice', authenticate, requireAdmin, (req, res) => {
   try {
     const data = readData();
-    const { orderId, items, customerName, customerGstin, customerAddress, customerState, shippingCharges } = req.body;
+    const { orderId, items, customerName, customerGstin, customerAddress, customerState, shippingCharges, discount, promoCode } = req.body;
     
     if (!orderId || !items || !items.length) {
       return res.status(400).json({ success: false, error: 'Order ID and items are required' });
@@ -701,11 +811,13 @@ router.post('/invoice', authenticate, requireAdmin, (req, res) => {
       items: invoiceItems,
       subtotal: Math.round(subtotal * 100) / 100,
       shippingCharges: shipping,
+      discount: parseFloat(discount) || 0,
+      promoCode: promoCode || null,
       cgst: Math.round(totalCgst * 100) / 100,
       sgst: Math.round(totalSgst * 100) / 100,
       igst: Math.round(totalIgst * 100) / 100,
       totalTax: Math.round(totalTax * 100) / 100,
-      grandTotal: Math.round((subtotal + totalTax + shipping) * 100) / 100,
+      grandTotal: Math.round((subtotal + totalTax + shipping - (parseFloat(discount) || 0)) * 100) / 100,
       createdAt: new Date().toISOString()
     };
     
@@ -764,12 +876,12 @@ router.get('/gst-report', authenticate, requireAdmin, (req, res) => {
     
     const report = {
       totalInvoices: invoices.length,
-      totalSales: invoices.reduce((sum, i) => sum + i.grandTotal, 0),
-      totalTaxable: invoices.reduce((sum, i) => sum + i.subtotal, 0),
-      totalCgst: invoices.reduce((sum, i) => sum + i.cgst, 0),
-      totalSgst: invoices.reduce((sum, i) => sum + i.sgst, 0),
-      totalIgst: invoices.reduce((sum, i) => sum + i.igst, 0),
-      totalGst: invoices.reduce((sum, i) => sum + i.totalTax, 0),
+      totalSales: invoices.reduce((sum, i) => sum + (i.total || i.grandTotal || 0), 0),
+      totalTaxable: invoices.reduce((sum, i) => sum + (i.subtotal || 0), 0),
+      totalCgst: invoices.reduce((sum, i) => sum + (i.cgst || 0), 0),
+      totalSgst: invoices.reduce((sum, i) => sum + (i.sgst || 0), 0),
+      totalIgst: invoices.reduce((sum, i) => sum + (i.igst || 0), 0),
+      totalGst: invoices.reduce((sum, i) => sum + (i.totalTax || 0), 0),
       intrastate: invoices.filter(i => !i.isInterstate).length,
       interstate: invoices.filter(i => i.isInterstate).length
     };
@@ -792,23 +904,73 @@ router.get('/gst-report', authenticate, requireAdmin, (req, res) => {
 router.get('/feature-visibility', (req, res) => {
   try {
     const data = readData();
-    // Return exact boolean value - false if explicitly set to false, true otherwise
-    // This ensures the toggle in admin properly controls the profile page
-    const invoiceEnabled = data.settings.invoiceEnabled === false ? false : true;
-    const gstEnabled = data.settings.gstEnabled === false ? false : true;
+    // Return exact boolean value - strict check for false
+    const invoiceEnabled = data.settings && data.settings.invoiceEnabled !== false;
+    const gstEnabled = data.settings && data.settings.gstEnabled !== false;
+    const dseEnabled = data.settings && data.settings.dseEnabled !== false;
     
-    console.log('[Tax] Feature visibility - invoiceEnabled:', invoiceEnabled, 'raw value:', data.settings.invoiceEnabled);
+    console.log('[Tax] Feature visibility check - invoiceEnabled:', invoiceEnabled);
     
     res.json({
       success: true,
       features: {
         invoiceEnabled: invoiceEnabled,
-        gstEnabled: gstEnabled
+        gstEnabled: gstEnabled,
+        dseEnabled: dseEnabled
       }
     });
   } catch (error) {
     console.error('Feature visibility error:', error);
-    res.json({ success: true, features: { invoiceEnabled: true, gstEnabled: true } });
+    // Explicitly default to false on error to be safe
+    res.json({ success: true, features: { invoiceEnabled: false, gstEnabled: true } });
+  }
+});
+
+// Verify DSE signature for an invoice
+router.get('/verify-dse/:invoiceNumber', (req, res) => {
+  try {
+    const { invoiceNumber } = req.params;
+    const data = readData();
+    
+    // Find invoice
+    const invoice = (data.invoices || []).find(i => i.invoiceNumber === invoiceNumber);
+    
+    if (!invoice) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Invoice not found',
+        verified: false
+      });
+    }
+    
+    if (!invoice.dseSignature) {
+      return res.json({ 
+        success: true, 
+        verified: false,
+        message: 'This invoice does not have a digital signature'
+      });
+    }
+    
+    // Verify the signature
+    const verification = verifyDSESignature(invoice, data.settings);
+    
+    res.json({
+      success: true,
+      verified: verification.valid,
+      invoiceNumber: invoice.invoiceNumber,
+      signedAt: verification.signedAt,
+      signedBy: verification.signedBy,
+      verificationCode: verification.verificationCode,
+      certificateId: verification.certificateId,
+      organization: invoice.dseSignature.organization,
+      algorithm: invoice.dseSignature.algorithm,
+      message: verification.valid 
+        ? 'Digital signature verified successfully. This is an authentic invoice.'
+        : 'Digital signature verification failed. This invoice may have been tampered with.'
+    });
+  } catch (error) {
+    console.error('DSE verification error:', error);
+    res.status(500).json({ success: false, error: 'Verification failed', verified: false });
   }
 });
 
@@ -830,7 +992,7 @@ router.get('/invoice-settings', authenticate, requireAdmin, (req, res) => {
     res.json({
       success: true,
       settings: {
-        invoiceEnabled: data.settings.invoiceEnabled === true,
+        invoiceEnabled: data.settings.invoiceEnabled !== false,
         invoicePrefix: data.settings.invoicePrefix || 'INV',
         invoiceStartNumber: data.settings.invoiceStartNumber || 1,
         lastInvoiceNumber: data.settings.lastInvoiceNumber || 0,
@@ -838,8 +1000,17 @@ router.get('/invoice-settings', authenticate, requireAdmin, (req, res) => {
         invoiceFooter: data.settings.invoiceFooter || '',
         invoiceTerms: data.settings.invoiceTerms || '',
         invoiceSignature: data.settings.invoiceSignature || '',
+        signatureImage: data.settings.signatureImage || '',
         businessPan: data.settings.businessPan || '',
-        bankDetails: data.settings.bankDetails || {}
+        bankDetails: data.settings.bankDetails || {},
+        // DSE Settings
+        dseEnabled: data.settings.dseEnabled !== false,
+        dseSignerName: data.settings.dseSignerName || '',
+        dseSignerDesignation: data.settings.dseSignerDesignation || 'Authorized Signatory',
+        dseSignerPAN: data.settings.dseSignerPAN || '',
+        dseOrganization: data.settings.dseOrganization || data.settings.businessName || 'BLACKONN',
+        dseLocation: data.settings.dseLocation || '',
+        dseReason: data.settings.dseReason || 'Invoice Authentication'
       }
     });
   } catch (error) {
@@ -864,6 +1035,20 @@ router.patch('/invoice-settings', authenticate, requireAdmin, (req, res) => {
     if (businessPan !== undefined) data.settings.businessPan = businessPan;
     if (bankDetails !== undefined) data.settings.bankDetails = bankDetails;
     
+    // Handle signatureImage
+    const { signatureImage } = req.body;
+    if (signatureImage !== undefined) data.settings.signatureImage = signatureImage;
+    
+    // Handle DSE Settings
+    const { dseEnabled, dseSignerName, dseSignerDesignation, dseSignerPAN, dseOrganization, dseLocation, dseReason } = req.body;
+    if (typeof dseEnabled === 'boolean') data.settings.dseEnabled = dseEnabled;
+    if (dseSignerName !== undefined) data.settings.dseSignerName = dseSignerName;
+    if (dseSignerDesignation !== undefined) data.settings.dseSignerDesignation = dseSignerDesignation;
+    if (dseSignerPAN !== undefined) data.settings.dseSignerPAN = dseSignerPAN;
+    if (dseOrganization !== undefined) data.settings.dseOrganization = dseOrganization;
+    if (dseLocation !== undefined) data.settings.dseLocation = dseLocation;
+    if (dseReason !== undefined) data.settings.dseReason = dseReason;
+    
     writeData(data);
     res.json({ success: true, settings: data.settings });
   } catch (error) {
@@ -883,14 +1068,8 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
       return res.status(403).json({ success: false, error: 'Invoice download is disabled' });
     }
     
-    // Get order details from orders file
-    const ordersPath = path.join(DATA_DIR, 'orders.json');
-    let orders = [];
-    if (fs.existsSync(ordersPath)) {
-      orders = JSON.parse(fs.readFileSync(ordersPath, 'utf8'));
-    }
-    
-    const order = orders.find(o => o.id === orderId);
+    // Get order details from DB
+    const order = db.orders.findById(orderId);
     if (!order) {
       return res.status(404).json({ success: false, error: 'Order not found' });
     }
@@ -898,43 +1077,72 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
     // Check if invoice already exists for this order
     let invoice = (data.invoices || []).find(i => i.orderId === orderId);
     
-    if (!invoice) {
+    // Always refresh if the order exists to ensure logic fixes apply
+    if (!invoice || order) {
+      if (invoice) {
+        data.invoices = data.invoices.filter(i => i.orderId !== orderId);
+      }
+
       // Generate new invoice
-      const invoiceNumber = generateInvoiceNumber(data.settings);
+      const invoiceNumber = invoice ? invoice.invoiceNumber : generateInvoiceNumber(data.settings);
       
       // Calculate tax breakdown
       const items = order.items || [];
-      let subtotal = 0;
+      let subtotalExclusive = 0;
+      let subtotalInclusive = 0;
       let totalCgst = 0;
       let totalSgst = 0;
       let totalIgst = 0;
       
-      const isInterstate = order.shippingAddress?.stateCode !== data.settings.stateCode;
+      // Use shippingInfo from order with fallback to top-level fields
+      const shippingInfo = order.shippingInfo || order.shippingAddress || {};
+      const customerShipping = {
+        name: shippingInfo.name || order.userName || order.customerName || 'Customer',
+        address: shippingInfo.address || order.address || order.street || '',
+        city: shippingInfo.city || order.city || '',
+        state: shippingInfo.state || order.state || '',
+        pincode: shippingInfo.pincode || order.pincode || order.zip || '',
+        phone: shippingInfo.phone || order.phone || ''
+      };
+      
+      // Find state code from state name if not provided (CRITICAL for address fetching & tax)
+      let customerStateCode = shippingInfo.stateCode || order.stateCode;
+      if (!customerStateCode && customerShipping.state) {
+        const stateObj = (data.stateCodes || []).find(s => 
+          s.name.toLowerCase() === customerShipping.state.toLowerCase()
+        );
+        if (stateObj) customerStateCode = stateObj.code;
+      }
+
+      const isInterstate = customerStateCode ? (customerStateCode !== data.settings.stateCode) : false;
       
       const itemsWithTax = items.map(item => {
         const price = item.price || 0;
         const qty = item.quantity || 1;
         const lineTotal = price * qty;
-        subtotal += lineTotal;
         
         // Find applicable tax slab
         const slab = (data.taxSlabs || []).find(s => 
           s.active && price >= s.minPrice && price <= s.maxPrice
-        ) || { cgstRate: 2.5, sgstRate: 2.5, igstRate: 5 };
+        ) || { cgstRate: 2.5, sgstRate: 2.5, igstRate: 5, hsnCode: '6109' };
         
         let cgst = 0, sgst = 0, igst = 0;
+        let baseLinePrice = lineTotal;
+
         if (data.settings.inclusiveGst) {
           // Price includes GST, calculate backward correctly using total rate
           const totalRate = isInterstate ? slab.igstRate : (slab.cgstRate + slab.sgstRate);
           const totalTax = lineTotal - (lineTotal / (1 + totalRate / 100));
+          baseLinePrice = lineTotal - totalTax;
           
           if (isInterstate) {
             igst = totalTax;
           } else {
-            // Split total tax into CGST and SGST (50/50 for intrastate)
             cgst = totalTax / 2;
             sgst = totalTax / 2;
           }
+          subtotalInclusive += lineTotal;
+          subtotalExclusive += baseLinePrice;
         } else {
           // Price excludes GST
           if (isInterstate) {
@@ -943,6 +1151,9 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
             cgst = lineTotal * (slab.cgstRate / 100);
             sgst = lineTotal * (slab.sgstRate / 100);
           }
+          baseLinePrice = lineTotal;
+          subtotalExclusive += lineTotal;
+          subtotalInclusive += lineTotal + (isInterstate ? igst : (cgst + sgst));
         }
         
         totalCgst += cgst;
@@ -951,82 +1162,108 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
         
         return {
           ...item,
-          lineTotal,
+          lineTotal: Math.round(lineTotal * 100) / 100,
           cgst: Math.round(cgst * 100) / 100,
           sgst: Math.round(sgst * 100) / 100,
           igst: Math.round(igst * 100) / 100,
-          hsnCode: slab.hsnCode || '6109',
-          taxRate: isInterstate ? slab.igstRate : (slab.cgstRate + slab.sgstRate)
+          hsnCode: item.hsnCode || slab.hsnCode || '6109',
+          taxRate: isInterstate ? slab.igstRate : (slab.cgstRate + slab.sgstRate),
+          unitPrice: Math.round((baseLinePrice / qty) * 100) / 100
         };
       });
       
-        // Calculate final total based on whether GST is inclusive
-        const taxTotal = isInterstate ? totalIgst : (totalCgst + totalSgst);
-        const shipping = order.shippingCharge || order.shipping || 0;
-        const discount = order.discount || 0;
-        
-        // Sum it up correctly
-        let calculatedTotal = subtotal + shipping - discount;
-        if (!data.settings.inclusiveGst) {
-          calculatedTotal += taxTotal;
-        }
+      const taxTotal = isInterstate ? totalIgst : (totalCgst + totalSgst);
+      const shipping = order.shippingCharge || order.shipping || 0;
+      
+      // Handle various naming conventions for discount and coupons
+      const discount = order.discount || order.discountAmount || order.promoDiscount || order.deductedAmount || 0;
+      const promoCode = order.promoCode || order.couponCode || null;
+      
+      const finalGrandTotal = subtotalInclusive + shipping - discount;
 
-        invoice = {
-          id: uuidv4(),
-          invoiceNumber,
-          orderId,
-          orderNumber: order.orderNumber || orderId,
-          createdAt: new Date().toISOString(),
-          
-          // Business details
-          businessName: data.settings.businessName || 'Blackonn',
-          businessAddress: data.settings.businessAddress || '',
-          gstNumber: data.settings.gstNumber || '',
-          businessPan: data.settings.businessPan || '',
-          invoiceLogo: data.settings.invoiceLogo || '/assets/img/logo.png',
-          businessStateCode: data.settings.stateCode || '27',
-          
-          // Customer details
-          customerName: order.shippingAddress?.name || order.customerName || 'Customer',
-          customerEmail: order.email || order.customerEmail || '',
-          customerPhone: order.shippingAddress?.phone || order.phone || '',
-          
-          // Shipping address
-          shippingAddress: order.shippingAddress || {},
-          billingAddress: order.billingAddress || order.shippingAddress || {},
-          
-          // Items with tax breakdown
-          items: itemsWithTax,
-          
-          // Amounts
-          subtotal: Math.round(subtotal * 100) / 100,
-          shippingCharge: shipping,
-          discount: discount,
-          cgst: Math.round(totalCgst * 100) / 100,
-          sgst: Math.round(totalSgst * 100) / 100,
-          igst: Math.round(totalIgst * 100) / 100,
-          total: order.total || order.amount || Math.round(calculatedTotal * 100) / 100,
-          
-          isInterstate,
+      invoice = {
+        id: uuidv4(),
+        invoiceNumber,
+        orderId,
+        orderNumber: order.orderNumber || order.id || orderId,
+        createdAt: invoice ? invoice.createdAt : (order.createdAt || new Date().toISOString()),
+        
+        // Business details
+        businessName: data.settings.businessName || 'Blackonn',
+        businessAddress: data.settings.businessAddress || '',
+        gstNumber: data.settings.gstNumber || '',
+        businessPan: data.settings.businessPan || '',
+        invoiceLogo: data.settings.invoiceLogo || '/assets/img/logo.png',
+        businessStateCode: data.settings.stateCode || '19',
+        
+        // Customer details
+        customerName: customerShipping.name,
+        customerEmail: order.userEmail || order.email || order.customerEmail || '',
+        customerPhone: customerShipping.phone,
+        
+        // Shipping address
+        shippingAddress: customerShipping,
+        billingAddress: order.billingAddress || customerShipping,
+        
+        // Items with tax breakdown
+        items: itemsWithTax,
+        
+        // Amounts
+        subtotal: Math.round(subtotalExclusive * 100) / 100,
+        shippingCharge: shipping,
+        discount: discount,
+        promoCode: promoCode,
+        promoType: order.promoType || null,
+        cgst: Math.round(totalCgst * 100) / 100,
+        sgst: Math.round(totalSgst * 100) / 100,
+        igst: Math.round(totalIgst * 100) / 100,
+        totalTax: Math.round(taxTotal * 100) / 100,
+        grandTotal: Math.round(finalGrandTotal * 100) / 100,
+        total: Math.round(finalGrandTotal * 100) / 100,
+        isInterstate,
+        
+        // Payment Details
+        paymentMethod: order.paymentMethod || 'manual',
+        paymentStatus: order.paymentStatus || 'Pending',
+        paymentDetails: order.paymentDetails || {},
+        razorpayPaymentMethod: order.razorpayPaymentMethod || null,
+        razorpayPaymentId: order.razorpayPaymentId || null,
         
         // Invoice customization
         footer: data.settings.invoiceFooter || '',
         terms: data.settings.invoiceTerms || '',
-        signature: data.settings.invoiceSignature || '',
+        signature: data.settings.invoiceSignature || 'Authorized Signatory',
+        signatureImage: data.settings.signatureImage || '',
         bankDetails: data.settings.bankDetails || {}
       };
       
-      // Save invoice and update last invoice number
+      // Generate Digital Signature Electronic (DSE) if enabled
+      if (data.settings.dseEnabled !== false) {
+        invoice.dseSignature = generateDSESignature(invoice, data.settings);
+        // Update secret key if newly generated
+        if (!data.settings.dseSecretKey) {
+          data.settings.dseSecretKey = getDSESecretKey(data.settings);
+        }
+      }
+      
+      // Update last invoice number ONLY if we generated a new number for this order
+      const exists = (data.invoices || []).some(i => i.orderId === orderId);
+      if (!exists) {
+        data.settings.lastInvoiceNumber = (data.settings.lastInvoiceNumber || 0) + 1;
+      }
+
+      // Save invoice
       if (!data.invoices) data.invoices = [];
       data.invoices.push(invoice);
-      data.settings.lastInvoiceNumber = (data.settings.lastInvoiceNumber || 0) + 1;
+      
       writeData(data);
     }
     
     res.json({ success: true, invoice, settings: {
       logo: data.settings.invoiceLogo || '/assets/img/logo.png',
       showGst: data.settings.showGstOnInvoice !== false,
-      businessPan: data.settings.businessPan || ''
+      businessPan: data.settings.businessPan || '',
+      dseEnabled: data.settings.dseEnabled !== false
     }});
   } catch (error) {
     console.error('Generate invoice error:', error);

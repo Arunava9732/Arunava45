@@ -24,6 +24,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
   <link rel="stylesheet" href="assets/css/styles.css">
   
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  
+  <!-- Core API & Auth -->
+  <script src="assets/js/api.js"></script>
+  <script>
+    // Immediate visibility check
+    (async () => {
+      try {
+        const res = await fetch('/api/settings/sections/visibility');
+        const data = await res.json();
+        if (data && data.success && data.sections && data.sections.giftCards === false) {
+          window.location.href = 'index.html';
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script src="assets/js/auth.js"></script>
+  
   <style>
     html, body { background: #eef3f8; }
     .nav { background: #eef3f8 !important; }
@@ -32,9 +51,9 @@
     
     /* Back Button */
     .back-button {
-      position: fixed;
-      top: 100px;
-      left: 24px;
+      position: absolute;
+      top: 140px;
+      left: 50px;
       z-index: 100;
       background: #fff;
       color: #0f172a;
@@ -130,121 +149,294 @@
     
     .gift-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
       margin-bottom: 60px;
+      perspective: 1000px;
     }
     
     .gift-card-item {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-      border-radius: 20px;
-      padding: 32px;
+      background: linear-gradient(145deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      border-radius: 24px;
+      padding: 28px 32px;
       color: #fff;
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.4s ease;
-      min-height: 200px;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      min-height: 220px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       animation: fadeInScale 0.6s ease-out backwards;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.08);
     }
     
-    .gift-card-item:nth-child(1) { animation-delay: 0.1s; }
-    .gift-card-item:nth-child(2) { animation-delay: 0.2s; }
-    .gift-card-item:nth-child(3) { animation-delay: 0.3s; }
-    .gift-card-item:nth-child(4) { animation-delay: 0.4s; }
+    /* Unique gradients for each card tier */
+    .gift-card-item:nth-child(1) { 
+      animation-delay: 0.1s;
+      background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    .gift-card-item:nth-child(2) { 
+      animation-delay: 0.2s;
+      background: linear-gradient(145deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
+    }
+    .gift-card-item:nth-child(3) { 
+      animation-delay: 0.3s;
+      background: linear-gradient(145deg, #14532d 0%, #166534 50%, #22c55e 100%);
+    }
+    .gift-card-item:nth-child(4) { 
+      animation-delay: 0.4s;
+      background: linear-gradient(145deg, #78350f 0%, #b45309 50%, #f59e0b 100%);
+    }
+    .gift-card-item:nth-child(5) { 
+      animation-delay: 0.5s;
+      background: linear-gradient(145deg, #581c87 0%, #7c3aed 50%, #a855f7 100%);
+    }
+    .gift-card-item:nth-child(6) { 
+      animation-delay: 0.6s;
+      background: linear-gradient(145deg, #0c0c0c 0%, #1a1a1a 30%, #2d2d2d 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .gift-card-item:nth-child(6) .gift-card-chip {
+      background: linear-gradient(135deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+    }
+    .gift-card-item:nth-child(6) .gift-card-value {
+      background: linear-gradient(90deg, #d4af37, #f7dc6f, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     
     .gift-card-item:hover {
-      transform: translateY(-12px) scale(1.02);
-      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      transform: translateY(-16px) rotateX(5deg) scale(1.03);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
     }
     
-    .gift-card-item:hover::after {
-      opacity: 1;
-    }
-    
+    /* Holographic shine effect */
     .gift-card-item::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(255,255,255,0.1) 40%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0.1) 60%,
+        transparent 80%
+      );
+      transform: translateX(-100%) rotate(25deg);
+      transition: transform 0.8s ease;
+      pointer-events: none;
+    }
+    
+    .gift-card-item:hover::after {
+      transform: translateX(50%) rotate(25deg);
     }
     
     .gift-card-item.selected {
-      outline: 4px solid #fbbf24;
-      outline-offset: 4px;
-      animation: glow 2s ease-in-out infinite;
+      transform: translateY(-6px);
+      box-shadow: 
+        0 0 0 2px #fbbf24,
+        0 20px 40px rgba(0,0,0,0.25);
     }
     
+    /* Selected checkmark badge */
+    .gift-card-item.selected .gift-card-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .gift-card-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      background: #fbbf24;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border: 2px solid #0f172a;
+    }
+    
+    .gift-card-check i {
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    /* Hide sparkles - keeping elements for backwards compatibility */
+    .gift-card-sparkles {
+      display: none;
+    }
+    
+    .sparkle {
+      display: none;
+    }
+    
+    /* Decorative pattern overlay */
     .gift-card-item::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
       pointer-events: none;
-      transition: transform 0.6s ease;
     }
     
-    .gift-card-item:hover::before {
-      transform: translate(20%, 20%) scale(1.5);
+    /* Card chip icon */
+    .gift-card-chip {
+      position: absolute;
+      top: 28px;
+      right: 28px;
+      width: 50px;
+      height: 38px;
+      background: linear-gradient(135deg, #d4af37 0%, #f7dc6f 50%, #d4af37 100%);
+      border-radius: 6px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .gift-card-chip::before {
+      content: '';
+      width: 30px;
+      height: 22px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 4px,
+        rgba(0,0,0,0.15) 4px,
+        rgba(0,0,0,0.15) 5px
+      );
+      border-radius: 3px;
     }
     
     .gift-card-logo {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
     
     .gift-card-logo img {
-      width: 100px;
-      filter: brightness(0) invert(1);
-      transition: transform 0.4s ease;
+      width: 90px;
+      filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.4s ease, filter 0.4s ease;
     }
     
     .gift-card-item:hover .gift-card-logo img {
-      transform: scale(1.1);
+      transform: scale(1.08);
+      filter: brightness(0) invert(1) drop-shadow(0 4px 8px rgba(0,0,0,0.4));
     }
     
     .gift-card-logo span {
-      font-size: 0.8rem;
-      opacity: 0.7;
+      font-size: 0.75rem;
+      opacity: 0.8;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      font-weight: 600;
+      background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .gift-card-content {
+      position: relative;
+      z-index: 2;
     }
     
     .gift-card-value {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
       position: relative;
-      z-index: 1;
-      transition: transform 0.3s ease;
+      z-index: 2;
+      transition: transform 0.4s ease, text-shadow 0.4s ease;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      letter-spacing: -1px;
     }
     
     .gift-card-item:hover .gift-card-value {
-      transform: scale(1.05);
+      transform: scale(1.08);
+      text-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
     
     .gift-card-label {
-      font-size: 0.9rem;
-      opacity: 0.7;
-      margin-top: 4px;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 8px;
       position: relative;
-      z-index: 1;
-      transition: opacity 0.3s ease;
+      z-index: 2;
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .gift-card-label::before {
+      content: '';
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+      opacity: 0.5;
+      transition: width 0.3s ease;
     }
     
     .gift-card-item:hover .gift-card-label {
       opacity: 1;
+      transform: translateX(4px);
+    }
+    
+    .gift-card-item:hover .gift-card-label::before {
+      width: 30px;
+    }
+    
+    /* Decorative corner accent */
+    .gift-card-corner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.05) 50%);
+      pointer-events: none;
+    }
+    
+    /* Magnetic strip effect */
+    .gift-card-strip {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      height: 35px;
+      background: linear-gradient(90deg, 
+        rgba(0,0,0,0.3) 0%,
+        rgba(0,0,0,0.5) 50%,
+        rgba(0,0,0,0.3) 100%
+      );
+      opacity: 0.4;
     }
     
     /* Custom Amount Section */
@@ -344,6 +536,8 @@
     }
     
     .form-group input, .form-group textarea {
+      width: 100%;
+      box-sizing: border-box;
       padding: 14px 16px;
       border: 2px solid #e5e7eb;
       border-radius: 10px;
@@ -457,6 +651,434 @@
     
     .purchase-btn:disabled::before {
       display: none;
+    }
+
+    /* Payment Modal Styles */
+    .gc-payment-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+      box-sizing: border-box;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    .gc-payment-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .gc-modal-content {
+      background: #fff;
+      border-radius: 24px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.4);
+      transform: scale(0.9) translateY(30px);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .gc-payment-modal.show .gc-modal-content {
+      transform: scale(1) translateY(0);
+    }
+    .gc-modal-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      color: #fff;
+      padding: 28px 24px;
+      text-align: center;
+      border-radius: 24px 24px 0 0;
+      position: relative;
+    }
+    .gc-modal-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      border-radius: 24px 24px 0 0;
+      pointer-events: none;
+    }
+    .gc-modal-header-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 30px rgba(251, 191, 36, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+    .gc-modal-header-icon i {
+      font-size: 28px;
+      color: #0f172a;
+    }
+    .gc-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+    .gc-modal-close:hover {
+      background: rgba(255,255,255,0.2);
+      transform: rotate(90deg);
+    }
+    .gc-modal-header h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    .gc-modal-header p {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 1;
+    }
+    .gc-modal-body {
+      padding: 28px;
+    }
+    .gc-order-summary {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #e2e8f0;
+    }
+    .gc-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+    .gc-summary-row:last-child {
+      margin-bottom: 0;
+      padding-top: 14px;
+      border-top: 2px dashed #cbd5e1;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .gc-summary-label { color: #64748b; }
+    .gc-summary-value { color: #0f172a; font-weight: 600; }
+    .gc-summary-row:last-child .gc-summary-value { color: #059669; }
+    
+    /* Trust Badges */
+    .gc-trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #bbf7d0;
+    }
+    .gc-trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #166534;
+      font-weight: 600;
+    }
+    .gc-trust-badge i {
+      font-size: 1.1rem;
+      color: #15803d;
+    }
+    
+    /* QR Section */
+    .gc-qr-section {
+      text-align: center;
+      margin: 20px 0;
+      padding: 24px;
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      position: relative;
+    }
+    .gc-qr-title {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .gc-qr-title i {
+      color: #0f172a;
+      margin-right: 6px;
+    }
+    .gc-qr-container {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      display: inline-block;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    .gc-qr-container img,
+    .gc-qr-container canvas {
+      width: 180px !important;
+      height: 180px !important;
+      display: block;
+      border-radius: 8px;
+    }
+    .gc-scan-text {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .gc-scan-text i {
+      color: #3b82f6;
+      animation: gcPulse 2s ease-in-out infinite;
+    }
+    @keyframes gcPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* UPI Info Box */
+    .gc-upi-info {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+      border: 1px solid #93c5fd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .gc-upi-info-left {
+      text-align: left;
+    }
+    .gc-upi-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #3b82f6;
+      font-weight: 500;
+    }
+    .gc-upi-info code {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin-top: 4px;
+      font-family: 'Consolas', monospace;
+    }
+    .gc-copy-btn {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+    .gc-copy-btn:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+    
+    /* Payment Apps */
+    .gc-payment-apps-title {
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+      margin: 20px 0 12px;
+      font-weight: 500;
+    }
+    .gc-upi-apps {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 0 0 20px;
+    }
+    .gc-upi-app-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .gc-upi-app-btn:hover {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      border-color: #0f172a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.2);
+    }
+    .gc-upi-app-btn i { font-size: 1.3rem; }
+    .gc-upi-app-btn.phonepe:hover { background: #5f259f; border-color: #5f259f; }
+    .gc-upi-app-btn.gpay:hover { background: #4285f4; border-color: #4285f4; }
+    .gc-upi-app-btn.paytm:hover { background: #00baf2; border-color: #00baf2; }
+    .gc-upi-app-btn.bhim:hover { background: #00838f; border-color: #00838f; }
+    
+    /* Modal Actions */
+    .gc-modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .gc-modal-actions button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+    .gc-btn-cancel {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .gc-btn-cancel:hover {
+      background: #e2e8f0;
+    }
+    .gc-btn-confirm {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+    }
+    .gc-btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+    }
+    .gc-btn-confirm:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .gc-btn-cancel i, .gc-btn-confirm i {
+      font-size: 1.1rem;
+    }
+    
+    /* Payment Footer */
+    .gc-payment-footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .gc-payment-note {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .gc-payment-note i {
+      color: #3b82f6;
+    }
+    .gc-security-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .gc-security-note i {
+      font-size: 1rem;
+    }
+    
+    /* Razorpay Info */
+    .gc-razorpay-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-radius: 14px;
+      margin-bottom: 20px;
+      border: 1px solid #7dd3fc;
+    }
+    .gc-razorpay-info img {
+      height: 28px;
+    }
+    .gc-razorpay-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .gc-razorpay-info strong {
+      display: block;
+      font-size: 0.95rem;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+    
+    /* Loading spinner */
+    .gc-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    .gc-loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #0f172a;
+      border-radius: 50%;
+      animation: gcSpin 1s linear infinite;
+    }
+    @keyframes gcSpin {
+      to { transform: rotate(360deg); }
+    }
+    .gc-loading p {
+      margin-top: 16px;
+      color: #64748b;
+      font-size: 0.95rem;
     }
     
     /* Redeem Section */
@@ -592,18 +1214,31 @@
     }
     
     @media (max-width: 768px) {
-      .back-button { top: 80px; left: 12px; padding: 10px 16px; font-size: 0.85rem; }
+      .back-button { top: 100px; left: 20px; padding: 10px 16px; font-size: 0.85rem; }
       .gift-hero h1 { font-size: 2rem; }
       .gift-card-value { font-size: 2rem; }
+      .recipient-section, .custom-amount-section, .redeem-section { padding: 24px 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .custom-amount-row { flex-direction: column; align-items: stretch; }
+      .custom-amount-row input { min-width: 0; width: 100%; }
       .purchase-section { flex-direction: column; text-align: center; }
       .purchase-btn { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .gift-hero { padding: 40px 15px; }
+      .gift-hero h1 { font-size: 1.75rem; }
+      .gift-cards-grid { grid-template-columns: 1fr; }
+      .recipient-section, .custom-amount-section, .redeem-section, .purchase-section { padding: 20px 15px; border-radius: 12px; }
+      .purchase-summary .amount { font-size: 1.5rem; }
+      .gift-feature h3 { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
   <!-- Back Button -->
-  <a href="index.html" class="back-button">
-    <i class="ri-arrow-left-line"></i> Back to Home
+  <a href="products.html" class="back-button">
+    <i class="ri-arrow-left-line"></i> Back to Shop
   </a>
 
   <!-- Navigation -->
@@ -671,47 +1306,129 @@
 
     <!-- Gift Card Options -->
     <section class="gift-cards-grid">
-      <div class="gift-card-item" data-value="500" onclick="selectGiftCard(this, 500)">
+      <div class="gift-card-item" data-value="500">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
         <div class="gift-card-logo">
           <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
           <span>Gift Card</span>
         </div>
-        <div>
+        <div class="gift-card-content">
           <div class="gift-card-value">₹500</div>
           <div class="gift-card-label">Perfect for accessories</div>
         </div>
       </div>
       
-      <div class="gift-card-item" data-value="1000" onclick="selectGiftCard(this, 1000)">
+      <div class="gift-card-item" data-value="1000">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
         <div class="gift-card-logo">
           <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
           <span>Gift Card</span>
         </div>
-        <div>
+        <div class="gift-card-content">
           <div class="gift-card-value">₹1,000</div>
           <div class="gift-card-label">Best for t-shirts</div>
         </div>
       </div>
       
-      <div class="gift-card-item" data-value="2000" onclick="selectGiftCard(this, 2000)">
+      <div class="gift-card-item" data-value="2000">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
         <div class="gift-card-logo">
           <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
           <span>Gift Card</span>
         </div>
-        <div>
+        <div class="gift-card-content">
           <div class="gift-card-value">₹2,000</div>
           <div class="gift-card-label">Great for hoodies</div>
         </div>
       </div>
       
-      <div class="gift-card-item" data-value="5000" onclick="selectGiftCard(this, 5000)">
+      <div class="gift-card-item" data-value="5000">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
         <div class="gift-card-logo">
           <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
           <span>Gift Card</span>
         </div>
-        <div>
+        <div class="gift-card-content">
           <div class="gift-card-value">₹5,000</div>
           <div class="gift-card-label">Complete wardrobe refresh</div>
+        </div>
+      </div>
+      
+      <div class="gift-card-item" data-value="3000">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Gift Card</span>
+        </div>
+        <div class="gift-card-content">
+          <div class="gift-card-value">₹3,000</div>
+          <div class="gift-card-label">Mix & match favorites</div>
+        </div>
+      </div>
+      
+      <div class="gift-card-item" data-value="10000">
+        <div class="gift-card-check"><i class="ri-check-line"></i></div>
+        <div class="gift-card-sparkles">
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+          <span class="sparkle"></span>
+        </div>
+        <div class="gift-card-chip"></div>
+        <div class="gift-card-strip"></div>
+        <div class="gift-card-corner"></div>
+        <div class="gift-card-logo">
+          <img src="assets/img/BLACKONN 004_page-0001.png" alt="BLACKONN">
+          <span>Premium</span>
+        </div>
+        <div class="gift-card-content">
+          <div class="gift-card-value">₹10,000</div>
+          <div class="gift-card-label">Ultimate shopping spree</div>
         </div>
       </div>
     </section>
@@ -758,7 +1475,7 @@
         <span class="label">Selected Gift Card Value</span>
         <span class="amount" id="selectedAmount">₹0</span>
       </div>
-      <button class="purchase-btn" id="purchaseBtn" disabled onclick="purchaseGiftCard()">
+      <button class="purchase-btn" id="purchaseBtn" disabled>
         <i class="ri-secure-payment-line"></i> Purchase Gift Card
       </button>
     </section>
@@ -769,7 +1486,7 @@
       <p>Enter your gift card code at checkout to redeem your balance.</p>
       <div class="redeem-form">
         <input type="text" id="redeemCode" placeholder="BLK-XXXX-XXXX">
-        <button onclick="checkBalance()">Check Balance</button>
+        <button id="checkBalanceBtn">Check Balance</button>
       </div>
     </section>
 
@@ -797,6 +1514,23 @@
       </div>
     </section>
   </main>
+
+  <!-- Payment Modal -->
+  <div class="gc-payment-modal" id="gcPaymentModal">
+    <div class="gc-modal-content">
+      <div class="gc-modal-header">
+        <button class="gc-modal-close" id="closePaymentModalBtn">&times;</button>
+        <div class="gc-modal-header-icon">
+          <i class="ri-secure-payment-fill"></i>
+        </div>
+        <h3>Complete Your Purchase</h3>
+        <p>Secure payment for your BLACKONN Gift Card</p>
+      </div>
+      <div class="gc-modal-body" id="gcModalBody">
+        <!-- Content dynamically populated -->
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="footer" id="contact">
@@ -843,7 +1577,7 @@
       
       <h3 style="margin-top: 25px;">Newsletter</h3>
       <p style="font-size: 14px; color: #666;">Subscribe for updates & offers</p>
-      <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <form class="newsletter-form" id="newsletterForm">
         <input type="email" class="newsletter-input" placeholder="Enter your email" required>
         <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="ri-arrow-right-line"></i></button>
       </form>
@@ -851,11 +1585,9 @@
   </footer>
 
   <div class="bottom">
-    © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+    © BLACKONN 2026. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
   </div>
 
-<script src="assets/js/api.js"></script>
-  <script src="assets/js/auth.js"></script>
   <script>
     // Menu Toggle
     const menuBtn = document.getElementById('menuBtn');
@@ -885,6 +1617,83 @@
 
     // Gift Card Selection
     let selectedValue = 0;
+
+    // Static Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Gift Card Items
+      document.querySelectorAll('.gift-card-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          const val = parseInt(this.getAttribute('data-value'));
+          selectGiftCard(this, val);
+        });
+      });
+
+      // Purchase Button
+      const purchaseBtn = document.getElementById('purchaseBtn');
+      if (purchaseBtn) {
+        purchaseBtn.addEventListener('click', purchaseGiftCard);
+      }
+
+      // Check Balance Button
+      const checkBalanceBtn = document.getElementById('checkBalanceBtn');
+      if (checkBalanceBtn) {
+        checkBalanceBtn.addEventListener('click', checkBalance);
+      }
+
+      // Close Modal Button (Header)
+      const closePaymentModalBtn = document.getElementById('closePaymentModalBtn');
+      if (closePaymentModalBtn) {
+        closePaymentModalBtn.addEventListener('click', closePaymentModal);
+      }
+
+      // Newsletter Form
+      const newsletterForm = document.getElementById('newsletterForm');
+      if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          subscribeNewsletter(e);
+        });
+      }
+
+      // Event Delegation for Dynamic Modal Content
+      const modalBody = document.getElementById('gcModalBody');
+      if (modalBody) {
+        modalBody.addEventListener('click', function(e) {
+          // Close button in dynamic content
+          if (e.target.closest('.gc-btn-cancel')) {
+            closePaymentModal();
+          }
+          // Confirm Manual Payment
+          if (e.target.closest('#gcConfirmPaymentBtn')) {
+            confirmManualPayment();
+          }
+          // Initiate Razorpay
+          if (e.target.closest('.gc-btn-confirm') && !e.target.closest('#gcConfirmPaymentBtn')) {
+            // Check if it's the Razorpay confirm button
+            if (e.target.closest('.gc-btn-confirm').innerHTML.includes('Pay')) {
+              initiateRazorpayPayment();
+            }
+          }
+          // Copy UPI ID
+          if (e.target.closest('.gc-copy-btn')) {
+            copyUpiId();
+          }
+          // Reload page (Done/Close success)
+          if (e.target.closest('.gc-reload-btn')) {
+            window.location.reload();
+          }
+        });
+
+        // Add error listener for QR image since we removed inline onerror
+        modalBody.addEventListener('error', function(e) {
+          if (e.target.id === 'gcQrImage') {
+            e.target.style.display = 'none';
+            const fallback = document.getElementById('gcQrFallback');
+            if (fallback) fallback.style.display = 'block';
+          }
+        }, true); // Use capture phase for error events on elements
+      }
+    });
 
     function selectGiftCard(element, value) {
       document.querySelectorAll('.gift-card-item').forEach(function(card) {
@@ -916,6 +1725,29 @@
       purchaseBtn.disabled = selectedValue < 100;
     }
 
+    // Payment Configuration
+    let razorpayEnabled = false;
+    let razorpayKeyId = null;
+    const upiId = 'arunava458@ybl';
+
+    // Check payment mode on load
+    async function checkPaymentMode() {
+      try {
+        const res = await fetch('/api/payment/mode', { credentials: 'include' });
+        const data = await res.json();
+        if (data.mode === 'razorpay' && data.keyId) {
+          razorpayEnabled = true;
+          razorpayKeyId = data.keyId;
+        }
+      } catch (e) {
+        console.log('Payment mode check failed, using manual UPI');
+      }
+    }
+    checkPaymentMode();
+
+    // Store current gift card details
+    let currentGiftCardData = null;
+
     async function purchaseGiftCard() {
       var recipientName = document.getElementById('recipientName').value.trim();
       var recipientEmail = document.getElementById('recipientEmail').value.trim();
@@ -924,47 +1756,453 @@
       var message = document.getElementById('giftMessage').value.trim();
 
       if (!recipientName || !recipientEmail || !senderEmail) {
-        alert('Please fill in all required fields');
+        showNotification('Please fill in all required fields', 'error');
         return;
       }
 
       if (selectedValue < 100) {
-        alert('Please select a gift card value');
+        showNotification('Please select a gift card value', 'error');
         return;
       }
 
+      // Store data for payment confirmation
+      currentGiftCardData = {
+        value: selectedValue,
+        recipientName: recipientName,
+        recipientEmail: recipientEmail,
+        senderName: senderName || 'A Friend',
+        senderEmail: senderEmail,
+        message: message
+      };
+
+      // Show payment modal
+      showPaymentModal();
+    }
+
+    function showPaymentModal() {
+      const modal = document.getElementById('gcPaymentModal');
+      const body = document.getElementById('gcModalBody');
+      const amount = currentGiftCardData.value;
+
+      if (razorpayEnabled && razorpayKeyId) {
+        // Razorpay mode - show loading then initiate
+        body.innerHTML = `
+          <!-- Trust Badges -->
+          <div class="gc-trust-badges">
+            <div class="gc-trust-badge">
+              <i class="ri-shield-check-fill"></i>
+              <span>100% Secure</span>
+            </div>
+            <div class="gc-trust-badge">
+              <i class="ri-lock-fill"></i>
+              <span>Encrypted</span>
+            </div>
+            <div class="gc-trust-badge">
+              <i class="ri-verified-badge-fill"></i>
+              <span>Verified</span>
+            </div>
+          </div>
+          
+          <!-- Order Summary -->
+          <div class="gc-order-summary">
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-gift-line"></i> Gift Card Value</span>
+              <span class="gc-summary-value">₹${amount.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-user-smile-line"></i> Recipient</span>
+              <span class="gc-summary-value">${currentGiftCardData.recipientName}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-mail-send-line"></i> Email To</span>
+              <span class="gc-summary-value">${currentGiftCardData.recipientEmail}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-money-rupee-circle-line"></i> Total Payable</span>
+              <span class="gc-summary-value">₹${amount.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+          
+          <!-- Razorpay Info -->
+          <div class="gc-razorpay-info">
+            <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" style="height: 28px;">
+            <div>
+              <p>Pay securely with</p>
+              <strong>Cards, UPI, Net Banking & Wallets</strong>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="gc-modal-actions">
+            <button class="gc-btn-cancel">
+              <i class="ri-close-line"></i> Cancel
+            </button>
+            <button class="gc-btn-confirm">
+              <i class="ri-secure-payment-line"></i> Pay ₹${amount.toLocaleString('en-IN')}
+            </button>
+          </div>
+          
+          <!-- Trust Footer -->
+          <div class="gc-payment-footer">
+            <div class="gc-security-note">
+              <i class="ri-shield-star-line"></i> Your payment is protected by 256-bit SSL encryption
+            </div>
+          </div>
+        `;
+      } else {
+        // Manual UPI mode
+        const orderNote = 'GiftCard-' + Date.now();
+        const upiUrl = 'upi://pay?pa=' + upiId + '&pn=BLACKONN&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(orderNote);
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
+        
+        body.innerHTML = `
+          <!-- Trust Badges -->
+          <div class="gc-trust-badges">
+            <div class="gc-trust-badge">
+              <i class="ri-shield-check-fill"></i>
+              <span>100% Secure</span>
+            </div>
+            <div class="gc-trust-badge">
+              <i class="ri-lock-fill"></i>
+              <span>Encrypted</span>
+            </div>
+            <div class="gc-trust-badge">
+              <i class="ri-verified-badge-fill"></i>
+              <span>Verified</span>
+            </div>
+          </div>
+          
+          <!-- Order Summary -->
+          <div class="gc-order-summary">
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-gift-line"></i> Gift Card Value</span>
+              <span class="gc-summary-value">₹${amount.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-user-smile-line"></i> Recipient</span>
+              <span class="gc-summary-value">${currentGiftCardData.recipientName}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-mail-send-line"></i> Email To</span>
+              <span class="gc-summary-value">${currentGiftCardData.recipientEmail}</span>
+            </div>
+            <div class="gc-summary-row">
+              <span class="gc-summary-label"><i class="ri-money-rupee-circle-line"></i> Total Payable</span>
+              <span class="gc-summary-value">₹${amount.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+
+          <!-- QR Code Section -->
+          <div class="gc-qr-section">
+            <div class="gc-qr-title"><i class="ri-qr-scan-2-line"></i> Scan QR Code to Pay</div>
+            <div class="gc-qr-container">
+              <img id="gcQrImage" src="${qrApiUrl}" alt="UPI QR Code">
+              <div id="gcQrFallback" style="display:none; padding: 40px; text-align: center;">
+                <i class="ri-qr-code-line" style="font-size: 60px; color: #cbd5e1;"></i>
+                <p style="color: #94a3b8; margin-top: 10px; font-size: 0.85rem;">Use UPI ID below</p>
+              </div>
+            </div>
+            <div class="gc-scan-text"><i class="ri-smartphone-line"></i> Open any UPI app and scan</div>
+            
+            <!-- UPI ID Copy Section -->
+            <div class="gc-upi-info">
+              <div class="gc-upi-info-left">
+                <p>Or pay to UPI ID</p>
+                <code>${upiId}</code>
+              </div>
+              <button class="gc-copy-btn">
+                <i class="ri-file-copy-line"></i> Copy
+              </button>
+            </div>
+          </div>
+          
+          <!-- Quick Pay Apps -->
+          <div class="gc-payment-apps-title">Or pay directly via</div>
+          <div class="gc-upi-apps">
+            <a href="${upiUrl.replace('upi://', 'phonepe://')}" class="gc-upi-app-btn phonepe">
+              <i class="ri-smartphone-line"></i> PhonePe
+            </a>
+            <a href="${upiUrl.replace('upi://', 'tez://upi/')}" class="gc-upi-app-btn gpay">
+              <i class="ri-google-fill"></i> GPay
+            </a>
+            <a href="${upiUrl.replace('upi://', 'paytmmp://')}" class="gc-upi-app-btn paytm">
+              <i class="ri-wallet-3-line"></i> Paytm
+            </a>
+            <a href="${upiUrl}" class="gc-upi-app-btn bhim">
+              <i class="ri-bank-card-line"></i> BHIM UPI
+            </a>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="gc-modal-actions">
+            <button class="gc-btn-cancel">
+              <i class="ri-close-line"></i> Cancel
+            </button>
+            <button class="gc-btn-confirm" id="gcConfirmPaymentBtn">
+              <i class="ri-check-double-line"></i> I Have Paid ₹${amount.toLocaleString('en-IN')}
+            </button>
+          </div>
+          
+          <!-- Trust Footer -->
+          <div class="gc-payment-footer">
+            <div class="gc-payment-note"><i class="ri-information-line"></i> After payment, click the button above to complete your purchase</div>
+            <div class="gc-security-note">
+              <i class="ri-shield-star-line"></i> Your payment is protected by 256-bit SSL encryption
+            </div>
+          </div>
+        `;
+      }
+
+      modal.classList.add('show');
+    }
+
+    function generateQRCode(data) {
+      const canvas = document.getElementById('gcQrCanvas');
+      if (!canvas) return;
+      
+      // Simple QR code generation using a free library or API
+      // Using QRious library if available, otherwise show fallback
+      if (typeof QRious !== 'undefined') {
+        new QRious({
+          element: canvas,
+          value: data,
+          size: 180,
+          level: 'M'
+        });
+      } else {
+        // Fallback: use Google Charts API for QR
+        const img = new Image();
+        img.onload = function() {
+          const ctx = canvas.getContext('2d');
+          canvas.width = 180;
+          canvas.height = 180;
+          ctx.drawImage(img, 0, 0, 180, 180);
+        };
+        img.src = 'https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=' + encodeURIComponent(data);
+      }
+    }
+
+    function copyUpiId() {
+      navigator.clipboard.writeText(upiId).then(function() {
+        showNotification('UPI ID copied: ' + upiId, 'success');
+      }).catch(function() {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = upiId;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showNotification('UPI ID copied: ' + upiId, 'success');
+      });
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('gcPaymentModal');
+      modal.classList.remove('show');
+      currentGiftCardData = null;
+    }
+
+    async function initiateRazorpayPayment() {
+      if (!razorpayEnabled || !razorpayKeyId || !currentGiftCardData) return;
+
+      const amount = currentGiftCardData.value;
+      
+      // Load Razorpay script if not loaded
+      if (typeof Razorpay === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = function() { startRazorpay(); };
+        document.head.appendChild(script);
+      } else {
+        startRazorpay();
+      }
+    }
+
+    async function startRazorpay() {
+      const amount = currentGiftCardData.value;
+      
       try {
-        var response = await fetch('/api/gift-cards/purchase', {
+        // Create Razorpay order
+        const orderRes = await fetch('/api/payment/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            value: selectedValue,
-            recipientName: recipientName,
-            recipientEmail: recipientEmail,
-            senderName: senderName,
-            senderEmail: senderEmail,
-            message: message
+            amount: amount,
+            receipt: 'gc_' + Date.now(),
+            notes: { type: 'gift_card', recipientEmail: currentGiftCardData.recipientEmail }
           })
         });
 
-        var data = await response.json();
+        const orderData = await orderRes.json();
+        if (!orderData.success) {
+          showNotification('Failed to create payment order', 'error');
+          return;
+        }
+
+        const options = {
+          key: razorpayKeyId,
+          amount: orderData.order.amount,
+          currency: orderData.order.currency,
+          name: 'BLACKONN',
+          description: 'Gift Card - ₹' + amount,
+          order_id: orderData.order.id,
+          handler: async function(response) {
+            // Verify and create gift card
+            await completeGiftCardPurchase(response);
+          },
+          prefill: {
+            email: currentGiftCardData.senderEmail,
+            name: currentGiftCardData.senderName
+          },
+          theme: { color: '#0f172a' },
+          modal: {
+            ondismiss: function() {
+              // User closed without paying
+            }
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function(response) {
+          showNotification('Payment failed: ' + response.error.description, 'error');
+        });
+        rzp.open();
+        closePaymentModal();
+
+      } catch (err) {
+        console.error('Razorpay error:', err);
+        showNotification('Payment initialization failed', 'error');
+      }
+    }
+
+    async function completeGiftCardPurchase(razorpayResponse) {
+      try {
+        // First verify payment
+        const verifyRes = await fetch('/api/payment/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            razorpay_order_id: razorpayResponse.razorpay_order_id,
+            razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+            razorpay_signature: razorpayResponse.razorpay_signature
+          })
+        });
+
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          showNotification('Payment verification failed', 'error');
+          return;
+        }
+
+        // Now create the gift card with payment proof
+        await finalizeGiftCardPurchase(razorpayResponse.razorpay_payment_id);
+
+      } catch (err) {
+        console.error('Verification error:', err);
+        showNotification('Payment verification failed', 'error');
+      }
+    }
+
+    async function confirmManualPayment() {
+      const btn = document.getElementById('gcConfirmPaymentBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="ri-loader-4-line" style="animation: gcSpin 1s linear infinite;"></i> Processing...';
+      }
+      
+      // Generate a manual payment ID
+      const manualPaymentId = 'MANUAL_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
+      // Finalize the gift card purchase
+      await finalizeGiftCardPurchase(manualPaymentId);
+    }
+
+    async function finalizeGiftCardPurchase(paymentId) {
+      try {
+        const response = await fetch('/api/gift-cards/purchase', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            value: currentGiftCardData.value,
+            recipientName: currentGiftCardData.recipientName,
+            recipientEmail: currentGiftCardData.recipientEmail,
+            senderName: currentGiftCardData.senderName,
+            senderEmail: currentGiftCardData.senderEmail,
+            message: currentGiftCardData.message,
+            paymentId: paymentId
+          })
+        });
+
+        const data = await response.json();
         if (data.success) {
-          alert('Gift Card purchased successfully! The recipient will receive an email shortly.');
-          window.location.reload();
+          closePaymentModal();
+          // Dynamic Island Notification
+          showNotification('Gift Card Purchased Successfully!', 'success');
+          
+          // Show success message
+          showSuccessMessage(data.giftCard);
         } else {
-          alert(data.error || 'Failed to purchase gift card');
+          showNotification(data.error || 'Failed to create gift card', 'error');
+          const btn = document.getElementById('gcConfirmPaymentBtn');
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ri-check-line"></i> I Have Paid';
+          }
         }
       } catch (error) {
         console.error('Error purchasing gift card:', error);
-        alert('Failed to process purchase. Please try again.');
+        showNotification('Failed to process purchase. Please try again.', 'error');
+        const btn = document.getElementById('gcConfirmPaymentBtn');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="ri-check-line"></i> I Have Paid';
+        }
+      }
+    }
+
+    function showSuccessMessage(giftCard) {
+      const body = document.getElementById('gcModalBody');
+      const modal = document.getElementById('gcPaymentModal');
+      
+      body.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <i class="ri-check-line" style="font-size: 40px; color: #fff;"></i>
+          </div>
+          <h3 style="margin-bottom: 12px; color: #0f172a;">Purchase Successful!</h3>
+          <p style="color: #64748b; margin-bottom: 24px;">Your gift card has been created and sent to the recipient. A confirmation email has been sent to your email address as well.</p>
+          
+          <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Gift Card Code</p>
+            <p style="font-size: 1.5rem; font-weight: 700; color: #0f172a; letter-spacing: 2px;">${giftCard.code}</p>
+            <p style="font-size: 0.9rem; color: #64748b; margin-top: 12px;">Value: ₹${giftCard.value.toLocaleString('en-IN')}</p>
+          </div>
+          
+          <button class="gc-reload-btn" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; border: none; padding: 14px 32px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+            Done
+          </button>
+        </div>
+      `;
+      
+      // Update modal header
+      const header = modal.querySelector('.gc-modal-header');
+      if (header) {
+        header.innerHTML = `
+          <button class="gc-modal-close gc-reload-btn">&times;</button>
+          <h3><i class="ri-gift-line"></i> Gift Card Created</h3>
+          <p>Your gift card is ready!</p>
+        `;
       }
     }
 
     async function checkBalance() {
       var code = document.getElementById('redeemCode').value.trim().toUpperCase();
       if (!code) {
-        alert('Please enter a gift card code');
+        showNotification('Please enter a gift card code', 'error');
         return;
       }
 
@@ -974,13 +2212,13 @@
         });
         var data = await response.json();
         if (data.success) {
-          alert('Gift Card Balance: ₹' + data.balance.toLocaleString('en-IN') + '\nValid until: ' + new Date(data.expiresAt).toLocaleDateString('en-IN'));
+          showNotification('Balance: ₹' + data.balance.toLocaleString('en-IN'), 'info');
         } else {
-          alert(data.error || 'Invalid gift card code');
+          showNotification(data.error || 'Invalid gift card code', 'error');
         }
       } catch (error) {
         console.error('Error checking balance:', error);
-        alert('Failed to check balance. Please try again.');
+        showNotification('Failed to check balance. Please try again.', 'error');
       }
     }
 

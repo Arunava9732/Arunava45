@@ -6,7 +6,6 @@ AI-powered commerce optimization with neural network simulations
 
 import json
 import sys
-import random
 from datetime import datetime, timedelta
 from collections import defaultdict
 import math

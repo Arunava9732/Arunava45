@@ -48,11 +48,9 @@ class PaymentVerificationAI:
             r'\d{5,}@', r'disposable'
         ]
         
-        self.suspicious_card_bins = [
-            '400000', '411111', '555555', '378282'  # Test cards
-        ]
+        self.suspicious_card_bins = []
         
-        self.high_risk_countries = ['XX', 'YY', 'ZZ']  # Placeholder
+        self.high_risk_countries = []  # To be populated with real risk data
     
     def verify_payment(self, payment_data, order_data=None, user_history=None):
         """

@@ -12,7 +12,8 @@ if (!fs.existsSync(NOTIFICATIONS_FILE)) {
 const getNotifications = () => {
   try {
     const data = fs.readFileSync(NOTIFICATIONS_FILE, 'utf8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     console.error('Error reading admin notifications:', err);
     return [];

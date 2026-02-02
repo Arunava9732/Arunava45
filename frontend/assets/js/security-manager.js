@@ -696,7 +696,7 @@ class SecurityManager {
       const value = localStorage.getItem(key);
       
       // Basic whitelist for keys that are known to contain logs
-      if (key === 'error_tracker_errors') continue;
+      if (key === 'error_tracker_errors' || key === 'blackonn_nav_history') continue;
       
       if (value && (value.includes('password') || value.includes('token'))) {
         issues.push({

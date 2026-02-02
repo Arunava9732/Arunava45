@@ -17,6 +17,7 @@ const {
 } = require('../middleware/security');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 const { sendPasswordResetOTP } = require('../utils/email');
+const { addNotification } = require('../utils/adminNotificationStore');
 
 const router = express.Router();
 
@@ -97,6 +98,16 @@ router.post('/register',
 
     db.users.create(user);
     console.log(`[Register] User created with ID: ${user.id}`);
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'user_registration',
+      title: 'New User Registered',
+      message: `New account created: ${user.name} (${user.email})`,
+      priority: 'low',
+      link: '#users',
+      data: { userId: user.id, email: user.email }
+    });
 
     // Generate token and create session with httpOnly cookie
     const token = generateToken(user);
@@ -451,6 +462,16 @@ router.post('/forgot-password', passwordResetLimiter, async (req, res) => {
 
     db.passwordResets.create(resetRequest);
 
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'password_reset_request',
+      title: 'Password Reset Requested',
+      message: `User ${email} has requested a password reset OTP.`,
+      priority: 'medium',
+      link: '#password-resets',
+      data: { userId: user.id, email: user.email }
+    });
+
     // Send email with OTP
     await sendPasswordResetOTP(email.toLowerCase(), otp);
 
@@ -546,6 +567,16 @@ router.post('/reset-password', async (req, res) => {
     db.passwordResets.update(resetRequest.id, { 
       used: true, 
       usedAt: new Date().toISOString() 
+    });
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'password_reset_success',
+      title: 'Password Reset Successful',
+      message: `User ${resetRequest.email} has successfully reset their password.`,
+      priority: 'medium',
+      link: '#users',
+      data: { email: resetRequest.email }
     });
 
     res.json({ success: true, message: 'Password updated successfully' });

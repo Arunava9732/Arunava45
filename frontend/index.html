@@ -251,8 +251,8 @@
         },
         "aggregateRating": {
           "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "reviewCount": "150"
+          "ratingValue": "0.0",
+          "reviewCount": "0"
         }
       }
       </script>
@@ -443,24 +443,7 @@
       </ul>
     </div>
 
-    <script>
-    (async function() {
-      try {
-        const res = await fetch('/api/marketing/feature-visibility?_=' + Date.now(), { cache: 'no-store' });
-        const data = await res.json();
-        if (data.success) {
-          if (!data.features.giftCardsEnabled) {
-            const el = document.getElementById('giftCardMenuItem');
-            if (el) el.style.display = 'none';
-          }
-          if (!data.features.reviewsPageEnabled) {
-            const el = document.getElementById('reviewsMenuItem');
-            if (el) el.style.display = 'none';
-          }
-        }
-      } catch(e) {}
-    })();
-    </script>
+    <!-- Features visibility check handled by main.js -->
 
     <script>
             // Auto-logout for all users after 10 minutes of inactivity
@@ -1194,7 +1177,7 @@
     </footer>
 
     <div class="bottom">
-      © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+      © BLACKONN 2026. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
     </div>
 
     <!-- Terms & Conditions Modal - REMOVED: Now on separate page (terms.html) -->

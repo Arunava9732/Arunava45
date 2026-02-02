@@ -161,34 +161,36 @@ function mapDelhiveryStatus(status) {
   return statusMap[status] || status?.toLowerCase() || 'unknown';
 }
 
+// Default Data Schema
+const defaultData = {
+  settings: {
+    freeShippingThreshold: 999, // Free shipping above ₹999
+    defaultShippingRate: 49,
+    expressShippingRate: 99,
+    codCharges: 40,
+    estimatedDaysStandard: '5-7',
+    estimatedDaysExpress: '2-3',
+    enableCourierTracking: true // New setting to enable/disable courier API tracking
+  },
+  couriers: [
+    { id: 'delhivery', name: 'Delhivery', active: true, priority: 1, apiKey: '', enabled: false },
+    { id: 'bluedart', name: 'Blue Dart', active: true, priority: 2, apiKey: '', enabled: false },
+    { id: 'dtdc', name: 'DTDC', active: false, priority: 3, apiKey: '', enabled: false },
+    { id: 'ecom', name: 'Ecom Express', active: false, priority: 4, apiKey: '', enabled: false }
+  ],
+  shippingRates: [],
+  zones: [],
+  pincodes: [],
+  shipments: [],
+  rtoRecords: []
+};
+
 // Ensure data file exists
 function ensureDataFile() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   if (!fs.existsSync(SHIPPING_FILE)) {
-    const defaultData = {
-      settings: {
-        freeShippingThreshold: 999, // Free shipping above ₹999
-        defaultShippingRate: 49,
-        expressShippingRate: 99,
-        codCharges: 40,
-        estimatedDaysStandard: '5-7',
-        estimatedDaysExpress: '2-3',
-        enableCourierTracking: true // New setting to enable/disable courier API tracking
-      },
-      couriers: [
-        { id: 'delhivery', name: 'Delhivery', active: true, priority: 1, apiKey: '', enabled: false },
-        { id: 'bluedart', name: 'Blue Dart', active: true, priority: 2, apiKey: '', enabled: false },
-        { id: 'dtdc', name: 'DTDC', active: false, priority: 3, apiKey: '', enabled: false },
-        { id: 'ecom', name: 'Ecom Express', active: false, priority: 4, apiKey: '', enabled: false }
-      ],
-      shippingRates: [],
-      zones: [],
-      pincodes: [],
-      shipments: [],
-      rtoRecords: []
-    };
     fs.writeFileSync(SHIPPING_FILE, JSON.stringify(defaultData, null, 2));
   }
 }
@@ -196,10 +198,18 @@ function ensureDataFile() {
 function readData() {
   ensureDataFile();
   try {
-    return JSON.parse(fs.readFileSync(SHIPPING_FILE, 'utf8'));
+    const content = fs.readFileSync(SHIPPING_FILE, 'utf8');
+    const data = content ? JSON.parse(content) : {};
+    
+    // Ensure all required fields exist by merging with defaultData
+    return {
+      ...defaultData,
+      ...data,
+      settings: { ...defaultData.settings, ...(data.settings || {}) }
+    };
   } catch (e) {
     console.error('Error reading shipping data:', e);
-    return { settings: {}, couriers: [], shippingRates: [], zones: [], pincodes: [], shipments: [], rtoRecords: [] };
+    return { ...defaultData };
   }
 }
 
@@ -341,9 +351,10 @@ router.patch('/couriers/:id', authenticate, requireAdmin, (req, res) => {
       return res.status(404).json({ success: false, error: 'Courier not found' });
     }
     
-    const { active, priority, apiKey, apiSecret } = req.body;
+    const { active, priority, apiKey, apiSecret, enabled } = req.body;
     
     if (typeof active === 'boolean') data.couriers[idx].active = active;
+    if (typeof enabled === 'boolean') data.couriers[idx].enabled = enabled;
     if (typeof priority === 'number') data.couriers[idx].priority = priority;
     if (apiKey !== undefined) data.couriers[idx].apiKey = apiKey;
     if (apiSecret !== undefined) data.couriers[idx].apiSecret = apiSecret;
@@ -351,7 +362,7 @@ router.patch('/couriers/:id', authenticate, requireAdmin, (req, res) => {
     data.couriers[idx].updatedAt = new Date().toISOString();
     writeData(data);
     
-    console.log(`[AI-Enhanced] Courier updated: ${courierId}, Active: ${data.couriers[idx].active}`);
+    console.log(`[AI-Enhanced] Courier updated: ${req.params.id}, Active: ${data.couriers[idx].active}, API Enabled: ${data.couriers[idx].enabled}`);
     
     res.json({ success: true, courier: data.couriers[idx] });
   } catch (error) {
@@ -604,17 +615,27 @@ router.get('/shipments', authenticate, requireAdmin, (req, res) => {
 router.post('/shipments', authenticate, requireAdmin, (req, res) => {
   try {
     const data = readData();
-    const { orderId, courier, trackingNumber, weight, dimensions, pickupDate } = req.body;
+    const { orderId, referenceId, referenceType, courier, trackingNumber, weight, dimensions, pickupDate } = req.body;
     
-    if (!orderId) {
-      return res.status(400).json({ success: false, error: 'Order ID is required' });
+    // Support both old orderId and new referenceId/referenceType structure
+    const refId = referenceId || orderId;
+    const refType = referenceType || 'order';
+
+    if (!refId) {
+      return res.status(400).json({ success: false, error: 'Reference ID is required' });
     }
+
+    const courierObj = data.couriers.find(c => c.id === courier);
+    const trackingMode = req.body.trackingMode || (courierObj && courierObj.enabled ? 'auto' : 'manual');
     
     const shipment = {
       id: uuidv4(),
-      orderId,
+      referenceId: refId,
+      referenceType: refType,
+      orderId: refId, // For backward compatibility
       courier: courier || 'default',
       trackingNumber: trackingNumber || 'BLK' + Date.now().toString(36).toUpperCase(),
+      trackingMode: trackingMode,
       weight: parseFloat(weight) || 0,
       dimensions: dimensions || {},
       status: 'created',
@@ -633,6 +654,23 @@ router.post('/shipments', authenticate, requireAdmin, (req, res) => {
   } catch (error) {
     console.error('Create shipment error:', error);
     res.status(500).json({ success: false, error: 'Failed to create shipment' });
+  }
+});
+
+// Get single shipment detail
+router.get('/shipments/:id', authenticate, requireAdmin, (req, res) => {
+  try {
+    const data = readData();
+    const shipment = data.shipments.find(s => s.id === req.params.id);
+    
+    if (!shipment) {
+      return res.status(404).json({ success: false, error: 'Shipment not found' });
+    }
+    
+    res.json({ success: true, shipment });
+  } catch (error) {
+    console.error('Get shipment error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get shipment' });
   }
 });
 
@@ -670,6 +708,52 @@ router.patch('/shipments/:id/status', authenticate, requireAdmin, (req, res) => 
   }
 });
 
+// Update shipment tracking mode (Auto/Manual)
+router.patch('/shipments/:id/mode', authenticate, requireAdmin, (req, res) => {
+  try {
+    const data = readData();
+    const idx = data.shipments.findIndex(s => s.id === req.params.id);
+    
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Shipment not found' });
+    }
+    
+    const { mode } = req.body;
+    if (!['auto', 'manual'].includes(mode)) {
+      return res.status(400).json({ success: false, error: 'Invalid mode' });
+    }
+    
+    data.shipments[idx].trackingMode = mode;
+    data.shipments[idx].updatedAt = new Date().toISOString();
+    writeData(data);
+    
+    res.json({ success: true, shipment: data.shipments[idx] });
+  } catch (error) {
+    console.error('Update mode error:', error);
+    res.status(500).json({ success: false, error: 'Failed to update tracking mode' });
+  }
+});
+
+// Delete shipment
+router.delete('/shipments/:id', authenticate, requireAdmin, (req, res) => {
+  try {
+    const data = readData();
+    const idx = data.shipments.findIndex(s => s.id === req.params.id);
+    
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Shipment not found' });
+    }
+    
+    data.shipments.splice(idx, 1);
+    writeData(data);
+    
+    res.json({ success: true, message: 'Shipment deleted' });
+  } catch (error) {
+    console.error('Delete shipment error:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete shipment' });
+  }
+});
+
 // Track shipment (public) - with courier API integration
 router.get('/track/:trackingNumber', async (req, res) => {
   try {
@@ -693,8 +777,8 @@ router.get('/track/:trackingNumber', async (req, res) => {
       source: 'local' // Tracking source - local or courier API
     };
     
-    // Try to fetch from courier API if enabled
-    if (data.settings.enableCourierTracking) {
+    // Try to fetch from courier API if enabled and not in manual mode
+    if (data.settings.enableCourierTracking && shipment.trackingMode !== 'manual') {
       const courier = data.couriers.find(c => c.id === shipment.courier);
       if (courier && courier.enabled && courier.apiKey) {
         const courierTracking = await fetchCourierTracking(
@@ -749,8 +833,9 @@ router.get('/track-order/:orderId', async (req, res) => {
     const data = readData();
     const orderId = req.params.orderId;
     
-    // Find shipment by order ID
+    // Find shipment by Reference ID or Order ID
     const shipment = data.shipments.find(s => 
+      s.referenceId === orderId ||
       s.orderId === orderId || 
       s.orderId === orderId.replace('ORD', '') ||
       s.orderId === `ORD${orderId}`
@@ -759,23 +844,66 @@ router.get('/track-order/:orderId', async (req, res) => {
     if (!shipment) {
       return res.status(404).json({ 
         success: false, 
-        error: 'No shipment found for this order. The order may not have been shipped yet.' 
+        error: 'No shipment found for this ID. The item may not have been shipped yet.' 
       });
+    }
+    
+    let trackingData = {
+      referenceId: shipment.referenceId,
+      referenceType: shipment.referenceType,
+      orderId: shipment.orderId,
+      trackingNumber: shipment.trackingNumber,
+      courier: shipment.courier,
+      courierName: data.couriers?.find(c => c.id === shipment.courier)?.name || shipment.courier,
+      status: shipment.status,
+      statusHistory: shipment.statusHistory,
+      estimatedDelivery: shipment.estimatedDelivery,
+      deliveryDate: shipment.deliveryDate,
+      source: 'local'
+    };
+
+    // Try to fetch from courier API if enabled and not in manual mode
+    if (data.settings.enableCourierTracking && shipment.trackingMode !== 'manual') {
+      const courier = data.couriers.find(c => c.id === shipment.courier);
+      if (courier && courier.enabled && courier.apiKey) {
+        const courierTracking = await fetchCourierTracking(
+          courier.id, 
+          shipment.trackingNumber, 
+          courier.apiKey
+        );
+        
+        if (courierTracking) {
+          trackingData.status = courierTracking.status || shipment.status;
+          trackingData.currentLocation = courierTracking.location;
+          trackingData.courierUpdatedAt = courierTracking.updatedAt;
+          trackingData.courierHistory = courierTracking.history;
+          trackingData.source = 'courier_api';
+          
+          // Update local status if changed
+          if (courierTracking.status && courierTracking.status !== shipment.status) {
+            const idx = data.shipments.findIndex(s => s.id === shipment.id);
+            if (idx !== -1) {
+              data.shipments[idx].status = courierTracking.status;
+              data.shipments[idx].statusHistory.push({
+                status: courierTracking.status,
+                timestamp: courierTracking.updatedAt || new Date().toISOString(),
+                note: 'Updated from courier API (via order track)',
+                location: courierTracking.location || ''
+              });
+              if (courierTracking.status === 'delivered') {
+                data.shipments[idx].deliveryDate = courierTracking.updatedAt || new Date().toISOString();
+              }
+              data.shipments[idx].updatedAt = new Date().toISOString();
+              writeData(data);
+            }
+          }
+        }
+      }
     }
     
     res.json({
       success: true,
-      tracking: {
-        orderId: shipment.orderId,
-        trackingNumber: shipment.trackingNumber,
-        courier: shipment.courier,
-        courierName: shipment.courierName,
-        status: shipment.status,
-        statusHistory: shipment.statusHistory,
-        estimatedDelivery: shipment.estimatedDelivery,
-        deliveryDate: shipment.deliveryDate,
-        source: 'local'
-      }
+      tracking: trackingData
     });
   } catch (error) {
     console.error('Track by order ID error:', error);

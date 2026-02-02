@@ -633,6 +633,7 @@ const API = (() => {
           country: orderData.address?.country || 'India'
         },
         paymentMethod: orderData.paymentMethod || 'upi',
+        paymentDetails: orderData.paymentDetails || {},
         subtotal: orderData.subtotal || orderData.total || 0,
         shipping: 0,
         discount: orderData.discount || 0,
@@ -1035,6 +1036,19 @@ const API = (() => {
   };
 
   // =====================
+  // Settings API
+  // =====================
+
+  const settings = {
+    async getVisibility() {
+      return await request('/settings/sections/visibility');
+    },
+    async getPublic() {
+      return await request('/settings/public');
+    }
+  };
+
+  // =====================
   // Slides API (Hero Slider)
   // =====================
 
@@ -1119,6 +1133,7 @@ const API = (() => {
     cancellations,
     contact,
     slides,
+    settings,
     checkApiAvailable,
     getPerformanceStats: () => performanceTracker.getStats(),
     isApiAvailable: () => apiAvailable,

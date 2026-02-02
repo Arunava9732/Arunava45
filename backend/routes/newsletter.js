@@ -5,6 +5,7 @@ const path = require('path');
 const { authenticate, requireAdmin } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const { sendBulkEmails } = require('../utils/email');
+const { addNotification } = require('../utils/adminNotificationStore');
 
 const NEWSLETTERS_FILE = path.join(__dirname, '../data/newsletters.json');
 const SUBSCRIBERS_FILE = path.join(__dirname, '../data/newsletterSubscribers.json');
@@ -365,6 +366,16 @@ router.post('/subscribe', async (req, res) => {
         
         subscribers.push(subscriber);
         await writeSubscribers(subscribers);
+
+        // Add to Admin Notification Panel
+        addNotification({
+            type: 'newsletter',
+            title: 'New Newsletter Subscriber',
+            message: `New subscriber: ${email}${name ? ` (${name})` : ''}`,
+            priority: 'low',
+            link: '#newsletter',
+            data: { email, source: source || 'website' }
+        });
         
         logger.info(`New newsletter subscriber: ${email} from ${source || 'website'}`);
         res.json({ success: true, message: 'Successfully subscribed to newsletter' });

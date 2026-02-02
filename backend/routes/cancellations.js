@@ -8,6 +8,7 @@ const { authenticate, requireAdmin } = require('../middleware/auth');
 const { validateRequest, returnLimiter } = require('../middleware/security');
 const { body } = require('express-validator');
 const { sendAdminNotification } = require('../utils/whatsapp');
+const { addNotification } = require('../utils/adminNotificationStore');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
 
 const router = express.Router();
@@ -139,6 +140,16 @@ router.post('/',
     if (db.cancellations) {
       db.cancellations.create(cancellationRequest);
     }
+
+    // Add To Admin Notification Panel
+    addNotification({
+      type: 'cancellation',
+      title: 'Cancellation Requested',
+      message: `Cancellation requested for Order #${orderId} - Reason: ${reason}`,
+      priority: 'high',
+      link: '#cancellations',
+      data: { cancellationId: cancellationRequest.id, orderId }
+    });
 
     console.log(`[AI-Enhanced] Cancellation request created: ${cancellationRequest.id}, Order: ${orderId}, Auto-approved: ${autoApprove}`);
 

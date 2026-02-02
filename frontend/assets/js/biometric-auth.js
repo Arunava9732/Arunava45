@@ -174,7 +174,8 @@ class BiometricAuth {
                     id: window.location.hostname
                 },
                 user: {
-                    id: this.stringToArrayBuffer(username),
+                    // Use userId if available (more secure and fits in 64 bytes), fallback to username
+                    id: this.stringToArrayBuffer(userId || username),
                     name: username,
                     displayName: username
                 },
@@ -206,6 +207,7 @@ class BiometricAuth {
                 rawId: this.arrayBufferToBase64(credential.rawId),
                 type: credential.type,
                 username: username,
+                userId: userId,
                 createdAt: Date.now()
             };
             
@@ -287,6 +289,13 @@ class BiometricAuth {
             if (response.ok) {
                 const data = await response.json();
                 console.log('[BiometricAuth] Credential synced to server:', data);
+                
+                // Ensure credential is in local map
+                if (!this.registeredCredentials.has(credentialData.id)) {
+                    this.registeredCredentials.set(credentialData.id, credentialData);
+                    this.saveCredentials();
+                }
+
                 // Clear any pending credential for this user
                 this.clearPendingCredential(userEmail);
                 return true;
@@ -1103,6 +1112,11 @@ class BiometricAuth {
             loginsToday: this.stats.successfulAuths || 0
         };
     }
+}
+
+// Ensure the class is globally available
+if (typeof window !== 'undefined') {
+    window.BiometricAuth = BiometricAuth;
 }
 
 // Initialize Biometric Authentication

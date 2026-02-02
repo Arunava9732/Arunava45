@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Reviews - BLACKONN | What Our Customers Say</title>
-    <meta name="description" content="Read authentic customer reviews and testimonials about BLACKONN premium black clothing. See why thousands trust us for quality streetwear.">
+    <meta name="description" content="Read authentic customer reviews and testimonials about BLACKONN premium black clothing. See why customers trust us for quality streetwear.">
     <meta name="keywords" content="BLACKONN reviews, customer testimonials, product reviews, clothing reviews, streetwear feedback, customer ratings">
     <meta name="author" content="BLACKONN">
     <meta name="robots" content="index, follow">
@@ -34,6 +34,18 @@
     
     <!-- Core API & Auth -->
     <script src="assets/js/api.js"></script>
+    <script>
+      // Immediate visibility check
+      (async () => {
+        try {
+          const res = await fetch('/api/settings/sections/visibility');
+          const data = await res.json();
+          if (data && data.success && data.sections && data.sections.reviewsPage === false) {
+            window.location.href = 'index.html';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <script src="assets/js/auth.js"></script>
     
     <!-- Structured Data -->
@@ -49,8 +61,8 @@
             "name": "BLACKONN",
             "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "4.8",
-                "reviewCount": "150",
+                "ratingValue": "0.0",
+                "reviewCount": "0",
                 "bestRating": "5",
                 "worstRating": "1"
             }
@@ -2939,16 +2951,16 @@
                 <div class="stats-bar">
                     <div class="stat-item">
                         <div class="stat-number">
-                            4.8 <i class="ri-star-fill"></i>
+                            0.0 <i class="ri-star-fill"></i>
                         </div>
                         <div class="stat-label">Average Rating</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">500+</div>
+                        <div class="stat-number">0+</div>
                         <div class="stat-label">Happy Customers</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">98%</div>
+                        <div class="stat-number">0%</div>
                         <div class="stat-label">Recommend Us</div>
                     </div>
                 </div>
@@ -2976,7 +2988,7 @@
                     <div class="trust-icon">
                         <i class="ri-shield-star-line"></i>
                     </div>
-                    <h4>Trusted by 500+</h4>
+                    <h4>Trusted Community</h4>
                     <p>Growing community of happy customers</p>
                 </div>
                 <div class="trust-item">
@@ -3001,52 +3013,52 @@
         <section class="rating-overview" id="reviewsRatingSection">
             <div class="rating-card">
                 <div class="overall-rating">
-                    <div class="rating-big" id="overallRatingValue">4.8</div>
+                    <div class="rating-big" id="overallRatingValue">0.0</div>
                     <div class="rating-stars" id="overallRatingStars">
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-fill"></i>
-                        <i class="ri-star-half-fill"></i>
+                        <i class="ri-star-line"></i>
+                        <i class="ri-star-line"></i>
+                        <i class="ri-star-line"></i>
+                        <i class="ri-star-line"></i>
+                        <i class="ri-star-line"></i>
                     </div>
-                    <div class="rating-count" id="totalReviewsText">Based on 500+ reviews</div>
+                    <div class="rating-count" id="totalReviewsText">No reviews yet</div>
                 </div>
                 
                 <div class="rating-breakdown" id="ratingBreakdownBars">
                     <div class="rating-bar">
                         <span class="rating-bar-label">5 <i class="ri-star-fill"></i></span>
                         <div class="rating-bar-track">
-                            <div class="rating-bar-fill" style="width: 78%;"></div>
+                            <div class="rating-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="rating-bar-percent">78%</span>
+                        <span class="rating-bar-percent">0%</span>
                     </div>
                     <div class="rating-bar">
                         <span class="rating-bar-label">4 <i class="ri-star-fill"></i></span>
                         <div class="rating-bar-track">
-                            <div class="rating-bar-fill" style="width: 15%;"></div>
+                            <div class="rating-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="rating-bar-percent">15%</span>
+                        <span class="rating-bar-percent">0%</span>
                     </div>
                     <div class="rating-bar">
                         <span class="rating-bar-label">3 <i class="ri-star-fill"></i></span>
                         <div class="rating-bar-track">
-                            <div class="rating-bar-fill" style="width: 5%;"></div>
+                            <div class="rating-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="rating-bar-percent">5%</span>
+                        <span class="rating-bar-percent">0%</span>
                     </div>
                     <div class="rating-bar">
                         <span class="rating-bar-label">2 <i class="ri-star-fill"></i></span>
                         <div class="rating-bar-track">
-                            <div class="rating-bar-fill" style="width: 1%;"></div>
+                            <div class="rating-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="rating-bar-percent">1%</span>
+                        <span class="rating-bar-percent">0%</span>
                     </div>
                     <div class="rating-bar">
                         <span class="rating-bar-label">1 <i class="ri-star-fill"></i></span>
                         <div class="rating-bar-track">
-                            <div class="rating-bar-fill" style="width: 1%;"></div>
+                            <div class="rating-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="rating-bar-percent">1%</span>
+                        <span class="rating-bar-percent">0%</span>
                     </div>
                 </div>
             </div>
@@ -3196,7 +3208,7 @@
         <!-- Achievements Section -->
         <section class="achievements-section" id="reviewsMilestonesSection">
             <h3>Our Journey & Milestones</h3>
-            <p class="subtitle">From a small idea to a growing brand loved by thousands</p>
+            <p class="subtitle">From a small idea to a growing brand loved by our customers</p>
             <div class="achievements-timeline" id="achievementsTimeline">
                 <!-- achievements will be loaded dynamically -->
             </div>
@@ -3349,7 +3361,7 @@
     </footer>
 
     <div class="bottom">
-        © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+        © BLACKONN 2026. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
     </div>
 
     <script>
@@ -3851,15 +3863,15 @@
             const statItems = statsBar.querySelectorAll('.stat-item');
             if (statItems[0]) {
               const numEl = statItems[0].querySelector('.stat-number');
-              if (numEl) numEl.innerHTML = (data.stats.averageRating || 4.8) + ' <i class="ri-star-fill"></i>';
+              if (numEl) numEl.innerHTML = (data.stats.averageRating || 0.0) + ' <i class="ri-star-fill"></i>';
             }
             if (statItems[1]) {
               const numEl = statItems[1].querySelector('.stat-number');
-              if (numEl) numEl.textContent = data.stats.happyCustomers || '500+';
+              if (numEl) numEl.textContent = data.stats.happyCustomers || '0';
             }
             if (statItems[2]) {
               const numEl = statItems[2].querySelector('.stat-number');
-              if (numEl) numEl.textContent = data.stats.recommendUs || '98%';
+              if (numEl) numEl.textContent = data.stats.recommendUs || '0%';
             }
           }
         }

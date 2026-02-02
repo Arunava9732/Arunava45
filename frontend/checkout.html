@@ -52,24 +52,23 @@
     * {
       box-sizing: border-box !important;
     }
-    html, body {
-      overflow-x: hidden;
-      max-width: 100vw;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
     html {
+      height: 100%;
+      overflow: hidden;
       scroll-behavior: smooth;
       background: #eef3f8;
     }
     body {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
       color: #000;
       font-family: 'Lora', serif;
-      overflow-x: hidden;
       position: relative;
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      width: 100%;
     }
 
     body::before {
@@ -882,25 +881,44 @@
       margin: 12px 0;
       position: relative;
     }
+
+    .discount-label {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .discount-value-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #discountAmount {
+      color: #10b981;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
     
     .remove-promo-btn {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
       color: #dc2626;
       cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      opacity: 0.7;
-      transition: all 0.2s ease;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1.1rem;
     }
     
     .remove-promo-btn:hover {
-      opacity: 1;
-      background: #fee2e2;
+      background: #dc2626;
+      color: #fff;
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
     }
 
     #summaryButtons {
@@ -1981,7 +1999,7 @@
       .summary-item.total span:last-child {
         font-size: 1.1rem;
       }
-    }
+    
 
     /* Large screen optimizations */
     @media (min-width: 1400px) {
@@ -2896,37 +2914,37 @@
             
             <div class="form-group">
               <label for="fullName">Full Name *</label>
-              <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
+              <input type="text" id="fullName" name="fullName" required placeholder="Full Name">
               <div class="error-message">Please enter your full name</div>
             </div>
 
             <div class="form-group">
               <label for="email">Email Address *</label>
-              <input type="email" id="email" name="email" required placeholder="john.doe@example.com">
+              <input type="email" id="email" name="email" required placeholder="email@example.com">
               <div class="error-message">Please enter a valid email address</div>
             </div>
 
             <div class="form-group">
               <label for="phone">Phone Number *</label>
-              <input type="tel" id="phone" name="phone" required placeholder="+91 9876543210">
+              <input type="tel" id="phone" name="phone" required placeholder="Phone Number">
               <div class="error-message">Please enter a valid phone number</div>
             </div>
 
             <div class="form-group">
               <label for="address">Street Address *</label>
-              <input type="text" id="address" name="address" required placeholder="456 Oak Avenue, Apartment 12">
+              <input type="text" id="address" name="address" required placeholder="Street Address, Apartment, etc.">
               <div class="error-message">Please enter your street address</div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label for="city">City *</label>
-                <input type="text" id="city" name="city" required placeholder="Mumbai">
+                <input type="text" id="city" name="city" required placeholder="City">
                 <div class="error-message">Please enter your city</div>
               </div>
               <div class="form-group">
                 <label for="state">State *</label>
-                <input type="text" id="state" name="state" required placeholder="Maharashtra">
+                <input type="text" id="state" name="state" required placeholder="State">
                 <div class="error-message">Please enter your state</div>
               </div>
             </div>
@@ -2934,7 +2952,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="postal">Postal Code *</label>
-                <input type="text" id="postal" name="postal" required placeholder="400001">
+                <input type="text" id="postal" name="postal" required placeholder="Postal Code">
                 <div class="error-message">Please enter your postal code</div>
               </div>
               <div class="form-group">
@@ -2982,6 +3000,10 @@
                 <i class="ri-building-line"></i>
                 <span>Bank Transfer</span>
               </div>
+            </div>
+
+            <!-- Payment Details Input Area (Currently Hidden as per requirements) -->
+            <div id="paymentDetailsContainer" style="display: none;">
             </div>
 
             <!-- Trust Badges -->
@@ -3118,9 +3140,11 @@
         
         <!-- Applied Discount Row (shown when discount is applied) -->
         <div class="summary-item discount-row" id="discountRow" style="display: none;">
-          <span style="color: #10b981;"><i class="ri-gift-line"></i> Discount:</span>
-          <span id="discountAmount" style="color: #10b981;">-₹0</span>
-          <button type="button" class="remove-promo-btn" onclick="removePromoCode()" title="Remove"><i class="ri-close-line"></i></button>
+          <span class="discount-label"><i class="ri-gift-line"></i> Discount:</span>
+          <div class="discount-value-container">
+            <span id="discountAmount">-₹0</span>
+            <button type="button" class="remove-promo-btn" onclick="removePromoCode()" title="Remove"><i class="ri-close-line"></i></button>
+          </div>
         </div>
         
         <div class="summary-item total">
@@ -3748,6 +3772,8 @@
   }
 
   function selectPayment(element, method) {
+    if (element.classList.contains('disabled')) return;
+
     // Remove selected class from all payment options
     document.querySelectorAll('.payment-option').forEach(opt => {
       opt.classList.remove('selected');
@@ -3756,6 +3782,34 @@
     // Add selected class to clicked option
     element.classList.add('selected');
     selectedPaymentMethod = method;
+
+    // Show details container
+    const detailsContainer = document.getElementById('paymentDetailsContainer');
+    if (detailsContainer) {
+      detailsContainer.style.display = (method !== 'cod' && method !== 'online_razorpay') ? 'block' : 'none';
+      
+      // Hide all detail sub-sections
+      const upi = document.getElementById('upiDetails');
+      const card = document.getElementById('cardDetails');
+      const wallet = document.getElementById('walletDetails');
+      const bank = document.getElementById('bankDetailsDisplay');
+      
+      if (upi) upi.style.display = 'none';
+      if (card) card.style.display = 'none';
+      if (wallet) wallet.style.display = 'none';
+      if (bank) bank.style.display = 'none';
+      
+      // Show relevant sub-section
+      if (method === 'upi' && upi) {
+        upi.style.display = 'block';
+      } else if (method === 'card' && card) {
+        card.style.display = 'block';
+      } else if (method === 'wallet' && wallet) {
+        wallet.style.display = 'block';
+      } else if ((method === 'netbanking' || method === 'bank_transfer') && bank) {
+        bank.style.display = 'block';
+      }
+    }
     
     // Enable next button
     document.getElementById('paymentNextBtn').disabled = false;
@@ -3763,7 +3817,13 @@
 
   async function proceedToReview() {
     if (!selectedPaymentMethod) {
+      showToast('Please select a payment method', 'warning');
       return;
+    }
+
+    // Validate payment details if not COD or Razorpay
+    if (selectedPaymentMethod !== 'cod' && selectedPaymentMethod !== 'online_razorpay') {
+      // No longer validating sensitive manual payment details as per requirements
     }
 
     const fullName = document.getElementById('fullName').value;
@@ -3781,7 +3841,12 @@
     document.getElementById('reviewPhone').textContent = phone;
     document.getElementById('reviewAddress').textContent = address;
     document.getElementById('reviewCity').textContent = `${city}, ${state} ${postal}`;
-    document.getElementById('reviewPayment').textContent = selectedPaymentMethod;
+    
+    // Set payment text
+    let paymentText = selectedPaymentMethod.toUpperCase().replace('_', ' ');
+    // No longer appending details (UPI ID, etc.) for privacy
+    
+    document.getElementById('reviewPayment').textContent = paymentText;
 
     // Use checkoutItems (already loaded from Buy Now or Cart)
     try {
@@ -3917,6 +3982,11 @@
       }
     }
 
+    // Gather payment details based on selected method
+    let paymentDetails = {};
+    // No longer gathering sensitive payment details from user input
+    // paymentDetails will remain empty, showing only mode and status on invoice
+
     // Create order object
     const orderData = {
       customer: {
@@ -3947,6 +4017,7 @@
       promoType: appliedPromo ? appliedPromo.type : null,
       total: total,
       paymentMethod: selectedPaymentMethod || 'UPI',
+      paymentDetails: paymentDetails,
       paymentStatus: 'pending',
       status: 'Pending'
     };
@@ -4532,7 +4603,6 @@
             width: 100% !important;
             justify-content: center;
           }
-        }
           .upi-app-btn {
             padding: 12px 8px;
           }
@@ -4552,7 +4622,8 @@
         
         /* Tab switcher for mobile/web */
         .upi-tab-switcher {
-          display: flex;
+          display: flex !important;
+          flex-direction: row !important;
           background: #f3f4f6;
           border-radius: 12px;
           padding: 4px;
@@ -5659,7 +5730,7 @@
 </footer>
 
 <div class="bottom">
-  © BLACKONN 2025. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
+  © BLACKONN 2026. All rights reserved · <a href="terms.html">Terms & Conditions</a> · <a href="privacy-policy.html">Privacy Policy</a>
 </div>
 
     <!-- 🚀 NEXT-GENERATION ADVANCED SYSTEMS -->

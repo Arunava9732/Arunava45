@@ -32,79 +32,11 @@ const BlackonnStore = {
       if (window.AIAnalytics) {
         window.AIAnalytics.track(event, data);
       }
-      console.log('[AI-STORE]', event, data);
     }
   },
 
   // Embedded products data (fallback for static mode)
-  DEFAULT_PRODUCTS: [
-    {
-      id: "prod-001",
-      name: "Over Sized T-Shirt",
-      price: 1499,
-      color: "Black",
-      size: "All",
-      stock: 100,
-      position: 1,
-      image: "/uploads/products/1766256485041_oorxuo.png",
-      thumbImages: ["/uploads/products/1766256485041_oorxuo.png", "/uploads/products/1766300543944_lcdhiw.png"]
-    },
-    {
-      id: "prod-002",
-      name: "Slim Fit T-Shirt",
-      price: 599,
-      color: "Red and Blue",
-      size: "All",
-      stock: 150,
-      position: 2,
-      image: "/uploads/products/1766256517720_hcxarp.png",
-      thumbImages: ["/uploads/products/1766256517720_hcxarp.png", "/uploads/products/1766304774184_nz59z8.png"]
-    },
-    {
-      id: "prod-003",
-      name: "CAP",
-      price: 399,
-      color: "Black",
-      size: "All",
-      stock: 200,
-      position: 3,
-      image: "/uploads/products/1766256568248_klqmvk.png",
-      thumbImages: ["/uploads/products/1766256568248_klqmvk.png", "/uploads/products/1766305297632_oepikm.png"]
-    },
-    {
-      id: "prod-004",
-      name: "BAG",
-      price: 1799,
-      color: "Black",
-      size: "One Size",
-      stock: 75,
-      position: 4,
-      image: "/uploads/products/1766256649355_hpnrsv.png",
-      thumbImages: ["/uploads/products/1766256649355_hpnrsv.png", "/uploads/products/1766305433978_ro3m77.png"]
-    },
-    {
-      id: "prod-005",
-      name: "Hoodie",
-      price: 1999,
-      color: "Black",
-      size: "All",
-      stock: 80,
-      position: 5,
-      image: "/uploads/products/1766256703180_kqw3g7.png",
-      thumbImages: ["/uploads/products/1766256703180_kqw3g7.png", "/uploads/products/1766305203633_pi904w.png"]
-    },
-    {
-      id: "prod-006",
-      name: "Pants",
-      price: 1299,
-      color: "All",
-      size: "All",
-      stock: 120,
-      position: 6,
-      image: "/uploads/products/1766258492979_8sibcs.png",
-      thumbImages: ["/uploads/products/1766258492979_8sibcs.png", "/uploads/products/1766305507705_rtn6gs.png"]
-    }
-  ],
+  DEFAULT_PRODUCTS: [],
 
   // Initialize store - load products from embedded data (no fetch needed)
   init() {

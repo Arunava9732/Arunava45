@@ -33,8 +33,8 @@ def generate_insights(data):
         "timestamp": datetime.now().isoformat(),
         "insights": insights,
         "predictions": {
-            "tomorrow_traffic": int(avg_last_3 * 1.05) if len(traffic) > 7 else random.randint(100, 500),
-            "conversion_rate": round(random.uniform(2.0, 5.0), 2)
+            "tomorrow_traffic": int(avg_last_3 * 1.05) if len(traffic) > 7 else 0,
+            "conversion_rate": round(sum([d.get('conversions', 0) for d in traffic]) / max(sum([d.get('visits', 0) for d in traffic]), 1) * 100, 2) if traffic else 0.0
         }
     }
 

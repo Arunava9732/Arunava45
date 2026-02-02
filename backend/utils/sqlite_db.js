@@ -79,5 +79,19 @@ module.exports = {
     return stmt.run(name, value, JSON.stringify(tags));
   },
 
+  /**
+   * Get count of active unique visitors in the last N minutes
+   */
+  getActiveVisitors: (minutes = 5) => {
+    try {
+      const stmt = db.prepare("SELECT COUNT(DISTINCT ip_address) as count FROM traffic_logs WHERE timestamp > datetime('now', '-' || ? || ' minutes')");
+      const result = stmt.get(minutes);
+      return result ? result.count : 0;
+    } catch (err) {
+      console.error('[SQLITE] Error getting active visitors:', err.message);
+      return 0;
+    }
+  },
+
   db // Raw access if needed
 };

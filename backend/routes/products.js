@@ -219,6 +219,12 @@ router.post('/',
     db.products.create(product);
     logAdminActivity(req.user.id, 'CREATE_PRODUCT', { productId: product.id, name: product.name });
 
+    // Invalidate caches
+    if (req.app.locals.invalidateCache) {
+      req.app.locals.invalidateCache('/api/products');
+      req.app.locals.invalidateCache('/api/seo');
+    }
+
     // Trigger AI SEO Background Task (Automated SEO)
     try {
       pythonBridge.runPythonScript('ai_hub.py', [
@@ -285,7 +291,11 @@ router.put('/:id', authenticate, isAdmin, validateRequest([
 
     const updated = db.products.update(req.params.id, updates);
     logAdminActivity(req.user.id, 'UPDATE_PRODUCT', { productId: req.params.id, updates });
-
+    // Invalidate caches
+    if (req.app.locals.invalidateCache) {
+      req.app.locals.invalidateCache('/api/products');
+      req.app.locals.invalidateCache('/api/seo');
+    }
     // Trigger AI SEO Background Task (Automated SEO update)
     try {
       pythonBridge.runPythonScript('ai_hub.py', [
@@ -324,6 +334,12 @@ router.delete('/:id', authenticate, isAdmin, (req, res) => {
     db.products.delete(req.params.id);
     logAdminActivity(req.user.id, 'DELETE_PRODUCT', { productId: req.params.id });
     
+    // Invalidate caches
+    if (req.app.locals.invalidateCache) {
+      req.app.locals.invalidateCache('/api/products');
+      req.app.locals.invalidateCache('/api/seo');
+    }
+
     res.json({ success: true });
   } catch (error) {
     console.error('Delete product error:', error);

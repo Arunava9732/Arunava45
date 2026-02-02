@@ -258,4 +258,59 @@ router.post('/sync', authenticate, (req, res) => {
   }
 });
 
+// Add gift card to cart
+router.post('/add-gift-card', authenticate, (req, res) => {
+  try {
+    const { value, recipientName, recipientEmail, message, isGift } = req.body;
+    
+    // Validate amount
+    const amount = parseInt(value);
+    if (!amount || amount < 100 || amount > 50000) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Gift card value must be between ₹100 and ₹50,000' 
+      });
+    }
+    
+    // Get current cart
+    const carts = db.carts.findAll();
+    let cart = carts[req.user.id] || [];
+    
+    // Create gift card cart item
+    const giftCardItem = {
+      id: 'gc_' + Date.now(),
+      type: 'gift-card',
+      name: 'BLACKONN Gift Card',
+      price: amount,
+      quantity: 1,
+      image: '/assets/img/gift-card-preview.png',
+      selectedSize: 'Digital',
+      selectedColor: 'Gift Card',
+      recipientName: recipientName || 'Self',
+      recipientEmail: recipientEmail || req.user.email,
+      message: message || '',
+      isGift: !!isGift,
+      addedAt: new Date().toISOString()
+    };
+    
+    cart.push(giftCardItem);
+    carts[req.user.id] = cart;
+    db.carts.replaceAll(carts);
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    res.json({ 
+      success: true, 
+      message: 'Gift card added to cart',
+      cart,
+      subtotal,
+      itemCount
+    });
+  } catch (error) {
+    console.error('Add gift card to cart error:', error);
+    res.status(500).json({ success: false, error: 'Failed to add gift card to cart' });
+  }
+});
+
 module.exports = router;

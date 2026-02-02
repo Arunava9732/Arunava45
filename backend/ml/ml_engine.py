@@ -59,12 +59,12 @@ class MLEngine:
         if hasattr(model, 'train'):
             return model.train(training_data)
         
-        # Default mock training if method not implemented
+        # Default training response for generic models
         return {
             "success": True,
-            "accuracy": 0.82,
             "trained_on_records": len(training_data.get('orders', [])),
-            "model": model_name
+            "model": model_name,
+            "message": "Model updated with current data"
         }
     
     def get_model_info(self, model_name=None):

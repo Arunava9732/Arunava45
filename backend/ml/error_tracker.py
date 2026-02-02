@@ -189,7 +189,7 @@ class ErrorTrackerEngine:
                         "category": pattern_info['category'],
                         "severity": pattern_info['severity'],
                         "patternMatch": pattern_name,
-                        "confidence": 0.85
+                        "confidence": 0.8 + (0.1 if 'high' in pattern_info['severity'] else 0)
                     }
         
         # Default classification
@@ -197,7 +197,7 @@ class ErrorTrackerEngine:
             "category": "Unknown",
             "severity": "medium",
             "patternMatch": None,
-            "confidence": 0.3
+            "confidence": 0.25
         }
     
     def _get_resolutions(self, classification, message):

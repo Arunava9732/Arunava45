@@ -26,8 +26,6 @@
       
       // Setup sync with other tabs
       this.setupCrossTabSync();
-      
-      console.log('[STATE] Initialized with state:', this.state);
     },
     
     /**
@@ -38,8 +36,7 @@
         keys: Object.keys(this.state).length,
         historySize: this.history.length,
         subscribers: Object.keys(this.subscribers).length,
-        persisted: !!localStorage.getItem(this.persistKey),
-        reliability: '99.99%'
+        persisted: !!localStorage.getItem(this.persistKey)
       };
     },
 
@@ -96,8 +93,6 @@
       if (notify) {
         this.notify(key, value, oldValue);
       }
-      
-      console.log(`[STATE] Set ${key}:`, value);
     },
     
     /**
@@ -141,8 +136,6 @@
       if (notify) {
         this.notify(key, undefined, oldValue);
       }
-      
-      console.log(`[STATE] Deleted ${key}`);
     },
     
     /**

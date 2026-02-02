@@ -53,25 +53,14 @@ function aiDbLog(operation, collection, details = {}) {
 // Default data structures
 const DEFAULTS = {
   users: [],
-  products: [
-    { id: "prod-001", name: "Over Sized T-Shirt", price: 1499, color: "Black", size: "All", stock: 100, position: 1, description: "Comfortable oversized t-shirt made from premium cotton.", image: "/uploads/products/1766256485041_oorxuo.png", thumbImages: ["/uploads/products/1766256485041_oorxuo.png", "/uploads/products/1766300543944_lcdhiw.png"] },
-    { id: "prod-002", name: "Slim Fit T-Shirt", price: 599, color: "Red and Blue", size: "All", stock: 150, position: 2, description: "Slim fit t-shirt available in red and blue.", image: "/uploads/products/1766256517720_hcxarp.png", thumbImages: ["/uploads/products/1766256517720_hcxarp.png", "/uploads/products/1766304774184_nz59z8.png"] },
-    { id: "prod-003", name: "CAP", price: 399, color: "Black", size: "All", stock: 200, position: 3, description: "Classic black cap with adjustable strap.", image: "/uploads/products/1766256568248_klqmvk.png", thumbImages: ["/uploads/products/1766256568248_klqmvk.png", "/uploads/products/1766305297632_oepikm.png"] },
-    { id: "prod-004", name: "BAG", price: 1799, color: "Black", size: "One Size", stock: 75, position: 4, description: "Stylish black bag with multiple compartments.", image: "/uploads/products/1766256649355_hpnrsv.png", thumbImages: ["/uploads/products/1766256649355_hpnrsv.png", "/uploads/products/1766305433978_ro3m77.png"] },
-    { id: "prod-005", name: "Hoodie", price: 1999, color: "Black", size: "All", stock: 80, position: 5, description: "Cozy black hoodie made from soft fleece.", image: "/uploads/products/1766256703180_kqw3g7.png", thumbImages: ["/uploads/products/1766256703180_kqw3g7.png", "/uploads/products/1766305203633_pi904w.png"] },
-    { id: "prod-006", name: "Pants", price: 1299, color: "All", size: "All", stock: 120, position: 6, description: "Versatile pants available in multiple colors.", image: "/uploads/products/1766258492979_8sibcs.png", thumbImages: ["/uploads/products/1766258492979_8sibcs.png", "/uploads/products/1766305507705_rtn6gs.png"] }
-  ],
+  products: [],
   orders: [],
   carts: {},
   returns: [],
   contacts: [],
   sessions: [],
   passwordResets: [],
-  slides: [
-    { id: "slide-001", type: "video", src: "BG_VIDEO.mp4", title: "Hero Video 1", active: true, position: 1, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "slide-002", type: "video", src: "3627-172488393.mp4", title: "Hero Video 2", active: true, position: 2, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "slide-003", type: "video", src: "9398-219552669.mp4", title: "Hero Video 3", active: true, position: 3, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
-  ],
+  slides: [],
   wishlists: {}
 };
 

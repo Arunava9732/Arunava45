@@ -10,12 +10,109 @@ const db = require('../utils/database');
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { validators, validateRequest, orderLimiter, returnLimiter } = require('../middleware/security');
 const { body, param } = require('express-validator');
-const { sendOrderConfirmation, sendLowStockAlert } = require('../utils/email');
+const { 
+  sendOrderConfirmation, 
+  sendLowStockAlert, 
+  sendGiftCardEmail,
+  sendNewOrderAdmin
+} = require('../utils/email');
 const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
 const { notifyAdmins } = require('../utils/adminNotifier');
 const { addNotification } = require('../utils/adminNotificationStore');
 const { sendOrderWebhook } = require('../routes/webhooks');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
+
+// Gift Card helper functions for order processing
+const GIFT_CARDS_FILE = path.join(__dirname, '..', 'data', 'giftCards.json');
+
+function readGiftCardData() {
+  try {
+    if (!fs.existsSync(GIFT_CARDS_FILE)) return { giftCards: [], transactions: [] };
+    const data = JSON.parse(fs.readFileSync(GIFT_CARDS_FILE, 'utf-8'));
+    return {
+      giftCards: data.giftCards || [],
+      transactions: data.transactions || [],
+      settings: data.settings || { enabled: true, minAmount: 100, maxAmount: 50000, defaultExpiryDays: 365 }
+    };
+  } catch (e) {
+    return { giftCards: [], transactions: [], settings: { enabled: true, defaultExpiryDays: 365 } };
+  }
+}
+
+function writeGiftCardData(data) {
+  fs.writeFileSync(GIFT_CARDS_FILE, JSON.stringify(data, null, 2));
+}
+
+function generateGiftCardCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'BLK-';
+  for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  code += '-';
+  for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  return code;
+}
+
+async function processGiftCardItems(order) {
+  if (!order.items || !Array.isArray(order.items)) return;
+  
+  const giftCardItems = order.items.filter(item => item.type === 'gift-card' || (item.id && String(item.id).startsWith('gc_')));
+  if (giftCardItems.length === 0) return;
+  
+  console.log(`[Order Processing] Processing ${giftCardItems.length} gift cards for Order ${order.id}`);
+  const gcData = readGiftCardData();
+  
+  for (const item of giftCardItems) {
+    const code = generateGiftCardCode();
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + (gcData.settings?.defaultExpiryDays || 365));
+    
+    // Determine user email
+    const customerEmail = order.userEmail || (order.customer && order.customer.email) || (order.shippingInfo && order.shippingInfo.email);
+    
+    const newCard = {
+      id: 'GC-' + uuidv4(),
+      code: code,
+      value: item.price,
+      balance: item.price,
+      status: 'active',
+      recipientName: item.recipientName || 'Valued Customer',
+      recipientEmail: item.recipientEmail || customerEmail,
+      senderName: order.userName || (order.customer && order.customer.name) || 'BLACKONN Store',
+      message: item.message || '',
+      orderId: order.id,
+      purchasedBy: order.userId,
+      purchasedAt: new Date().toISOString(),
+      expiresAt: expiryDate.toISOString(),
+      createdAt: new Date().toISOString()
+    };
+    
+    gcData.giftCards.push(newCard);
+    
+    // Record transaction
+    gcData.transactions.push({
+      id: 'tx_p_' + uuidv4(),
+      giftCardId: newCard.id,
+      type: 'purchase',
+      amount: item.price,
+      userId: order.userId,
+      date: new Date().toISOString(),
+      details: `Purchased in Order #${order.id}`
+    });
+    
+    // Send email to recipient
+    try {
+      if (newCard.recipientEmail) {
+        await sendGiftCardEmail(newCard, newCard.recipientEmail, newCard.senderName);
+        console.log(`[Order Processing] Gift card email sent to ${newCard.recipientEmail}`);
+      }
+    } catch (err) {
+      console.error(`[Order Processing] Failed to send gift card email:`, err);
+    }
+  }
+  
+  writeGiftCardData(gcData);
+  console.log(`[Order Processing] Successfully generated ${giftCardItems.length} gift cards`);
+}
 
 const router = express.Router();
 
@@ -115,9 +212,9 @@ router.post('/',
   ]),
   (req, res) => {
     try {
-      const { items, shippingInfo, paymentMethod, subtotal, shipping, discount, promoCode, promoType, total } = req.body;
+      const { items, shippingInfo, paymentMethod, paymentDetails, subtotal, shipping, discount, promoCode, promoType, total } = req.body;
 
-      // Handle Gift Card Redemption if present
+      // Enhanced Gift Card Validation & Redemption
       if (promoType === 'giftcard' && promoCode) {
         try {
           const giftCardsPath = path.join(__dirname, '..', 'data', 'giftCards.json');
@@ -125,37 +222,68 @@ router.post('/',
             const gcData = JSON.parse(fs.readFileSync(giftCardsPath, 'utf8'));
             const cardIndex = gcData.giftCards.findIndex(c => c.code.toUpperCase() === promoCode.toUpperCase());
             
-            if (cardIndex !== -1) {
-              const card = gcData.giftCards[cardIndex];
-              const redeemAmount = Number(discount) || 0;
-              
-              if (card.status === 'active' && card.balance >= redeemAmount) {
-                // Deduct balance
-                card.balance -= redeemAmount;
-                if (card.balance <= 0) {
-                  card.balance = 0;
-                  card.status = 'redeemed';
-                }
-                card.lastUsedAt = new Date().toISOString();
-                
-                // Record transaction
-                gcData.transactions.push({
-                  id: 'tx_' + uuidv4(),
-                  giftCardId: card.id,
-                  type: 'redeem',
-                  amount: redeemAmount,
-                  userId: req.user.id,
-                  date: new Date().toISOString(),
-                  details: `Redeemed for Order creation`
-                });
-                
-                fs.writeFileSync(giftCardsPath, JSON.stringify(gcData, null, 2));
-                console.log(`[GiftCard] Redeemed ₹${redeemAmount} from ${promoCode} for new order`);
-              }
+            if (cardIndex === -1) {
+              return res.status(400).json({ success: false, error: 'Invalid gift card code' });
             }
+            
+            const card = gcData.giftCards[cardIndex];
+            const redeemAmount = Number(discount) || 0;
+            const userId = req.user.id;
+            
+            // Ownership Check: If card is claimed by someone else, block use.
+            if (card.claimedBy && card.claimedBy !== userId) {
+              return res.status(400).json({ success: false, error: 'This gift card is linked to another account' });
+            }
+            
+            // Check One-Time Use & Status
+            if (card.status !== 'active' || (card.balance !== undefined && card.balance <= 0)) {
+              return res.status(400).json({ success: false, error: 'This gift card has already been redeemed or is no longer active' });
+            }
+
+            // Check if expired
+            if (card.expiresAt && new Date(card.expiresAt) < new Date()) {
+              return res.status(400).json({ success: false, error: 'Gift card has expired' });
+            }
+
+            // Ensure balance is sufficient for the requested discount
+            if (card.balance < redeemAmount) {
+              return res.status(400).json({ success: false, error: 'Insufficient gift card balance' });
+            }
+            
+            // MULTI-USE REDEMPTION: Deduct only used balance, keep active if balance remains
+            const originalBalance = card.balance;
+            card.balance -= redeemAmount;
+            
+            if (card.balance <= 0) {
+              card.balance = 0;
+              card.status = 'redeemed';
+            } else {
+              card.status = 'active';
+            }
+
+            card.claimedBy = userId; 
+            card.lastUsedAt = new Date().toISOString();
+            
+            // Record detailed transaction
+            gcData.transactions.push({
+              id: 'tx_ord_' + uuidv4(),
+              giftCardId: card.id,
+              type: 'redeem',
+              amount: redeemAmount,
+              remainingBalance: card.balance,
+              userId: userId,
+              date: new Date().toISOString(),
+              details: `Partial redemption for Order (ORD${Date.now()})`
+            });
+            
+            fs.writeFileSync(giftCardsPath, JSON.stringify(gcData, null, 2));
+            console.log(`[GiftCard] Multi-use redemption for ${promoCode} by user ${req.user.email}. Remaining: ₹${card.balance}`);
+          } else {
+            return res.status(400).json({ success: false, error: 'Gift card system offline' });
           }
         } catch (gcErr) {
-          console.error('Error processing gift card during order creation:', gcErr);
+          console.error('Critical error in gift card redemption flow:', gcErr);
+          return res.status(500).json({ success: false, error: 'Gift card processing failed' });
         }
       }
 
@@ -193,8 +321,12 @@ router.post('/',
         items: enrichedItems,
         shippingInfo,
         paymentMethod: paymentMethod || 'cod',
+        paymentDetails: paymentDetails || {},
         subtotal: Number(subtotal) || 0,
         shipping: Number(shipping) || 0,
+        discount: Number(discount) || 0,
+        promoCode: promoCode || null,
+        promoType: promoType || null,
         total: Number(total) || 0,
         status: isCOD ? 'Pending' : 'Awaiting Payment',
         paymentStatus: isCOD ? 'Pending' : 'Awaiting Payment',
@@ -221,12 +353,18 @@ router.post('/',
 
         // Send Order Confirmation to User
         sendOrderConfirmation(order, req.user.email).catch(err => console.error('Order email failed:', err));
+        
+        // Send Notification to Admin
+        sendNewOrderAdmin(order).catch(err => console.error('Admin order email failed:', err));
 
         // Unified Admin Notification
         notifyAdmins(
           `New Order: #${order.id.slice(-8).toUpperCase()}`,
           formatOrderMessage(order)
         ).catch(err => console.error('Admin notification failed:', err));
+
+        // Process any purchased gift cards in the order
+        processGiftCardItems(order).catch(err => console.error('Gift card processing failed:', err));
 
         // Update product stock only for confirmed orders (COD)
         items.forEach(item => {
@@ -239,6 +377,16 @@ router.post('/',
 
             // Trigger low stock alert if stock falls below 5
             if (newStock <= 5) {
+              // Add to Admin Notification Panel
+              addNotification({
+                type: 'low_stock',
+                title: 'Low Stock Alert',
+                message: `Product "${product.name}" is low on stock (${newStock} remaining)`,
+                priority: 'high',
+                link: '#products',
+                data: { productId: product.id, stock: newStock }
+              });
+
               notifyAdmins(
                 `Low Stock Alert: ${product.name}`,
                 formatLowStockMessage({ ...product, stock: newStock })
@@ -304,9 +452,13 @@ router.patch('/:id/status', authenticate, isAdmin, (req, res) => {
       const userEmail = updated.userEmail || (updated.shippingInfo && updated.shippingInfo.email);
       if (userEmail) {
         sendOrderConfirmation(updated, userEmail).catch(err => console.error('Order email failed:', err));
+        sendNewOrderAdmin(updated).catch(err => console.error('Admin order email failed:', err));
       }
       
       sendAdminNotification(formatOrderMessage(updated)).catch(err => console.error('WhatsApp notification failed:', err));
+      
+      // Process any purchased gift cards in the order
+      processGiftCardItems(updated).catch(err => console.error('Gift card processing failed:', err));
       
       // Deduct stock
       if (updated.items && Array.isArray(updated.items)) {
@@ -371,10 +523,14 @@ router.post('/:id/verify-payment', authenticate, (req, res) => {
     const userEmail = order.userEmail || (order.shippingInfo && order.shippingInfo.email);
     if (userEmail) {
       sendOrderConfirmation(updated, userEmail).catch(err => console.error('Order email failed:', err));
+      sendNewOrderAdmin(updated).catch(err => console.error('Admin order email failed:', err));
     }
     
     // Send WhatsApp notification to admin
     sendAdminNotification(formatOrderMessage(updated)).catch(err => console.error('WhatsApp notification failed:', err));
+    
+    // Process any purchased gift cards in the order
+    processGiftCardItems(updated).catch(err => console.error('Gift card processing failed:', err));
     
     // Update product stock now that payment is confirmed
     if (order.items && Array.isArray(order.items)) {

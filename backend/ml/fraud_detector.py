@@ -31,8 +31,8 @@ class FraudDetector:
             'very_high_amount': 50000,
             'max_orders_per_hour': 5,
             'max_orders_per_day': 20,
-            'suspicious_email_domains': ['tempmail.com', 'throwaway.email', 'guerrillamail.com', 'mailinator.com'],
-            'high_risk_countries': ['NG', 'PK', 'BD']  # Adjust based on your data
+            'suspicious_email_domains': [],
+            'high_risk_countries': []  # Updated via backend settings in production
         }
     
     def analyze_transaction(self, transaction, history=None):

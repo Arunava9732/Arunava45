@@ -26,7 +26,7 @@ const TEXTLOCAL_SENDER = process.env.TEXTLOCAL_SENDER || 'BLKONN';
 // Admin phone numbers
 const ADMIN_PHONE_NUMBERS = process.env.ADMIN_PHONES ? 
   process.env.ADMIN_PHONES.split(',') : 
-  ['919732726750', '918670328717'];
+  []; // Empty by default for security
 
 /**
  * Send SMS via Twilio
@@ -190,11 +190,13 @@ const sendViaTextLocal = async (to, message) => {
  */
 const sendSMS = async (to, message) => {
   try {
-    // Development mode - just log
-    if (process.env.NODE_ENV !== 'production' || !process.env.SMS_ENABLED) {
-      logger.info(`📱 [SMS Mock] To: ${to}`);
-      logger.info(`   Message: ${message}`);
-      return { success: true, mock: true };
+    // Check if SMS is enabled in environment or config
+    if (!process.env.SMS_ENABLED || process.env.SMS_ENABLED === 'false') {
+      if (process.env.NODE_ENV === 'development') {
+        logger.info(`📱 [SMS Debug] To: ${to}`);
+        logger.debug(`   Message: ${message}`);
+      }
+      return { success: false, error: 'SMS service disabled in configuration' };
     }
 
     let result;

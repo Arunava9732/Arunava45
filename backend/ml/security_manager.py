@@ -195,6 +195,8 @@ class SecurityManager:
         })
         
         for req in requests:
+            if not isinstance(req, dict):
+                continue
             ip = req.get('ip', 'unknown')
             status = req.get('status', 200)
             endpoint = req.get('url', req.get('endpoint', ''))

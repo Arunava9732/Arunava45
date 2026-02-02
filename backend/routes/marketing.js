@@ -29,29 +29,30 @@ router.use(aiPerformanceMonitor(500));
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const MARKETING_FILE = path.join(DATA_DIR, 'marketing.json');
 
+// Default Data Schema
+const defaultData = {
+  settings: {
+    couponsEnabled: false,
+    salesEnabled: false,
+    bundlesEnabled: false,
+    giftCardsEnabled: false,
+    popupsEnabled: false,
+    abandonedCartEnabled: false
+  },
+  coupons: [],
+  sales: [],
+  bundles: [],
+  giftCards: [],
+  popups: [],
+  abandonedCarts: []
+};
+
 // Ensure data file exists
 function ensureDataFile() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   if (!fs.existsSync(MARKETING_FILE)) {
-    const defaultData = {
-      settings: {
-        couponsEnabled: false,
-        salesEnabled: false,
-        bundlesEnabled: false,
-        giftCardsEnabled: false,
-        popupsEnabled: false,
-        abandonedCartEnabled: false,
-        invoiceEnabled: true
-      },
-      coupons: [],
-      sales: [],
-      bundles: [],
-      giftCards: [],
-      popups: [],
-      abandonedCarts: []
-    };
     fs.writeFileSync(MARKETING_FILE, JSON.stringify(defaultData, null, 2));
   }
 }
@@ -59,10 +60,18 @@ function ensureDataFile() {
 function readData() {
   ensureDataFile();
   try {
-    return JSON.parse(fs.readFileSync(MARKETING_FILE, 'utf8'));
+    const content = fs.readFileSync(MARKETING_FILE, 'utf8');
+    const data = content ? JSON.parse(content) : {};
+    
+    // Ensure all required fields exist by merging with defaultData
+    return {
+      ...defaultData,
+      ...data,
+      settings: { ...defaultData.settings, ...(data.settings || {}) }
+    };
   } catch (e) {
     console.error('Error reading marketing data:', e);
-    return { settings: {}, coupons: [], sales: [], bundles: [], giftCards: [], popups: [], abandonedCarts: [] };
+    return { ...defaultData };
   }
 }
 
@@ -160,8 +169,7 @@ router.get('/feature-visibility', (req, res) => {
       success: true,
       features: {
         giftCardsEnabled: giftCardsEnabled,
-        reviewsPageEnabled: reviewsPageEnabled,
-        invoiceEnabled: data.settings.invoiceEnabled !== false // default true
+        reviewsPageEnabled: reviewsPageEnabled
       }
     });
   } catch (error) {
@@ -171,8 +179,7 @@ router.get('/feature-visibility', (req, res) => {
       success: true,
       features: {
         giftCardsEnabled: false,
-        reviewsPageEnabled: true,
-        invoiceEnabled: true
+        reviewsPageEnabled: true
       }
     });
   }
@@ -733,7 +740,7 @@ router.get('/popups', authenticate, requireAdmin, (req, res) => {
 router.post('/popups', authenticate, requireAdmin, (req, res) => {
   try {
     const data = readData();
-    const { title, message, ctaText, ctaLink, image, delay, showOnce, validUntil } = req.body;
+    const { title, message, ctaText, ctaLink, image, delay, showOnce, validUntil, targetProduct } = req.body;
     
     if (!title || !message) {
       return res.status(400).json({ success: false, error: 'Title and message are required' });
@@ -746,6 +753,7 @@ router.post('/popups', authenticate, requireAdmin, (req, res) => {
       ctaText: ctaText || 'Shop Now',
       ctaLink: ctaLink || '/products.html',
       image: image || '',
+      targetProduct: targetProduct || 'all',
       delay: parseInt(delay) || 5000, // 5 seconds default
       showOnce: showOnce !== false, // true by default
       validUntil: validUntil || null,
@@ -767,17 +775,35 @@ router.post('/popups', authenticate, requireAdmin, (req, res) => {
 router.get('/popups/active', (req, res) => {
   try {
     const data = readData();
+    const { productId } = req.query;
     
     if (!data.settings.popupsEnabled) {
       return res.json({ success: true, popup: null });
     }
     
     const now = new Date();
-    const activePopup = data.popups.find(p => {
+    // Filter active popups
+    const activePopups = data.popups.filter(p => {
       if (!p.active) return false;
       if (p.validUntil && new Date(p.validUntil) < now) return false;
-      return true;
+      
+      // If productId is provided, prioritize specific popup, otherwise fall back to 'all'
+      if (productId) {
+        return p.targetProduct === productId || p.targetProduct === 'all' || !p.targetProduct;
+      } else {
+        // On pages without specific product (like home), only show 'all' popups
+        return p.targetProduct === 'all' || !p.targetProduct;
+      }
     });
+
+    // Sort: Specific product popups first
+    activePopups.sort((a, b) => {
+      if (a.targetProduct === productId && b.targetProduct !== productId) return -1;
+      if (a.targetProduct !== productId && b.targetProduct === productId) return 1;
+      return 0;
+    });
+    
+    const activePopup = activePopups[0] || null;
     
     res.json({ success: true, popup: activePopup || null });
   } catch (error) {

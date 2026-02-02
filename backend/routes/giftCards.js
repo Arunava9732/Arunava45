@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
 const { aiRequestLogger, aiPerformanceMonitor } = require('../middleware/aiEnhancer');
-const { sendGiftCardEmail } = require('../utils/email');
+const { sendGiftCardEmail, sendGiftCardPurchaseConfirmation } = require('../utils/email');
 const { addNotification } = require('../utils/adminNotificationStore');
 
 const router = express.Router();
@@ -45,7 +45,13 @@ function ensureDataFile() {
 function readData() {
   ensureDataFile();
   try {
-    return JSON.parse(fs.readFileSync(GIFT_CARDS_FILE, 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(GIFT_CARDS_FILE, 'utf-8'));
+    // Ensure all required properties exist
+    return {
+      giftCards: data.giftCards || [],
+      transactions: data.transactions || [],
+      settings: data.settings || { enabled: true, minAmount: 100, maxAmount: 50000, defaultExpiryDays: 365 }
+    };
   } catch (e) {
     return { giftCards: [], transactions: [], settings: { enabled: true, minAmount: 100, maxAmount: 50000, defaultExpiryDays: 365 } };
   }
@@ -114,7 +120,7 @@ router.get('/balance/:code', async (req, res) => {
 // Purchase gift card (public, but requires payment)
 router.post('/purchase', optionalAuth, async (req, res) => {
   try {
-    const { value, recipientName, recipientEmail, senderName, senderEmail, message } = req.body;
+    const { value, recipientName, recipientEmail, senderName, senderEmail, message, paymentId } = req.body;
     
     const data = readData();
     
@@ -130,6 +136,11 @@ router.post('/purchase', optionalAuth, async (req, res) => {
     // Validate required fields
     if (!recipientEmail || !senderEmail) {
       return res.status(400).json({ success: false, error: 'Email addresses are required' });
+    }
+    
+    // Log payment info for tracking
+    if (paymentId) {
+      console.log(`[GiftCard] Purchase with payment ID: ${paymentId}`);
     }
     
     // Generate unique code
@@ -154,6 +165,7 @@ router.post('/purchase', optionalAuth, async (req, res) => {
       senderEmail: senderEmail,
       message: message || '',
       purchasedBy: req.user ? req.user.id : null,
+      paymentId: paymentId || null,
       createdAt: new Date().toISOString(),
       expiresAt: expiresAt.toISOString()
     };
@@ -166,8 +178,9 @@ router.post('/purchase', optionalAuth, async (req, res) => {
       giftCardId: giftCard.id,
       type: 'purchase',
       amount: amount,
+      paymentId: paymentId || null,
       date: new Date().toISOString(),
-      details: `Gift card purchased for ${recipientEmail}`
+      details: `Gift card purchased for ${recipientEmail}${paymentId ? ' (Payment: ' + paymentId + ')' : ''}`
     });
     
     writeData(data);
@@ -194,6 +207,14 @@ router.post('/purchase', optionalAuth, async (req, res) => {
         amount: giftCard.value,
         expiryDate: giftCard.expiresAt
       }, recipientEmail, senderName || 'A Friend');
+      
+      // Also send confirmation to sender
+      if (senderEmail) {
+        await sendGiftCardPurchaseConfirmation({
+          code: giftCard.code,
+          amount: giftCard.value
+        }, senderEmail, recipientEmail);
+      }
     } catch (err) {
       console.error('Failed to send gift card email:', err.message);
     }
@@ -231,7 +252,12 @@ router.post('/redeem', authenticate, async (req, res) => {
     if (card.status !== 'active') {
       return res.status(400).json({ success: false, error: 'Gift card is not active' });
     }
-    
+
+    // Ownership Check: If card is claimed by someone else, block use.
+    if (card.claimedBy && card.claimedBy !== req.user.id) {
+      return res.status(400).json({ success: false, error: 'This gift card is linked to another account' });
+    }
+
     // Check if expired
     if (new Date(card.expiresAt) < new Date()) {
       card.status = 'expired';
@@ -245,25 +271,32 @@ router.post('/redeem', authenticate, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Gift card has no balance' });
     }
     
-    // Deduct balance
+    // REDUCTABLE BALANCE: Balance is deducted, card remains active for the owner if balance > 0
+    const originalBalance = card.balance;
     card.balance -= redeemAmount;
+    
     if (card.balance <= 0) {
       card.balance = 0;
       card.status = 'redeemed';
+    } else {
+      card.status = 'active'; 
     }
+
+    card.claimedBy = req.user.id; 
     card.lastUsedAt = new Date().toISOString();
     
     data.giftCards[cardIndex] = card;
     
     // Record transaction
     data.transactions.push({
-      id: 'tx_' + uuidv4(),
+      id: 'tx_redeem_' + uuidv4(),
       giftCardId: card.id,
       type: 'redeem',
       amount: redeemAmount,
+      remainingBalance: card.balance,
       userId: req.user.id,
       date: new Date().toISOString(),
-      details: `Redeemed by ${req.user.email}`
+      details: `Partial redemption by owner ${req.user.email}`
     });
     
     writeData(data);
@@ -272,7 +305,9 @@ router.post('/redeem', authenticate, async (req, res) => {
       success: true,
       redeemedAmount: redeemAmount,
       remainingBalance: card.balance,
-      message: `₹${redeemAmount} has been applied to your order`
+      message: card.balance > 0 
+        ? `₹${redeemAmount} applied. Remaining balance: ₹${card.balance}`
+        : `₹${redeemAmount} applied. Gift card fully redeemed.`
     });
   } catch (error) {
     console.error('Error redeeming gift card:', error);
@@ -442,6 +477,140 @@ router.get('/transactions', authenticate, requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Error getting transactions:', error);
     res.status(500).json({ success: false, error: 'Failed to get transactions' });
+  }
+});
+
+// ============================================
+// USER ROUTES - Get user's gift cards
+// ============================================
+
+// Get user's gift cards (cards they purchased or received)
+// Add gift card to user's account (claim a gift card)
+router.post('/add-to-account', authenticate, async (req, res) => {
+  try {
+    const { code } = req.body;
+    const userEmail = req.user.email || '';
+    
+    if (!code) {
+      return res.status(400).json({ success: false, error: 'Gift card code is required' });
+    }
+    
+    const data = readData();
+    const cardIndex = data.giftCards.findIndex(c => c.code.toUpperCase() === code.toUpperCase());
+    
+    if (cardIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Gift card not found' });
+    }
+    
+    const card = data.giftCards[cardIndex];
+    const userId = req.user.id;
+    
+    // Check if expired
+    if (new Date(card.expiresAt) < new Date()) {
+      return res.status(400).json({ success: false, error: 'This gift card has expired' });
+    }
+    
+    // Check if already fully used
+    if (card.status === 'redeemed' || card.balance <= 0) {
+      return res.status(400).json({ success: false, error: 'This gift card has already been redeemed' });
+    }
+    
+    // ACCOUNT LOCKING: If card is already claimed by someone else, it cannot be added/used by others.
+    if (card.claimedBy && card.claimedBy !== userId) {
+      return res.status(400).json({ success: false, error: 'This gift card has already been claimed by another account' });
+    }
+    
+    // Check if already linked to this user
+    if (card.claimedBy === userId) {
+      return res.json({ 
+        success: true, 
+        message: 'Gift card is already in your account',
+        balance: card.balance,
+        code: card.code
+      });
+    }
+    
+    // Link the gift card to this user (for tracking in their profile)
+    data.giftCards[cardIndex].claimedAt = new Date().toISOString();
+    data.giftCards[cardIndex].claimedBy = userId;
+    
+    writeData(data);
+    
+    console.log(`[Gift Cards] Card ${card.code} claimed by ${userEmail}`);
+    
+    res.json({ 
+      success: true, 
+      message: 'Gift card added to your account',
+      balance: card.balance,
+      code: card.code
+    });
+  } catch (error) {
+    console.error('Error adding gift card to account:', error);
+    res.status(500).json({ success: false, error: 'Failed to add gift card' });
+  }
+});
+
+router.get('/my-cards', authenticate, async (req, res) => {
+  try {
+    const data = readData();
+    const userId = req.user.id;
+    const userEmail = req.user.email || '';
+    
+    // Cards purchased by user
+    const purchasedCards = data.giftCards.filter(c => c.purchasedBy === userId);
+    
+    // Cards sent to user's email (received as gifts)
+    const receivedCards = data.giftCards.filter(c => 
+      userEmail && c.recipientEmail && c.recipientEmail.toLowerCase() === userEmail.toLowerCase()
+    );
+    
+    // Combine and deduplicate
+    const allCardsMap = new Map();
+    [...purchasedCards, ...receivedCards].forEach(card => {
+      if (!allCardsMap.has(card.id)) {
+        allCardsMap.set(card.id, {
+          ...card,
+          isPurchased: card.purchasedBy === userId,
+          isReceived: userEmail && card.recipientEmail && card.recipientEmail.toLowerCase() === userEmail.toLowerCase()
+        });
+      } else {
+        // If already exists, mark both flags
+        const existing = allCardsMap.get(card.id);
+        existing.isPurchased = existing.isPurchased || card.purchasedBy === userId;
+        existing.isReceived = existing.isReceived || (userEmail && card.recipientEmail && card.recipientEmail.toLowerCase() === userEmail.toLowerCase());
+      }
+    });
+    
+    const userCards = Array.from(allCardsMap.values());
+    
+    // Get transactions for these cards
+    const cardIds = userCards.map(c => c.id);
+    const userTransactions = (data.transactions || []).filter(t => 
+      cardIds.includes(t.giftCardId) || t.userId === userId
+    );
+    
+    // Calculate totals
+    const totalPurchased = purchasedCards.reduce((sum, c) => sum + c.value, 0);
+    const totalReceived = receivedCards.filter(c => c.purchasedBy !== userId).reduce((sum, c) => sum + c.value, 0);
+    const totalBalance = userCards.reduce((sum, c) => sum + (c.balance || 0), 0);
+    const totalUsed = userCards.reduce((sum, c) => sum + (c.value - (c.balance || 0)), 0);
+    
+    res.json({
+      success: true,
+      cards: userCards.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+      transactions: userTransactions.sort((a, b) => new Date(b.date) - new Date(a.date)),
+      summary: {
+        totalCards: userCards.length,
+        totalPurchased,
+        totalReceived,
+        totalBalance,
+        totalUsed,
+        activeCards: userCards.filter(c => c.status === 'active' && c.balance > 0).length
+      }
+    });
+  } catch (error) {
+    console.error('Error getting user gift cards:', error);
+    res.status(500).json({ success: false, error: 'Failed to get gift cards' });
   }
 });
 

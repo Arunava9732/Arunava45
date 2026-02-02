@@ -227,6 +227,8 @@ class AIEngineHealthChecker:
                 results['summary']['unhealthy'] += 1
         
         results['overallStatus'] = 'healthy' if results['summary']['unhealthy'] == 0 and results['summary']['missing'] == 0 else 'degraded'
+        results['overall_status'] = results['overallStatus']
+        results['status'] = results['overallStatus']
         
         return results
     
@@ -285,17 +287,20 @@ class AIEngineHealthChecker:
                     result['status'] = health_response.get('status', 'healthy')
                     result['capabilities'] = health_response.get('capabilities', health_response.get('tasks', []))
                 except:
-                    result['status'] = 'healthy'  # Ran successfully
+                    result['status'] = 'degraded'  # Ran successfully but output not readable
+                    result['error'] = 'Invalid health response format'
             else:
-                result['status'] = 'healthy'  # File exists and has valid syntax
+                result['status'] = 'error'
+                result['error'] = 'Engine health check returned non-zero code'
         except subprocess.TimeoutExpired:
             result['status'] = 'timeout'
             result['error'] = 'Health check timed out'
         except Exception as e:
-            result['status'] = 'healthy'  # Assume healthy if check fails but syntax is valid
+            result['status'] = 'error'
+            result['error'] = str(e)
         
         if result['status'] == 'unknown':
-            result['status'] = 'healthy'
+            result['status'] = 'degraded'
         
         return result
     
@@ -610,7 +615,8 @@ class HealthMonitorOrchestrator:
             "timestamp": datetime.now().isoformat(),
             "system": system_health,
             "aiEngines": ai_health,
-            "overallStatus": overall_status
+            "overall_status": overall_status,
+            "status": overall_status
         }
     
     def _determine_overall_status(self):

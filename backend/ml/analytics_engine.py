@@ -254,7 +254,7 @@ def sales_forecasting(data):
             "ma_14": round(ma_14, 2),
             "ma_30": round(ma_30, 2)
         },
-        "confidence": 0.75,
+        "confidence": round(min(0.9, 0.4 + (len(sorted_days) / 30 * 0.5)), 2),
         "historical_days": len(sorted_days)
     }
 

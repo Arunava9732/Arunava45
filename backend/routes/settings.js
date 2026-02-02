@@ -707,4 +707,213 @@ router.get('/product-cost-profiles/by-name/:productName', authenticate, requireA
   }
 });
 
+// ============================================================================
+// SITE BACKUP & DOWNLOAD - Download entire website as ZIP
+// ============================================================================
+
+const archiver = require('archiver');
+
+// Get backup status/info
+router.get('/backup/info', authenticate, requireAdmin, (req, res) => {
+  try {
+    const projectRoot = path.join(__dirname, '..', '..');
+    const backendDir = path.join(projectRoot, 'backend');
+    const frontendDir = path.join(projectRoot, 'frontend');
+    
+    // Calculate approximate sizes
+    const getDirectorySize = (dirPath) => {
+      let totalSize = 0;
+      try {
+        const files = fs.readdirSync(dirPath);
+        for (const file of files) {
+          const filePath = path.join(dirPath, file);
+          const stats = fs.statSync(filePath);
+          if (stats.isDirectory()) {
+            // Skip node_modules and large directories
+            if (file !== 'node_modules' && file !== '.git') {
+              totalSize += getDirectorySize(filePath);
+            }
+          } else {
+            totalSize += stats.size;
+          }
+        }
+      } catch (e) {
+        // Ignore permission errors
+      }
+      return totalSize;
+    };
+    
+    const backendSize = getDirectorySize(backendDir);
+    const frontendSize = getDirectorySize(frontendDir);
+    const totalSize = backendSize + frontendSize;
+    
+    // Format size
+    const formatSize = (bytes) => {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+      if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    };
+    
+    res.json({
+      success: true,
+      info: {
+        backendSize: formatSize(backendSize),
+        frontendSize: formatSize(frontendSize),
+        totalSize: formatSize(totalSize),
+        totalBytes: totalSize,
+        estimatedZipSize: formatSize(Math.round(totalSize * 0.3)), // Compression estimate
+        lastBackup: null,
+        serverTime: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Backup info error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get backup info' });
+  }
+});
+
+// Download full site backup as ZIP
+router.get('/backup/download', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const projectRoot = path.join(__dirname, '..', '..');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `BLACKONN-backup-${timestamp}.zip`;
+    
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('X-Backup-Timestamp', timestamp);
+    
+    // Create archive
+    const archive = archiver('zip', {
+      zlib: { level: 6 } // Balanced compression
+    });
+    
+    // Handle archive errors
+    archive.on('error', (err) => {
+      console.error('Archive error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: 'Backup failed' });
+      }
+    });
+    
+    // Pipe archive to response
+    archive.pipe(res);
+    
+    // Directories/files to exclude
+    const excludePatterns = [
+      'node_modules/**',
+      '.git/**',
+      '*.log',
+      '*.sqlite3-shm',
+      '*.sqlite3-wal',
+      'npm-debug.log*',
+      '.env.local',
+      '.DS_Store',
+      'Thumbs.db'
+    ];
+    
+    // Add backend directory
+    archive.directory(path.join(projectRoot, 'backend'), 'backend', (entry) => {
+      // Exclude node_modules and git
+      if (entry.name.includes('node_modules') || entry.name.includes('.git')) {
+        return false;
+      }
+      return entry;
+    });
+    
+    // Add frontend directory
+    archive.directory(path.join(projectRoot, 'frontend'), 'frontend', (entry) => {
+      if (entry.name.includes('node_modules') || entry.name.includes('.git')) {
+        return false;
+      }
+      return entry;
+    });
+    
+    // Add deploy directory if exists
+    const deployDir = path.join(projectRoot, 'deploy');
+    if (fs.existsSync(deployDir)) {
+      archive.directory(deployDir, 'deploy');
+    }
+    
+    // Add root config files
+    const rootFiles = ['package.json', 'ecosystem.config.js', 'repair-system.js', '.env.example', 'README.md'];
+    for (const file of rootFiles) {
+      const filePath = path.join(projectRoot, file);
+      if (fs.existsSync(filePath)) {
+        archive.file(filePath, { name: file });
+      }
+    }
+    
+    // Finalize archive
+    await archive.finalize();
+    
+    console.log(`[BACKUP] Site backup downloaded: ${filename}`);
+  } catch (error) {
+    console.error('Backup download error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, error: 'Backup download failed: ' + error.message });
+    }
+  }
+});
+
+// Download specific folder (backend, frontend, or data)
+router.get('/backup/download/:folder', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { folder } = req.params;
+    const projectRoot = path.join(__dirname, '..', '..');
+    
+    let targetDir;
+    if (folder === 'backend') {
+      targetDir = path.join(projectRoot, 'backend');
+    } else if (folder === 'frontend') {
+      targetDir = path.join(projectRoot, 'frontend');
+    } else if (folder === 'data') {
+      targetDir = path.join(projectRoot, 'backend', 'data');
+    } else if (folder === 'deploy') {
+      targetDir = path.join(projectRoot, 'deploy');
+    } else {
+      return res.status(400).json({ success: false, error: 'Invalid folder. Use: backend, frontend, data, or deploy' });
+    }
+    
+    if (!fs.existsSync(targetDir)) {
+      return res.status(404).json({ success: false, error: 'Folder not found' });
+    }
+    
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `BLACKONN-${folder}-${timestamp}.zip`;
+    
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    
+    const archive = archiver('zip', { zlib: { level: 6 } });
+    
+    archive.on('error', (err) => {
+      console.error('Archive error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: 'Backup failed' });
+      }
+    });
+    
+    archive.pipe(res);
+    
+    archive.directory(targetDir, folder, (entry) => {
+      if (entry.name.includes('node_modules') || entry.name.includes('.git')) {
+        return false;
+      }
+      return entry;
+    });
+    
+    await archive.finalize();
+    
+    console.log(`[BACKUP] ${folder} backup downloaded: ${filename}`);
+  } catch (error) {
+    console.error('Folder backup error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, error: 'Backup failed: ' + error.message });
+    }
+  }
+});
+
 module.exports = router;

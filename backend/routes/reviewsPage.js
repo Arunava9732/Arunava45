@@ -59,20 +59,20 @@ const upload = multer({
 function getDefaultData() {
   return {
     settings: {
-      statsEnabled: true,
+      statsEnabled: false,
       reviewsEnabled: true,
-      platformsEnabled: true,
-      photosEnabled: true,
-      partnershipsEnabled: true,
-      milestonesEnabled: true
+      platformsEnabled: false,
+      photosEnabled: false,
+      partnershipsEnabled: false,
+      milestonesEnabled: false
     },
     stats: {
-      averageRating: 4.8,
-      happyCustomers: "500+",
-      recommendUs: "98%"
+      averageRating: 0.0,
+      happyCustomers: "0+",
+      recommendUs: "0%"
     },
     megaStats: [],
-    ratingBreakdown: { "5star": 78, "4star": 15, "3star": 5, "2star": 1, "1star": 1 },
+    ratingBreakdown: { "5star": 0, "4star": 0, "3star": 0, "2star": 0, "1star": 0 },
     platforms: [],
     reviews: [],
     customerPhotos: [],
@@ -331,10 +331,10 @@ router.put('/stats', authenticate, isAdmin, (req, res) => {
     let data = ensureValidData(reviewsPageDb.findAll());
     
     data.stats = {
-      averageRating: averageRating || data.stats?.averageRating || 4.8,
-      happyCustomers: happyCustomers || data.stats?.happyCustomers || "500+",
-      recommendUs: recommendUs || data.stats?.recommendUs || "98%",
-      totalReviewsText: totalReviewsText || data.stats?.totalReviewsText || "Based on 500+ reviews"
+      averageRating: averageRating || data.stats?.averageRating || 0.0,
+      happyCustomers: happyCustomers || data.stats?.happyCustomers || "0",
+      recommendUs: recommendUs || data.stats?.recommendUs || "0%",
+      totalReviewsText: totalReviewsText || data.stats?.totalReviewsText || "No reviews yet"
     };
     data.updatedAt = new Date().toISOString();
     

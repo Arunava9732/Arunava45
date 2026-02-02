@@ -153,6 +153,27 @@ if (typeof ScrollReveal !== 'undefined') {
 /* Page load animation trigger */
 document.addEventListener('DOMContentLoaded', () => {
     document.body.style.animation = 'pageLoadFade 0.8s ease-out forwards';
+    
+    // Check section visibility and hide disabled menu items globally
+    if (typeof API !== 'undefined' && API.settings) {
+        API.settings.getVisibility().then(data => {
+            if (data && data.success && data.sections) {
+                // Handle Reviews Section
+                const reviewsItems = document.querySelectorAll('#reviewsMenuItem, .reviews-nav-item');
+                if (data.sections.reviewsPage === false) {
+                    reviewsItems.forEach(el => el.style.display = 'none');
+                    console.log('[AI-MENU] Hiding disabled reviews section');
+                }
+                
+                // Handle Gift Cards Section
+                const giftCardItems = document.querySelectorAll('#giftCardMenuItem, .giftcard-nav-item');
+                if (data.sections.giftCards === false) {
+                    giftCardItems.forEach(el => el.style.display = 'none');
+                    console.log('[AI-MENU] Hiding disabled gift cards section');
+                }
+            }
+        }).catch(err => console.debug('[AI-MENU] Visibility check skipped', err));
+    }
 });
 
 /* IntersectionObserver to reveal .section elements from sides (replay on re-entry) */

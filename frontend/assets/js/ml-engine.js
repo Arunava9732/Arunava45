@@ -61,9 +61,6 @@ class MLEngine {
       // Periodic model updates
       this.scheduleModelUpdates();
 
-      console.log('🧠 MLEngine initialized');
-      this.log('Init', 'ML Engine initialized successfully');
-      
       return true;
     } catch (error) {
       console.error('❌ MLEngine init failed:', error);
@@ -501,27 +498,38 @@ class MLEngine {
       let products = [];
       
       if (typeof AdvancedCache !== 'undefined') {
-        products = await AdvancedCache.fetchWithCache('/api/products', {}, 
+        const cachedData = await AdvancedCache.fetchWithCache('/api/products', {}, 
           AdvancedCache.strategies.CACHE_FIRST);
-      }
-
-      if (!products || products.length === 0) {
-        // Load from API
-        if (typeof API !== 'undefined' && API.products) {
-          const response = await API.products.getAll();
-          products = response.products || [];
+        if (cachedData) {
+          if (Array.isArray(cachedData)) products = cachedData;
+          else if (cachedData.products && Array.isArray(cachedData.products)) products = cachedData.products;
+          else if (cachedData.data && Array.isArray(cachedData.data)) products = cachedData.data;
         }
       }
 
-      // Ensure products is an array
+      if (!Array.isArray(products) || products.length === 0) {
+        // Load from API
+        if (typeof API !== 'undefined' && API.products) {
+          const response = await API.products.getAll();
+          if (response && response.success) {
+            products = response.products || [];
+          }
+        }
+      }
+
+      // Final check and normalization
       if (!Array.isArray(products)) {
         if (products && typeof products === 'object' && Array.isArray(products.products)) {
           products = products.products;
         } else if (products && typeof products === 'object' && Array.isArray(products.data)) {
           products = products.data;
         } else {
-          console.error('Products data is not an array:', products);
-          return;
+          // If we still don't have an array, default to empty to avoid console noise
+          // and only log if it's truly a malformed object
+          if (products && typeof products === 'object') {
+             console.warn('Products data normalization failed, defaulting to empty array', products);
+          }
+          products = [];
         }
       }
 
@@ -1087,7 +1095,7 @@ class MLEngine {
    * Log ML events
    */
   log(category, message) {
-    console.log(`[MLEngine:${category}] ${message}`);
+    // Disabled in production
   }
 
   /**

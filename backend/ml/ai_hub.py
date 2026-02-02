@@ -57,6 +57,9 @@ class EngineLoader:
             return None
         
         spec = importlib.util.spec_from_file_location(engine_name, file_path)
+        if spec is None or spec.loader is None:
+            return None
+            
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         

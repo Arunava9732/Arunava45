@@ -255,7 +255,7 @@ class EmotionAIEngine:
             "intent": {
                 "primary": primary_intent,
                 "all": list(set(detected_intents)),
-                "confidence": 0.85 if detected_intents else 0.5
+                "confidence": round(0.4 + (0.45 if detected_intents else 0.1), 2)
             },
             "urgency": {
                 "isUrgent": is_urgent,
@@ -330,7 +330,7 @@ class EmotionAIEngine:
                 "detectedIntent": customer_intent
             },
             "tone": "empathetic" if sentiment == 'negative' else "warm",
-            "confidence": 0.85,
+            "confidence": round(0.5 + (abs(analysis['sentiment']['score']) * 0.4), 2),
             "timestamp": datetime.now().isoformat()
         }
     

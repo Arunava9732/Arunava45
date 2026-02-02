@@ -352,8 +352,30 @@
       const historyKey = 'blackonn_nav_history';
       const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
       
+      // Sanitize URL to remove sensitive parameters
+      let sanitizedUrl = url;
+      try {
+        const urlObj = new URL(url, window.location.origin);
+        const sensitiveParams = ['token', 'password', 'pwd', 'auth', 'secret', 'key'];
+        let changed = false;
+        
+        sensitiveParams.forEach(param => {
+          if (urlObj.searchParams.has(param)) {
+            urlObj.searchParams.set(param, '[REDACTED]');
+            changed = true;
+          }
+        });
+        
+        if (changed) {
+          sanitizedUrl = urlObj.pathname + urlObj.search + urlObj.hash;
+        }
+      } catch (e) {
+        // Fallback for relative URLs or invalid URLs
+        sanitizedUrl = url.replace(/(token|password|auth|secret)=[^&]+/gi, '$1=[REDACTED]');
+      }
+
       history.push({
-        url,
+        url: sanitizedUrl,
         timestamp: Date.now()
       });
       
