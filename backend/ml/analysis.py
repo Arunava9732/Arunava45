@@ -323,6 +323,8 @@ if __name__ == "__main__":
                 print(json.dumps(scan_security(input_data)))
             elif task == "train" or task == "ml-train":
                 print(json.dumps(train_model(input_data)))
+            elif task == "status" or task == "health":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
             else:
                 print(json.dumps({"error": "Unknown task: " + task}))
         except Exception as e:

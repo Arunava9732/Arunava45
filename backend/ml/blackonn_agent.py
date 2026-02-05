@@ -1188,4 +1188,8 @@ def main():
                     print(f"  Line {issue.get('line', '?')}: [{issue['severity']}] {issue['message']}")
 
 if __name__ == "__main__":
+    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] in ["health", "status"]):
+        import json
+        print(json.dumps({"status": "healthy", "agent": "Blackonn Autonomous AI Agent v2.0"}))
+        sys.exit(0)
     main()

@@ -24,7 +24,7 @@ def check_dependencies():
     """Check if required dependencies are available"""
     return {
         "pillow": PIL_AVAILABLE,
-        "status": "ready" if PIL_AVAILABLE else "pillow not installed"
+        "status": "healthy" if PIL_AVAILABLE else "pillow not installed"
     }
 
 
@@ -418,6 +418,8 @@ if __name__ == "__main__":
                 print(json.dumps(analyze_image(input_data)))
             elif task == "batch":
                 print(json.dumps(batch_process(input_data)))
+            elif task == "status" or task == "health":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
             else:
                 print(json.dumps({"error": f"Unknown task: {task}"}))
         except Exception as e:

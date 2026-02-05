@@ -88,9 +88,62 @@ class AIHub:
     def __init__(self):
         self.loader = EngineLoader()
     
-    def route_request(self, engine_name, task, data):
-        """Route request to appropriate engine"""
+    def _inject_context_data(self, data):
+        """Autonomously infuse local data into AI requests"""
+        data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
         
+        # Mapping of data types to their JSON file sources
+        sources = {
+            'allProducts': 'products.json',
+            'allOrders': 'orders.json',
+            'allUsers': 'users.json',
+            'allTraffic': 'traffic.json'
+        }
+        
+        for key, filename in sources.items():
+            if key not in data:
+                path = os.path.join(data_dir, filename)
+                if os.path.exists(path):
+                    try:
+                        with open(path, 'r', encoding='utf-8') as f:
+                            raw = json.load(f)
+                            if isinstance(raw, list): data[key] = raw
+                            elif isinstance(raw, dict): data[key] = raw.get(key.replace('all', '').lower() + 's', [])
+                    except:
+                        pass
+        return data
+
+    def route_request(self, engine_name, task, data):
+        """Route request to appropriate engine with auto-data injection"""
+        
+        # Inject context data if missing
+        if isinstance(data, dict) and 'inject_context' in data:
+            data = self._inject_context_data(data)
+
+        # Recommendation Engine
+        if engine_name == 'recommend':
+            module = self.loader.load_engine('recommend')
+            engine = module.RecommendationEngine()
+            if task == 'recommend':
+                return engine.get_recommendations(data)
+            elif task == 'content':
+                return engine.content_based_recommendations(data.get('product'), data.get('allProducts'))
+
+        # Neural Commerce
+        if engine_name == 'neural':
+            module = self.loader.load_engine('neural')
+            engine = module.NeuralCommerceEngine()
+            if task == 'intent':
+                return engine.predict_purchase_intent(data)
+            elif task == 'optimize':
+                return engine.optimize_product_placement(data)
+
+        # Fraud Detection
+        if engine_name == 'fraud':
+            module = self.loader.load_engine('fraud')
+            engine = module.FraudDetector()
+            return engine.analyze_transaction(data.get('transaction'), data.get('history'))
+
         # Analytics Engine (uses standalone functions)
         if engine_name == 'analytics':
             module = self.loader.load_engine('analytics')
@@ -560,7 +613,7 @@ if __name__ == "__main__":
                 input_data = {"data": input_data}
             
             # Handle special commands
-            if command == "health":
+            if command == "health" or command == "status":
                 print(json.dumps(hub.health_check()))
             
             elif command == "capabilities":
@@ -601,7 +654,7 @@ if __name__ == "__main__":
         print(json.dumps({
             "name": "BLACKONN AI Hub",
             "version": "1.0.0",
-            "status": "ready",
+            "status": "healthy",
             "usage": "python ai_hub.py <command> [data]",
             "commands": {
                 "health": "Check health of all engines",

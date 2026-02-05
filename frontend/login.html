@@ -812,7 +812,7 @@
                     }
                 } catch (error) {
                     console.error('Login error:', error);
-                    showLoginError('An error occurred. Please try again.');
+                    showLoginError(error.message || 'An error occurred. Please try again.');
                 } finally {
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;

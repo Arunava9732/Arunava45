@@ -1663,7 +1663,7 @@
           if (e.target.closest('.gc-btn-cancel')) {
             closePaymentModal();
           }
-          // Confirm Manual Payment
+          // Confirm Payment
           if (e.target.closest('#gcConfirmPaymentBtn')) {
             confirmManualPayment();
           }
@@ -1728,19 +1728,35 @@
     // Payment Configuration
     let razorpayEnabled = false;
     let razorpayKeyId = null;
-    const upiId = 'arunava458@ybl';
+    let upiId = 'arunava458@ybl'; // Default fallback
+    let upiDisplayName = 'BLACKONN';
 
     // Check payment mode on load
     async function checkPaymentMode() {
       try {
-        const res = await fetch('/api/payment/mode', { credentials: 'include' });
+        const res = await fetch('/api/payment/public-settings', { credentials: 'include' });
         const data = await res.json();
-        if (data.mode === 'razorpay' && data.keyId) {
-          razorpayEnabled = true;
-          razorpayKeyId = data.keyId;
+        if (data.success && data.settings) {
+          const settings = data.settings;
+          
+          // Online Payment support
+          if (settings.gatewayMode === 'automatic' && settings.automatic?.enabled) {
+            razorpayEnabled = true;
+            razorpayKeyId = settings.automatic.publicKey;
+            console.log('Gift Cards: Online Payment enabled:', settings.automatic.gateway);
+          } else {
+            razorpayEnabled = false;
+          }
+          
+          // UPI settings for Payment
+          if (settings.upi?.enabled && settings.upi.upiId) {
+            upiId = settings.upi.upiId;
+            upiDisplayName = settings.upi.displayName || 'BLACKONN';
+            console.log('Gift Cards: UPI Payment enabled:', upiId);
+          }
         }
-      } catch (e) {
-        console.log('Payment mode check failed, using manual UPI');
+      } catch (error) {
+        console.error('Payment mode check failed:', error);
       }
     }
     checkPaymentMode();
@@ -1765,6 +1781,16 @@
         return;
       }
 
+      // Check if user is logged in
+      const isLoggedIn = window.blackonnAuth && window.blackonnAuth.hasToken();
+      if (!isLoggedIn) {
+        showNotification('Please login to purchase a gift card', 'warning');
+        setTimeout(() => {
+          window.location.href = 'login.html?redirect=gift-cards.html';
+        }, 1500);
+        return;
+      }
+
       // Store data for payment confirmation
       currentGiftCardData = {
         value: selectedValue,
@@ -1785,7 +1811,7 @@
       const amount = currentGiftCardData.value;
 
       if (razorpayEnabled && razorpayKeyId) {
-        // Razorpay mode - show loading then initiate
+        // Online Payment mode (Razorpay/Stripe/etc. - using Razorpay as generic term for UI)
         body.innerHTML = `
           <!-- Trust Badges -->
           <div class="gc-trust-badges">
@@ -1823,9 +1849,9 @@
             </div>
           </div>
           
-          <!-- Razorpay Info -->
+          <!-- Gateway Info -->
           <div class="gc-razorpay-info">
-            <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" style="height: 28px;">
+            <i class="ri-secure-payment-line" style="font-size: 28px; color: #3b82f6;"></i>
             <div>
               <p>Pay securely with</p>
               <strong>Cards, UPI, Net Banking & Wallets</strong>
@@ -1850,9 +1876,9 @@
           </div>
         `;
       } else {
-        // Manual UPI mode
+        // Payment Mode
         const orderNote = 'GiftCard-' + Date.now();
-        const upiUrl = 'upi://pay?pa=' + upiId + '&pn=BLACKONN&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(orderNote);
+        const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiDisplayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
         const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
         
         body.innerHTML = `
@@ -1897,7 +1923,7 @@
             <div class="gc-qr-title"><i class="ri-qr-scan-2-line"></i> Scan QR Code to Pay</div>
             <div class="gc-qr-container">
               <img id="gcQrImage" src="${qrApiUrl}" alt="UPI QR Code">
-              <div id="gcQrFallback" style="display:none; padding: 40px; text-align: center;">
+              <div id="gcQrFallback" style="display:none; padding: 10px; text-align: center;">
                 <i class="ri-qr-code-line" style="font-size: 60px; color: #cbd5e1;"></i>
                 <p style="color: #94a3b8; margin-top: 10px; font-size: 0.85rem;">Use UPI ID below</p>
               </div>
@@ -2113,11 +2139,11 @@
         btn.innerHTML = '<i class="ri-loader-4-line" style="animation: gcSpin 1s linear infinite;"></i> Processing...';
       }
       
-      // Generate a manual payment ID
-      const manualPaymentId = 'MANUAL_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      // Generate a transaction ID
+      const paymentId = 'TXN_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       
       // Finalize the gift card purchase
-      await finalizeGiftCardPurchase(manualPaymentId);
+      await finalizeGiftCardPurchase(paymentId);
     }
 
     async function finalizeGiftCardPurchase(paymentId) {

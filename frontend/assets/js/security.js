@@ -461,16 +461,10 @@ const BlackonnSecurity = (() => {
    * Protect against prototype pollution
    */
   const protectPrototypes = () => {
-    try {
-      // Freeze critical prototypes
-      if (Object.freeze) {
-        Object.freeze(Object.prototype);
-        Object.freeze(Array.prototype);
-        Object.freeze(Function.prototype);
-      }
-    } catch (e) {
-      // Some environments don't allow this
-    }
+    // Disabled freezing base prototypes to maintain compatibility with 
+    // browser extensions and modern polyfills. 
+    // Instead use Object.create(null) for data-only objects where possible.
+    return;
   };
 
   /**

@@ -489,6 +489,8 @@ if __name__ == "__main__":
                 result = engine.forecast_sales(input_data)
             elif task == "compare":
                 result = engine.compare_periods(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": engine.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -501,5 +503,5 @@ if __name__ == "__main__":
             "engine": "Sales Insights Engine",
             "version": engine.model_version,
             "tasks": ["insights", "forecast", "compare"],
-            "status": "ready"
+            "status": "healthy"
         }))

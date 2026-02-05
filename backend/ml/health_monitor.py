@@ -668,6 +668,9 @@ if __name__ == "__main__":
                 result = orchestrator.debugger.analyze_logs(log_entries)
                 print(json.dumps(result))
             
+            elif task == "status":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
+            
             else:
                 print(json.dumps({"error": f"Unknown task: {task}"}))
         

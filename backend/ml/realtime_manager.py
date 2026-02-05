@@ -440,6 +440,8 @@ if __name__ == "__main__":
                 result = manager.monitor_inventory(input_data)
             elif task == "dashboard":
                 result = manager.aggregate_dashboard(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": manager.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -452,5 +454,5 @@ if __name__ == "__main__":
             "engine": "Real-Time Manager",
             "version": manager.model_version,
             "tasks": ["metric", "stats", "users", "conversions", "inventory", "dashboard"],
-            "status": "ready"
+            "status": "healthy"
         }))

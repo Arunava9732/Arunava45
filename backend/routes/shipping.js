@@ -7,6 +7,7 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+const db = require('../utils/database');
 const https = require('https');
 const http = require('http');
 const { authenticate, requireAdmin, optionalAuth } = require('../middleware/auth');
@@ -763,6 +764,21 @@ router.get('/track/:trackingNumber', async (req, res) => {
     );
     
     if (!shipment) {
+      // AI-REFINED: Fallback to checking orders directly if it might be an order ID
+      const orderId = req.params.trackingNumber;
+      const order = db.orders.findById(orderId);
+      if (order) {
+        return res.json({
+          success: true,
+          tracking: {
+            orderId: order.id,
+            trackingNumber: 'PENDING',
+            status: order.status || 'Processing',
+            message: `Order found. Status: ${order.status}. Shipment details will appear once dispatched.`,
+            source: 'order-system'
+          }
+        });
+      }
       return res.status(404).json({ success: false, error: 'Shipment not found' });
     }
     
@@ -842,6 +858,19 @@ router.get('/track-order/:orderId', async (req, res) => {
     );
     
     if (!shipment) {
+      // AI-REFINED: Check if order exists in DB but just hasn't been shipped yet
+      const order = db.orders.findById(orderId);
+      if (order) {
+        return res.json({
+          success: true,
+          tracking: {
+            orderId: order.id,
+            status: order.status || 'Processing',
+            message: order.status === 'Pending' ? 'Order received. We are preparing it for shipment.' : `Order status: ${order.status}`,
+            source: 'order-system'
+          }
+        });
+      }
       return res.status(404).json({ 
         success: false, 
         error: 'No shipment found for this ID. The item may not have been shipped yet.' 

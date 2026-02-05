@@ -49,13 +49,19 @@
     /**
      * Get system statistics for dashboard
      */
-    getStats() {
+    async getStats() {
+      let isSubscribed = false;
+      if (this.registration && this.registration.pushManager) {
+        const sub = await this.registration.pushManager.getSubscription();
+        isSubscribed = !!sub;
+      }
+
       return {
         isRegistered: !!this.registration,
         offlineMode: this.offlineDetected,
         updateAvailable: this.updateAvailable,
         scope: this.registration ? this.registration.scope : 'N/A',
-        pushSubscription: 'active'
+        pushSubscription: isSubscribed ? 'active' : 'inactive'
       };
     },
 

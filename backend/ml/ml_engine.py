@@ -8,6 +8,7 @@ import json
 import sys
 import math
 import random
+import os
 from datetime import datetime, timedelta
 from collections import defaultdict
 import statistics
@@ -20,7 +21,7 @@ class MLEngine:
     """Core machine learning engine with multiple model implementations"""
     
     def __init__(self):
-        self.model_version = "2.0.0"
+        self.model_version = "2.1.0"
         self.models = {
             'sales_predictor': SalesPredictor(),
             'customer_segmentation': CustomerSegmentation(),
@@ -31,19 +32,30 @@ class MLEngine:
     
     def predict(self, model_name, data):
         """Run prediction on specified model"""
+        # Normalize model names
+        if model_name == 'sales': model_name = 'sales_predictor'
+        if model_name == 'segmentation': model_name = 'customer_segmentation'
+        if model_name == 'demand': model_name = 'demand_forecaster'
+        if model_name == 'anomaly': model_name = 'anomaly_detector'
+        if model_name == 'trend': model_name = 'trend_analyzer'
+
         if model_name not in self.models:
             return {"error": f"Model {model_name} not found"}
         
         model = self.models[model_name]
         return model.predict(data)
     
-    def train(self, model_name, training_data):
-        """Train/update model with new data"""
+    def train(self, model_name, training_data=None):
+        """Train/update model with new data or real filesystem data"""
+        if training_data is None:
+            training_data = self._load_real_data()
+
         if model_name == 'all' or model_name is None:
-            # Train the primary model and return its result, or aggregate
-            if 'sales_predictor' in self.models:
-                return self.models['sales_predictor'].train(training_data)
-            return {"success": True, "accuracy": 0.85, "message": "All models updated"}
+            results = {}
+            for name, model in self.models.items():
+                if hasattr(model, 'train'):
+                    results[name] = model.train(training_data)
+            return {"success": True, "results": results, "message": "All models updated with reality"}
 
         # Normalize model names
         if model_name == 'sales': model_name = 'sales_predictor'
@@ -59,13 +71,40 @@ class MLEngine:
         if hasattr(model, 'train'):
             return model.train(training_data)
         
-        # Default training response for generic models
         return {
             "success": True,
             "trained_on_records": len(training_data.get('orders', [])),
             "model": model_name,
             "message": "Model updated with current data"
         }
+
+    def _load_real_data(self):
+        """Load real data from the BLACKONN filesystem for serious training"""
+        data = {'orders': [], 'traffic': [], 'users': [], 'products': []}
+        # Correct path to backend/data from backend/ml
+        data_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+        
+        files = {
+            'orders': 'orders.json',
+            'traffic': 'traffic.json',
+            'users': 'users.json',
+            'products': 'products.json'
+        }
+        
+        for key, filename in files.items():
+            path = os.path.join(data_dir, filename)
+            if os.path.exists(path):
+                try:
+                    with open(path, 'r', encoding='utf-8') as f:
+                        file_data = json.load(f)
+                        if isinstance(file_data, list):
+                            data[key] = file_data
+                        elif isinstance(file_data, dict):
+                            data[key] = file_data.get(key, []) or file_data.get('data', [])
+                except Exception as e:
+                    pass
+        
+        return data
     
     def get_model_info(self, model_name=None):
         """Get information about models"""
@@ -85,7 +124,7 @@ class MLEngine:
                 {
                     "name": name,
                     "type": type(model).__name__,
-                    "status": "ready"
+                    "status": "healthy"
                 }
                 for name, model in self.models.items()
             ],
@@ -626,6 +665,8 @@ if __name__ == "__main__":
                 result = engine.models['anomaly_detector'].predict(input_data)
             elif task == "trend":
                 result = engine.models['trend_analyzer'].predict(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": engine.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -639,5 +680,5 @@ if __name__ == "__main__":
             "version": engine.model_version,
             "tasks": ["predict", "train", "info", "sales", "segment", "demand", "anomaly", "trend"],
             "models": list(engine.models.keys()),
-            "status": "ready"
+            "status": "healthy"
         }))

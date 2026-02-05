@@ -17,6 +17,7 @@ class EmotionAI {
       idleThreshold: 60000       // 1 minute
     };
     
+    this.totalDetections = 0;
     this.init();
   }
 
@@ -96,6 +97,7 @@ class EmotionAI {
 
   async reportEmotion(emotion, confidence, context = {}) {
     if (!this.isActive) return;
+    this.totalDetections++;
 
     try {
       const payload = {
@@ -129,10 +131,13 @@ class EmotionAI {
 
   applyAdaptation(adaptation) {
     if (adaptation.type === 'offer_help') {
-      // Show help toast or widget
+      // Disabled as per user request
+      console.log('[Emotion AI] Help adaptation suggested but skipped');
+      /*
       if (window.showToast) {
         window.showToast('Need help finding something? Our assistant is here!', 'info');
       }
+      */
     }
   }
 
@@ -141,7 +146,7 @@ class EmotionAI {
       active: this.isActive,
       sessionId: this.sessionId,
       lastAction: new Date(this.lastAction).toLocaleTimeString(),
-      detections: Math.floor(Math.random() * 10) + 1 // placeholder for UI
+      detections: this.totalDetections
     };
   }
 }

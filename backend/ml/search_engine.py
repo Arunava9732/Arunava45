@@ -365,6 +365,9 @@ if __name__ == "__main__":
                 word = input_data.get('word', '')
                 print(json.dumps({"word": word, "synonyms": engine.get_synonyms(word)}))
             
+            elif task == "status" or task == "health":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
+            
             else:
                 print(json.dumps({"error": f"Unknown task: {task}"}))
         

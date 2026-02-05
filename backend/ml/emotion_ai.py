@@ -419,6 +419,8 @@ if __name__ == "__main__":
                 )
             elif task == "reviews":
                 result = engine.analyze_review_emotions(input_data.get('reviews', []))
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": engine.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -431,5 +433,5 @@ if __name__ == "__main__":
             "engine": "Emotion AI Engine",
             "version": engine.model_version,
             "tasks": ["sentiment", "feedback", "intent", "empathy", "reviews"],
-            "status": "ready"
+            "status": "healthy"
         }))

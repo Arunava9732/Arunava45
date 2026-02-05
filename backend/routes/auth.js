@@ -162,10 +162,15 @@ router.post('/login', authLimiter, async (req, res) => {
     }
 
     // Check if locked
+    if (user.permanentlyLocked) {
+      console.warn(`[AUTH-DEBUG] Account permanently locked: ${normalizedEmail}`);
+      return res.status(423).json({ success: false, error: 'Your account has been permanently locked. Please contact support.' });
+    }
+
     if (user.lockedUntil && new Date(user.lockedUntil) > new Date()) {
       console.warn(`[AUTH-DEBUG] Account locked: ${normalizedEmail}`);
       const remainingTime = Math.ceil((new Date(user.lockedUntil) - new Date()) / 1000 / 60);
-      return res.status(423).json({ success: false, error: `Account locked for ${remainingTime} minutes` });
+      return res.status(423).json({ success: false, error: `Account locked for ${remainingTime} minutes. Please try again later.` });
     }
 
     // Verify password

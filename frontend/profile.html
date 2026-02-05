@@ -3689,17 +3689,19 @@
             }
 
             .profile-actions {
-                flex-direction: row;
+                flex-direction: column;
                 width: 100%;
-                gap: 8px;
+                gap: 10px;
+                align-items: stretch;
             }
 
-            .btn-edit, .btn-logout {
-                flex: 1;
+            .btn-edit, .btn-logout, .btn-delete-account {
+                width: 100%;
                 text-align: center;
-                padding: 10px 16px;
-                font-size: 13px;
+                padding: 12px 16px;
+                font-size: 14px;
                 border-radius: 8px;
+                margin: 0;
             }
 
             .btn-edit {
@@ -4099,14 +4101,23 @@
 
             .profile-actions {
                 margin-left: 0;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                max-width: 400px;
+                margin: 20px auto 0;
             }
 
-            .btn-edit, .btn-logout {
-                padding: 10px 20px;
-                font-size: 13px;
+            .btn-edit, .btn-logout, .btn-delete-account {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 14px;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
             }
 
             /* Mobile Layout - Full width content */
@@ -6055,6 +6066,15 @@
                         <div class="order-header">
                             <div>
                                 <div class="order-id">Order #${order.id}</div>
+                                ${order.transactionId ? `
+                                    <div class="transaction-id" style="font-size: 0.75rem; color: #6b7280; font-family: monospace; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                                        TXN: ${order.transactionId}
+                                        <button onclick="copyTransactionId('${order.transactionId}')" 
+                                                style="background: none; border: none; padding: 2px; cursor: pointer; color: #3b82f6; display: flex; align-items: center;" 
+                                                title="Copy Transaction ID">
+                                            <i class="ri-file-copy-line"></i>
+                                        </button>
+                                    </div>` : ''}
                                 <div class="order-date">Placed on ${orderDate}</div>
                             </div>
                             <span class="order-status ${statusClass}">${statusText}</span>
@@ -6569,8 +6589,8 @@
                 paymentValue = 'Cash on Delivery';
             }
 
-            if (invoice.razorpayPaymentId) {
-                paymentValue = 'Online Payment (Razorpay)';
+            if (invoice.transactionId || invoice.razorpayPaymentId) {
+                paymentValue = 'Online Payment';
             }
 
             paymentModeHtml = `
@@ -6578,9 +6598,15 @@
                     <div style="font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;">Payment Details</div>
                     <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
                         <div>
-                            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Payment Method</div>
+                            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Payment</div>
                             <div style="font-size: 13px; font-weight: 600; color: #1e293b;">${paymentValue}</div>
                         </div>
+                        ${(invoice.transactionId || invoice.razorpayPaymentId) ? `
+                        <div>
+                            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Transaction ID</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #1e293b; font-family: monospace;">${invoice.transactionId || invoice.razorpayPaymentId}</div>
+                        </div>
+                        ` : ''}
                         <div>
                             <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px;">Status</div>
                             <div style="font-size: 10px; padding: 2px 8px; background: ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#dcfce7' : '#fef9c3'}; color: ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#15803d' : '#92400e'}; border-radius: 4px; display: inline-block; font-weight: 700; border: 1px solid ${invoice.paymentStatus === 'Completed' || invoice.paymentStatus === 'Paid' ? '#bbf7d0' : '#fef08a'};">
@@ -6667,6 +6693,7 @@
                 <p class="invoice-number">${invoice.invoiceNumber}</p>
                 <p>Date: ${invoiceDate}</p>
                 <p>Order ID: #${invoice.orderNumber || invoice.orderId}</p>
+                ${invoice.transactionId ? `<p>Transaction ID: ${invoice.transactionId}</p>` : ''}
                 ${gstin ? `<p style="font-weight: 700; color: #000; margin-top: 5px;">GSTIN: ${gstin}</p>` : ''}
                 ${businessPan ? `<p style="font-weight: 700; color: #000;">PAN: ${businessPan}</p>` : ''}
             </div>
@@ -6786,8 +6813,31 @@
 </html>`;
             
             const win = window.open('', '_blank');
-            win.document.write(invoiceHTML);
-            win.document.close();
+            if (win && win.document && typeof win.document.write === 'function') {
+                win.document.write(invoiceHTML);
+                win.document.close();
+                win.focus();
+            } else {
+                // Fallback for browsers that block document.write or window.open('')
+                // Some mobile browsers and security extensions prevent writing to blank windows
+                const blob = new Blob([invoiceHTML], { type: 'text/html;charset=utf-8' });
+                const blobUrl = URL.createObjectURL(blob);
+                
+                if (win) {
+                    win.location.href = blobUrl;
+                } else {
+                    // If window.open was totally blocked
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.target = '_blank';
+                    // a.download = `Invoice-${invoice.invoiceNumber}.html`; // Optional: download instead
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    showSuccessPopup('Notice', 'Popup was blocked, opening invoice in new tab via link.');
+                }
+            }
         }
         
         // Helper to convert number to words (simplified)
@@ -7276,7 +7326,7 @@
                             <p><strong>Order ID:</strong> ${order.id}</p>
                             <p><strong>Order Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown'}</p>
                             <p><strong>Order Total:</strong> ₹${(order.total || 0).toLocaleString()}</p>
-                            <p><strong>Payment Method:</strong> ${order.paymentMethod || 'Unknown'}</p>
+                            <p><strong>Payment:</strong> ${order.paymentMethod === 'manual' || order.paymentMethod === 'Manual UPI' ? 'Online' : (order.paymentMethod || 'Unknown')}</p>
                             <p style="margin-top: 15px; padding: 10px; background: #fef3c7; border-radius: 8px; color: #92400e;">
                                 <i class="ri-information-line"></i> If you paid online, the refund will be processed within 5-7 business days.
                             </p>
@@ -9067,6 +9117,19 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 showSuccessPopup('Code Copied!', 'Gift card code has been copied to clipboard.');
+            });
+        }
+
+        function copyTransactionId(id) {
+            if (!id) return;
+            navigator.clipboard.writeText(id).then(() => {
+                if (window.showToast) {
+                    window.showToast('Transaction ID copied: ' + id, 'success');
+                } else {
+                    showSuccessPopup('Copied!', 'Transaction ID copied to clipboard.');
+                }
+            }).catch(err => {
+                console.error('Failed to copy:', err);
             });
         }
 

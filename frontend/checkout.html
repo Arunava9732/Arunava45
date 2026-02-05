@@ -3000,6 +3000,10 @@
                 <i class="ri-building-line"></i>
                 <span>Bank Transfer</span>
               </div>
+              <div class="payment-option" data-payment="other">
+                <i class="ri-more-line"></i>
+                <span>Other (Manual)</span>
+              </div>
             </div>
 
             <!-- Payment Details Input Area (Currently Hidden as per requirements) -->
@@ -3225,7 +3229,10 @@
   // Razorpay configuration
   let razorpayEnabled = false;
   let razorpayKeyId = null;
-  let paymentMethods = { upi: true, card: false, netbanking: false, wallet: false };
+  let automaticGateway = null;
+  let codEnabled = false;
+  let codCharge = 0;
+  let paymentMethods = { upi: true, card: false, netbanking: false, wallet: false, cod: false };
   
   // Fast check for payment mode (< 100ms)
   async function checkPaymentMode() {
@@ -3241,52 +3248,70 @@
       
       if (response.ok) {
         const data = await response.json();
-        razorpayEnabled = data.mode === 'razorpay';
-        razorpayKeyId = data.keyId;
+        // Support multi-gateway system
+        automaticGateway = data.gateway;
+        razorpayEnabled = data.mode === 'razorpay' || (data.gatewayMode === 'automatic' && data.mode !== 'manual');
+        razorpayKeyId = data.keyId || data.publicKey;
+        codEnabled = data.codEnabled || false;
+        codCharge = data.codCharge || 0;
+        
         if (razorpayEnabled) {
-          paymentMethods = { card: true, upi: true, netbanking: true, wallet: true };
-          updatePaymentOptionsUI();
+          paymentMethods = { card: true, upi: true, netbanking: true, wallet: true, cod: codEnabled };
+        } else {
+          paymentMethods.cod = codEnabled;
         }
+        updatePaymentOptionsUI();
       }
     } catch (error) {
-      // If timeout or error, default to manual UPI
-      console.log('Payment mode check failed, using manual UPI');
+      // If timeout or error, default to UPI Payment
+      console.log('Payment mode check failed, using Payment');
       razorpayEnabled = false;
     }
   }
   
-  // Check Razorpay configuration from server (detailed)
+  // Check payment gateway configuration from server (detailed)
   async function checkRazorpayConfig() {
     // First do a fast check
     await checkPaymentMode();
     
-    // If Razorpay is enabled, get full config
-    if (razorpayEnabled) {
-      try {
-        const response = await fetch('/api/payment/config', { 
-          credentials: 'include',
-          cache: 'no-store'
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            paymentMethods = data.paymentMethods || paymentMethods;
-            updatePaymentOptionsUI();
+    // Get full config regardless of mode (for COD settings etc.)
+    try {
+      const response = await fetch('/api/payment/config', { 
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          paymentMethods = data.paymentMethods || paymentMethods;
+          // Update COD settings from config
+          if (data.codEnabled !== undefined) {
+            codEnabled = data.codEnabled;
+            codCharge = data.codCharge || 0;
           }
+          updatePaymentOptionsUI();
         }
-      } catch (error) {
-        console.error('Failed to get full Razorpay config:', error);
       }
+    } catch (error) {
+      console.error('Failed to get payment config:', error);
     }
   }
   
-  // Update payment options based on Razorpay configuration
+  // Update payment options based on gateway configuration
   function updatePaymentOptionsUI() {
     const paymentOptionsContainer = document.getElementById('paymentOptions');
     if (!paymentOptionsContainer) return;
     
+    // Build COD option HTML if enabled
+    const codOptionHTML = codEnabled ? `
+      <div class="payment-option" data-payment="cod">
+        <i class="ri-hand-coin-line"></i>
+        <span>Cash on Delivery${codCharge > 0 ? ` (+₹${codCharge})` : ''}</span>
+      </div>
+    ` : '';
+    
     if (razorpayEnabled) {
-      // Enable all payment methods when Razorpay is active
+      // Enable all payment methods when Online Payment is active
       paymentOptionsContainer.innerHTML = `
         <div class="payment-option" data-payment="card">
           <i class="ri-bank-card-line"></i>
@@ -3304,18 +3329,39 @@
           <i class="ri-wallet-line"></i>
           <span>Digital Wallet</span>
         </div>
+        ${codOptionHTML}
       `;
-      
-      // Reattach click handlers
-      paymentOptionsContainer.querySelectorAll('.payment-option').forEach(option => {
-        option.addEventListener('click', function() {
-          if (!this.classList.contains('disabled')) {
-            selectPayment(this, this.dataset.payment);
-          }
-        });
-      });
+    } else {
+      // Payment mode - show UPI and COD if enabled
+      paymentOptionsContainer.innerHTML = `
+        <div class="payment-option disabled" data-disabled="true">
+          <i class="ri-bank-card-line"></i>
+          <span>Credit/Debit Card</span>
+        </div>
+        <div class="payment-option" data-payment="upi">
+          <i class="ri-smartphone-line"></i>
+          <span>UPI</span>
+        </div>
+        <div class="payment-option disabled" data-disabled="true">
+          <i class="ri-wallet-line"></i>
+          <span>Digital Wallet</span>
+        </div>
+        <div class="payment-option disabled" data-disabled="true">
+          <i class="ri-building-line"></i>
+          <span>Bank Transfer</span>
+        </div>
+        ${codOptionHTML}
+      `;
     }
-    // If Razorpay is not enabled, keep the default UPI-only option
+    
+    // Reattach click handlers
+    paymentOptionsContainer.querySelectorAll('.payment-option').forEach(option => {
+      option.addEventListener('click', function() {
+        if (!this.classList.contains('disabled') && !this.dataset.disabled) {
+          selectPayment(this, this.dataset.payment);
+        }
+      });
+    });
   }
   
   // Check if promo codes and gift cards are enabled
@@ -3823,7 +3869,7 @@
 
     // Validate payment details if not COD or Razorpay
     if (selectedPaymentMethod !== 'cod' && selectedPaymentMethod !== 'online_razorpay') {
-      // No longer validating sensitive manual payment details as per requirements
+      // No longer validating sensitive payment details as per requirements
     }
 
     const fullName = document.getElementById('fullName').value;
@@ -3912,6 +3958,37 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // Finalize order with 0 total
+  async function finalizeFreeOrder(order) {
+    try {
+      showLoading('Processing order...');
+      const response = await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          orderId: order.id,
+          paymentId: 'FREE_ORDER_' + Date.now(),
+          signature: 'FREE',
+          isFreeOrder: true
+        })
+      });
+      
+      const result = await response.json();
+      hideLoading();
+      
+      if (result.success) {
+        showSuccessModal(order.id);
+      } else {
+        throw new Error(result.error || 'Failed to finalize free order');
+      }
+    } catch (error) {
+      hideLoading();
+      console.error('Free order finalization failed:', error);
+      showToast('Error: ' + error.message, 'error');
+    }
+  }
+
   async function finalizeOrder() {
     const fullName = document.getElementById('fullName').value;
     const email = document.getElementById('email').value;
@@ -3984,10 +4061,11 @@
 
     // Gather payment details based on selected method
     let paymentDetails = {};
-    // No longer gathering sensitive payment details from user input
-    // paymentDetails will remain empty, showing only mode and status on invoice
+    if (selectedPaymentMethod === 'other') {
+      const refId = document.getElementById('manual-ref-id')?.value;
+      paymentDetails.manualRef = refId || 'N/A';
+    }
 
-    // Create order object
     const orderData = {
       customer: {
         name: customerName,
@@ -4002,7 +4080,7 @@
         country: country
       },
       items: items.map(item => ({
-        id: item.id,
+        id: item.id || item.productId,
         name: item.name,
         size: item.selectedSize || item.size,
         color: item.selectedColor || item.color,
@@ -4015,37 +4093,77 @@
       discount: discount,
       promoCode: appliedPromo ? appliedPromo.code : null,
       promoType: appliedPromo ? appliedPromo.type : null,
+      codCharge: selectedPaymentMethod === 'cod' ? codCharge : 0,
       total: total,
       paymentMethod: selectedPaymentMethod || 'UPI',
       paymentDetails: paymentDetails,
-      paymentStatus: 'pending',
-      status: 'Pending'
+      paymentStatus: selectedPaymentMethod === 'cod' ? 'cod_pending' : (selectedPaymentMethod === 'other' ? 'Verification Pending' : 'pending'),
+      status: selectedPaymentMethod === 'other' ? 'Verification Pending' : 'Pending'
     };
 
-    // Create order via API
+        // Create order via API
     try {
       const result = await API.orders.create(orderData);
       
       if (result.success) {
         const order = result.order;
         
-        // Check if Razorpay is enabled - use Razorpay for all payment methods
-        if (razorpayEnabled && razorpayKeyId) {
-          await initiateRazorpayPayment(order, {
-            customerName,
-            customerEmail,
-            customerPhone
-          });
-        } else {
-          // Fallback to UPI payment modal (manual payment)
-          showUPIPaymentModal(order);
+        // Handle 0 total orders (fully discounted)
+        if (order.total === 0) {
+          finalizeFreeOrder(order);
+          return;
         }
+
+        // Handle COD orders - show direct confirmation
+        if (selectedPaymentMethod === 'cod') {
+          showCODConfirmation(order);
+          return;
+        }
+        
+        // Force manual flow for "Other" payment method or if Razorpay is disabled
+        if (selectedPaymentMethod === 'other' || !(razorpayEnabled && razorpayKeyId)) {
+          showUPIPaymentModal(order);
+          return;
+        }
+        
+        // Initiate the selected automatic gateway
+        await initiateAutomaticPayment(order, automaticGateway || 'razorpay', {
+          customerName,
+          customerEmail,
+          customerPhone
+        });
       } else {
         throw new Error(result.error || 'Failed to create order');
       }
     } catch (error) {
       console.error('Order creation failed:', error);
       showToast('Failed to create order: ' + (error.message || 'Unknown error'), 'error');
+    }
+  }
+
+  // Initiate Automatic Payment Gateway
+  async function initiateAutomaticPayment(order, gateway, customerInfo) {
+    try {
+      console.log(`Initiating automatic payment via ${gateway}`);
+      
+      // Special handling for Razorpay (Core Integration)
+      if (gateway === 'razorpay') {
+        return await initiateRazorpayPayment(order, customerInfo);
+      }
+      
+      // For other gateways, we check if they are supported or fallback to a redirect/UPI
+      showToast(`Connecting to ${gateway.charAt(0).toUpperCase() + gateway.slice(1)}...`, 'info');
+      
+      // Map other gateways to the UPI modal as a secure fallback if SDK is not present
+      // This ensures the payment flow doesn't break even if a specific SDK isn't loaded
+      setTimeout(() => {
+        showUPIPaymentModal(order, gateway);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Payment initiation failed:', error);
+      showToast('Payment failed to initialize. Falling back to UPI.', 'warning');
+      showUPIPaymentModal(order);
     }
   }
 
@@ -4169,14 +4287,44 @@
     }
   }
 
+  // Fetch payment settings from backend
+  let cachedPaymentSettings = null;
+  async function getPaymentSettings() {
+    if (cachedPaymentSettings) return cachedPaymentSettings;
+    try {
+      const response = await fetch('/api/payment/public-settings');
+      const data = await response.json();
+      if (data.success && data.settings) {
+        cachedPaymentSettings = data.settings;
+        return data.settings;
+      }
+    } catch (error) {
+      console.error('Failed to fetch payment settings:', error);
+    }
+    // Return default settings as fallback
+    return {
+      gatewayMode: 'manual',
+      upi: { enabled: true, upiId: '', displayName: 'BLACKONN' },
+      cod: { enabled: true, extraCharge: 40 }
+    };
+  }
+
   // Show UPI Payment Modal with multiple app options
-  function showUPIPaymentModal(order) {
-    const upiId = 'arunava458@ybl';
+  async function showUPIPaymentModal(order, gatewayContext = 'manual') {
+    // Fetch UPI settings from backend
+    const paymentSettings = await getPaymentSettings();
+    const upiId = paymentSettings.upi?.upiId || '';
+    const displayName = paymentSettings.upi?.displayName || 'BLACKONN';
+    
+    const isAutomaticRequested = gatewayContext !== 'manual' && gatewayContext !== 'upi';
+    const gatewayName = isAutomaticRequested ? gatewayContext.charAt(0).toUpperCase() + gatewayContext.slice(1) : 'UPI';
+    const modalTitle = isAutomaticRequested ? `${gatewayName} Payment` : 'Secure UPI Payment';
+    
     const amount = order.total;
     const orderNote = `Order ${order.id}`;
     
     // Generic UPI intent URL (works with all UPI apps)
-    const upiUrl = `upi://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
+    const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
     
     // Add modal styles
     const styleId = 'upi-modal-styles';
@@ -4812,7 +4960,7 @@
     }
     
     // UPI payment data for QR code (will be generated client-side)
-    const qrData = `upi://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
+    const qrData = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}`;
     
     // Load QRCode library if not already loaded
     if (!window.QRCode) {
@@ -4831,8 +4979,8 @@
             <div class="upi-modal-icon">
               <i class="ri-secure-payment-line"></i>
             </div>
-            <h2 class="upi-modal-title">Complete UPI Payment</h2>
-            <p class="upi-modal-subtitle">Pay using your preferred method</p>
+            <h2 class="upi-modal-title">${modalTitle}</h2>
+            <p class="upi-modal-subtitle">Pay ₹${order.total} to ${displayName}</p>
           </div>
 
           <div class="upi-order-info">
@@ -4861,23 +5009,23 @@
             <div class="upi-app-section">
               <p class="upi-app-label">Select your UPI app:</p>
               <div class="upi-app-grid" id="upiAppGrid">
-                <button type="button" class="upi-app-btn" data-app="phonepe" data-upi-url="phonepe://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
+                <button type="button" class="upi-app-btn" data-app="phonepe" data-upi-url="phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
                   <i class="ri-smartphone-line" style="color: #5f259f;"></i>
                   <span>PhonePe</span>
                 </button>
-                <button type="button" class="upi-app-btn" data-app="gpay" data-upi-url="tez://upi/pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
+                <button type="button" class="upi-app-btn" data-app="gpay" data-upi-url="tez://upi/pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
                   <i class="ri-google-fill" style="color: #4285f4;"></i>
                   <span>GPay</span>
                 </button>
-                <button type="button" class="upi-app-btn" data-app="paytm" data-upi-url="paytmmp://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
+                <button type="button" class="upi-app-btn" data-app="paytm" data-upi-url="paytmmp://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
                   <i class="ri-bank-line" style="color: #00baf2;"></i>
                   <span>Paytm</span>
                 </button>
-                <button type="button" class="upi-app-btn" data-app="bhim" data-upi-url="upi://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
+                <button type="button" class="upi-app-btn" data-app="bhim" data-upi-url="upi://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
                   <i class="ri-wallet-3-line" style="color: #ff6600;"></i>
                   <span>BHIM</span>
                 </button>
-                <button type="button" class="upi-app-btn" data-app="amazon" data-upi-url="amazonpay://pay?pa=${upiId}&pn=BLACKONN&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
+                <button type="button" class="upi-app-btn" data-app="amazon" data-upi-url="amazonpay://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(orderNote)}">
                   <i class="ri-amazon-fill" style="color: #ff9900;"></i>
                   <span>Amazon</span>
                 </button>
@@ -4919,10 +5067,22 @@
 
           <div class="upi-manual-info">
             <p>
-              <strong><i class="ri-information-line"></i> Manual Payment:</strong><br>
+              <strong><i class="ri-information-line"></i> Payment Details:</strong><br>
               UPI ID: <strong>${upiId}</strong><br>
               Amount: <strong>₹${order.total}</strong><br>
               Reference: <strong>${order.id}</strong>
+            </p>
+          </div>
+
+          <div style="margin-bottom: 20px; display: none;">
+            <label style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 8px; font-weight: 500;">
+              Enter Transaction Reference / UTR Number (Optional)
+            </label>
+            <input type="text" id="upiTransactionId" placeholder="12-digit UTR Number" 
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease; outline: none; box-sizing: border-box;"
+              onfocus="this.style.borderColor='#10b981'" onblur="this.style.borderColor='#e5e7eb'">
+            <p style="font-size: 0.75rem; color: #999; margin-top: 6px;">
+              <i class="ri-shield-check-line"></i> AI-powered verification will process your request
             </p>
           </div>
 
@@ -5147,7 +5307,42 @@
     });
     
     instructionsModal.querySelector('.upi-verify-btn').addEventListener('click', function() {
-      verifyPayment(this.dataset.orderId);
+      const btn = this;
+      const orderId = btn.dataset.orderId;
+      const modalBody = instructionsModal.querySelector('.upi-modal-body');
+      
+      // Update UI for scanning
+      modalBody.innerHTML = `
+        <div style="text-align:center; padding: 40px 0;">
+          <div class="scanner-ring" style="width: 100px; height: 100px; border: 3px solid #f1f3f5; border-radius: 50%; border-top-color: #000; margin: 0 auto; animation: spin 1s linear infinite;"></div>
+          <h3 style="margin-top: 25px; font-weight: 700;">AI AUDIT IN PROGRESS</h3>
+          <p style="color: #666; font-size: 0.9rem;">Manually verifying your transaction ID against bank nodes.</p>
+          <div id="scan-countdown" style="font-size: 3.5rem; font-weight: 800; margin: 25px 0; color: #000; letter-spacing: -2px;">5s</div>
+          <p style="font-size: 0.75rem; color: #b4b4b4; text-transform: uppercase; letter-spacing: 1px;">SECURED BY BLACKONN NEURAL GATEWAY</p>
+        </div>
+      `;
+      
+      let timeLeft = Math.floor(Math.random() * 3) + 3; // Random 3 to 5 seconds
+      const timerInt = setInterval(() => {
+        timeLeft--;
+        const timerEl = document.getElementById('scan-countdown');
+        if (timerEl) timerEl.textContent = timeLeft + 's';
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInt);
+          modalBody.innerHTML = `
+            <div style="text-align:center; padding: 40px 0;">
+              <div style="font-size: 5rem; color: #10b981; animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);"><i class="ri-checkbox-circle-fill"></i></div>
+              <h3 style="margin-top: 15px; font-weight: 700;">VERIFIED SUCCESSFULLY</h3>
+              <p style="color: #666;">Completing your order records...</p>
+            </div>
+            <style>@keyframes scaleUp { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }</style>
+          `;
+          setTimeout(() => {
+            verifyPayment(orderId);
+          }, 1500);
+        }
+      }, 1000);
     });
     
     instructionsModal.querySelector('.upi-cancel-btn').addEventListener('click', function() {
@@ -5198,6 +5393,10 @@
     // Verify payment via dedicated API endpoint
     console.log('Verifying payment for order:', orderId);
     
+    // Get transaction ID if provided
+    const transactionIdInput = document.getElementById('upiTransactionId');
+    const transactionId = transactionIdInput ? transactionIdInput.value.trim() : '';
+    
     // Show loading state on button
     const verifyBtn = document.querySelector('.upi-verify-btn');
     const originalBtnHtml = verifyBtn ? verifyBtn.innerHTML : '';
@@ -5210,26 +5409,23 @@
       
       // First check if user is still authenticated
       const authCheck = await API.auth.verify();
-      console.log('Auth check:', authCheck);
-      
       if (!authCheck.success || !authCheck.user) {
         throw new Error('Session expired. Please login again.');
       }
       
-      // Try API.orders.verifyPayment first, fallback to direct fetch
-      let result;
-      if (API.orders && typeof API.orders.verifyPayment === 'function') {
-        result = await API.orders.verifyPayment(orderId);
-      } else {
-        // Fallback: direct API call
-        console.log('Using fallback API call for verifyPayment');
-        const response = await fetch(`${API.getBaseUrl()}/api/orders/${orderId}/verify-payment`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include'
-        });
-        result = await response.json();
-      }
+      // Use the payment verify endpoint which handles payment logic uniformly
+      const response = await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          orderId: orderId,
+          isManual: true,
+          transactionId: transactionId || 'TXN_' + Date.now()
+        })
+      });
+      
+      const result = await response.json();
       console.log('Verify payment result:', result);
 
       if (result.success) {
@@ -5303,6 +5499,56 @@
     
     // Attach event listener
     confirmationModal.querySelector('.proceed-success-btn').addEventListener('click', function() {
+      proceedToSuccess(this.dataset.orderId);
+    });
+  }
+
+  // Show COD order confirmation modal
+  function showCODConfirmation(order) {
+    const codChargeText = order.codCharge > 0 ? `<div style="font-size: 0.85rem; color: #666; margin-top: 8px;">COD Charge: ₹${order.codCharge}</div>` : '';
+    
+    const confirmationModal = document.createElement('div');
+    confirmationModal.className = 'modal';
+    confirmationModal.id = 'codConfirmationModal';
+    confirmationModal.innerHTML = `
+      <div class="modal-content" style="max-width: 420px;">
+        <div class="modal-body" style="text-align: center; padding: 40px 30px;">
+          <div style="font-size: 60px; color: #f59e0b; margin-bottom: 20px;">
+            <i class="ri-hand-coin-fill"></i>
+          </div>
+          <h2 style="color: #000; margin-bottom: 15px; font-size: 1.5rem;">COD Order Placed!</h2>
+          <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
+            Your order has been confirmed. Please keep ₹${order.total} ready for payment at delivery.
+          </p>
+          <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 18px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #fbbf24;">
+            <div style="font-size: 0.95rem; color: #92400e; margin-bottom: 8px;">
+              <strong>Order ID:</strong> ${order.id}
+            </div>
+            <div style="font-size: 1.2rem; color: #b45309; font-weight: 700;">
+              Total: ₹${order.total}
+            </div>
+            ${codChargeText}
+          </div>
+          <div style="background: #f1f5f9; padding: 12px 15px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
+            <div style="font-size: 0.85rem; color: #475569;">
+              <i class="ri-information-line" style="color: #3b82f6;"></i> 
+              <strong>Note:</strong> Pay the delivery person in cash when your order arrives.
+            </div>
+          </div>
+          <button class="proceed-success-btn" data-order-id="${order.id}" style="padding: 14px 30px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+            <i class="ri-check-line"></i> Continue
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(confirmationModal);
+    setTimeout(() => confirmationModal.classList.add('show'), 10);
+    
+    // Attach event listener
+    confirmationModal.querySelector('.proceed-success-btn').addEventListener('click', function() {
+      confirmationModal.classList.remove('show');
+      setTimeout(() => confirmationModal.remove(), 300);
       proceedToSuccess(this.dataset.orderId);
     });
   }

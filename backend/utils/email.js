@@ -67,10 +67,16 @@ async function generateAIEmail(type, data) {
 
 // Create transporter using environment variables
 const createTransporter = () => {
+  const host = process.env.EMAIL_HOST || process.env.SMTP_HOST;
+  const user = process.env.EMAIL_USER || process.env.SMTP_USER;
+  const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
+  const port = parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT) || 587;
+  const secure = (process.env.EMAIL_SECURE || process.env.SMTP_SECURE) === 'true';
+
   // Default to a "no-op" transporter if no credentials provided
-  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  if (!host || !user || !pass) {
     logger.warn('📧 [Email Warning] SMTP credentials missing in .env. Emails will be logged but not sent.');
-    logger.info(`   Required: EMAIL_HOST, EMAIL_USER, EMAIL_PASS`);
+    logger.info(`   Required: EMAIL_HOST/SMTP_HOST, EMAIL_USER/SMTP_USER, EMAIL_PASS/SMTP_PASS`);
     return {
       sendMail: async (options) => {
         logger.info(`[Email Simulation] To: ${options.to}, Subject: ${options.subject}`);
@@ -79,15 +85,15 @@ const createTransporter = () => {
     };
   }
 
-  logger.info(`📧 [Email Config] Connecting to ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT || 587}`);
+  logger.info(`📧 [Email Config] Connecting to ${host}:${port}`);
 
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+    host: host,
+    port: port,
+    secure: secure, // true for 465, false for other ports
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: user,
+      pass: pass,
     },
     tls: {
       rejectUnauthorized: false // Often needed for various SMTP providers

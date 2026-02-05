@@ -387,6 +387,8 @@ if __name__ == "__main__":
                         "password_reset", "abandoned_cart", "review_request"
                     ]
                 }))
+            elif task == "status" or task == "health":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
             else:
                 # Assume task is the email type
                 input_data['type'] = task

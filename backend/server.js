@@ -1361,6 +1361,51 @@ app.use((err, req, res, next) => {
       }
     }, 6 * 60 * 60 * 1000);
 
+    // ============ MANUAL PAYMENT AUTO-VERIFICATION ============
+    // If admin doesn't verify within 1 minute, auto-verify it
+    setInterval(() => {
+      try {
+        const orders = db.orders.findAll();
+        const now = Date.now();
+        const ONE_MINUTE_MS = 60 * 1000;
+        let count = 0;
+
+        orders.forEach(order => {
+          if (order.paymentStatus === 'Verification Pending' && 
+              (now - new Date(order.updatedAt || order.createdAt).getTime()) > ONE_MINUTE_MS) {
+            
+            db.orders.update(order.id, {
+              paymentStatus: 'Completed',
+              paymentConfirmed: true,
+              status: 'Confirmed',
+              autoVerified: true,
+              updatedAt: new Date().toISOString()
+            });
+
+            // Add notification for admin
+            const { addNotification } = require('./utils/adminNotificationStore');
+            addNotification({
+              type: 'payment',
+              title: 'Auto-Verified Payment',
+              message: `Order #${order.id} was auto-verified after timeout.`,
+              priority: 'low',
+              data: { orderId: order.id }
+            });
+
+            logger.info(`[Auto-Verify] Manual payment for Order #${order.id} automatically verified.`);
+            count++;
+          }
+        });
+
+        if (count > 0) {
+          logger.info(`[Auto-Verify] Total ${count} orders verified automatically.`);
+        }
+      } catch (err) {
+        logger.error('Manual payment auto-verification loop error:', err.message);
+      }
+    }, 30 * 1000); // Check every 30 seconds
+    // ========================================================
+
   } catch (error) {
     console.error('❌ Failed to start server:', error.message);
     process.exit(1);

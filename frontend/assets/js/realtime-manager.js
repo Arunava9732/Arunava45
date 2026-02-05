@@ -68,9 +68,9 @@ class RealtimeManager {
         }
         
         // Build WS URL - simplify for production
-        // Removed /ws path as the backend WebSocket server listens on all paths by default
+        // In production (no port), use /api/ for WebSocket proxying via Nginx
         if (!port || port === '80' || port === '443') {
-          wsUrl = `${protocol}//${hostname}`;
+          wsUrl = `${protocol}//${hostname}/api/`;
         } else {
           wsUrl = `${protocol}//${hostname}:${port}`;
         }

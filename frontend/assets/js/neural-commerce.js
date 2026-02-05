@@ -26,6 +26,9 @@ class NeuralCommerce {
     // Refresh stats if in admin
     if (typeof updateNeuralStats === 'function') {
       updateNeuralStats();
+      if (typeof showNotification === 'function') {
+        showNotification('Neural Commerce initialized', 'info');
+      }
     }
     
     // Initial prediction after 10 seconds of activity

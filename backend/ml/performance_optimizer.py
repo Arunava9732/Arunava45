@@ -476,6 +476,8 @@ if __name__ == "__main__":
                 result = optimizer.load_test_analysis(input_data)
             elif task == "metrics":
                 result = {"success": True, "metrics": optimizer._get_current_metrics()}
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": optimizer.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -488,5 +490,5 @@ if __name__ == "__main__":
             "engine": "Performance Optimizer",
             "version": optimizer.model_version,
             "tasks": ["analyze", "queries", "cache", "loadtest", "metrics"],
-            "status": "ready"
+            "status": "healthy"
         }))

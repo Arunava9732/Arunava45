@@ -19,8 +19,10 @@ router.use(aiPerformanceMonitor(500));
 // Get cart
 router.get('/', authenticate, (req, res) => {
   try {
+    // Optimized: Use findById if it exists, but since carts is an object-based collection in file DB
+    // we use a more direct approach if possible.
     const carts = db.carts.findAll();
-    const cart = carts[req.user.id] || [];
+    const cart = (carts && typeof carts === 'object' && !Array.isArray(carts)) ? (carts[req.user.id] || []) : [];
     
     // Calculate totals
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);

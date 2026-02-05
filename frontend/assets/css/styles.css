@@ -31,9 +31,18 @@
 }
 
 /* Prevent horizontal scroll on mobile */
-html, body {
+html {
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
-  max-width: 100vw;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: visible;
+  max-width: 100%;
 }
 
 /* Scroll performance optimizations */
@@ -806,7 +815,7 @@ html {
 
 /* Buttery smooth scrolling */
 @supports (scrollbar-width: thin) {
-  * {
+  html {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   }
@@ -841,7 +850,6 @@ html {
 
 body {
   background: #ffffff;
-  overflow-x: hidden;
 }
 
 /* ============ ANIMATIONS & SMOOTHNESS ============ */
@@ -1111,14 +1119,16 @@ transform: translate3d(0, -.25rem, 0);
 
 .slider-wrapper {
   position: relative;
-  /* Full-bleed slider - remove side margins/padding completely */
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+  /* Natural full-width slider */
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  left: 0;
+  right: 0;
   /* keep the requested vertical offset and height calculations */
-  margin-top: calc(var(--header-height) - 16px - 0.5cm);
-  height: calc(100vh - var(--header-height) + 16px + 0.5cm);
+  margin-top: var(--header-height);
+  height: calc(100vh - var(--header-height));
   overflow: hidden;
   background: #000;
   border-radius: 0;
@@ -1164,11 +1174,13 @@ transform: translate3d(0, -.25rem, 0);
 /* Responsive adjustments for the hero slider */
 @media (max-width: 1024px) {
   .slider-wrapper {
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    margin-top: calc(var(--header-height) * 0.6);
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    left: 0;
+    right: 0;
+    margin-top: var(--header-height);
     height: 70vh;
     border-radius: 0;
   }
@@ -1180,11 +1192,13 @@ transform: translate3d(0, -.25rem, 0);
 
 @media (max-width: 768px) {
   .slider-wrapper {
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    margin-top: 45px; /* Pushed down more for mobile view - header clearance */
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    left: 0;
+    right: 0;
+    margin-top: 80px; /* Pushed down more for mobile view - header clearance */
     /* Maintain aspect ratio on tablets */
     height: auto;
     min-height: 56.25vw; /* 16:9 aspect ratio */
@@ -1206,11 +1220,13 @@ transform: translate3d(0, -.25rem, 0);
 
 @media (max-width: 480px) {
   .slider-wrapper {
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    margin-top: 50px; /* Pushed down more for mobile view - header clearance */
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    left: 0;
+    right: 0;
+    margin-top: 85px; /* Pushed down more for mobile view - header clearance */
     /* Use aspect ratio to maintain video proportions */
     height: auto;
     min-height: 56.25vw; /* 16:9 aspect ratio */
@@ -1242,10 +1258,14 @@ transform: translate3d(0, -.25rem, 0);
 @media (max-width: 360px) {
   .slider-wrapper {
     width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    left: 0;
+    right: 0;
     height: auto;
     min-height: 56.25vw;
     max-height: 65vh;
-    margin-top: 30px; /* Slightly pushed down for mobile view */
+    margin-top: 80px; /* Slightly pushed down for mobile view */
   }
   .slider-track video,
   .slider-track img {
@@ -1690,7 +1710,7 @@ body{
   background: linear-gradient(180deg,var(--bg), #eef3f8 160px);
   color: #111;
   -webkit-font-smoothing:antialiased;
-  padding:36px;
+  padding:0;
   animation: pageLoadFade 0.8s ease-out forwards;
 }
 
@@ -1706,6 +1726,7 @@ body{
   display:flex;
   flex-direction:column;
   gap:72px;
+  padding: 0 20px;
 }
 
 /* Section (each row) */

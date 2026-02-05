@@ -457,6 +457,8 @@ if __name__ == "__main__":
                 )
             elif task == "resolve":
                 result = tracker.auto_resolve(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": tracker.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -469,5 +471,5 @@ if __name__ == "__main__":
             "engine": "Error Tracker Engine",
             "version": tracker.model_version,
             "tasks": ["track", "trends", "report", "resolve"],
-            "status": "ready"
+            "status": "healthy"
         }))

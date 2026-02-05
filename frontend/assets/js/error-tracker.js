@@ -622,12 +622,14 @@ class ErrorTracker {
       await fetch(this.config.serverEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Skip-Error-Track': 'true'
         },
         body: JSON.stringify(payload)
       });
     } catch (e) {
-      console.error('Failed to send error to server:', e);
+      // Don't report this error to avoid recursion
+      console.warn('Silent failure sending error to server');
     }
   }
 

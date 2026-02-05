@@ -1,0 +1,85 @@
+{
+  "gatewayMode": "manual",
+  "manual": {
+    "enabled": true,
+    "upi": {
+      "enabled": true,
+      "upiId": "Arunava45@ybl",
+      "displayName": "BLACKONN",
+      "description": "Pay using any UPI app"
+    },
+    "bank": {
+      "enabled": false,
+      "accountName": "Your Business Name",
+      "accountNumber": "",
+      "ifscCode": "",
+      "bankName": "",
+      "branchName": ""
+    },
+    "cod": {
+      "enabled": false,
+      "extraCharge": 40,
+      "maxOrderValue": 10000,
+      "minOrderValue": 0
+    }
+  },
+  "automatic": {
+    "enabled": false,
+    "selectedGateway": "razorpay",
+    "razorpay": {
+      "enabled": false,
+      "keyId": "",
+      "keySecret": "",
+      "webhookSecret": ""
+    },
+    "payu": {
+      "merchantKey": "",
+      "salt": "",
+      "merchantId": ""
+    },
+    "cashfree": {
+      "appId": "",
+      "secretKey": ""
+    },
+    "phonepe": {
+      "merchantId": "",
+      "saltKey": "",
+      "saltIndex": "1"
+    },
+    "paytm": {
+      "merchantId": "",
+      "merchantKey": "",
+      "website": ""
+    },
+    "ccavenue": {
+      "merchantId": "",
+      "accessCode": "",
+      "workingKey": ""
+    },
+    "instamojo": {
+      "apiKey": "",
+      "authToken": "",
+      "salt": ""
+    },
+    "stripe": {
+      "publishableKey": "",
+      "secretKey": "",
+      "webhookSecret": ""
+    }
+  },
+  "transactions": {
+    "totalCredited": 0,
+    "totalPending": 0,
+    "totalFailed": 0,
+    "lastUpdated": null
+  },
+  "settings": {
+    "autoVerifyPayments": false,
+    "sendPaymentReceipts": true,
+    "paymentReminderHours": 24,
+    "refundProcessingDays": 7,
+    "sendReceiptEmail": true
+  },
+  "updatedAt": "2026-02-04T13:59:20.675Z",
+  "updatedBy": "admin"
+}

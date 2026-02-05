@@ -7,6 +7,7 @@ Analyzes payment transactions for fraud, verifies integrity, and provides risk a
 import json
 import sys
 import hashlib
+import hmac
 import re
 from datetime import datetime, timedelta
 
@@ -164,7 +165,7 @@ class PaymentVerificationAI:
             return True  # Cannot verify without secret, assume pre-verified
         
         body = f"{razorpay_order_id}|{razorpay_payment_id}"
-        expected = hashlib.sha256(f"{body}{secret}".encode()).hexdigest()
+        expected = hmac.new(secret.encode(), body.encode(), hashlib.sha256).hexdigest()
         
         return expected == razorpay_signature
     
@@ -474,7 +475,7 @@ if __name__ == "__main__":
                 result = verifier.analyze_refund_risk(order, history)
                 print(json.dumps(result))
             
-            elif task == "health":
+            elif task == "health" or task == "status":
                 print(json.dumps({
                     "status": "healthy",
                     "engine": "Payment Verification AI v1.0",

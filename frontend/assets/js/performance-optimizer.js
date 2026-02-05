@@ -65,7 +65,9 @@ class PerformanceOptimizer {
 
   analyzePerformance() {
     const score = this.calculateScore();
-    if (window.showToast) {
+    if (typeof showNotification === 'function') {
+      showNotification(`System Performance: ${score}%`, score > 80 ? 'success' : 'warning');
+    } else if (window.showToast) {
        window.showToast(`Performance Score: ${score}/100`, score > 80 ? 'success' : 'warning');
     }
     return score;

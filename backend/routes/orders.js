@@ -16,7 +16,12 @@ const {
   sendGiftCardEmail,
   sendNewOrderAdmin
 } = require('../utils/email');
-const { sendAdminNotification, formatOrderMessage, formatLowStockMessage } = require('../utils/whatsapp');
+const { 
+  sendAdminNotification, 
+  formatOrderMessage, 
+  formatLowStockMessage,
+  sendOrderConfirmationToUser
+} = require('../utils/whatsapp');
 const { notifyAdmins } = require('../utils/adminNotifier');
 const { addNotification } = require('../utils/adminNotificationStore');
 const { sendOrderWebhook } = require('../routes/webhooks');
@@ -150,22 +155,32 @@ router.get('/my-orders', authenticate, (req, res) => {
   try {
     const allOrders = db.orders.findAll();
     // Filter by userId OR userEmail to catch all user's orders
-    // Also filter out orders that are awaiting payment confirmation
     const orders = allOrders.filter(order => {
       // First check if order belongs to this user
-      const isUserOrder = order.userId === req.user.id || order.userEmail === req.user.email;
+      const isUserOrder = (order.userId && order.userId === req.user.id) || 
+                         (order.userEmail && order.userEmail === req.user.email);
+      
       if (!isUserOrder) return false;
       
-      // Show COD orders always
+      // AI-REFINED: Show nearly all stages of the order process for transparency
+      // 1. Show COD orders always
       if (order.paymentMethod === 'cod') return true;
-      // Show orders where payment is confirmed
+      
+      // 2. Show orders where payment is confirmed or verification is pending
       if (order.paymentConfirmed === true) return true;
-      // Show orders that are already marked as paid/completed
+      if (order.paymentStatus === 'Verification Pending') return true;
+      
+      // 3. Show orders that are already marked as paid/completed/shipped
       const paymentStatus = (order.paymentStatus || '').toLowerCase();
-      if (paymentStatus === 'completed' || paymentStatus === 'paid') return true;
-      // Hide unconfirmed online payment orders
+      if (['completed', 'paid', 'verified'].includes(paymentStatus)) return true;
+      
+      const orderStatus = (order.status || '').toLowerCase();
+      if (['confirmed', 'processing', 'shipped', 'delivered', 'return requested', 'exchange requested'].includes(orderStatus)) return true;
+
+      // Only hide orders that are explicitly 'unpaid' and haven't requested verification
       return false;
     });
+    
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.json({ success: true, orders });
   } catch (error) {
@@ -206,7 +221,7 @@ router.post('/',
     body('shippingInfo.state').optional().trim().escape(),
     body('shippingInfo.pincode').optional().trim().escape(),
     body('shippingInfo.phone').optional().trim(),
-    body('paymentMethod').optional().isIn(['cod', 'online', 'upi', 'card']).withMessage('Invalid payment method'),
+    body('paymentMethod').optional().isIn(['cod', 'online', 'upi', 'card', 'other']).withMessage('Invalid payment method'),
     body('subtotal').isNumeric().withMessage('Invalid subtotal'),
     body('total').isNumeric().withMessage('Invalid total')
   ]),
@@ -310,8 +325,10 @@ router.post('/',
 
       // For COD orders, payment is confirmed immediately (will be collected on delivery)
       // For online payments (UPI, card, etc.), payment needs to be verified before order is confirmed
+      // For 'other' (manual) payments, we set to 'Verification Pending' for AI/Interval auto-verify
       const isCOD = paymentMethod === 'cod';
-      const paymentConfirmed = isCOD; // Only COD orders are confirmed immediately
+      const isOther = paymentMethod === 'other';
+      const paymentConfirmed = isCOD;
       
       const order = {
         id: 'ORD' + Date.now(),
@@ -322,15 +339,17 @@ router.post('/',
         shippingInfo,
         paymentMethod: paymentMethod || 'cod',
         paymentDetails: paymentDetails || {},
+        transactionId: isCOD ? 'COD-' + Date.now() : (isOther ? (paymentDetails?.transactionId || 'MANUAL-' + Date.now()) : null),
         subtotal: Number(subtotal) || 0,
         shipping: Number(shipping) || 0,
         discount: Number(discount) || 0,
         promoCode: promoCode || null,
         promoType: promoType || null,
         total: Number(total) || 0,
-        status: isCOD ? 'Pending' : 'Awaiting Payment',
-        paymentStatus: isCOD ? 'Pending' : 'Awaiting Payment',
+        status: isCOD ? 'Pending' : (isOther ? 'Verification Pending' : 'Awaiting Payment'),
+        paymentStatus: isCOD ? 'Pending' : (isOther ? 'Verification Pending' : 'Awaiting Payment'),
         paymentConfirmed: paymentConfirmed,
+        verificationRequestedAt: isOther ? new Date().toISOString() : null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -354,6 +373,14 @@ router.post('/',
         // Send Order Confirmation to User
         sendOrderConfirmation(order, req.user.email).catch(err => console.error('Order email failed:', err));
         
+        // Send WhatsApp Order Confirmation to User
+        const userPhone = order.shippingInfo?.phone || req.user.phone;
+        if (userPhone) {
+          sendOrderConfirmationToUser(userPhone, order).catch(err => 
+            console.error('WhatsApp order confirmation failed:', err.message)
+          );
+        }
+
         // Send Notification to Admin
         sendNewOrderAdmin(order).catch(err => console.error('Admin order email failed:', err));
 
@@ -442,6 +469,40 @@ router.patch('/:id/status', authenticate, isAdmin, (req, res) => {
 
     const updated = db.orders.update(req.params.id, updates);
 
+    // Automatically create shipment record if marked as Shipped
+    if (status === 'Shipped') {
+      try {
+        const shippingDataPath = path.join(__dirname, '..', 'data', 'shipping.json');
+        if (fs.existsSync(shippingDataPath)) {
+          const sData = JSON.parse(fs.readFileSync(shippingDataPath, 'utf8'));
+          // Check if shipment already exists
+          const existing = sData.shipments.find(s => s.orderId === req.params.id || s.referenceId === req.params.id);
+          if (!existing) {
+            const newShipment = {
+              id: uuidv4(),
+              referenceId: req.params.id,
+              referenceType: 'order',
+              orderId: req.params.id,
+              courier: 'default',
+              trackingNumber: 'BLK' + Date.now().toString(36).toUpperCase(),
+              trackingMode: 'manual',
+              status: 'shipped',
+              statusHistory: [
+                { status: 'created', timestamp: new Date().toISOString(), note: 'Shipment auto-created on status change' },
+                { status: 'shipped', timestamp: new Date().toISOString(), note: 'Item marked as Shipped by Admin' }
+              ],
+              createdAt: new Date().toISOString()
+            };
+            sData.shipments.push(newShipment);
+            fs.writeFileSync(shippingDataPath, JSON.stringify(sData, null, 2));
+            console.log(`[Shipping] Auto-created shipment for Order ${req.params.id}`);
+          }
+        }
+      } catch (err) {
+        console.error('[Shipping] Failed to auto-create shipment:', err);
+      }
+    }
+
     // If transitions to paid, trigger side effects (stock, emails, etc.)
     if (isBecomingPaid) {
       console.log(`[Admin] Order ${req.params.id} manually verified as PAID.`);
@@ -486,25 +547,13 @@ router.patch('/:id/status', authenticate, isAdmin, (req, res) => {
   }
 });
 
-// Verify payment for an order (order owner or admin)
-router.post('/:id/verify-payment', authenticate, (req, res) => {
+/**
+ * Helper function to verify payment and process order side effects
+ */
+async function performOrderVerification(orderId) {
   try {
-    const order = db.orders.findById(req.params.id);
-    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
-
-    // Only owner or admin may verify payment
-    if (req.user.role !== 'admin' && order.userId !== req.user.id) {
-      return res.status(403).json({ success: false, error: 'Not authorized' });
-    }
-
-    // If already confirmed/paid, return current order
-    if (order.paymentConfirmed === true) {
-      return res.json({ success: true, order, message: 'Payment already confirmed' });
-    }
-    const currentStatus = (order.paymentStatus || '').toLowerCase();
-    if (currentStatus === 'completed' || currentStatus === 'paid') {
-      return res.json({ success: true, order, message: 'Payment already completed' });
-    }
+    const order = db.orders.findById(orderId);
+    if (!order) return { success: false, error: 'Order not found' };
 
     // Update order with payment confirmed status
     const updates = { 
@@ -514,10 +563,12 @@ router.post('/:id/verify-payment', authenticate, (req, res) => {
       updatedAt: new Date().toISOString() 
     };
 
-    const updated = db.orders.update(req.params.id, updates);
+    const updated = db.orders.update(orderId, updates);
     
     // Now that payment is confirmed, send all notifications
-    sendOrderWebhook && sendOrderWebhook('order.created', updated);
+    if (typeof sendOrderWebhook === 'function') {
+      sendOrderWebhook('order.created', updated);
+    }
     
     // Send order confirmation email
     const userEmail = order.userEmail || (order.shippingInfo && order.shippingInfo.email);
@@ -561,7 +612,40 @@ router.post('/:id/verify-payment', authenticate, (req, res) => {
       db.carts.replaceAll(carts);
     }
 
-    res.json({ success: true, order: updated });
+    return { success: true, order: updated };
+  } catch (error) {
+    console.error('Order verification helper error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Verify payment for an order (order owner or admin)
+router.post('/:id/verify-payment', authenticate, async (req, res) => {
+  try {
+    const order = db.orders.findById(req.params.id);
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
+
+    // Only owner or admin may verify payment
+    if (req.user.role !== 'admin' && order.userId !== req.user.id) {
+      return res.status(403).json({ success: false, error: 'Not authorized' });
+    }
+
+    // If already confirmed/paid, return current order
+    if (order.paymentConfirmed === true) {
+      return res.json({ success: true, order, message: 'Payment already confirmed' });
+    }
+    const currentStatus = (order.paymentStatus || '').toLowerCase();
+    if (currentStatus === 'completed' || currentStatus === 'paid') {
+      return res.json({ success: true, order, message: 'Payment already completed' });
+    }
+
+    const verificationResult = await performOrderVerification(req.params.id);
+    
+    if (verificationResult.success) {
+      res.json({ success: true, order: verificationResult.order });
+    } else {
+      res.status(500).json({ success: false, error: verificationResult.error });
+    }
   } catch (error) {
     console.error('Verify payment error:', error);
     res.status(500).json({ success: false, error: 'Failed to verify payment' });
@@ -667,5 +751,45 @@ router.get('/stats/summary', authenticate, isAdmin, (req, res) => {
     res.status(500).json({ success: false, error: 'Failed to get stats' });
   }
 });
+
+/**
+ * AUTO-VERIFICATION FOR MANUAL PAYMENTS
+ * Automatically verifies manual payments if admin doesn't act within 1 minute
+ */
+setInterval(async () => {
+  try {
+    const allOrders = db.orders.findAll();
+    const now = new Date();
+    const oneMinuteAgo = new Date(now.getTime() - 60000);
+    
+    // Find orders waiting for verification for more than 1 minute
+    const pendingOrders = allOrders.filter(order => 
+      order.paymentStatus === 'Verification Pending' && 
+      !order.paymentConfirmed &&
+      order.verificationRequestedAt &&
+      new Date(order.verificationRequestedAt) < oneMinuteAgo
+    );
+    
+    if (pendingOrders.length > 0) {
+      console.log(`[Auto-Verify] Found ${pendingOrders.length} manual payments overdue for verification.`);
+      
+      for (const order of pendingOrders) {
+        console.log(`[Auto-Verify] Automatically verifying Order #${order.id}...`);
+        await performOrderVerification(order.id);
+        
+        // Add log entry
+        addNotification({
+          type: 'payment',
+          title: 'Auto-Verification Triggered',
+          message: `Order #${order.id} was automatically verified after 1-minute timeout.`,
+          priority: 'low',
+          link: '#orders'
+        });
+      }
+    }
+  } catch (err) {
+    console.error('[Auto-Verify] Error in background verification task:', err);
+  }
+}, 30000); // Run every 30 seconds
 
 module.exports = router;

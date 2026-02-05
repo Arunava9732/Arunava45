@@ -374,6 +374,9 @@ if __name__ == "__main__":
                 result = optimizer.calculate_elasticity(prices, sales)
                 print(json.dumps({"elasticity": result}))
             
+            elif task == "status" or task == "health":
+                print(json.dumps({"status": "healthy", "version": "1.0.0"}))
+            
             else:
                 print(json.dumps({"error": f"Unknown task: {task}"}))
         

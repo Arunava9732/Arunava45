@@ -544,6 +544,8 @@ if __name__ == "__main__":
                 result = manager.detect_brute_force(input_data)
             elif task == "report":
                 result = manager.generate_security_report(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": manager.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -556,5 +558,5 @@ if __name__ == "__main__":
             "engine": "Security Manager",
             "version": manager.model_version,
             "tasks": ["analyze", "traffic", "scan", "brute-force", "report"],
-            "status": "ready"
+            "status": "healthy"
         }))

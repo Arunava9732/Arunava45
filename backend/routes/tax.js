@@ -1223,9 +1223,10 @@ router.get('/invoice/:orderId', optionalAuth, async (req, res) => {
         isInterstate,
         
         // Payment Details
-        paymentMethod: order.paymentMethod || 'manual',
+        paymentMethod: order.paymentMethod === 'manual' ? 'Online' : (order.paymentMethod || 'Online'),
         paymentStatus: order.paymentStatus || 'Pending',
         paymentDetails: order.paymentDetails || {},
+        transactionId: order.transactionId || order.razorpayPaymentId || null,
         razorpayPaymentMethod: order.razorpayPaymentMethod || null,
         razorpayPaymentId: order.razorpayPaymentId || null,
         

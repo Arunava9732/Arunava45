@@ -6,6 +6,7 @@ AI-powered commerce optimization with neural network simulations
 
 import json
 import sys
+import os
 from datetime import datetime, timedelta
 from collections import defaultdict
 import math
@@ -15,27 +16,48 @@ import math
 # ==========================================
 
 class NeuralCommerceEngine:
-    """Neural network-inspired commerce optimization"""
+    """Neural network-inspired commerce optimization with dynamic weight adaptation"""
     
     def __init__(self):
-        self.model_version = "2.0.0"
-        self.learning_rate = 0.01
-        self.weights = self._initialize_weights()
-    
-    def _initialize_weights(self):
-        """Initialize neural weights for different commerce signals"""
-        return {
-            'price_sensitivity': 0.3,
-            'brand_loyalty': 0.25,
-            'trend_following': 0.2,
-            'urgency_response': 0.15,
-            'social_proof': 0.1
+        self.model_version = "3.5.0-ultra"
+        self.learning_rate = 0.05
+        # Adaptive weights that evolve based on conversion feedback
+        self.weights = {
+            'behavior_signal': 0.45,
+            'product_relevance': 0.35,
+            'contextual_urgency': 0.15,
+            'social_validation': 0.05
         }
+        self.conversion_baseline = 0.02
+        self._load_network_state()
     
+    def _load_network_state(self):
+        """Load persistent neural weights if available"""
+        state_file = os.path.join(os.path.dirname(__file__), 'agent_data', 'neural_weights.json')
+        if os.path.exists(state_file):
+            try:
+                with open(state_file, 'r') as f:
+                    saved_weights = json.load(f)
+                    self.weights.update(saved_weights)
+            except:
+                pass
+
+    def _save_network_state(self):
+        """Persistence for adaptive learning"""
+        os.makedirs(os.path.join(os.path.dirname(__file__), 'agent_data'), exist_ok=True)
+        state_file = os.path.join(os.path.dirname(__file__), 'agent_data', 'neural_weights.json')
+        try:
+            with open(state_file, 'w') as f:
+                json.dump(self.weights, f)
+        except:
+            pass
+
     def predict_purchase_intent(self, user_data=None, product_data=None, context=None, **kwargs):
-        """Predict user's purchase intent using neural signals"""
+        """
+        Deep Inference: Predict user's purchase intent using 
+        multi-layer signal aggregation.
+        """
         if isinstance(user_data, dict) and product_data is None:
-            # Handle single dict argument
             data = user_data
             user_data = data.get('user', {})
             product_data = data.get('product', {})
@@ -45,70 +67,94 @@ class NeuralCommerceEngine:
         product_data = product_data or {}
         context = context or {}
         
-        # Calculate base intent score
-        base_score = 0.5
-        
-        # Analyze user behavior signals
+        # Layer 1: Behavioral Extraction
         page_views = user_data.get('pageViews', 0)
         cart_adds = user_data.get('cartAdds', 0)
-        time_on_site = user_data.get('timeOnSite', 0)
-        previous_purchases = user_data.get('previousPurchases', 0)
+        dwell_time = user_data.get('timeOnSite', 0)
+        recency = user_data.get('daysSinceLastVisit', 7)
         
-        # Calculate behavioral intent
-        behavior_score = min(1.0, (
-            (page_views * 0.02) +
-            (cart_adds * 0.15) +
-            (time_on_site / 300 * 0.1) +
-            (previous_purchases * 0.05)
-        ))
+        behavior_signal = (
+            (math.tanh(page_views / 10) * 0.3) +
+            (math.tanh(cart_adds / 2) * 0.5) +
+            (math.tanh(dwell_time / 600) * 0.2)
+        )
+        # Apply decay for inactive users
+        behavior_signal *= (1.0 / (1.0 + recency/30))
+
+        # Layer 2: Product Fit (Sigmoid activation)
+        relevance_raw = self._calculate_complex_relevance(product_data, user_data)
+        product_relevance = 1 / (1 + math.exp(-10 * (relevance_raw - 0.5))) # Squashing
+
+        # Layer 3: Contextual Bias
+        urgency = 1.0
+        if context.get('lowStock'): urgency += 0.4
+        if context.get('isPromotion'): urgency += 0.3
+        if context.get('limitedEdition'): urgency += 0.5
         
-        # Product attractiveness
-        product_score = self._calculate_product_attractiveness(product_data, user_data)
-        
-        # Context modifiers
-        context_modifier = 1.0
-        if context.get('isPromotion'):
-            context_modifier *= 1.3
-        if context.get('lowStock'):
-            context_modifier *= 1.2
-        if context.get('recentViewed'):
-            context_modifier *= 1.15
-        
-        # Neural combination
+        # Neural Fusion
         intent_score = (
-            base_score * 0.2 +
-            behavior_score * 0.4 +
-            product_score * 0.4
-        ) * context_modifier
+            (behavior_signal * self.weights['behavior_signal']) +
+            (product_relevance * self.weights['product_relevance'])
+        ) * urgency
         
         intent_score = min(1.0, max(0.0, intent_score))
         
-        # Determine action
-        if intent_score >= 0.75:
-            action = "HIGH_INTENT"
-            recommendation = "Show checkout incentive"
-        elif intent_score >= 0.5:
-            action = "MEDIUM_INTENT"
-            recommendation = "Display social proof"
-        elif intent_score >= 0.25:
-            action = "LOW_INTENT"
-            recommendation = "Offer product education"
-        else:
-            action = "BROWSING"
-            recommendation = "Show related products"
-        
+        # Feedback Simulation (Self-Correction)
+        # If intent is high but no purchase happened in history, slightly reduce weights
+        if intent_score > 0.8 and user_data.get('conversionCount', 0) == 0:
+            self.weights['behavior_signal'] -= self.learning_rate * 0.01
+            self._save_network_state()
+
         return {
             "success": True,
-            "intentScore": round(intent_score, 3),
-            "action": action,
-            "recommendation": recommendation,
-            "signals": {
-                "behavior": round(behavior_score, 3),
-                "product": round(product_score, 3),
-                "contextModifier": round(context_modifier, 2)
+            "neural_output": {
+                "score": round(intent_score, 4),
+                "confidence": round(0.92 - (0.1 if page_views < 3 else 0), 2),
+                "class": self._classify_intent(intent_score),
+                "recommendation": self._generate_ultra_recommendation(intent_score, product_data)
             },
-            "timestamp": datetime.now().isoformat()
+            "signals": {
+                "behavior": round(behavior_signal, 3),
+                "relevance": round(product_relevance, 3),
+                "urgency_multiplier": round(urgency, 2)
+            },
+            "modelVersion": self.model_version
         }
+
+    def _calculate_complex_relevance(self, product, user):
+        """Multi-dimensional feature matching"""
+        score = 0.5
+        
+        # Price Affinity
+        avg_wallet = user.get('avgPurchaseValue', 1500)
+        price = product.get('price', 0)
+        if price > 0:
+            affinity = 1.0 - abs(math.log10(price/avg_wallet))
+            score += max(-0.3, min(0.3, affinity))
+            
+        # Category Preference Vectors
+        pref_cats = user.get('preferredCategories', [])
+        if product.get('category') in pref_cats:
+            score += 0.25
+            
+        # Style Matching (Attribute detection)
+        style = product.get('style', 'minimalist').lower()
+        if style in user.get('preferredStyles', ['streetwear']):
+            score += 0.15
+            
+        return score
+
+    def _classify_intent(self, score):
+        if score > 0.85: return "TRANSFORMATIONAL"
+        if score > 0.65: return "HIGH_CONVERSION"
+        if score > 0.40: return "CONSIDERATION"
+        return "DISCOVERY"
+
+    def _generate_ultra_recommendation(self, score, product):
+        if score > 0.85: return f"Trigger Immediate Checkout: {product.get('name')} is a perfect match."
+        if score > 0.65: return "Show scarcity alert + free shipping voucher."
+        if score > 0.40: return "Display social proof (50+ bought this today)."
+        return "Curate similar high-engagement items."
     
     def _calculate_product_attractiveness(self, product, user_data):
         """Calculate product attractiveness for user"""
@@ -431,6 +477,8 @@ if __name__ == "__main__":
                 result = engine.customer_journey_optimization(input_data)
             elif task == "churn":
                 result = engine.predict_churn(input_data)
+            elif task == "status" or task == "health":
+                result = {"status": "healthy", "version": engine.model_version}
             else:
                 result = {"error": f"Unknown task: {task}"}
             
@@ -443,5 +491,5 @@ if __name__ == "__main__":
             "engine": "Neural Commerce Engine",
             "version": engine.model_version,
             "tasks": ["intent", "placement", "pricing", "journey", "churn"],
-            "status": "ready"
+            "status": "healthy"
         }))
